@@ -1,0 +1,23 @@
+{
+    "name": "alexmigf/stock-locations-for-woocommerce",
+    "description": "Stock Locations for WooCommerce Plugin",
+    "repositories":[
+        {
+            "type":"composer",
+            "url":"https://wpackagist.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "require-dev": {
+        "wpackagist-plugin/woocommerce":"3.4.0"
+    },
+    "extra": {
+        "installer-paths": {
+            "../{$name}": ["wpackagist-plugin/woocommerce"]
+        }
+    }
+}
