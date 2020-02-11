@@ -39,7 +39,7 @@ if ( !defined( 'SLW_PLUGIN_SLUG' ) ) {
  * @since 1.0.0
  */
 add_action( 'plugins_loaded', 'initiate_slw_plugin' );
-function initiate_SLW_plugin()
+function initiate_slw_plugin()
 {
 
     // Allow only if the user has the correct capabilities
