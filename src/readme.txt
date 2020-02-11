@@ -4,7 +4,7 @@ Tags: woocommerce, stock, stock locations, barcode, barcodes, ean, upc, asin, is
 Requires at least: 4.9
 Tested up to: 5.3.2
 Requires PHP: 7.2
-Stable tag: trunk
+Stable tag: __STABLE_TAG__
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

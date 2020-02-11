@@ -1,18 +1,18 @@
 <?php
 /**
- * Plugin Name:       Stock Locations for WooCommerce
- * Description:       This plugin will help you manage WooCommerce Products stocks throw locations and also different traditional barcodes.
- * Version:           1.0.0
- * Requires at least: 4.9
- * Requires PHP:      7.0
- * Author:            Alexandre Faustino
- * Author URI:        mailto:alexmigf@gmail.com
- * License:           GPL v2 or later
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       stock-locations-for-woocommerce
- * Domain Path:       /languages
- * WC requires at least: 3.4.0
- * WC tested up to: 3.9.0
+ * Plugin Name:       		Stock Locations for WooCommerce
+ * Description:       		This plugin will help you manage WooCommerce Products stocks throw locations and also different traditional barcodes.
+ * Version:					__STABLE_TAG__
+ * Requires at least: 		4.9
+ * Requires PHP:      		7.0
+ * Author:            		Alexandre Faustino
+ * Author URI:        		mailto:alexmigf@gmail.com
+ * License:           		GPL v2 or later
+ * License URI:       		https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       		stock-locations-for-woocommerce
+ * Domain Path:       		/languages
+ * WC requires at least:	3.4.0
+ * WC tested up to: 		3.9.0
  */
 
 /**
@@ -49,20 +49,20 @@ function initiate_SLW_plugin()
         if ( ! class_exists( 'woocommerce' ) ) {
 
             include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-            
+
             // Deactivate the plugin
             deactivate_plugins( plugin_basename( __FILE__ ) );
-            
+
             // Show error
             echo '<div class="error"><p>' . __('Stock Locations for WooCommerce requires WooCommerce to be activaded. Please active WooCommerce plugin first.', 'stock-locations-for-woocommerce') . '</p></div>';
-            
+
             flush_rewrite_rules();
 
         } else {
 
             // Require autoload
             require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
-        
+
             // Intantiate
             App\SlwMain::instance();
 
