@@ -65,7 +65,7 @@ if(!trait_exists('SlwOrderItem')) {
                 // Check if the stock locations are already updated in items of this order and show warning if necessary
                 if( empty( wc_get_order_item_meta($item, '_item_stock_locations_updated', true) ) ) {
                     SlwAdminNotice::displayWarning(__('Partial or total stock in locations is missing in this order. Please fill the remaining stock.', 'stock-locations-for-woocommerce'));
-                }   
+                }
             }
         }
 
@@ -85,10 +85,10 @@ if(!trait_exists('SlwOrderItem')) {
 
                     // Get variation parent id
                     $parent_id = $item->get_product_id();
-    
+
                     // Get the variation id
                     $variation_id = $_product->get_ID();
-    
+
                     // Get the parent location terms
                     $product_stock_location_terms = get_the_terms($parent_id, SlwProductTaxonomy::get_Tax_Names('singular'));
 
@@ -101,12 +101,12 @@ if(!trait_exists('SlwOrderItem')) {
                         // Add stock location inputs
                         $this->product_stock_location_inputs($variation_id, $product_stock_location_terms, $item, $item_id);
                     }
-    
+
                 } else {
-    
+
                     // Get the product id
                     $product_id = $item->get_product_id();
-    
+
                     // Product location terms
                     $product_stock_location_terms = get_the_terms($product_id, SlwProductTaxonomy::get_Tax_Names('singular'));
 
@@ -119,7 +119,7 @@ if(!trait_exists('SlwOrderItem')) {
                         // Add stock location inputs
                         $this->product_stock_location_inputs($product_id, $product_stock_location_terms, $item, $item_id);
                     }
-    
+
                 }
 
             }
@@ -143,13 +143,13 @@ if(!trait_exists('SlwOrderItem')) {
 
                 // Add the input field to values table
                 echo '<td width="15%">';
-                        
+
                     // Loop throw location terms
                     foreach($product_stock_location_terms as $term) {
 
                         // Define $args_1 as array type
                         $args_1 = array();
-                            
+
                         // Get the item meta
                         $postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
                         if(!$postmeta_stock_at_term) {
@@ -162,13 +162,13 @@ if(!trait_exists('SlwOrderItem')) {
                         // If the order item has the stock locations updated, show the quantity already subtracted
                         if(wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) === 'yes') {
                             $args_1['custom_attributes'] = array('readonly' => 'readonly');
-                            
+
                             if($itemmeta_stock_update_at_term) {
                                 $args_1['label'] = $term->name . ' <b>(' . $postmeta_stock_at_term . ')</b> <span style="color:green;">-' . $itemmeta_stock_update_at_term . '</span>';
                             } else {
                                 $args_1['label'] = $term->name . ' <b>(' . $postmeta_stock_at_term . ')</b>';
                             }
-                            
+
                         } else {
                             $args_1['label'] = $term->name . ' <b>(' . $postmeta_stock_at_term . ')</b>';
                         }
@@ -184,7 +184,7 @@ if(!trait_exists('SlwOrderItem')) {
 
 
                         // Define $args_2 array
-                        $args_2 = array( 
+                        $args_2 = array(
                             'id'                => SLW_PLUGIN_SLUG . '_oitem_' . $id . '_' . $term->term_id,
                             'desc_tip'          => true,
                             'class'             => 'woocommerce ' . SLW_PLUGIN_SLUG . '_oitem_' . $id . ' ' . SLW_PLUGIN_SLUG . '_oitem',
@@ -207,7 +207,7 @@ if(!trait_exists('SlwOrderItem')) {
                 echo '<td width="15%">';
                 echo '<div display="block">' . __('This product/variation don\'t have stock management activated.', 'stock-locations-for-woocommerce') . '</div>';
                 echo '</td>';
-    
+
             }
 
         }
@@ -241,7 +241,7 @@ if(!trait_exists('SlwOrderItem')) {
 
                     // Get item product
                     $item_product = $item_data->get_product();
-                    
+
                     // Get item product id
                     $item_id = $item_product->get_ID();
 
@@ -301,7 +301,7 @@ if(!trait_exists('SlwOrderItem')) {
 
                                     // Update the postmeta of the product
                                     update_post_meta( $item_id, '_stock_at_' . $term->term_id, $postmeta_stock_at_term - $item_stock_location_subtract_input_qty );
-                                    
+
                                     // Note message
                                     $note = sprintf( __('The stock in the location %1$s was updated in -%2$d for the product %3$s', 'stock-locations-for-woocommerce'), $term->name, $item_stock_location_subtract_input_qty, $item_product->get_name() );
 
@@ -314,7 +314,7 @@ if(!trait_exists('SlwOrderItem')) {
                                     } else {
                                         update_post_meta($item_id, '_stock_status', 'instock');
                                     }
-                                    
+
                                     // Update the itemmeta of the order item
                                     wc_update_order_item_meta($item, '_item_stock_locations_updated', 'yes');
                                     wc_update_order_item_meta($item, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
@@ -331,7 +331,7 @@ if(!trait_exists('SlwOrderItem')) {
                         }
 
                     }
-                    
+
                     // Check if stock in locations are updated for this item
                     if( empty( wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) ) ) {
                         SlwAdminNotice::displayWarning(__('Partial or total stock in locations is missing in this order. Please fill the remaining stock.', 'stock-locations-for-woocommerce'));
@@ -353,28 +353,30 @@ if(!trait_exists('SlwOrderItem')) {
         public function hide_stock_locations_itemmeta_wc_order($arr)
         {
             // Get an instance of the WC_Order object
-            $order = wc_get_order( get_the_id() );
+			$order = wc_get_order( get_the_id() );
 
-            // Loop through order items
-            foreach ( $order->get_items() as $item => $item_data ) {
+			if( $order->get_items() ) {
+				// Loop through order items
+				foreach ( $order->get_items() as $item => $item_data ) {
 
-                // Get item ID
-                $product = $item_data->get_product();
-                $item_id = $product->get_ID();
+					// Get item ID
+					$product = $item_data->get_product();
+					$item_id = $product->get_ID();
 
-                // Get item location terms
-                $item_stock_location_terms = get_the_terms($item_id, SlwProductTaxonomy::get_Tax_Names('singular'));
+					// Get item location terms
+					$item_stock_location_terms = get_the_terms($item_id, SlwProductTaxonomy::get_Tax_Names('singular'));
 
-                if($item_stock_location_terms) {
-                    // Loop through location terms
-                    foreach ( $item_stock_location_terms as $term ) {
-                        $arr[] = '_item_stock_updated_at_' . $term->term_id;
-                    }
-                }
+					if($item_stock_location_terms) {
+						// Loop through location terms
+						foreach ( $item_stock_location_terms as $term ) {
+							$arr[] = '_item_stock_updated_at_' . $term->term_id;
+						}
+					}
 
-            }
+				}
 
-            $arr[] = '_item_stock_locations_updated';
+				$arr[] = '_item_stock_locations_updated';
+			}
 
             return $arr;
         }
