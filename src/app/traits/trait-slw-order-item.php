@@ -359,17 +359,19 @@ if(!trait_exists('SlwOrderItem')) {
 				// Loop through order items
 				foreach ( $order->get_items() as $item => $item_data ) {
 
-					// Get item ID
-					$product = $item_data->get_product();
-					$item_id = $product->get_ID();
+					if( $item_data->get_product() ) {
+						// Get item ID
+						$product = $item_data->get_product();
+						$item_id = $product->get_ID();
 
-					// Get item location terms
-					$item_stock_location_terms = get_the_terms($item_id, SlwProductTaxonomy::get_Tax_Names('singular'));
+						// Get item location terms
+						$item_stock_location_terms = get_the_terms($item_id, SlwProductTaxonomy::get_Tax_Names('singular'));
 
-					if($item_stock_location_terms) {
-						// Loop through location terms
-						foreach ( $item_stock_location_terms as $term ) {
-							$arr[] = '_item_stock_updated_at_' . $term->term_id;
+						if($item_stock_location_terms) {
+							// Loop through location terms
+							foreach ( $item_stock_location_terms as $term ) {
+								$arr[] = '_item_stock_updated_at_' . $term->term_id;
+							}
 						}
 					}
 
