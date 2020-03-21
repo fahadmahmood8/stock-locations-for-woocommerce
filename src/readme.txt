@@ -71,9 +71,6 @@ Barcodes:
 
 == Frequently Asked Questions ==
 
-= Can i translate this plugin? =
-Of course. If you wish you can send me your translation files (.mo and .po) for another language, and i will make them available in a future release.
-
 = I found a bug, where i can report it? =
 I prefer you to use the Github repo, you can find it here [GitHub](https://github.com/alexmigf/stock-locations-for-woocommerce)
 
@@ -90,6 +87,12 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 
 
 == Changelog ==
+
+= 1.0.1 =
+- Tested up to WooCommerce 4.0.1
+- Fix - Added condition to check variation products in hide meta function
+- Fix - Check if order item product exists before trying to hide meta
+- Fix - Check if order has items before trying to hide meta
 
 = 1.0.0 =
 - Initial release

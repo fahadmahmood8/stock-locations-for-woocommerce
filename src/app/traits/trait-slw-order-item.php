@@ -347,7 +347,7 @@ if(!trait_exists('SlwOrderItem')) {
         /**
          * Hides Stock Location item meta from WC Order.
          *
-         * @since 1.0.0
+         * @since 1.0.1
          * @return array
          */
         public function hide_stock_locations_itemmeta_wc_order($arr)
