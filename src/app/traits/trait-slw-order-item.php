@@ -355,7 +355,7 @@ if(!trait_exists('SlwOrderItem')) {
             // Get an instance of the WC_Order object
 			$order = wc_get_order( get_the_id() );
 
-			if( $order->get_items() ) {
+			if( $order && $order->get_items() ) {
 				// Loop through order items
 				foreach ( $order->get_items() as $item => $item_data ) {
 					if( $item_data->get_product() ) {
