@@ -2,7 +2,7 @@
 Contributors: alexmigf
 Tags: woocommerce, stock, stock locations, barcode, barcodes, ean, upc, asin, isbn, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.3.2
+Tested up to: 5.4
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -87,6 +87,15 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 
 
 == Changelog ==
+
+= 1.0.3 =
+- Tested up to WordPress 5.4
+- Fix - Removed condition that prevent other roles beyond the admin from accessing the plugin functionality
+- Added Capabilities to the location taxonomy
+- Fix - Some actions priorities and arguments number were missing
+
+= 1.0.2 =
+- Fix - Bug creating new order, trying to get items on nonexistent order
 
 = 1.0.1 =
 - Tested up to WooCommerce 4.0.1
