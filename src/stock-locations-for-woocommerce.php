@@ -42,32 +42,28 @@ add_action( 'plugins_loaded', 'initiate_slw_plugin' );
 function initiate_slw_plugin()
 {
 
-    // Allow only if the user has the correct capabilities
-    if( current_user_can( 'activate_plugins' ) ) {
+	// Check if WooCommerce is active
+	if ( ! class_exists( 'woocommerce' ) ) {
 
-        // Check if WooCommerce is active
-        if ( ! class_exists( 'woocommerce' ) ) {
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-            include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		// Deactivate the plugin
+		deactivate_plugins( plugin_basename( __FILE__ ) );
 
-            // Deactivate the plugin
-            deactivate_plugins( plugin_basename( __FILE__ ) );
+		// Show error
+		echo '<div class="error"><p>' . __('Stock Locations for WooCommerce requires WooCommerce to be activaded. Please active WooCommerce plugin first.', 'stock-locations-for-woocommerce') . '</p></div>';
 
-            // Show error
-            echo '<div class="error"><p>' . __('Stock Locations for WooCommerce requires WooCommerce to be activaded. Please active WooCommerce plugin first.', 'stock-locations-for-woocommerce') . '</p></div>';
+		flush_rewrite_rules();
 
-            flush_rewrite_rules();
+	} else {
 
-        } else {
+		// Require autoload
+		require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
-            // Require autoload
-            require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+		// Intantiate
+		App\SlwMain::instance();
 
-            // Intantiate
-            App\SlwMain::instance();
+	}
 
-        }
-
-    }
 
 }

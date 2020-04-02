@@ -44,7 +44,7 @@ if(!trait_exists('SlwBarcodesTab')) {
             $tabs = array_slice( $original_tabs, 0, $insert_at_position, true );
             $tabs = array_merge( $tabs, $new_tab );
             $tabs = array_merge( $tabs, array_slice( $original_tabs, $insert_at_position, null, true ) );
-        
+
             return $tabs;
         }
 
@@ -54,7 +54,7 @@ if(!trait_exists('SlwBarcodesTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function tab_content_barcodes_wc_product(): void // Populate the barcodes tab with data
+        public function tab_content_barcodes_wc_product($array): void // Populate the barcodes tab with data
         {
             // Replace the default WooCommerce icon for the this plugin tab
             echo '<style>#woocommerce-product-data ul.wc-tabs li.' . $this->tab_barcodes . '_options a:before { font-family: Font Awesome\ 5 Free; content: \'\f02a\'; font-weight: 900; }</style>';
@@ -75,14 +75,14 @@ if(!trait_exists('SlwBarcodesTab')) {
                 $args = false;
 
                 $postmeta_barcode = get_post_meta($product_id, '_' . $barcode['name'], true);
-                
+
                 // Check if the postmeta has any value, if yes add it to the 'value' of the input
                 if($postmeta_barcode) {
                     $args = $postmeta_barcode;
                 }
 
                 // Create the input
-                woocommerce_wp_text_input( array( 
+                woocommerce_wp_text_input( array(
                     'id'                => '_' . $this->tab_barcodes . '_' . $barcode['name'],
                     'label'             => strtoupper($barcode['name']),
                     'description'       => $barcode['description'],

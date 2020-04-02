@@ -64,7 +64,13 @@ if(!trait_exists('SlwProductTaxonomy')) {
                 'search_items'               => __('Search Items'),
                 'add_or_remove_items'        => __('Add or remove Items'),
                 'choose_from_most_used'      => __('Choose from the most used Items'),
-            );
+			);
+			$capabilities = array(
+				'manage_terms'               => 'manage_woocommerce',
+				'edit_terms'                 => 'manage_woocommerce',
+				'delete_terms'               => 'manage_woocommerce',
+				'assign_terms'               => 'manage_woocommerce',
+			);
             $args = array(
                 'labels'                     => $labels,
                 'hierarchical'               => true,
@@ -72,12 +78,13 @@ if(!trait_exists('SlwProductTaxonomy')) {
                 'show_ui'                    => true,
                 'show_admin_column'          => true,
                 'show_in_nav_menus'          => true,
-                'show_tagcloud'              => true,
+				'show_tagcloud'              => true,
+				'capabilities'               => $capabilities,
             );
-            
+
             register_taxonomy( $this->get_tax_names('singular'), 'product', $args );
             register_taxonomy_for_object_type( $this->get_tax_names('singular'), 'product' );
-            
+
         }
 
     }

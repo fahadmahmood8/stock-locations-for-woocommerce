@@ -82,13 +82,13 @@ if(!class_exists('SlwMain')) {
             add_filter( 'woocommerce_can_reduce_order_stock', array($this, 'disable_wc_reduce_stock'), 10, 2 ); // Since WC 3.0.2
 
             // Actions and filters from 'SlwStockLocationsTab' trait
-            add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_stock_locations_tab_wc_product')); // Since WC 3.0.2
-            add_action('woocommerce_product_data_panels', array($this, 'tab_content_stock_locations_wc_product')); // Since WC 3.0.2
+            add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_stock_locations_tab_wc_product'), 10, 1); // Since WC 3.0.2
+            add_action('woocommerce_product_data_panels', array($this, 'tab_content_stock_locations_wc_product'), 10, 1); // Since WC 3.0.2
             add_action('save_post', array($this, 'save_tab_data_stock_locations_wc_product_save'), 10, 3);
 
             // Actions and filters from 'SlwBarcodesTab' trait
-            add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_barcodes_tab_wc_product')); // Since WC 3.0.2
-            add_action('woocommerce_product_data_panels', array($this, 'tab_content_barcodes_wc_product')); // Since WC 3.0.2
+            add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_barcodes_tab_wc_product'), 10, 1); // Since WC 3.0.2
+            add_action('woocommerce_product_data_panels', array($this, 'tab_content_barcodes_wc_product'), 10, 1); // Since WC 3.0.2
             add_action('save_post', array($this, 'save_tab_data_stock_barcodes_wc_product_save'), 10, 3);
 
             // Actions and filters from 'SlwOrderItem' trait

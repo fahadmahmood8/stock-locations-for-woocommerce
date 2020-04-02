@@ -56,7 +56,7 @@ if(!trait_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function tab_content_stock_locations_wc_product(): void // Populate the stock locations tab with data
+        public function tab_content_stock_locations_wc_product($array): void // Populate the stock locations tab with data
         {
             // Get the product ID
             $product_id = get_the_ID();
