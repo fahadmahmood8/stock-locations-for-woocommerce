@@ -1,11 +1,11 @@
 <?php
 /**
- * SLW Product Taxonomy Trait
+ * SLW Product Taxonomy Class
  *
  * @since 1.0.0
  */
 
-namespace App\Traits;
+namespace SLW\SRC\Classes;
 
 /**
  * If this file is called directly, abort.
@@ -16,13 +16,22 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-if(!trait_exists('SlwProductTaxonomy')) {
+if(!class_exists('SlwProductTaxonomy')) {
 
-    trait SlwProductTaxonomy
+    class SlwProductTaxonomy
     {
-
         public static $tax_plural_name = 'locations';
-        public static $tax_singular_name = 'location';
+		public static $tax_singular_name = 'location';
+
+		/**
+         * Construct.
+         *
+         * @since 1.1.0
+         */
+		public function __construct()
+		{
+			add_action( 'init', array($this, 'create_taxonomy'), 1 );
+		}
 
         /**
          * Returns the taxonomy default names.
@@ -46,7 +55,7 @@ if(!trait_exists('SlwProductTaxonomy')) {
          * @since 1.0.0
          * @return void
          */
-        public function create_taxonomy(): void
+        public function create_taxonomy()
         {
 
             $labels = array(

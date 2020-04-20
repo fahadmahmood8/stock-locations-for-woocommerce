@@ -1,11 +1,11 @@
 <?php
 /**
- * SLW Barcodes Tab Trait
+ * SLW Barcodes Tab Class
  *
  * @since 1.0.0
  */
 
-namespace App\Traits;
+namespace SLW\SRC\Classes;
 
 /**
  * If this file is called directly, abort.
@@ -16,13 +16,23 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-if(!trait_exists('SlwBarcodesTab')) {
+if(!class_exists('SlwBarcodesTab')) {
 
-    trait SlwBarcodesTab
+    class SlwBarcodesTab
     {
+		private $tab_barcodes = 'slw_tab_barcodes';
 
-        // Define properties
-        private $tab_barcodes = SLW_PLUGIN_SLUG . '_tab_barcodes';
+		/**
+         * Construct.
+         *
+         * @since 1.1.0
+         */
+		public function __construct()
+		{
+			add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_barcodes_tab_wc_product'), 10, 1); // Since WC 3.0.2
+			add_action('woocommerce_product_data_panels', array($this, 'tab_content_barcodes_wc_product'), 10, 1); // Since WC 3.0.2
+			add_action('woocommerce_process_product_meta', array($this, 'save_tab_data_stock_barcodes_wc_product_save'), 10, 2);
+		}
 
         /**
          * Creates the custom Barcodes tab in WC Product.
@@ -54,7 +64,7 @@ if(!trait_exists('SlwBarcodesTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function tab_content_barcodes_wc_product($array): void // Populate the barcodes tab with data
+        public function tab_content_barcodes_wc_product($array)
         {
             // Replace the default WooCommerce icon for the this plugin tab
             echo '<style>#woocommerce-product-data ul.wc-tabs li.' . $this->tab_barcodes . '_options a:before { font-family: Font Awesome\ 5 Free; content: \'\f02a\'; font-weight: 900; }</style>';
@@ -66,13 +76,13 @@ if(!trait_exists('SlwBarcodesTab')) {
             echo '<div id="' . $this->tab_barcodes . '" class="panel woocommerce_options_panel">';
 
             // Define each barcode
-            $barcodes = $this->get_barcodes();
+            $barcodes = $this::get_barcodes();
 
             // Iterate over the barcodes
             foreach($barcodes as $barcode) {
 
                 // Define $args;
-                $args = false;
+                $args = null;
 
                 $postmeta_barcode = get_post_meta($product_id, '_' . $barcode['name'], true);
 
@@ -83,7 +93,7 @@ if(!trait_exists('SlwBarcodesTab')) {
 
                 // Create the input
                 woocommerce_wp_text_input( array(
-                    'id'                => '_' . $this->tab_barcodes . '_' . $barcode['name'],
+                    'id'                => $this->tab_barcodes . '_' . $barcode['name'],
                     'label'             => strtoupper($barcode['name']),
                     'description'       => $barcode['description'],
                     'value'             => $args,
@@ -105,9 +115,8 @@ if(!trait_exists('SlwBarcodesTab')) {
          * @since 1.0.0
          * @return int|void
          */
-        public function save_tab_data_stock_barcodes_wc_product_save($post_id, $post, $update)
+        public function save_tab_data_stock_barcodes_wc_product_save($post_id, $post)
         {
-
             if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
                 return $post_id;
 
@@ -115,30 +124,25 @@ if(!trait_exists('SlwBarcodesTab')) {
                 return $post_id;
 
             if ( ! current_user_can( 'edit_product', $post_id ) )
-                return $post_id;
+				return $post_id;
 
 
-            // Get barcodes
-            $barcodes = $this->get_barcodes();
+			if( !empty($post) ) {
+				// Get barcodes
+				$barcodes = $this::get_barcodes();
 
-            // On product update
-            if( $update ){
+				foreach($barcodes as $barcode) {
 
-                // Iterate over barcodes
-                foreach($barcodes as $barcode) {
+					// Check if input has some value in it
+					if( isset($_POST[$this->tab_barcodes . '_' . $barcode['name']]) ) {
 
-                    // Check if input has some value in it
-                    if( isset($_POST['_' . $this->tab_barcodes . '_' . $barcode['name']]) && !empty($_POST['_' . $this->tab_barcodes . '_' . $barcode['name']]) ) {
+						// Update post meta
+						update_post_meta( $post_id, '_' . $barcode['name'] , sanitize_text_field($_POST[$this->tab_barcodes . '_' . $barcode['name']]) );
 
-                        // Update post meta
-                        update_post_meta( $post_id, '_' . $barcode['name'] , sanitize_text_field($_POST['_' . $this->tab_barcodes . '_' . $barcode['name']]) );
+					}
 
-                    }
-
-                }
-
-            }
-
+				}
+			}
         }
 
         /**
@@ -147,7 +151,7 @@ if(!trait_exists('SlwBarcodesTab')) {
          * @since 1.0.0
          * @return array
          */
-        public function get_barcodes()
+        public static function get_barcodes()
         {
             $barcodes = array(
                 array(

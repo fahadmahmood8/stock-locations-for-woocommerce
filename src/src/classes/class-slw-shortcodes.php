@@ -1,11 +1,11 @@
 <?php
 /**
- * SLW Shortcodes Trait
+ * SLW Shortcodes Class
  *
  * @since 1.0.0
  */
 
-namespace App\Traits;
+namespace SLW\SRC\Classes;
 
 /**
  * If this file is called directly, abort.
@@ -16,12 +16,22 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-use App\Traits\SlwBarcodes;
+if(!class_exists('SlwShortcodes')) {
 
-if(!trait_exists('SlwShortcodes')) {
-
-    trait SlwShortcodes
+    class SlwShortcodes
     {
+		protected $barcodes;
+
+		/**
+         * Construct.
+         *
+         * @since 1.1.0
+         */
+		public function __construct()
+		{
+			$this->shortcodes_init();
+		}
+
         /**
          * Displays the barcodes.
          *
@@ -39,7 +49,7 @@ if(!trait_exists('SlwShortcodes')) {
             }
 
             // Get the plugin barcodes
-            $barcodes = SlwBarcodes::barcodes();
+            $barcodes = SlwBarcodesTab::get_barcodes();
 
             // Save barcodes names into array
             $barcode_names = [];
@@ -64,7 +74,7 @@ if(!trait_exists('SlwShortcodes')) {
             } else {
                 return __('Barcode type not found!', 'stock-locations-for-woocommerce');
             }
-            
+
             return $output;
 
         }
@@ -75,7 +85,7 @@ if(!trait_exists('SlwShortcodes')) {
          * @since 1.0.0
          * @return void
          */
-        public function shortcodes_init(): void
+        public function shortcodes_init()
         {
             add_shortcode('slw_barcode', array($this, 'display_barcode'));
         }

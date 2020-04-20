@@ -88,6 +88,12 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 
 == Changelog ==
 
+= 1.1.0 =
+- New column in product listing with stock locations imventory
+- Fix bug on getting barcodes data for shortcodes
+- Fix bug reported by @sebtoombs
+- Plugin structure refactoring
+
 = 1.0.3 =
 - Tested up to WordPress 5.4
 - Fix - Removed condition that prevent other roles beyond the admin from accessing the plugin functionality

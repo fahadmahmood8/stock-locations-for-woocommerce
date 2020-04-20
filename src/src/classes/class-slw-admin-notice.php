@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-namespace App;
+namespace SLW\SRC\Classes;
 
 /**
  * If this file is called directly, abort.
@@ -20,7 +20,7 @@ if(!class_exists('AdminNotice')) {
 
     class SlwAdminNotice
     {
-        const NOTICE_FIELD = SLW_PLUGIN_SLUG . '_admin_notice_message';
+		const NOTICE_FIELD = SLW_PLUGIN_SLUG . '_admin_notice_message';
 
         public function displayAdminNotice()
         {

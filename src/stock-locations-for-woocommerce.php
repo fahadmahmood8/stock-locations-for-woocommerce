@@ -24,6 +24,121 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
+if(!class_exists('SlwMain')) {
+
+    class SlwMain
+    {
+        private $plugin_dir_url;
+		protected static $instance = null;
+
+        /**
+         * Class Constructor.
+         * @since 1.0.0
+         */
+        public function __construct()
+        {
+            // Save plugin dir url to property
+            $this->plugin_dir_url = plugin_dir_url(__FILE__);
+
+			$this->init();
+
+			// Instantiate classes
+			new SLW\SRC\Classes\SlwProductTaxonomy;
+			new SLW\SRC\Classes\SlwStockLocationsTab;
+			new SLW\SRC\Classes\SlwBarcodesTab;
+			new SLW\SRC\Classes\SlwOrderItem;
+			new SLW\SRC\Classes\SlwShortcodes;
+			new SLW\SRC\Classes\SlwProductListing;
+        }
+
+        /**
+         * Ensures only one instance of our plugin is loaded or can be loaded.
+         *
+         * @since 1.0.0
+         * @return object
+         */
+        public static function instance()
+        {
+
+            if ( is_null( self::$instance ) ) {
+                self::$instance = new self();
+            }
+
+            return self::$instance;
+
+        }
+
+        /**
+         * Initiates the hooks.
+         *
+         * @since 1.0.0
+         * @return void
+         */
+        public function init(): void
+        {
+            // Action to load textdomain
+            add_action( 'init', array($this, 'load_textdomain') );
+
+            // Enqueue scripts and styles
+            add_action( 'admin_enqueue_scripts', array($this, 'enqueue') );
+
+            // Prevent WooCommerce from reduce stock
+            add_filter( 'woocommerce_can_reduce_order_stock', '__return_false', 999 ); // Since WC 3.0.2
+
+            // Display admin notices
+			add_action( 'admin_notices', [new SLW\SRC\Classes\SlwAdminNotice(), 'displayAdminNotice'] );
+
+			// Flush rewrite rules
+            add_action( 'shutdown', array($this, 'flush_rewrite_rules'), 9999 );
+		}
+
+		/**
+         * Flush rewrite rules.
+         *
+         * @since 1.1.0
+         */
+        public function flush_rewrite_rules()
+        {
+            flush_rewrite_rules();
+        }
+
+        /**
+         * Adds scripts and styles.
+         *
+         * @since 1.0.0
+         * @return void
+         */
+        public function enqueue(): void
+        {
+            wp_enqueue_style('admin-style', $this->plugin_dir_url . 'admin/css/style.css', null, '1.0');
+            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', null, '5.11.2');
+
+            // Register the script
+            wp_register_script( 'scripts', $this->plugin_dir_url . 'admin/js/scripts.js', null, '1.0', true );
+            // Localize the script passing the plugin slug constant
+            $params = array(
+                'slug' => SLW_PLUGIN_SLUG
+            );
+            wp_localize_script( 'scripts', 'slw_plugin_slug', $params );
+            // Enqueued script with localized data.
+            wp_enqueue_script( 'scripts' );
+        }
+
+        /**
+         * Load plugin textdomain.
+         *
+         * @since 1.0.0
+         * @return void
+         */
+        public function load_textdomain(): void
+        {
+            load_plugin_textdomain( 'stock-locations-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+        }
+
+    }
+
+}
+
 /**
  * Define SLW_PLUGIN_SLUG.
  *
@@ -53,15 +168,13 @@ function initiate_slw_plugin()
 		// Show error
 		echo '<div class="error"><p>' . __('Stock Locations for WooCommerce requires WooCommerce to be activaded. Please active WooCommerce plugin first.', 'stock-locations-for-woocommerce') . '</p></div>';
 
-		flush_rewrite_rules();
-
 	} else {
 
 		// Require autoload
 		require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 		// Intantiate
-		App\SlwMain::instance();
+		SlwMain::instance();
 
 	}
 

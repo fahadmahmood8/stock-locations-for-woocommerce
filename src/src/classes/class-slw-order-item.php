@@ -1,11 +1,13 @@
 <?php
 /**
- * SLW Order Item Trait
+ * SLW Order Item Class
  *
  * @since 1.0.0
  */
 
-namespace App\Traits;
+namespace SLW\SRC\Classes;
+
+use SLW\SRC\Classes\SlwAdminNotice;
 
 /**
  * If this file is called directly, abort.
@@ -16,26 +18,24 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-use App\SlwAdminNotice;
+if(!class_exists('SlwOrderItem')) {
 
-if(!trait_exists('SlwOrderItem')) {
-
-    trait SlwOrderItem
+    class SlwOrderItem
     {
+		private $items;
 
-        private $items;
-
-        /**
-         * Disables default WC stock reduction.
+		/**
+         * Construct.
          *
-         * @since 1.0.0
-         * @return false
+         * @since 1.1.0
          */
-        public function disable_wc_reduce_stock($true, $instance)
-        {
-            // Disable default WooCommerce stock reduction on order placements
-            return false;
-        }
+		public function __construct()
+		{
+			add_action('woocommerce_admin_order_item_headers', array($this, 'add_stock_location_column_wc_order'), 10, 1);  // Since WC 3.0.2
+			add_action('woocommerce_admin_order_item_values', array($this, 'add_stock_location_inputs_wc_order'), 10, 3);   // Since WC 3.0.2
+			add_action('save_post_shop_order', array($this, 'update_stock_locations_data_wc_order_save'), 10, 3);
+			add_filter('woocommerce_hidden_order_itemmeta', array($this, 'hide_stock_locations_itemmeta_wc_order'), 10, 1); // Since WC 3.0.2
+		}
 
         /**
          * Adds custom column for Stock Location in WC Order items.
@@ -43,7 +43,7 @@ if(!trait_exists('SlwOrderItem')) {
          * @since 1.0.0
          * @return void
          */
-        public function add_stock_location_column_wc_order($order): void
+        public function add_stock_location_column_wc_order($order)
         {
             // display the column name
             echo '<th>' . __('Stock Locations', 'stock-locations-for-woocommerce') . '</th>';
@@ -57,7 +57,7 @@ if(!trait_exists('SlwOrderItem')) {
                     'order_item_id' => $item,
                 ];
             }
-            // Assign variable to the trait property
+            // Assign variable to the class property
             $this->items = $items;
 
             // Loop throw order items
@@ -75,7 +75,7 @@ if(!trait_exists('SlwOrderItem')) {
          * @since 1.0.0
          * @return void
          */
-        public function add_stock_location_inputs_wc_order($_product, $item, $item_id): void
+        public function add_stock_location_inputs_wc_order($_product, $item, $item_id)
         {
 
             if( is_object($_product) ) {
@@ -132,7 +132,7 @@ if(!trait_exists('SlwOrderItem')) {
          * @since 1.0.0
          * @return void
          */
-        public function product_stock_location_inputs($id, $product_stock_location_terms, $item, $item_id): void
+        public function product_stock_location_inputs($id, $product_stock_location_terms, $item, $item_id)
         {
 
             // Get stock management status for this product

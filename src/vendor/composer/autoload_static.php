@@ -7,28 +7,27 @@ namespace Composer\Autoload;
 class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
 {
     public static $prefixLengthsPsr4 = array (
-        'A' => 
+        'S' => 
         array (
-            'App\\' => 4,
+            'SLW\\SRC\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'App\\' => 
+        'SLW\\SRC\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app',
+            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 
     public static $classMap = array (
-        'App\\SlwAdminNotice' => __DIR__ . '/../..' . '/app/class-slw-admin-notice.php',
-        'App\\SlwMain' => __DIR__ . '/../..' . '/app/class-slw-main.php',
-        'App\\Traits\\SlwBarcodesTab' => __DIR__ . '/../..' . '/app/traits/trait-slw-barcodes-tab.php',
-        'App\\Traits\\SlwOrderItem' => __DIR__ . '/../..' . '/app/traits/trait-slw-order-item.php',
-        'App\\Traits\\SlwProductListing' => __DIR__ . '/../..' . '/app/traits/trait-slw-product-listing.php',
-        'App\\Traits\\SlwProductTaxonomy' => __DIR__ . '/../..' . '/app/traits/trait-slw-product-taxonomy.php',
-        'App\\Traits\\SlwShortcodes' => __DIR__ . '/../..' . '/app/traits/trait-slw-shortcodes.php',
-        'App\\Traits\\SlwStockLocationsTab' => __DIR__ . '/../..' . '/app/traits/trait-slw-stock-locations-tab.php',
+        'SLW\\SRC\\Classes\\SlwAdminNotice' => __DIR__ . '/../..' . '/src/classes/class-slw-admin-notice.php',
+        'SLW\\SRC\\Classes\\SlwBarcodesTab' => __DIR__ . '/../..' . '/src/classes/class-slw-barcodes-tab.php',
+        'SLW\\SRC\\Classes\\SlwOrderItem' => __DIR__ . '/../..' . '/src/classes/class-slw-order-item.php',
+        'SLW\\SRC\\Classes\\SlwProductListing' => __DIR__ . '/../..' . '/src/classes/class-slw-product-listing.php',
+        'SLW\\SRC\\Classes\\SlwProductTaxonomy' => __DIR__ . '/../..' . '/src/classes/class-slw-product-taxonomy.php',
+        'SLW\\SRC\\Classes\\SlwShortcodes' => __DIR__ . '/../..' . '/src/classes/class-slw-shortcodes.php',
+        'SLW\\SRC\\Classes\\SlwStockLocationsTab' => __DIR__ . '/../..' . '/src/classes/class-slw-stock-locations-tab.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

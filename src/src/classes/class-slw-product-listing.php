@@ -1,11 +1,11 @@
 <?php
 /**
- * SLW Product Listing Trait
+ * SLW Product Listing Class
  *
  * @since 1.0.0
  */
 
-namespace App\Traits;
+namespace SLW\SRC\Classes;
 
 /**
  * If this file is called directly, abort.
@@ -16,10 +16,21 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-if(!trait_exists('SlwProductListing')) {
+if(!class_exists('SlwProductListing')) {
 
-    trait SlwProductListing
+    class SlwProductListing
     {
+		/**
+         * Construct.
+         *
+         * @since 1.1.0
+         */
+		public function __construct()
+		{
+			add_filter('manage_edit-product_columns', array($this, 'remove_product_listing_column'), 10, 1);
+			add_action('restrict_manage_posts', array($this, 'filter_by_taxonomy_stock_location') , 10, 2);
+			add_action('manage_posts_custom_column', array($this, 'populate_stock_locations_column') );
+		}
 
         /**
          * Remove column from post type 'product' listing.
@@ -32,9 +43,9 @@ if(!trait_exists('SlwProductListing')) {
 
             unset($columns['taxonomy-' . SlwProductTaxonomy::get_Tax_Names('singular')]);
 
-            // return array_slice( $columns, 0, 5, true )
-            // + array( 'stock_at_locations' => __( 'Stock at locations', 'stock-locations-for-woocommerce' ) )
-            // + array_slice( $columns, 5, NULL, true );
+            return array_slice( $columns, 0, 5, true )
+            + array( 'stock_at_locations' => __( 'Stock at locations', 'stock-locations-for-woocommerce' ) )
+            + array_slice( $columns, 5, NULL, true );
 
             return $columns;
         }
@@ -45,7 +56,7 @@ if(!trait_exists('SlwProductListing')) {
          * @since 1.0.0
          * @return void
          */
-        public function filter_by_taxonomy_stock_location($post_type, $which): void
+        public function filter_by_taxonomy_stock_location($post_type, $which)
         {
 
             // Apply this only on a specific post type
@@ -86,7 +97,7 @@ if(!trait_exists('SlwProductListing')) {
          * @since 1.0.0
          * @return void
          */
-        public function populate_stock_locations_column($column_name): void
+        public function populate_stock_locations_column($column_name)
         {
             // Grab the correct column
             if( $column_name  == 'stock_at_locations' ) {

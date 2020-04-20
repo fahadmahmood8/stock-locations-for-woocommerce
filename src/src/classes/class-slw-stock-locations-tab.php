@@ -1,11 +1,10 @@
 <?php
 /**
- * SLW Stock Locations Tab Trait
- *
+ * SLW Stock Locations Tab Class
  * @since 1.0.0
  */
 
-namespace App\Traits;
+namespace SLW\SRC\Classes;
 
 /**
  * If this file is called directly, abort.
@@ -16,15 +15,23 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-use App\SlwAdminNotice;
+if(!class_exists('SlwStockLocationsTab')) {
 
-if(!trait_exists('SlwStockLocationsTab')) {
-
-    trait SlwStockLocationsTab
+    class SlwStockLocationsTab
     {
+		private $tab_stock_locations = SLW_PLUGIN_SLUG . '_tab_stock_locations';
 
-        // Define properties
-        private $tab_stock_locations = SLW_PLUGIN_SLUG . '_tab_stock_locations';
+		/**
+         * Construct.
+         *
+         * @since 1.1.0
+         */
+		public function __construct()
+		{
+			add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_stock_locations_tab_wc_product'), 10, 1); // Since WC 3.0.2
+			add_action('woocommerce_product_data_panels', array($this, 'tab_content_stock_locations_wc_product'), 10, 1); // Since WC 3.0.2
+			add_action('save_post', array($this, 'save_tab_data_stock_locations_wc_product_save'), 10, 3);
+		}
 
         /**
          * Creates the Stock Locations tab in WC Product.
@@ -56,7 +63,7 @@ if(!trait_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function tab_content_stock_locations_wc_product($array): void // Populate the stock locations tab with data
+        public function tab_content_stock_locations_wc_product($array)
         {
             // Get the product ID
             $product_id = get_the_ID();
@@ -208,7 +215,7 @@ if(!trait_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return int|void
          */
-        public function save_tab_data_stock_locations_wc_product_save($post_id, $post, $update) // Save the custom tab data with product
+        public function save_tab_data_stock_locations_wc_product_save($post_id, $post, $update)
         {
 
             if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
@@ -273,8 +280,12 @@ if(!trait_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function update_product_meta($id, $product_stock_location_terms, $terms_total): void
+        public function update_product_meta($id, $product_stock_location_terms, $terms_total)
         {
+			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
+			if( ! $manage_stock ) {
+				return;
+			}
 
             // Grab stock amount from all terms
             $product_terms_stock = array();
