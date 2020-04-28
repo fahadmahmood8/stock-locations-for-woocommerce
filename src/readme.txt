@@ -8,11 +8,15 @@ Stable tag: __STABLE_TAG__
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin will help you manage WooCommerce Products stocks throw locations and also different traditional barcodes.
+This plugin will help you manage WooCommerce Products stocks through locations and also different traditional barcodes.
 
 
 == Description ==
 Stock Locations for WooCommerce will help you manage your products stock across multiple locations easily. If you have multiple physical stores or storage locations, like warehouses, this plugin may help you.
+
+You can print the locations inside a product page on the frontend, with this shortcode:
+
+* [slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]
 
 SLW also adds standardized barcode fields to WooCommerce products, for you to use.
 
@@ -87,6 +91,10 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 
 
 == Changelog ==
+
+= 1.1.1 =
+- New filter 'slw_shortcode_product_location_name'
+- New shortcode 'slw_product_locations'
 
 = 1.1.0 =
 - New column in product listing with stock locations imventory
