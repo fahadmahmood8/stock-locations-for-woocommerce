@@ -102,19 +102,34 @@ if(!class_exists('SlwProductListing')) {
             // Grab the correct column
             if( $column_name  == 'stock_at_locations' ) {
 
-                // Get location terms
-                $locations = get_the_terms( get_the_ID(), SlwProductTaxonomy::get_Tax_Names('singular') );
+                $product = wc_get_product( get_the_ID() );
+                
+                if( !empty($product) ) {
 
-                // Check if product has location terms assigned
-                if( $locations ) {
+                    // Check for variations
+                    $variations_products = array();
+                    if( !empty($product) && $product->is_type( 'variable' ) ) {
+                        $available_variations = $product->get_available_variations();
+                        foreach ($available_variations as $variation) { 
+                            $variations_products[] = wc_get_product( $variation['variation_id'] );
+                        }
+                    }
 
-                    // Iterate over terms
-                    foreach($locations as $location) {
-                        // If out of stock
-                        if( get_post_meta( get_the_ID(), '_stock_at_' . $location->term_id, true ) <= 0 ) {
-                            echo '<mark class="outofstock">' . $location->name . '</mark> (' . get_post_meta( get_the_ID(), '_stock_at_' . $location->term_id, true ) . ')<br>';
-                        } else { // If in stock
-                            echo '<mark class="instock">' . $location->name . '</mark> (' . get_post_meta( get_the_ID(), '_stock_at_' . $location->term_id, true ) . ')<br>';
+                    // Get locations from parent product
+                    $locations = wp_get_post_terms( $product->get_id(), SlwProductTaxonomy::get_Tax_Names('singular') );
+
+                    // Print data
+                    if( $product->is_type( 'simple' ) ) {
+                        $this->output_product_locations_for_column($product->get_id(), $locations);
+                    } elseif( $product->is_type( 'variable' ) ) {
+                        $this->output_product_locations_for_column($product->get_id(), $locations);
+                        if( !empty($variations_products) ) {
+                            foreach( $variations_products as $variation_product ) {
+                                foreach( $attributes = $variation_product->get_variation_attributes() as $attribute ) {
+                                    echo '<label># '.ucfirst($attribute).' #</label><br>';
+                                }
+                                $this->output_product_locations_for_column($variation_product->get_id(), $locations);
+                            }
                         }
                     }
 
@@ -122,6 +137,26 @@ if(!class_exists('SlwProductListing')) {
 
             }
 
+        }
+
+        /**
+         * Output locations for simple and variable products for column.
+         *
+         * @since 1.1.2
+         * @return void
+         */
+        private function output_product_locations_for_column($product_id, $locations)
+        {
+            if( !empty($locations) ) {
+                foreach($locations as $location) {
+                    // If out of stock
+                    if( get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) <= 0 ) {
+                        echo '<mark class="outofstock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')<br>';
+                    } else { // If in stock
+                        echo '<mark class="instock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')<br>';
+                    }
+                }
+            }
         }
 
     }

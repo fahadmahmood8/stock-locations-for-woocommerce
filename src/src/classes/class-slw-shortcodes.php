@@ -87,7 +87,7 @@ if(!class_exists('SlwShortcodes')) {
          * Displays the product locations.
          *
          * @since 1.1.1
-         * @return array
+         * @return string
          */
 		public function display_product_locations($atts)
 		{
@@ -126,8 +126,8 @@ if(!class_exists('SlwShortcodes')) {
         /**
          * Displays the product variation locations.
          *
-         * @since 1.1.1
-         * @return array
+         * @since 1.1.2
+         * @return string
          */
 		public function display_product_variations_locations($atts)
 		{
@@ -181,8 +181,8 @@ if(!class_exists('SlwShortcodes')) {
         /**
          * Output locations for simple and variable products shortcodes.
          *
-         * @since 1.1.1
-         * @return array
+         * @since 1.1.2
+         * @return string
          */
         private function output_product_locations_for_shortcode($product, $locations, $values)
         {
