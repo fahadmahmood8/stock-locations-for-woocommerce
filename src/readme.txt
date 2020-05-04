@@ -93,6 +93,9 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 
 == Changelog ==
 
+= 1.1.3 =
+- Remove flush rewrite rules, should be avoided for now
+
 = 1.1.2 =
 - Add variations stock levels to products listing column
 - New shortcode 'slw_product_variations_locations'
