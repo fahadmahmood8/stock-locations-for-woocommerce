@@ -74,7 +74,7 @@ if(!class_exists('SlwMain')) {
          * @since 1.0.0
          * @return void
          */
-        public function init(): void
+        public function init()
         {
             // Action to load textdomain
             add_action( 'init', array($this, 'load_textdomain') );
@@ -87,20 +87,7 @@ if(!class_exists('SlwMain')) {
 
             // Display admin notices
 			add_action( 'admin_notices', [new SLW\SRC\Classes\SlwAdminNotice(), 'displayAdminNotice'] );
-
-			// Flush rewrite rules
-            add_action( 'shutdown', array($this, 'flush_rewrite_rules'), 9999 );
 		}
-
-		/**
-         * Flush rewrite rules.
-         *
-         * @since 1.1.0
-         */
-        public function flush_rewrite_rules()
-        {
-            flush_rewrite_rules();
-        }
 
         /**
          * Adds scripts and styles.
@@ -108,7 +95,7 @@ if(!class_exists('SlwMain')) {
          * @since 1.0.0
          * @return void
          */
-        public function enqueue(): void
+        public function enqueue()
         {
             wp_enqueue_style('admin-style', $this->plugin_dir_url . 'admin/css/style.css', null, '1.0');
             wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', null, '5.11.2');
@@ -130,7 +117,7 @@ if(!class_exists('SlwMain')) {
          * @since 1.0.0
          * @return void
          */
-        public function load_textdomain(): void
+        public function load_textdomain()
         {
             load_plugin_textdomain( 'stock-locations-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
         }
