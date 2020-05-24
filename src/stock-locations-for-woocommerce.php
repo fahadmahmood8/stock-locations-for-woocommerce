@@ -49,6 +49,7 @@ if(!class_exists('SlwMain')) {
 			new SLW\SRC\Classes\SlwOrderItem;
 			new SLW\SRC\Classes\SlwShortcodes;
 			new SLW\SRC\Classes\SlwProductListing;
+            new SLW\SRC\Classes\SlwProductRest;
         }
 
         /**
