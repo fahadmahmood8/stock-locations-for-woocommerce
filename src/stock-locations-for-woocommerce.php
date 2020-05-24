@@ -98,7 +98,7 @@ if(!class_exists('SlwMain')) {
          */
         public function enqueue()
         {
-            wp_enqueue_style('admin-style', $this->plugin_dir_url . 'admin/css/style.css', null, '1.0');
+            wp_enqueue_style('admin-style', $this->plugin_dir_url . 'admin/css/style.css', null, '1.1');
             wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', null, '5.11.2');
 
             // Register the script
