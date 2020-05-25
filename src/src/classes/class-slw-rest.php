@@ -44,19 +44,39 @@ if(!class_exists('SlwProductRest')) {
         {
             $post_id = is_callable(array($post, 'get_id')) ? $post->get_id() : (!empty($post->ID) ? $post->ID : null);
 
-            if (empty($response->data[SlwProductTaxonomy::get_tax_names('plural')])) {
+            // Simple or parent if variable
+            if (empty($response->data[SlwProductTaxonomy::$tax_plural_name])) {
                 $terms = array();
-
-                foreach (wp_get_post_terms($post_id, SlwProductTaxonomy::get_tax_names('singular')) as $term) {
+                foreach (wp_get_post_terms($post_id, SlwProductTaxonomy::$tax_singular_name) as $term) {
                     $terms[] = array(
-                        'id'   => $term->term_id,
-                        'name' => $term->name,
-                        'slug' => $term->slug,
-                        'quantity' => get_post_meta($post_id, '_stock_at_' . $term->term_id, true)
+                        'id'        => $term->term_id,
+                        'name'      => $term->name,
+                        'slug'      => $term->slug,
+                        'quantity'  => get_post_meta($post_id, '_stock_at_' . $term->term_id, true)
                     );
                 }
 
-                $response->data[SlwProductTaxonomy::get_tax_names('plural')] = $terms;
+                $response->data[SlwProductTaxonomy::$tax_plural_name] = $terms;
+            }
+            
+            // Variations
+            if( $post->get_type() == 'variable' && empty($response->data[SlwProductTaxonomy::$tax_plural_name.'-variations']) ) {
+                $variations = $post->get_children();
+                if( !empty($variations) ) {
+                    foreach( $variations as $variation_id ) {
+                        $terms = array();
+                        foreach (wp_get_post_terms($post_id, SlwProductTaxonomy::$tax_singular_name) as $term) {
+                            $terms[] = array(
+                                'id'        => $term->term_id,
+                                'name'      => $term->name,
+                                'slug'      => $term->slug,
+                                'quantity'  => get_post_meta($variation_id, '_stock_at_' . $term->term_id, true)
+                            );
+                        }
+
+                        $response->data[SlwProductTaxonomy::$tax_plural_name.'-variations'][$variation_id] = $terms;
+                    }
+                }
             }
 
             return $response;
@@ -69,12 +89,12 @@ if(!class_exists('SlwProductRest')) {
         public function insert_product($post, $request)
         {
             // There is nothing to do
-            if (!isset($request[SlwProductTaxonomy::get_tax_names('plural')])) {
+            if (!isset($request[SlwProductTaxonomy::$tax_plural_name])) {
                 return;
             }
 
             // location data
-            $locations = $request[SlwProductTaxonomy::get_tax_names('plural')];
+            $locations = $request[SlwProductTaxonomy::$tax_plural_name];
 
             // Data is not valid or empty, nothing to do
             if (!is_array($locations) || !sizeof($locations)) {
@@ -83,7 +103,7 @@ if(!class_exists('SlwProductRest')) {
 
             $stockLocationTermIds = array();
             foreach ($locations as $location) {
-                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::get_tax_names('singular'))->term_id;
+                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::$tax_plural_name)->term_id;
                 $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
 
                 // It is possible to provide a null quantity to delete product from location
@@ -102,7 +122,7 @@ if(!class_exists('SlwProductRest')) {
             }
 
             // Set terms
-            wp_set_object_terms($post->id, $stockLocationTermIds, SlwProductTaxonomy::get_tax_names('singular'));
+            wp_set_object_terms($post->id, $stockLocationTermIds, SlwProductTaxonomy::$tax_plural_name);
         }
 
     }
