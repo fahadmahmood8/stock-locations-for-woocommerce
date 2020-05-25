@@ -94,7 +94,7 @@ if(!class_exists('SlwStockLocationsTab')) {
             if($product_stock_location_terms) {
 
                 echo '<div id="' . $this->tab_stock_locations . '_wrapper" style="display:none;">';
-                echo '<div id="' . $this->tab_stock_locations . '_title"><h4>' . $product->get_title() . '</h4></div>';
+                echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$product->get_id().' ('. $product->get_title() . ')</h4></div>';
 
                 // Loop throw terms
                 foreach($product_stock_location_terms as $term) {
@@ -148,7 +148,7 @@ if(!class_exists('SlwStockLocationsTab')) {
                             echo '<div id="' . $this->tab_stock_locations . '_wrapper_variations" style="display:none;">';
                         }
 
-                        echo '<div id="' . $this->tab_stock_locations . '_title"><h4>' . ucfirst($variation_attributes) . '</h4></div>';
+                        echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$variation_id.' ('. ucfirst($variation_attributes) . ')</h4></div>';
 
                         // Loop throw terms
                         foreach($product_stock_location_terms as $term) {

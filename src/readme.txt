@@ -16,8 +16,8 @@ Stock Locations for WooCommerce will help you manage your products stock across 
 
 You can print the locations inside a product page on the frontend, with this shortcodes:
 
-* [slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]
-* [slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]
+`[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
+`[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
 
 SLW also adds standardized barcode fields to WooCommerce products, for you to use.
 
@@ -30,10 +30,10 @@ Barcodes available:
 
 You can call the barcodes inside a product page on the frontend, with this shortcodes:
 
-* [slw_barcode type="upc"]
-* [slw_barcode type="ean"]
-* [slw_barcode type="isbn"]
-* [slw_barcode type="asin"]
+`[slw_barcode type="upc"]`
+`[slw_barcode type="ean"]`
+`[slw_barcode type="isbn"]`
+`[slw_barcode type="asin"]`
 
 This plugin requires at least *WooCommerce 3.4*.
 
@@ -44,6 +44,7 @@ This plugin requires at least *WooCommerce 3.4*.
 - Works on both, simple and variable products
 - Easy management of stock with multiple locations, both in product and orders
 - Standardized barcodes
+- Get and update product stock locations from the REST API
 
 
 = Compatibility =
@@ -57,12 +58,14 @@ This plugin requires at least *WooCommerce 3.4*.
 2. Check if you have WooCommerce 3.4+ plugin activated
 3. Activate SLW plugin through the "Plugins" menu in WordPress.
 
-Simple Products:
+**Simple Products**
+
 1. Assign Stock Locations to the product > Update Post
 2. Under Inventory Tab > Activate Manage Stock
 3. Under Stock Locations Tab > Manage the stock for the locations
 
-Variable Products:
+**Variable Products**
+
 1. Assign Stock Locations to the product > Update Post
 2. Under Inventory Tab > Deativate Manage Stock
 3. Under Attributes Tab > Create attributes
@@ -70,7 +73,8 @@ Variable Products:
 5. In each variation > Activate Manage Stock & Add Price > Update Post
 6. Under Stock Locations Tab > Manage the stock for the locations for each variation
 
-Barcodes:
+**Barcodes**
+
 1. Under Product > Barcodes Tab > Fill the barcodes
 
 
@@ -92,6 +96,10 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 
 
 == Changelog ==
+
+= 1.1.4 =
+- Improved stock locations levels products listing
+- Locations added to REST API products and variations endpoints for GET and PUT requests, thanks to @shanerutter
 
 = 1.1.3 =
 - Remove flush rewrite rules, should be avoided for now

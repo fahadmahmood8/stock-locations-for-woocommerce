@@ -120,13 +120,15 @@ if(!class_exists('SlwProductListing')) {
 
                     // Print data
                     if( $product->is_type( 'simple' ) ) {
+                        echo '<label>#'.$product->get_id().':</label><br>';
                         $this->output_product_locations_for_column($product->get_id(), $locations);
                     } elseif( $product->is_type( 'variable' ) ) {
+                        echo '<label>#'.$product->get_id().':</label><br>';
                         $this->output_product_locations_for_column($product->get_id(), $locations);
                         if( !empty($variations_products) ) {
                             foreach( $variations_products as $variation_product ) {
                                 foreach( $attributes = $variation_product->get_variation_attributes() as $attribute ) {
-                                    echo '<label># '.ucfirst($attribute).' #</label><br>';
+                                    echo '<label>#'.$variation_product->get_id().' ('.ucfirst($attribute).'):</label><br>';
                                 }
                                 $this->output_product_locations_for_column($variation_product->get_id(), $locations);
                             }
@@ -151,9 +153,9 @@ if(!class_exists('SlwProductListing')) {
                 foreach($locations as $location) {
                     // If out of stock
                     if( get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) <= 0 ) {
-                        echo '<mark class="outofstock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')<br>';
+                        echo '<span style="margin-left: 10px;"><mark class="outofstock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')</span><br>';
                     } else { // If in stock
-                        echo '<mark class="instock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')<br>';
+                        echo '<span style="margin-left: 10px;"><mark class="instock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')</span><br>';
                     }
                 }
             }

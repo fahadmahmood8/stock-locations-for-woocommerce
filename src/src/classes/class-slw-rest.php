@@ -2,7 +2,7 @@
 /**
  * SLW Product Rest Class
  *
- * @since 1.0.0
+ * @since 1.1.4
  */
 
 namespace SLW\SRC\Classes;
@@ -10,7 +10,7 @@ namespace SLW\SRC\Classes;
 /**
  * If this file is called directly, abort.
  *
- * @since 1.0.0
+ * @since 1.1.4
  */
 if ( !defined( 'WPINC' ) ) {
     die;
@@ -24,7 +24,7 @@ if(!class_exists('SlwProductRest')) {
         /**
          * Construct.
          *
-         * @since 1.1.0
+         * @since 1.1.4
          */
         public function __construct()
         {
@@ -33,6 +33,8 @@ if(!class_exists('SlwProductRest')) {
 
         /**
          * Create REST field
+         * 
+         * @since 1.1.4
          */
         public function rest_api_init()
         {
@@ -50,8 +52,11 @@ if(!class_exists('SlwProductRest')) {
         }
 
         /**
+         * Get product callback
+         * 
+         * @since 1.1.4
+         * 
          * @param $post
-         *
          * @return mixed
          */
         public function product_get_callback($post, $attr, $request, $object_type)
@@ -63,12 +68,12 @@ if(!class_exists('SlwProductRest')) {
             $parentPostId = ($object_type === 'product_variation') ? wp_get_post_parent_id($post['id']) : $post['id'];
 
             // Get terms
-            foreach (wp_get_post_terms($parentPostId, SlwProductTaxonomy::get_tax_names('singular')) as $term) {
+            foreach (wp_get_post_terms($parentPostId, SlwProductTaxonomy::$tax_singular_name) as $term) {
                 $terms[] = array(
-                    'id'   => $term->term_id,
-                    'name' => $term->name,
-                    'slug' => $term->slug,
-                    'quantity' => get_post_meta($post['id'], '_stock_at_' . $term->term_id, true)
+                    'id'        => $term->term_id,
+                    'name'      => $term->name,
+                    'slug'      => $term->slug,
+                    'quantity'  => get_post_meta($post['id'], '_stock_at_' . $term->term_id, true)
                 );
             }
 
@@ -76,6 +81,10 @@ if(!class_exists('SlwProductRest')) {
         }
 
         /**
+         * Update product callback
+         * 
+         * @since 1.1.4
+         * 
          * @param $post
          * @param $request
          */
