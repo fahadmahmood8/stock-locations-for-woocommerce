@@ -36,15 +36,13 @@ if(!class_exists('SlwProductRest')) {
          */
         public function rest_api_init()
         {
-            // register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
-            register_rest_field('product', 'locations', array(
+            register_rest_field('product', SlwProductTaxonomy::$tax_plural_name, array(
                 'get_callback'    => array($this, 'product_get_callback'),
                 'update_callback' => array($this, 'product_update_callback'),
                 'schema' => null,
             ));
 
-            // register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
-            register_rest_field('product_variation', 'locations', array(
+            register_rest_field('product_variation', SlwProductTaxonomy::$tax_plural_name, array(
                 'get_callback'    => array($this, 'product_get_callback'),
                 'update_callback' => array($this, 'product_update_callback'),
                 'schema' => null,
@@ -99,7 +97,7 @@ if(!class_exists('SlwProductRest')) {
             $stockLocationTermIds = array();
 
             foreach ($values as $location) {
-                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::$tax_plural_name)->term_id;
+                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::$tax_singular_name)->term_id;
                 $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
 
                 // It is possible to provide a null quantity to delete product from location
@@ -116,7 +114,7 @@ if(!class_exists('SlwProductRest')) {
             }
 
             // Set terms
-            wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwProductTaxonomy::$tax_plural_name);
+            wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwProductTaxonomy::$tax_singular_name);
         }
 
     }
