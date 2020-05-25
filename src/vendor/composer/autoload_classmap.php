@@ -10,6 +10,7 @@ return array(
     'SLW\\SRC\\Classes\\SlwBarcodesTab' => $baseDir . '/src/classes/class-slw-barcodes-tab.php',
     'SLW\\SRC\\Classes\\SlwOrderItem' => $baseDir . '/src/classes/class-slw-order-item.php',
     'SLW\\SRC\\Classes\\SlwProductListing' => $baseDir . '/src/classes/class-slw-product-listing.php',
+    'SLW\\SRC\\Classes\\SlwProductRest' => $baseDir . '/src/classes/class-slw-rest.php',
     'SLW\\SRC\\Classes\\SlwProductTaxonomy' => $baseDir . '/src/classes/class-slw-product-taxonomy.php',
     'SLW\\SRC\\Classes\\SlwShortcodes' => $baseDir . '/src/classes/class-slw-shortcodes.php',
     'SLW\\SRC\\Classes\\SlwStockLocationsTab' => $baseDir . '/src/classes/class-slw-stock-locations-tab.php',

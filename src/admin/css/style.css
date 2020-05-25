@@ -25,3 +25,6 @@
     font-weight: 900;
     margin-right: 6px;
 }
+table thead tr #stock_at_locations {
+    width: 17ch;
+}
