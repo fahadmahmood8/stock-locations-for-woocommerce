@@ -28,7 +28,7 @@ if(!class_exists('SlwProductRest')) {
          */
         public function __construct()
         {
-            add_action('rest_api_init', array($this, rest_api_init));
+            add_action('rest_api_init', array($this, 'rest_api_init'));
         }
 
         /**
@@ -97,8 +97,9 @@ if(!class_exists('SlwProductRest')) {
             $parentPostId = ($object_type === 'product_variation') ? $post->parent_id : $postId;
 
             $stockLocationTermIds = array();
+
             foreach ($values as $location) {
-                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::get_tax_names('singular'))->term_id;
+                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::$tax_plural_name)->term_id;
                 $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
 
                 // It is possible to provide a null quantity to delete product from location
@@ -115,7 +116,7 @@ if(!class_exists('SlwProductRest')) {
             }
 
             // Set terms
-            wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwProductTaxonomy::get_tax_names('singular')); wc_delete_product_transients($post->id);
+            wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwProductTaxonomy::$tax_plural_name);
         }
 
     }
