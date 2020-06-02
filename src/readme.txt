@@ -97,6 +97,9 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 
 == Changelog ==
 
+= 1.1.5 =
+- Fixes bug on shortcodes method
+
 = 1.1.4 =
 - Improved stock locations levels products listing
 - Locations added to REST API products and variations endpoints for GET and PUT requests, thanks to @shanerutter
