@@ -196,7 +196,7 @@ if(!class_exists('SlwShortcodes')) {
                 }
 
                 // Process the other 3 parameters
-                $output .= '<ul class="slw-product-locations-list">';
+                $output = '<ul class="slw-product-locations-list">';
                 foreach( $locations as $location ) {
                     if( $values['show_qty'] == 'yes' ) {
                         $location_stock = $product->get_meta('_stock_at_'.$location->term_id);
