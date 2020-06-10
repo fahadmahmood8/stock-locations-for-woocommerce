@@ -31,6 +31,9 @@ if(!class_exists('SlwProductTaxonomy')) {
 		public function __construct()
 		{
 			add_action( 'init', array($this, 'create_taxonomy'), 1 );
+            add_action('location_edit_form', array($this, 'hideFields'));
+            add_action('location_add_form', array($this, 'hideFields'));
+            add_filter('manage_edit-location_columns', array($this, 'editColumns'));
 		}
 
         /**
@@ -94,6 +97,29 @@ if(!class_exists('SlwProductTaxonomy')) {
             register_taxonomy( $this->get_tax_names('singular'), 'product', $args );
             register_taxonomy_for_object_type( $this->get_tax_names('singular'), 'product' );
 
+        }
+
+        /**
+         * Hide unused fields from admin
+         */
+        public function hideFields()
+        {
+            echo '<style>.term-description-wrap, .term-parent-wrap { display:none; } </style>';
+        }
+
+        /**
+         * Change columns displayed in table
+         *
+         * @param $columns
+         *
+         * @return mixed
+         */
+        public function editColumns($columns) {
+            if(isset($columns['description'])) {
+                unset($columns['description']);
+            }
+
+            return $columns;
         }
 
     }
