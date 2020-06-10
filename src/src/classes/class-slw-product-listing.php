@@ -178,10 +178,10 @@ if(!class_exists('SlwProductListing')) {
             $locations = array();
 
             // Get Terms
-            $terms = get_terms([
+            $terms = get_terms(array(
                 'taxonomy' => SlwProductTaxonomy::$tax_singular_name,
                 'hide_empty' => false,
-            ]);
+            ));
 
             foreach ($terms as $term) {
                 $slw_default_location = get_term_meta($term->term_id, 'slw_default_location', true);
