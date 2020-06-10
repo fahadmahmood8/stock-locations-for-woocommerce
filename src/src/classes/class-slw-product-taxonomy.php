@@ -34,7 +34,11 @@ if(!class_exists('SlwProductTaxonomy')) {
             add_action('location_edit_form', array($this, 'hideFields'));
             add_action('location_add_form', array($this, 'hideFields'));
             add_filter('manage_edit-location_columns', array($this, 'editColumns'));
-		}
+            add_action('location_edit_form', array($this, 'formFields'), 100, 2);
+            add_action('location_add_form_fields', array($this, 'formFields'), 10, 2);
+            add_action('edited_location', array($this, 'formSave'), 10, 2);
+            add_action('created_location', array($this, 'formSave'), 10, 2);
+        }
 
         /**
          * Returns the taxonomy default names.
@@ -120,6 +124,47 @@ if(!class_exists('SlwProductTaxonomy')) {
             }
 
             return $columns;
+        }
+
+        /**
+         * Form fields
+         *
+         * @param $tag
+         */
+        public function formFields($tag) {
+            // Defaults
+            $view = 'taxonomy-fields-new';
+            $primary_location = 0;
+            $auto_order_allocate = 0;
+            $auto_order_allocate_priority = 0;
+
+            // Is edit screen
+            if (is_object($tag)) {
+                $view = 'taxonomy-fields-edit';
+                $primary_location = get_term_meta($tag->term_id, 'slw_primary_location', true);
+                $auto_order_allocate = get_term_meta($tag->term_id, 'slw_auto_order_allocate', true);
+                $auto_order_allocate_priority = get_term_meta($tag->term_id, 'slw_auto_order_allocate_priority', true);
+            }
+
+            // Echo view
+            echo view($view, [
+                'primary_location' => $primary_location,
+                'auto_order_allocate' => $auto_order_allocate,
+                'auto_order_allocate_priority' => $auto_order_allocate_priority
+            ]);
+        }
+
+        /**
+         * Save term meta
+         *
+         * @param $term_id
+         */
+        public function formSave($term_id) {
+            if ($_POST && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate_priority'])) {
+                update_term_meta($term_id, 'slw_primary_location', $_POST['primary_location']);
+                update_term_meta($term_id, 'slw_auto_order_allocate', $_POST['auto_order_allocate']);
+                update_term_meta($term_id, 'slw_auto_order_allocate_priority', $_POST['auto_order_allocate_priority']);
+            }
         }
 
     }

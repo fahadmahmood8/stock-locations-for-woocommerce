@@ -29,6 +29,7 @@ if(!class_exists('SlwMain')) {
     class SlwMain
     {
         private $plugin_dir_url;
+        private $plugin_dir;
 		protected static $instance = null;
 
         /**
@@ -39,6 +40,7 @@ if(!class_exists('SlwMain')) {
         {
             // Save plugin dir url to property
             $this->plugin_dir_url = plugin_dir_url(__FILE__);
+            $this->plugin_dir = realpath(plugin_dir_path(__FILE__));
 
 			$this->init();
 
@@ -98,11 +100,11 @@ if(!class_exists('SlwMain')) {
          */
         public function enqueue()
         {
-            wp_enqueue_style('admin-style', $this->plugin_dir_url . 'admin/css/style.css', null, '1.1');
+            wp_enqueue_style('admin-style', $this->pluginDirUrl() . 'admin/css/style.css', null, '1.1');
             wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', null, '5.11.2');
 
             // Register the script
-            wp_register_script( 'scripts', $this->plugin_dir_url . 'admin/js/scripts.js', null, '1.0', true );
+            wp_register_script( 'scripts', $this->pluginDirUrl() . 'admin/js/scripts.js', null, '1.0', true );
             // Localize the script passing the plugin slug constant
             $params = array(
                 'slug' => SLW_PLUGIN_SLUG
@@ -121,6 +123,26 @@ if(!class_exists('SlwMain')) {
         public function load_textdomain()
         {
             load_plugin_textdomain( 'stock-locations-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+        }
+
+        /**
+         * Plugin Url directory
+         *
+         * @return mixed
+         */
+        public function pluginDirUrl()
+        {
+            return $this->plugin_dir_url;
+        }
+
+        /**
+         * Plugin directory
+         *
+         * @return mixed
+         */
+        public function pluginDir()
+        {
+            return $this->plugin_dir;
         }
 
     }
@@ -168,3 +190,14 @@ function initiate_slw_plugin()
 
 
 }
+
+/**
+ * Return SlwMain instance
+ *
+ * @return object|SlwMain
+ */
+function Slw()
+{
+    return SlwMain::instance();
+}
+
