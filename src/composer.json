@@ -5,6 +5,9 @@
       "psr-4": {
           "SLW\\SRC\\": "src/"
       },
-      "classmap": ["src/"]
+      "classmap": ["src/"],
+      "files": [
+        "src/helpers/view.php"
+      ]
     }
 }
