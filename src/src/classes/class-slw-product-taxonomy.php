@@ -134,6 +134,7 @@ if(!class_exists('SlwProductTaxonomy')) {
         public function formFields($tag) {
             // Defaults
             $view = 'taxonomy-fields-new';
+            $default_location = 0;
             $primary_location = 0;
             $auto_order_allocate = 0;
             $auto_order_allocate_priority = 0;
@@ -141,6 +142,7 @@ if(!class_exists('SlwProductTaxonomy')) {
             // Is edit screen
             if (is_object($tag)) {
                 $view = 'taxonomy-fields-edit';
+                $default_location = get_term_meta($tag->term_id, 'slw_default_location', true);
                 $primary_location = get_term_meta($tag->term_id, 'slw_primary_location', true);
                 $auto_order_allocate = get_term_meta($tag->term_id, 'slw_auto_order_allocate', true);
                 $auto_order_allocate_priority = get_term_meta($tag->term_id, 'slw_auto_order_allocate_priority', true);
@@ -148,6 +150,7 @@ if(!class_exists('SlwProductTaxonomy')) {
 
             // Echo view
             echo view($view, [
+                'default_location' => $default_location,
                 'primary_location' => $primary_location,
                 'auto_order_allocate' => $auto_order_allocate,
                 'auto_order_allocate_priority' => $auto_order_allocate_priority
@@ -161,6 +164,7 @@ if(!class_exists('SlwProductTaxonomy')) {
          */
         public function formSave($term_id) {
             if ($_POST && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate_priority'])) {
+                update_term_meta($term_id, 'slw_default_location', $_POST['default_location']);
                 update_term_meta($term_id, 'slw_primary_location', $_POST['primary_location']);
                 update_term_meta($term_id, 'slw_auto_order_allocate', $_POST['auto_order_allocate']);
                 update_term_meta($term_id, 'slw_auto_order_allocate_priority', $_POST['auto_order_allocate_priority']);

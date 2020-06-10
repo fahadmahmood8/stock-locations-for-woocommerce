@@ -1,6 +1,16 @@
 <table class="form-table" role="presentation">
     <tbody>
         <tr class="form-field form-required term-name-wrap">
+            <th scope="row"><label><?php echo __('Default for New Products', 'stock-locations-for-woocommerce'); ?></label></th>
+            <td>
+                <select name="default_location">
+                    <option value="0" <?php echo ($default_location == 0) ? 'selected="selected"' : ''; ?>>No</option>
+                    <option value="1" <?php echo ($default_location == 1) ? 'selected="selected"' : ''; ?>>Yes</option>
+                </select>
+                <p class="description"><?php echo __('Should location be selected by default for new products?', 'stock-locations-for-woocommerce'); ?></p>
+            </td>
+        </tr>
+        <tr class="form-field form-required term-name-wrap">
             <th scope="row"><label><?php echo __('Primary Location', 'stock-locations-for-woocommerce'); ?></label></th>
             <td>
                 <select name="primary_location">

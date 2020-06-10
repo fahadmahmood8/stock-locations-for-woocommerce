@@ -1,4 +1,13 @@
 <div class="form-field term-slug-wrap">
+    <label for="tag-slug"><?php echo __('Default for New Products', 'stock-locations-for-woocommerce'); ?></label>
+    <select name="default_location">
+        <option value="0" <?php echo ($default_location == 0) ? 'selected="selected"' : ''; ?>>No</option>
+        <option value="1" <?php echo ($default_location == 1) ? 'selected="selected"' : ''; ?>>Yes</option>
+    </select>
+    <p><?php echo __('Should location be selected by default for new products?', 'stock-locations-for-woocommerce'); ?></p>
+</div>
+
+<div class="form-field term-slug-wrap">
     <label for="tag-slug"><?php echo __('Primary Location', 'stock-locations-for-woocommerce'); ?></label>
     <select name="primary_location">
         <option value="0" <?php echo ($primary_location == 0) ? 'selected="selected"' : ''; ?>>No</option>
