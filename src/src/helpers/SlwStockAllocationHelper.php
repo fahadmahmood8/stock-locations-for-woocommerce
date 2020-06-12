@@ -19,7 +19,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array
          */
-        static public function getStockAllocation($productId, $qtyToAllocation)
+        public static function getStockAllocation($productId, $qtyToAllocation)
         {
             $response = array();
 
@@ -77,7 +77,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return bool
          */
-        static public function isManagedStock($productId)
+        public static function isManagedStock($productId)
         {
             $product = wc_get_product($productId);
 
@@ -99,7 +99,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return false|\WP_Error|\WP_Term[]
          */
-        static public function getProductStockLocations($productId, $needMetaData = true, $filterByLocation = null)
+        public static function getProductStockLocations($productId, $needMetaData = true, $filterByLocation = null)
         {
             // Get correct top level product
             // The one the stock locations are actually allocated to
@@ -147,7 +147,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array|mixed
          */
-        static public function getLocationMeta($locationId)
+        public static function getLocationMeta($locationId)
         {
             // Get all terms
             $termMeta = get_term_meta($locationId);
@@ -167,7 +167,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array
          */
-        static public function sortLocationsByPriority($locations)
+        public static function sortLocationsByPriority($locations)
         {
             // Not an array of empty
             if (!is_array($locations) || !sizeof($locations)) {
@@ -200,7 +200,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return bool|\WP_Term
          */
-        static public function getBackOrderLocation()
+        public static function getBackOrderLocation()
         {
             $terms = get_terms(array(
                 'taxonomy'      =>  SlwProductTaxonomy::$tax_singular_name,
@@ -223,7 +223,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array
          */
-        static public function getProductAvailableStockLocations($productId, $needMetaData = true)
+        public static function getProductAvailableStockLocations($productId, $needMetaData = true)
         {
             $return = array();
 
