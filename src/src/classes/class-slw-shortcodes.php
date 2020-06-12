@@ -35,6 +35,7 @@ if(!class_exists('SlwShortcodes')) {
             add_shortcode('slw_product_locations', array($this, 'display_product_locations'));
             add_shortcode('slw_product_variations_locations', array($this, 'display_product_variations_locations'));
             add_shortcode('slw_product_message', array($this, 'display_product_message'));
+            add_shortcode('slw_cart_message', array($this, 'display_cart_message'));
 		}
 
         /**
@@ -230,6 +231,9 @@ if(!class_exists('SlwShortcodes')) {
         /**
          * Displays the product locations
          *
+         * @param $atts
+         * @param string $innerHtml
+         *
          * @return string
          */
         public function display_product_message($atts, $innerHtml = '')
@@ -242,7 +246,8 @@ if(!class_exists('SlwShortcodes')) {
 
             // Default values
             $values = shortcode_atts(array(
-                'has_qty' => 'yes',
+                'is_available' => 'yes',
+                'only_location_available' => 'no',
                 'location' => '',
             ), $atts);
 
@@ -250,30 +255,45 @@ if(!class_exists('SlwShortcodes')) {
                 return;
             }
 
-            // Vars
-            $locationStock = 0;
-
             // Data
-            $isAvailable = $values['has_qty'];
+            $isAvailable = $values['is_available'];
+            $onlyLocationAvailable = $values['only_location_available'];
             $location = $values['location'];
 
+            // Do nothing
             if ($location === '') {
-                $locations = wp_get_post_terms($product->get_id(), SlwProductTaxonomy::$tax_singular_name);
+                return '';
+            }
 
-                foreach ($locations as $loc) {
-                    // Does location have stock?
-                    $locationStock = $product->get_meta('_stock_at_' . $loc->term_id, true);
+            // Vars
+            $locationSlugToTermId = array();
+            $stockedAt = array();
+            $hasAvailableStockMultipleLocations = false;
+            $foundAvailableStock = false;
 
-                    if ($locationStock > 0) {
-                        break;
+            // Get all available locations for product
+            $locations = wp_get_post_terms($product->get_id(), SlwProductTaxonomy::$tax_singular_name);
+            foreach ($locations as $loc) {
+                // Look up vars
+                $locationSlugToTermId[$loc->slug] = $loc->term_id;
+                $stockedAt[$loc->term_id] = $product->get_meta('_stock_at_' . $loc->term_id, true);
+
+                // We have multiple available stocked locations
+                if ($stockedAt[$loc->term_id] > 0) {
+                    if ($foundAvailableStock) {
+                        $hasAvailableStockMultipleLocations = true;
                     }
-                }
-            } else {
-                // Get term via slug
-                $term = get_term_by('slug', $location, SlwProductTaxonomy::$tax_singular_name);
 
-                // Does location have stock?
-                $locationStock = $product->get_meta('_stock_at_' . $term->term_id, true);
+                    $foundAvailableStock = true;
+                }
+            }
+
+            // Get location stock
+            $locationStock = $stockedAt[$locationSlugToTermId[$location]];
+
+            // Multiple available stock
+            if (strtoupper($onlyLocationAvailable) === 'YES' && $hasAvailableStockMultipleLocations) {
+                return '';
             }
 
             // Decide when to show / hide
@@ -283,6 +303,58 @@ if(!class_exists('SlwShortcodes')) {
                 }
             } else {
                 if (is_null($locationStock) || empty($locationStock) || $locationStock <= 0) {
+                    return $innerHtml;
+                }
+            }
+        }
+
+        /**
+         * Displays the product locations
+         *
+         * @param $atts
+         * @param string $innerHtml
+         *
+         * @return string
+         */
+        public function display_cart_message($atts, $innerHtml = '')
+        {
+            global $woocommerce, $post;
+
+            if(!is_cart()) {
+                return '';
+            }
+
+            // Default values
+            $values = shortcode_atts(array(
+                'qty_from_location' => '',
+            ), $atts);
+
+            if(!$values) {
+                return '';
+            }
+
+            // Data
+            $qtyFromLocation = $values['qty_from_location'];
+
+            // Do nothing
+            if ($qtyFromLocation === '') {
+                return '';
+            }
+
+            // Location Term
+            $locTerm = get_term_by('slug', $qtyFromLocation, SlwProductTaxonomy::$tax_singular_name);
+
+            // Location was not found
+            if (is_null($locTerm) || empty($locTerm)) {
+                return '';
+            }
+
+            $items = $woocommerce->cart->get_cart();
+            foreach($items as $item => $values) {
+                $product = wc_get_product($values['data']->get_id());
+                $stock = $product->get_meta('_stock_at_' . $locTerm->term_id, true);
+
+                if ($stock > 0) {
                     return $innerHtml;
                 }
             }
