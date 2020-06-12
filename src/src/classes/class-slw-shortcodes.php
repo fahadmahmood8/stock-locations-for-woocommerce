@@ -34,6 +34,7 @@ if(!class_exists('SlwShortcodes')) {
 			add_shortcode('slw_barcode', array($this, 'display_barcode'));
             add_shortcode('slw_product_locations', array($this, 'display_product_locations'));
             add_shortcode('slw_product_variations_locations', array($this, 'display_product_variations_locations'));
+            add_shortcode('slw_product_message', array($this, 'display_product_message'));
 		}
 
         /**
@@ -224,6 +225,67 @@ if(!class_exists('SlwShortcodes')) {
 
             return $output;
 
+        }
+
+        /**
+         * Displays the product locations
+         *
+         * @return string
+         */
+        public function display_product_message($atts, $innerHtml = '')
+        {
+            global $woocommerce, $product, $post;
+
+            if( ! is_product() ) return;
+
+            if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
+
+            // Default values
+            $values = shortcode_atts(array(
+                'has_qty' => 'yes',
+                'location' => '',
+            ), $atts);
+
+            if( !$values ) {
+                return;
+            }
+
+            // Vars
+            $locationStock = 0;
+
+            // Data
+            $isAvailable = $values['has_qty'];
+            $location = $values['location'];
+
+            if ($location === '') {
+                $locations = wp_get_post_terms($product->get_id(), SlwProductTaxonomy::$tax_singular_name);
+
+                foreach ($locations as $loc) {
+                    // Does location have stock?
+                    $locationStock = $product->get_meta('_stock_at_' . $loc->term_id, true);
+
+                    if ($locationStock > 0) {
+                        break;
+                    }
+                }
+            } else {
+                // Get term via slug
+                $term = get_term_by('slug', $location, SlwProductTaxonomy::$tax_singular_name);
+
+                // Does location have stock?
+                $locationStock = $product->get_meta('_stock_at_' . $term->term_id, true);
+            }
+
+            // Decide when to show / hide
+            if (strtoupper($isAvailable) === 'YES') {
+                if ($locationStock > 0) {
+                    return $innerHtml;
+                }
+            } else {
+                if (is_null($locationStock) || empty($locationStock) || $locationStock <= 0) {
+                    return $innerHtml;
+                }
+            }
         }
 
     }
