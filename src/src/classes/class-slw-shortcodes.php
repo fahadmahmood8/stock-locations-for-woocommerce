@@ -7,7 +7,7 @@
 
 namespace SLW\SRC\Classes;
 
-use WP_Query;
+use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
 /**
  * If this file is called directly, abort.
@@ -34,6 +34,8 @@ if(!class_exists('SlwShortcodes')) {
 			add_shortcode('slw_barcode', array($this, 'display_barcode'));
             add_shortcode('slw_product_locations', array($this, 'display_product_locations'));
             add_shortcode('slw_product_variations_locations', array($this, 'display_product_variations_locations'));
+            add_shortcode('slw_product_message', array($this, 'display_product_message'));
+            add_shortcode('slw_cart_message', array($this, 'display_cart_message'));
 		}
 
         /**
@@ -224,6 +226,127 @@ if(!class_exists('SlwShortcodes')) {
 
             return $output;
 
+        }
+
+        /**
+         * Displays the product locations
+         *
+         * @param $atts
+         * @param string $innerHtml
+         *
+         * @return string
+         */
+        public function display_product_message($atts, $innerHtml = '')
+        {
+            global $woocommerce, $product, $post;
+
+            if( ! is_product() ) return;
+
+            if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
+
+            // Default values
+            $values = shortcode_atts(array(
+                'is_available' => 'yes',
+                'only_location_available' => 'no',
+                'location' => '',
+            ), $atts);
+
+            if( !$values ) {
+                return;
+            }
+
+            // Stock is not managed
+            if (!$product->get_manage_stock()) {
+                return;
+            }
+
+            // Data
+            $isAvailable = $values['is_available'];
+            $onlyLocationAvailable = $values['only_location_available'];
+            $location = $values['location'];
+
+            // Do nothing
+            if ($location === '') {
+                return '';
+            }
+
+            // Get stock location data
+            $stockLocation = SlwStockAllocationHelper::getProductStockLocations($product->get_id(), false, $location);
+
+            // Get available product stock locations
+            $availableStockLocations = SlwStockAllocationHelper::getProductAvailableStockLocations($product->get_id(), false);
+
+            // Multiple available stock
+            if (strtoupper($onlyLocationAvailable) === 'YES' && sizeof($availableStockLocations) > 1) {
+                return '';
+            }
+
+            // Decide when to show / hide
+            if (strtoupper($isAvailable) === 'YES') {
+                if ($stockLocation->quantity > 0) {
+                    return $innerHtml;
+                }
+            } else {
+                if (is_null($stockLocation) || empty($stockLocation) || $stockLocation->quantity <= 0) {
+                    return $innerHtml;
+                }
+            }
+        }
+
+        /**
+         * Displays the product locations
+         *
+         * @param $atts
+         * @param string $innerHtml
+         *
+         * @return string
+         */
+        public function display_cart_message($atts, $innerHtml = '')
+        {
+            global $woocommerce, $post;
+
+            // Default values
+            $values = shortcode_atts(array(
+                'qty_from_location' => '',
+                'only_location_available' => 'no'
+            ), $atts);
+
+            if(!$values) {
+                return '';
+            }
+
+            // Data
+            $qtyFromLocation = $values['qty_from_location'];
+            $onlyLocationAvailable = $values['only_location_available'];
+
+            // Do nothing
+            if ($qtyFromLocation === '') {
+                return '';
+            }
+
+            // Allocated Locations
+            $allocatedLocations = array();
+
+            // Work out what locations stock will be allocated
+            $items = $woocommerce->cart->get_cart();
+            foreach($items as $item => $values) {
+                // Get product stock allocation
+                $stockAllocation = SlwStockAllocationHelper::getStockAllocation($values['data']->get_id(), $values['quantity']);
+
+                foreach ($stockAllocation as $location) {
+                    $allocatedLocations[] = $location->slug;
+                }
+            }
+
+            // Multiple available stock
+            if (strtoupper($onlyLocationAvailable) === 'YES' && sizeof($allocatedLocations) > 1) {
+                return '';
+            }
+
+            // Is location part of allocated locations?
+            if (in_array($qtyFromLocation, $allocatedLocations)) {
+                return $innerHtml;
+            }
         }
 
     }

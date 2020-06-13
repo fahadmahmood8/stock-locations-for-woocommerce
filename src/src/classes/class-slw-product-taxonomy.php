@@ -31,7 +31,14 @@ if(!class_exists('SlwProductTaxonomy')) {
 		public function __construct()
 		{
 			add_action( 'init', array($this, 'create_taxonomy'), 1 );
-		}
+            add_action('location_edit_form', array($this, 'hideFields'));
+            add_action('location_add_form', array($this, 'hideFields'));
+            add_filter('manage_edit-location_columns', array($this, 'editColumns'));
+            add_action('location_edit_form', array($this, 'formFields'), 100, 2);
+            add_action('location_add_form_fields', array($this, 'formFields'), 10, 2);
+            add_action('edited_location', array($this, 'formSave'), 10, 2);
+            add_action('created_location', array($this, 'formSave'), 10, 2);
+        }
 
         /**
          * Returns the taxonomy default names.
@@ -94,6 +101,74 @@ if(!class_exists('SlwProductTaxonomy')) {
             register_taxonomy( $this->get_tax_names('singular'), 'product', $args );
             register_taxonomy_for_object_type( $this->get_tax_names('singular'), 'product' );
 
+        }
+
+        /**
+         * Hide unused fields from admin
+         */
+        public function hideFields()
+        {
+            echo '<style>.term-description-wrap, .term-parent-wrap { display:none; } </style>';
+        }
+
+        /**
+         * Change columns displayed in table
+         *
+         * @param $columns
+         *
+         * @return mixed
+         */
+        public function editColumns($columns) {
+            if(isset($columns['description'])) {
+                unset($columns['description']);
+            }
+
+            return $columns;
+        }
+
+        /**
+         * Form fields
+         *
+         * @param $tag
+         */
+        public function formFields($tag) {
+            // Defaults
+            $view = 'taxonomy-fields-new';
+            $default_location = 0;
+            $primary_location = 0;
+            $auto_order_allocate = 0;
+            $auto_order_allocate_priority = 0;
+
+            // Is edit screen
+            if (is_object($tag)) {
+                $view = 'taxonomy-fields-edit';
+                $default_location = get_term_meta($tag->term_id, 'slw_default_location', true);
+                $primary_location = get_term_meta($tag->term_id, 'slw_backorder_location', true);
+                $auto_order_allocate = get_term_meta($tag->term_id, 'slw_auto_allocate', true);
+                $auto_order_allocate_priority = get_term_meta($tag->term_id, 'slw_location_priority', true);
+            }
+
+            // Echo view
+            echo view($view, [
+                'default_location' => $default_location,
+                'primary_location' => $primary_location,
+                'auto_order_allocate' => $auto_order_allocate,
+                'auto_order_allocate_priority' => $auto_order_allocate_priority
+            ]);
+        }
+
+        /**
+         * Save term meta
+         *
+         * @param $term_id
+         */
+        public function formSave($term_id) {
+            if ($_POST && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate_priority'])) {
+                update_term_meta($term_id, 'slw_default_location', $_POST['default_location']);
+                update_term_meta($term_id, 'slw_backorder_location', $_POST['primary_location']);
+                update_term_meta($term_id, 'slw_auto_allocate', $_POST['auto_order_allocate']);
+                update_term_meta($term_id, 'slw_location_priority', $_POST['auto_order_allocate_priority']);
+            }
         }
 
     }

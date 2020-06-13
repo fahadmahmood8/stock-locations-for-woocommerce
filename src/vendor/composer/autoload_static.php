@@ -6,6 +6,10 @@ namespace Composer\Autoload;
 
 class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
 {
+    public static $files = array (
+        '70fcae18c6e39884423844bcec0d4cf7' => __DIR__ . '/../..' . '/src/helpers/view.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
@@ -29,6 +33,7 @@ class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
         'SLW\\SRC\\Classes\\SlwProductTaxonomy' => __DIR__ . '/../..' . '/src/classes/class-slw-product-taxonomy.php',
         'SLW\\SRC\\Classes\\SlwShortcodes' => __DIR__ . '/../..' . '/src/classes/class-slw-shortcodes.php',
         'SLW\\SRC\\Classes\\SlwStockLocationsTab' => __DIR__ . '/../..' . '/src/classes/class-slw-stock-locations-tab.php',
+        'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => __DIR__ . '/../..' . '/src/helpers/SlwStockAllocationHelper.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

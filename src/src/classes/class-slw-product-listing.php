@@ -30,6 +30,7 @@ if(!class_exists('SlwProductListing')) {
 			add_filter('manage_edit-product_columns', array($this, 'remove_product_listing_column'), 10, 1);
 			add_action('restrict_manage_posts', array($this, 'filter_by_taxonomy_stock_location') , 10, 2);
 			add_action('manage_posts_custom_column', array($this, 'populate_stock_locations_column') );
+            add_action('admin_head-post-new.php', array($this, 'addNewPreSelectLocations'));
 		}
 
         /**
@@ -159,6 +160,38 @@ if(!class_exists('SlwProductListing')) {
                     }
                 }
             }
+        }
+
+        /**
+         * Pre select locations on creating a new product listing
+         */
+        function addNewPreSelectLocations()
+        {
+            global $current_screen;
+
+            // If not our post type, do nothing
+            if($current_screen->post_type != 'product') {
+                return;
+            }
+
+            // Locations
+            $locations = array();
+
+            // Get Terms
+            $terms = get_terms(array(
+                'taxonomy' => SlwProductTaxonomy::$tax_singular_name,
+                'hide_empty' => false,
+            ));
+
+            foreach ($terms as $term) {
+                $slw_default_location = get_term_meta($term->term_id, 'slw_default_location', true);
+
+                if ($slw_default_location == 1) {
+                    $locations[] = $term->term_id;
+                }
+            }
+
+            echo view('product-pre-select-location-scripts', ['locations' => $locations]);
         }
 
     }

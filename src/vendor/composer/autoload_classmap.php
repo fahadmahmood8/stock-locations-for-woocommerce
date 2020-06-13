@@ -14,4 +14,5 @@ return array(
     'SLW\\SRC\\Classes\\SlwProductTaxonomy' => $baseDir . '/src/classes/class-slw-product-taxonomy.php',
     'SLW\\SRC\\Classes\\SlwShortcodes' => $baseDir . '/src/classes/class-slw-shortcodes.php',
     'SLW\\SRC\\Classes\\SlwStockLocationsTab' => $baseDir . '/src/classes/class-slw-stock-locations-tab.php',
+    'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => $baseDir . '/src/helpers/SlwStockAllocationHelper.php',
 );
