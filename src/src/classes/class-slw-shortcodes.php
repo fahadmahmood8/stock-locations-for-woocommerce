@@ -311,7 +311,7 @@ if(!class_exists('SlwShortcodes')) {
                 'only_location_available' => 'no'
             ), $atts);
 
-            if(!$values) {
+            if (!$values) {
                 return '';
             }
 
@@ -329,12 +329,14 @@ if(!class_exists('SlwShortcodes')) {
 
             // Work out what locations stock will be allocated
             $items = $woocommerce->cart->get_cart();
-            foreach($items as $item => $values) {
+            foreach ($items as $item => $values) {
                 // Get product stock allocation
                 $stockAllocation = SlwStockAllocationHelper::getStockAllocation($values['data']->get_id(), $values['quantity']);
 
                 foreach ($stockAllocation as $location) {
-                    $allocatedLocations[] = $location->slug;
+                    if (!isset($allocatedLocations[$location->slug])) {
+                        $allocatedLocations[$location->slug] = $location->slug;
+                    }
                 }
             }
 
