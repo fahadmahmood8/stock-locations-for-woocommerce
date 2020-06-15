@@ -137,7 +137,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
             }
 
             // Return a single record
-            if ($filterByLocation != null && sizeof($filterByLocation)) {
+            if ($filterByLocation != null && ($filterByLocation > 0 || strlen($filterByLocation))) {
                 return reset($returnLocations);
             }
 

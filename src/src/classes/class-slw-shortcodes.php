@@ -283,7 +283,7 @@ if(!class_exists('SlwShortcodes')) {
 
             // Decide when to show / hide
             if (strtoupper($isAvailable) === 'YES') {
-                if ($stockLocation->quantity > 0) {
+                if (isset($stockLocation->quantity) && $stockLocation->quantity > 0) {
                     return $innerHtml;
                 }
             } else {

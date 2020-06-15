@@ -364,6 +364,11 @@ if(!class_exists('SlwOrderItem')) {
                 return;
             }
 
+            // This is not the correct product
+            if (!($item instanceof \WC_Order_Item_Product)) {
+                return;
+            }
+
             // Get product ID
             $pid = ($item->get_variation_id()) ? $item->get_variation_id() : $item->get_product_id();
 
