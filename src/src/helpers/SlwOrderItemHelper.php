@@ -83,7 +83,7 @@ if(!class_exists('SlwOrderItemHelper')) {
 
             // Update woocommerce product stock level
             if ($totalQtyAllocated) {
-                update_post_meta($mainProduct->get_id(), '_stock', $mainProduct->get_stock_quantity() - $totalQtyAllocated);
+                $mainProduct->set_stock_quantity($mainProduct->get_stock_quantity() - $totalQtyAllocated);
             }
 
             // Check if stock in locations are updated for this item
