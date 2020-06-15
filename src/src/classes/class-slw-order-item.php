@@ -7,7 +7,8 @@
 
 namespace SLW\SRC\Classes;
 
-use SLW\SRC\Classes\SlwAdminNotice;
+use SLW\SRC\Helpers\SlwOrderItemHelper;
+use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
 /**
  * If this file is called directly, abort.
@@ -35,13 +36,17 @@ if(!class_exists('SlwOrderItem')) {
 			add_action('woocommerce_admin_order_item_values', array($this, 'add_stock_location_inputs_wc_order'), 10, 3);   // Since WC 3.0.2
 			add_action('save_post_shop_order', array($this, 'update_stock_locations_data_wc_order_save'), 10, 3);
 			add_filter('woocommerce_hidden_order_itemmeta', array($this, 'hide_stock_locations_itemmeta_wc_order'), 10, 1); // Since WC 3.0.2
+            add_action('woocommerce_new_order_item', array($this, 'newOrderItemAllocateStock'), 10, 3);
 		}
 
         /**
          * Adds custom column for Stock Location in WC Order items.
          *
-         * @since 1.0.0
+         * @param $order
+         *
          * @return void
+         * @throws \Exception
+         * @since 1.0.0
          */
         public function add_stock_location_column_wc_order($order)
         {
@@ -72,8 +77,13 @@ if(!class_exists('SlwOrderItem')) {
         /**
          * Adds inputs to custom column for Stock Locations in WC Order items.
          *
-         * @since 1.0.0
+         * @param $_product
+         * @param $item
+         * @param $item_id
+         *
          * @return void
+         * @throws \Exception
+         * @since 1.0.0
          */
         public function add_stock_location_inputs_wc_order($_product, $item, $item_id)
         {
@@ -129,8 +139,14 @@ if(!class_exists('SlwOrderItem')) {
         /**
          * Creates the inputs for Stock Locations in WC Order items.
          *
-         * @since 1.0.0
+         * @param $id
+         * @param $product_stock_location_terms
+         * @param $item
+         * @param $item_id
+         *
          * @return void
+         * @throws \Exception
+         * @since 1.0.0
          */
         public function product_stock_location_inputs($id, $product_stock_location_terms, $item, $item_id)
         {
@@ -148,7 +164,9 @@ if(!class_exists('SlwOrderItem')) {
                     foreach($product_stock_location_terms as $term) {
 
                         // Define $args_1 as array type
-                        $args_1 = array();
+                        $args_1 = array(
+                            'type' => 'number'
+                        );
 
                         // Get the item meta
                         $postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
@@ -162,6 +180,7 @@ if(!class_exists('SlwOrderItem')) {
                         // If the order item has the stock locations updated, show the quantity already subtracted
                         if(wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) === 'yes') {
                             $args_1['custom_attributes'] = array('readonly' => 'readonly');
+                            $args_1['type'] = 'hidden';
 
                             if($itemmeta_stock_update_at_term) {
                                 $args_1['label'] = $term->name . ' <b>(' . $postmeta_stock_at_term . ')</b> <span style="color:green;">-' . $itemmeta_stock_update_at_term . '</span>';
@@ -179,13 +198,11 @@ if(!class_exists('SlwOrderItem')) {
                             $args_1['type'] = 'hidden';
                         } else {
                             $args_1['description'] = __( 'Enter the stock amount you want to subtract from this location.', 'stock-locations-for-woocommerce' );
-                            $args_1['type'] = 'number';
                         }
-
 
                         // Define $args_2 array
                         $args_2 = array(
-                            'id'                => SLW_PLUGIN_SLUG . '_oitem_' . $id . '_' . $term->term_id,
+                            'id'                => SLW_PLUGIN_SLUG . '_oitem_' . $item_id . '_' . $id . '_' . $term->term_id,
                             'desc_tip'          => true,
                             'class'             => 'woocommerce ' . SLW_PLUGIN_SLUG . '_oitem_' . $id . ' ' . SLW_PLUGIN_SLUG . '_oitem',
                             'data_type'         => 'stock',
@@ -215,8 +232,13 @@ if(!class_exists('SlwOrderItem')) {
         /**
          * Updates Stock Locations upon WC Order save.
          *
-         * @since 1.0.0
+         * @param $post_id
+         * @param $post
+         * @param $update
+         *
          * @return int|void
+         * @throws \Exception
+         * @since 1.0.0
          */
         public function update_stock_locations_data_wc_order_save($post_id, $post, $update)
         {
@@ -238,107 +260,49 @@ if(!class_exists('SlwOrderItem')) {
 
                 // Loop through order items
                 foreach ( $order->get_items() as $item => $item_data ) {
+                    // Product ID
+                    $pid = ($item_data->get_variation_id()) ? $item_data->get_variation_id() : $item_data->get_product_id();
 
-                    // Get item product
-                    $item_product = $item_data->get_product();
-
-                    // Get item product id
-                    $item_id = $item_product->get_ID();
-
-                    // Check if item is variation
-                    if( $item_product->get_type() === 'variation' ) {
-                        // Get variation parent
-                        $product = wc_get_product( $item_product->get_parent_id() );
-                        // Get item parent location terms
-                        $item_stock_location_terms = get_the_terms($product->get_ID(), SlwProductTaxonomy::get_Tax_Names('singular'));
-                    } else {
-                        // Get item location terms
-                        $item_stock_location_terms = get_the_terms($item_id, SlwProductTaxonomy::get_Tax_Names('singular'));
+                    // Not managed stock
+                    if (!SlwStockAllocationHelper::isManagedStock($pid)) {
+                        continue;
                     }
 
-                    // Check if location terms exist for this item or parent
-                    if( isset($item_stock_location_terms) && !empty($item_stock_location_terms) ) {
+                    // Get locations
+                    $locations = SlwStockAllocationHelper::getProductStockLocations($pid, false);
 
-                        // Get item quantity
-                        $item_quantity = $item_data->get_quantity();
-
-                        // Get $_POST input quantities and save to array
-                        $input_quantities = [];
-                        foreach ( $item_stock_location_terms as $term ) {
-                            $input_quantities[] = sanitize_text_field($_POST[SLW_PLUGIN_SLUG . '_oitem_' . $item_id . '_' . $term->term_id]);
-                        }
-                        $input_quantities = array_sum($input_quantities);
-
-                        // Get post meta
-                        $postmeta_stock = get_post_meta($item_id, '_stock', true);
-                        $postmeta_stock_status = get_post_meta($item_id, '_stock_status', true);
-
-                        // Grab all input values
-                        $input_values = array();
-
-                        // Set terms counter
-                        $counter = 0;
-
-                        // Count how many terms exist for this product
-                        $terms_total = count($item_stock_location_terms);
-
-                        // Loop through location terms
-                        foreach ( $item_stock_location_terms as $term ) {
-
-                            if( isset($_POST[SLW_PLUGIN_SLUG . '_oitem_' . $item_id . '_' . $term->term_id]) ) {
-
-                                // Initiate counter
-                                $counter++;
-
-                                $item_stock_location_subtract_input_qty = sanitize_text_field($_POST[SLW_PLUGIN_SLUG . '_oitem_' . $item_id . '_' . $term->term_id]);
-                                $postmeta_stock_at_term = get_post_meta($item_id, '_stock_at_' . $term->term_id, true);
-
-                                // Check some conditions before updates
-                                if( ($item_stock_location_subtract_input_qty !== 0) && !empty($item_stock_location_subtract_input_qty) && ($item_stock_location_subtract_input_qty <= $item_quantity) && ($input_quantities === $item_quantity) ) {
-
-                                    // Save input values to array
-                                    $input_values[] = $item_stock_location_subtract_input_qty;
-
-                                    // Update the postmeta of the product
-                                    update_post_meta( $item_id, '_stock_at_' . $term->term_id, $postmeta_stock_at_term - $item_stock_location_subtract_input_qty );
-
-                                    // Note message
-                                    $note = sprintf( __('The stock in the location %1$s was updated in -%2$d for the product %3$s', 'stock-locations-for-woocommerce'), $term->name, $item_stock_location_subtract_input_qty, $item_product->get_name() );
-
-                                    // Add the note
-                                    $order->add_order_note( $note );
-
-                                    // Update product Stock and Stock Status
-                                    if( ( ($postmeta_stock - $item_stock_location_subtract_input_qty) <= 0 ) && ($postmeta_stock_status === 'instock') ) {
-                                        update_post_meta($item_id, '_stock_status', 'outofstock');
-                                    } else {
-                                        update_post_meta($item_id, '_stock_status', 'instock');
-                                    }
-
-                                    // Update the itemmeta of the order item
-                                    wc_update_order_item_meta($item, '_item_stock_locations_updated', 'yes');
-                                    wc_update_order_item_meta($item, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
-
-                                }
-
-                            }
-
-                        }
-
-                        // Update stock when reach the last term
-                        if($counter === $terms_total) {
-                            update_post_meta( $item_id, '_stock', $postmeta_stock - array_sum($input_values) );
-                        }
-
+                    // No locations set
+                    if (empty($locations)) {
+                        continue;
                     }
+
+                    // Convert POST data to array
+                    $simpleLocationAllocations = array();
+                    foreach ($locations as $location) {
+                        $productId = $item_data->get_product()->get_id();
+                        $postIdx = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
+
+                        if (!isset($_POST[$postIdx])) {
+                            continue;
+                        }
+
+                        $simpleLocationAllocations[$location->term_id] = $_POST[$postIdx];
+                    }
+
+                    // No location stock data for line
+                    if (empty($simpleLocationAllocations)) {
+                        continue;
+                    }
+
+                    // Allocate stock to locations
+                    $locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock($item_data->get_id(), $simpleLocationAllocations);
 
                     // Check if stock in locations are updated for this item
-                    if( empty( wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) ) ) {
+                    if(!$locationStockAllocationResponse) {
                         SlwAdminNotice::displayWarning(__('Partial or total stock in locations is missing in this order. Please fill the remaining stock.', 'stock-locations-for-woocommerce'));
                     } else {
                         SlwAdminNotice::displaySuccess(__('Stock in locations updated successfully!', 'stock-locations-for-woocommerce'));
                     }
-
                 }
             }
 
@@ -385,6 +349,40 @@ if(!class_exists('SlwOrderItem')) {
 			}
 
             return $arr;
+        }
+
+        /**
+         * New orders allocate stock to items if required
+         *
+         * @param $item_id
+         * @param $item
+         * @param $order_id
+         */
+        public function newOrderItemAllocateStock($item_id, $item, $order_id)
+        {
+            if (is_admin()) {
+                return;
+            }
+
+            // Get product ID
+            $pid = ($item->get_variation_id()) ? $item->get_variation_id() : $item->get_product_id();
+
+            // Get products stock allocation
+            $stockAllocation = SlwStockAllocationHelper::getStockAllocation($pid, $item->get_quantity());
+
+            // Nothing to do, either no allocations valid or product does not have multi locations
+            if (empty($stockAllocation)) {
+                return;
+            }
+
+            // Build simple location term to stock quantity allocation array
+            $simpleLocationAllocations = array();
+            foreach ($stockAllocation as $allocation) {
+                $simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
+            }
+
+            // Allocate order item stock to locations
+            SlwOrderItemHelper::allocateLocationStock($item->get_id(), $simpleLocationAllocations);
         }
 
     }

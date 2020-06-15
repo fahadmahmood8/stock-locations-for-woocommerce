@@ -81,6 +81,11 @@ if(!class_exists('SlwStockAllocationHelper')) {
         {
             $product = wc_get_product($productId);
 
+            // Not a product
+            if (is_null($product) || empty($product)) {
+                return false;
+            }
+
             // Not managed stock
             if ($product->get_manage_stock() !== true && $product->get_manage_stock() !== 'parent') {
                 return false;
