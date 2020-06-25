@@ -52,6 +52,8 @@ if(!class_exists('SlwMain')) {
 			new SLW\SRC\Classes\SlwShortcodes;
 			new SLW\SRC\Classes\SlwProductListing;
             new SLW\SRC\Classes\SlwProductRest;
+            new SLW\SRC\Classes\SlwCart;
+            new SLW\SRC\Classes\SlwSettings;
         }
 
         /**
@@ -83,7 +85,8 @@ if(!class_exists('SlwMain')) {
             add_action( 'init', array($this, 'load_textdomain') );
 
             // Enqueue scripts and styles
-            add_action( 'admin_enqueue_scripts', array($this, 'enqueue') );
+            add_action( 'admin_enqueue_scripts', array($this, 'enqueue_admin') );
+            add_action( 'wp_enqueue_scripts', array($this, 'enqueue_frontend') );
 
             // Prevent WooCommerce from reduce stock
             add_filter( 'woocommerce_can_reduce_order_stock', '__return_false', 999 ); // Since WC 3.0.2
@@ -93,25 +96,34 @@ if(!class_exists('SlwMain')) {
 		}
 
         /**
-         * Adds scripts and styles.
+         * Adds scripts and styles for Admin.
          *
          * @since 1.0.0
          * @return void
          */
-        public function enqueue()
+        public function enqueue_admin()
         {
-            wp_enqueue_style('admin-style', $this->pluginDirUrl() . 'admin/css/style.css', null, '1.1');
+            wp_enqueue_style('styles-admin', $this->pluginDirUrl() . 'assets//css/admin/style.css', null, '1.2');
             wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', null, '5.11.2');
 
-            // Register the script
-            wp_register_script( 'scripts', $this->pluginDirUrl() . 'admin/js/scripts.js', null, '1.0', true );
-            // Localize the script passing the plugin slug constant
-            $params = array(
-                'slug' => SLW_PLUGIN_SLUG
-            );
-            wp_localize_script( 'scripts', 'slw_plugin_slug', $params );
-            // Enqueued script with localized data.
-            wp_enqueue_script( 'scripts' );
+            wp_register_script( 'scripts-admin', $this->pluginDirUrl() . 'assets/js/admin/scripts.js', null, '1.1', true );
+            wp_localize_script( 'scripts-admin', 'slw_plugin_slug', array( 'slug' => SLW_PLUGIN_SLUG ) );
+            wp_enqueue_script( 'scripts-admin' );
+        }
+
+        /**
+         * Adds scripts and styles for Frontend.
+         *
+         * @since 1.2.0
+         * @return void
+         */
+        public function enqueue_frontend()
+        {
+            wp_enqueue_style('styles-frontend', $this->pluginDirUrl() . 'assets//css/frontend/style.css', null, '1.0');
+
+            wp_register_script( 'scripts-frontend', $this->pluginDirUrl() . 'assets/js/frontend/scripts.js', array( 'jquery-blockui' ), '1.0', true );
+            wp_localize_script( 'scripts-frontend', 'slw_frontend_ajax_url', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+            wp_enqueue_script( 'scripts-frontend' );
         }
 
         /**

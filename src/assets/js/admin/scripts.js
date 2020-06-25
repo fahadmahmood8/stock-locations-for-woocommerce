@@ -9,6 +9,7 @@
     function init() {
 		slwDisableVariableStockInput();
 		slwWcProductManageStock();
+		slwWcOrderItemStockPositiveNumbersOnly();
 	}
 	
 	function slwDisableVariableStockInput()
@@ -60,6 +61,16 @@
 				});
 			}
 		}
+	}
+
+	function slwWcOrderItemStockPositiveNumbersOnly()
+	{
+		$('input.stock-locations-for-woocommerce_oitem').change(function() {
+			if ($(this).val() < 0) {
+				$(this).val('0');
+				alert('Positive numbers only!');
+			}
+		});
 	}
 
 }(jQuery));

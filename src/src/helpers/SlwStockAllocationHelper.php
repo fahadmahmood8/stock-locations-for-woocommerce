@@ -185,11 +185,14 @@ if(!class_exists('SlwStockAllocationHelper')) {
             // Sort
             uasort($locations, function($a, $b)
             {
-                if ($a->slw_location_priority == $b->slw_location_priority) {
+                $a_priority = isset($a->slw_location_priority) ?: $a->term_id;
+                $b_priority = isset($b->slw_location_priority) ?: $b->term_id;
+                
+                if ($a_priority == $b_priority) {
                     return 0;
                 }
 
-                return ($a->slw_location_priority < $b->slw_location_priority) ? -1 : 1;
+                return ($a_priority < $b_priority) ? -1 : 1;
             });
 
             return $locations;
@@ -235,7 +238,21 @@ if(!class_exists('SlwStockAllocationHelper')) {
             }
 
             return $return;
-        }
+		}
+		
+		public static function get_product_stock_location( $product_id, $location_id )
+		{
+			$product_stock_locations = self::getProductStockLocations($product_id, true, null);
+
+			$stock_location = array();
+			foreach( $product_stock_locations as $id => $location ) {
+				if( $id == $location_id ) {
+					$stock_location[$id] = $location;
+				}
+			}
+
+			return $stock_location;
+		}
 
     }
 }
