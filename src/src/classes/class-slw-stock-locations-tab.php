@@ -74,7 +74,11 @@ if(!class_exists('SlwStockLocationsTab')) {
             // if product is variable
             if( $product->is_type('variable') ) {
                 // Get product variations
-                $product_variations = $product->get_available_variations();
+                $product_variations_ids = $product->get_children();
+				$product_variations = array();
+				foreach( $product_variations_ids as $variation_id ) {
+					$product_variations[] = $product->get_available_variation( $variation_id );
+				}
             }
 
             // Get product location terms
@@ -228,12 +232,18 @@ if(!class_exists('SlwStockLocationsTab')) {
                 return $post_id;
 
             // Get product object
-            $product = wc_get_product( $post_id );
+			$product = wc_get_product( $post_id );
+			
+			if( empty($product) ) return;
 
             // If product is type variable
             if( is_a( $product, 'WC_Product' ) && $product->is_type('variable') ) {
                 // Get product variations
-                $product_variations = $product->get_available_variations();
+                $product_variations_ids = $product->get_children();
+				$product_variations = array();
+				foreach( $product_variations_ids as $variation_id ) {
+					$product_variations[] = $product->get_available_variation( $variation_id );
+				}
             }
 
             // Product location terms

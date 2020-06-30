@@ -27,10 +27,12 @@ class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
     public static $classMap = array (
         'SLW\\SRC\\Classes\\SlwAdminNotice' => __DIR__ . '/../..' . '/src/classes/class-slw-admin-notice.php',
         'SLW\\SRC\\Classes\\SlwBarcodesTab' => __DIR__ . '/../..' . '/src/classes/class-slw-barcodes-tab.php',
+        'SLW\\SRC\\Classes\\SlwCart' => __DIR__ . '/../..' . '/src/classes/class-slw-cart.php',
         'SLW\\SRC\\Classes\\SlwOrderItem' => __DIR__ . '/../..' . '/src/classes/class-slw-order-item.php',
         'SLW\\SRC\\Classes\\SlwProductListing' => __DIR__ . '/../..' . '/src/classes/class-slw-product-listing.php',
         'SLW\\SRC\\Classes\\SlwProductRest' => __DIR__ . '/../..' . '/src/classes/class-slw-rest.php',
         'SLW\\SRC\\Classes\\SlwProductTaxonomy' => __DIR__ . '/../..' . '/src/classes/class-slw-product-taxonomy.php',
+        'SLW\\SRC\\Classes\\SlwSettings' => __DIR__ . '/../..' . '/src/classes/class-slw-settings.php',
         'SLW\\SRC\\Classes\\SlwShortcodes' => __DIR__ . '/../..' . '/src/classes/class-slw-shortcodes.php',
         'SLW\\SRC\\Classes\\SlwStockLocationsTab' => __DIR__ . '/../..' . '/src/classes/class-slw-stock-locations-tab.php',
         'SLW\\SRC\\Helpers\\SlwOrderItemHelper' => __DIR__ . '/../..' . '/src/helpers/SlwOrderItemHelper.php',

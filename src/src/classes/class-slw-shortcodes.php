@@ -156,8 +156,12 @@ if(!class_exists('SlwShortcodes')) {
                 // Check for variations
                 $variations_products = array();
                 if( !empty($product) && $product->is_type( 'variable' ) ) {
-                    $available_variations = $product->get_available_variations();
-                    foreach ($available_variations as $variation) { 
+					$product_variations_ids = $product->get_children();
+					$product_variations = array();
+					foreach( $product_variations_ids as $variation_id ) {
+						$product_variations[] = $product->get_available_variation( $variation_id );
+					}
+                    foreach ($product_variations as $variation) { 
                         $variations_products[] = wc_get_product( $variation['variation_id'] );
                     }
                 }

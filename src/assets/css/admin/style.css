@@ -28,3 +28,9 @@
 table thead tr #stock_at_locations {
     width: 17ch;
 }
+.slw-client-choosed-location {
+	color: green;
+	margin-top: -8px !important;
+	margin-bottom: 13px;
+	display: block;
+}

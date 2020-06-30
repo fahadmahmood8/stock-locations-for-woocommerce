@@ -1,0 +1,106 @@
+<?php
+/**
+ * SLW Cart
+ *
+ * @since 1.1.6
+ */
+
+namespace SLW\SRC\Classes;
+
+use SLW\SRC\Helpers\SlwStockAllocationHelper;
+
+/**
+ * If this file is called directly, abort.
+ *
+ * @since 1.1.6
+ */
+if ( !defined( 'WPINC' ) ) {
+    die;
+}
+
+if(!class_exists('SlwCart')) {
+
+    class SlwCart
+    {
+        /**
+         * Construct.
+         *
+         * @since 1.1.6
+         */
+        public function __construct()
+        {
+			// get option
+			$plugin_settings = get_option( 'slw_settings' );
+			// check if show in cart is enabled
+			if( $plugin_settings['show_in_cart'] == 'yes' ) {
+				add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 10, 2 );
+            	add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
+            	add_action( 'woocommerce_checkout_create_order_line_item', array($this, 'create_order_line_item_meta'), 10, 4 );
+			}
+        }
+
+		/**
+         * Add stock locations to cart item.
+         *
+         * @since 1.1.6
+         */
+        public function add_cart_item_stock_locations( $cart_item, $cart_item_key )
+        {
+            if( empty($cart_item) ) return;
+
+            $product_id = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
+            
+            if( !empty($stock_locations = SlwStockAllocationHelper::getProductStockLocations($product_id, true, null)) ) {
+                echo '<select class="slw_cart_item_stock_location" style="display:block;" required>';
+                echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+                foreach( $stock_locations as $id => $location ) {
+                    if( $location->quantity > 0 ) {
+                        echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'">'.$location->name.'</option>';
+                    }
+                }
+                echo '</select>';
+            }
+            
+        }
+
+		/**
+         * Update cart with stock locations.
+         *
+         * @since 1.1.6
+         */
+        public function update_cart_stock_locations()
+        {
+            // Do a nonce check
+            if( ! isset( $_POST['security'] ) || ! wp_verify_nonce( $_POST['security'], 'woocommerce-cart' ) ) {
+                wp_send_json( array( 'nonce_fail' => 1 ) );
+                exit;
+            }
+            // Save the stock locations to the cart meta
+            $cart = WC()->cart->cart_contents;
+            $cart_id = $_POST['cart_id'];
+            $stock_location = $_POST['stock_location'];
+            $cart_item = $cart[$cart_id];
+            $cart_item['stock_location'] = $stock_location;
+            WC()->cart->cart_contents[$cart_id] = $cart_item;
+            WC()->cart->set_session();
+            wp_send_json( array( 'success' => 1 ) );
+            exit;
+        }
+        
+        /**
+         * Save stock locations to order item meta.
+         *
+         * @since 1.1.6
+         */
+        public function create_order_line_item_meta( $item, $cart_item_key, $values, $order )
+        {
+            foreach( $item as $cart_item_key => $cart_item ) {
+                if( isset( $cart_item['stock_location'] ) ) {
+                    $item->add_meta_data( '_stock_location', $cart_item['stock_location'], true );
+                }
+            }
+        }
+
+    }
+
+}

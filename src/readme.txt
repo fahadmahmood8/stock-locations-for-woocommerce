@@ -35,6 +35,12 @@ You can call the barcodes inside a product page on the frontend, with this short
 `[slw_barcode type="isbn"]`
 `[slw_barcode type="asin"]`
 
+REST API endpoints (both accept `GET` and `UPDATE` requests):
+
+`/wp-json/wc/v3/products/id`
+`/wp-json/wc/v3/products/id/variations/id (first ID is for parent product, the second one for the variation ID)`
+
+
 This plugin requires at least *WooCommerce 3.4*.
 
 
