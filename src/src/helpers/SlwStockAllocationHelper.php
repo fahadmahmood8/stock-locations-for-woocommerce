@@ -81,6 +81,11 @@ if(!class_exists('SlwStockAllocationHelper')) {
         {
             $product = wc_get_product($productId);
 
+            // Not a product
+            if (is_null($product) || empty($product)) {
+                return false;
+            }
+
             // Not managed stock
             if ($product->get_manage_stock() !== true && $product->get_manage_stock() !== 'parent') {
                 return false;
@@ -132,7 +137,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
             }
 
             // Return a single record
-            if ($filterByLocation != null && sizeof($filterByLocation)) {
+            if ($filterByLocation != null && ($filterByLocation > 0 || strlen($filterByLocation))) {
                 return reset($returnLocations);
             }
 

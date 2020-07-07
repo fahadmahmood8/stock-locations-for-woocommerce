@@ -16,5 +16,6 @@ return array(
     'SLW\\SRC\\Classes\\SlwSettings' => $baseDir . '/src/classes/class-slw-settings.php',
     'SLW\\SRC\\Classes\\SlwShortcodes' => $baseDir . '/src/classes/class-slw-shortcodes.php',
     'SLW\\SRC\\Classes\\SlwStockLocationsTab' => $baseDir . '/src/classes/class-slw-stock-locations-tab.php',
+    'SLW\\SRC\\Helpers\\SlwOrderItemHelper' => $baseDir . '/src/helpers/SlwOrderItemHelper.php',
     'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => $baseDir . '/src/helpers/SlwStockAllocationHelper.php',
 );
