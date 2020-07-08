@@ -24,9 +24,9 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function __construct()
 		{
-			// Actions
             add_action( 'admin_menu', array($this, 'create_admin_menu_page') );
-            add_action( 'admin_init', array($this, 'register_settings') );
+			add_action( 'admin_init', array($this, 'register_settings') );
+			add_filter( 'plugin_action_links_'.\SlwMain::$plugin_basename, array($this, 'settings_link') );
 		}
 
 		/**
@@ -145,6 +145,18 @@ if(!class_exists('SlwSettings')) {
 				<option value="no" <?= $selected; ?>><?= __('No', 'stock-locations-for-woocommerce'); ?></option>
 			</select>
 			<?php
+		}
+
+		/**
+		 * Adds plugin settings link.
+		 *
+		 * @since 1.2.0
+		 * @return void
+		 */
+		public function settings_link( $links ) {
+			$settings_link = '<a href="' . admin_url( 'options-general.php?page=slw-settings' ) . '">'. __( 'Settings', 'woocommerce' ) . '</a>';
+			array_push( $links, $settings_link );
+			return $links;
 		}
 
 	}

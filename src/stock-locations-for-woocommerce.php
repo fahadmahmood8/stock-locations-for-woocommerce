@@ -29,7 +29,8 @@ if(!class_exists('SlwMain')) {
     class SlwMain
     {
         private $plugin_dir_url;
-        private $plugin_dir;
+		private $plugin_dir;
+		public static $plugin_basename;
 		protected static $instance = null;
 
         /**
@@ -40,7 +41,8 @@ if(!class_exists('SlwMain')) {
         {
             // Save plugin dir url to property
             $this->plugin_dir_url = plugin_dir_url(__FILE__);
-            $this->plugin_dir = realpath(plugin_dir_path(__FILE__));
+			$this->plugin_dir = realpath(plugin_dir_path(__FILE__));
+			self::$plugin_basename = plugin_basename(__FILE__);
 
 			$this->init();
 
