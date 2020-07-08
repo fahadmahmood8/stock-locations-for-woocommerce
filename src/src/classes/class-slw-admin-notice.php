@@ -7,16 +7,11 @@
 
 namespace SLW\SRC\Classes;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.0.0
- */
 if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-if(!class_exists('AdminNotice')) {
+if( !class_exists('AdminNotice') ) {
 
     class SlwAdminNotice
     {
@@ -34,27 +29,27 @@ if(!class_exists('AdminNotice')) {
             }
         }
 
-        public static function displayError($message)
+        public static function displayError( $message )
         {
             self::updateOption($message, 'notice-error');
         }
 
-        public static function displayWarning($message)
+        public static function displayWarning( $message )
         {
             self::updateOption($message, 'notice-warning');
         }
 
-        public static function displayInfo($message)
+        public static function displayInfo( $message )
         {
             self::updateOption($message, 'notice-info');
         }
 
-        public static function displaySuccess($message)
+        public static function displaySuccess( $message )
         {
             self::updateOption($message, 'notice-success');
         }
 
-        protected static function updateOption($message, $noticeLevel) {
+        protected static function updateOption( $message, $noticeLevel ) {
             update_option(self::NOTICE_FIELD, [
                 'message'       => $message,
                 'notice-level'  => $noticeLevel

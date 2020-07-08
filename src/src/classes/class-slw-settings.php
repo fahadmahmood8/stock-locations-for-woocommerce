@@ -1,17 +1,12 @@
 <?php
 /**
- * SLW Settings
+ * SLW Settings Class
  *
- * @since 1.1.6
+ * @since 1.2.0
  */
 
 namespace SLW\SRC\Classes;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.1.6
- */
 if ( !defined( 'WPINC' ) ) {
 	die;
 }
@@ -25,7 +20,7 @@ if(!class_exists('SlwSettings')) {
 		/**
 		 * Construct.
 		 *
-		 * @since 1.1.6
+		 * @since 1.2.0
 		 */
 		public function __construct()
 		{
@@ -37,7 +32,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Create Admin Menu Page.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          * @return void
          */
         public function create_admin_menu_page()
@@ -55,7 +50,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Admin Menu Page Callback.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          * @return void
          */
         public function admin_menu_page_callback()
@@ -79,7 +74,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Register Settings.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          * @return void
          */
         public function register_settings()
@@ -109,7 +104,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Sanitize setting option value.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          * @return string
          */
 		public function option_setting_sanitize( $input )
@@ -127,7 +122,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Setting section info.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          * @return void
          */
 		public function setting_section_info() {}
@@ -135,7 +130,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Show in cart dropdown callback.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          * @return void
          */
 		public function cart_dropdown_options_callback()

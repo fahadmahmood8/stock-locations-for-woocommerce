@@ -1,19 +1,14 @@
 <?php
 /**
- * SLW Cart
+ * SLW Cart Class
  *
- * @since 1.1.6
+ * @since 1.2.0
  */
 
 namespace SLW\SRC\Classes;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.1.6
- */
 if ( !defined( 'WPINC' ) ) {
     die;
 }
@@ -25,7 +20,7 @@ if(!class_exists('SlwCart')) {
         /**
          * Construct.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          */
         public function __construct()
         {
@@ -42,7 +37,7 @@ if(!class_exists('SlwCart')) {
 		/**
          * Add stock locations to cart item.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          */
         public function add_cart_item_stock_locations( $cart_item, $cart_item_key )
         {
@@ -66,7 +61,7 @@ if(!class_exists('SlwCart')) {
 		/**
          * Update cart with stock locations.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          */
         public function update_cart_stock_locations()
         {
@@ -90,7 +85,7 @@ if(!class_exists('SlwCart')) {
         /**
          * Save stock locations to order item meta.
          *
-         * @since 1.1.6
+         * @since 1.2.0
          */
         public function create_order_line_item_meta( $item, $cart_item_key, $values, $order )
         {

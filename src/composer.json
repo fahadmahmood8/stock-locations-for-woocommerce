@@ -7,7 +7,7 @@
       },
       "classmap": ["src/"],
       "files": [
-        "src/helpers/view.php"
+        "src/helpers/helper-slw-views.php"
       ]
     }
 }

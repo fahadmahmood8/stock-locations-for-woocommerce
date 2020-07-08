@@ -9,11 +9,6 @@ namespace SLW\SRC\Classes;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.0.0
- */
 if ( !defined( 'WPINC' ) ) {
     die;
 }
@@ -44,7 +39,7 @@ if(!class_exists('SlwShortcodes')) {
          * @since 1.0.0
          * @return string
          */
-        public function display_barcode($atts)
+        public function display_barcode( $atts )
         {
             $values = shortcode_atts(array(
                 'type' => '' // Default value
@@ -91,7 +86,7 @@ if(!class_exists('SlwShortcodes')) {
          * @since 1.1.1
          * @return string
          */
-		public function display_product_locations($atts)
+		public function display_product_locations( $atts )
 		{
             global $woocommerce, $product, $post;
 
@@ -131,7 +126,7 @@ if(!class_exists('SlwShortcodes')) {
          * @since 1.1.2
          * @return string
          */
-		public function display_product_variations_locations($atts)
+		public function display_product_variations_locations( $atts )
 		{
             global $woocommerce, $product, $post;
 
@@ -190,7 +185,7 @@ if(!class_exists('SlwShortcodes')) {
          * @since 1.1.2
          * @return string
          */
-        private function output_product_locations_for_shortcode($product, $locations, $values)
+        private function output_product_locations_for_shortcode( $product, $locations, $values )
         {
             if( !empty($locations) ) {
 
@@ -240,7 +235,7 @@ if(!class_exists('SlwShortcodes')) {
          *
          * @return string
          */
-        public function display_product_message($atts, $innerHtml = '')
+        public function display_product_message( $atts, $innerHtml = '' )
         {
             global $woocommerce, $product, $post;
 
@@ -305,7 +300,7 @@ if(!class_exists('SlwShortcodes')) {
          *
          * @return string
          */
-        public function display_cart_message($atts, $innerHtml = '')
+        public function display_cart_message( $atts, $innerHtml = '' )
         {
             global $woocommerce, $post;
 
@@ -335,7 +330,7 @@ if(!class_exists('SlwShortcodes')) {
             $items = $woocommerce->cart->get_cart();
             foreach ($items as $item => $values) {
                 // Get product stock allocation
-                $stockAllocation = SlwStockAllocationHelper::getStockAllocation($values['data']->get_id(), $values['quantity']);
+                $stockAllocation = SlwStockAllocationHelper::getStockAllocation($values['data']->get_id(), $values['quantity'], null);
 
                 foreach ($stockAllocation as $location) {
                     if (!isset($allocatedLocations[$location->slug])) {

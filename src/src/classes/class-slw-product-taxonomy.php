@@ -7,11 +7,6 @@
 
 namespace SLW\SRC\Classes;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.0.0
- */
 if ( !defined( 'WPINC' ) ) {
     die;
 }
@@ -31,13 +26,13 @@ if(!class_exists('SlwProductTaxonomy')) {
 		public function __construct()
 		{
 			add_action( 'init', array($this, 'create_taxonomy'), 1 );
-            add_action('location_edit_form', array($this, 'hideFields'));
-            add_action('location_add_form', array($this, 'hideFields'));
-            add_filter('manage_edit-location_columns', array($this, 'editColumns'));
-            add_action('location_edit_form', array($this, 'formFields'), 100, 2);
-            add_action('location_add_form_fields', array($this, 'formFields'), 10, 2);
-            add_action('edited_location', array($this, 'formSave'), 10, 2);
-            add_action('created_location', array($this, 'formSave'), 10, 2);
+            add_action( 'location_edit_form', array($this, 'hideFields') );
+            add_action( 'location_add_form', array($this, 'hideFields') );
+            add_filter( 'manage_edit-location_columns', array($this, 'editColumns') );
+            add_action( 'location_edit_form', array($this, 'formFields'), 100, 2 );
+            add_action( 'location_add_form_fields', array($this, 'formFields'), 10, 2 );
+            add_action( 'edited_location', array($this, 'formSave'), 10, 2 );
+            add_action( 'created_location', array($this, 'formSave'), 10, 2 );
         }
 
         /**
@@ -46,7 +41,7 @@ if(!class_exists('SlwProductTaxonomy')) {
          * @since 1.0.0
          * @return array
          */
-        public static function get_tax_names($type)
+        public static function get_tax_names( $type )
         {
             $data = [
                 'plural' => self::$tax_plural_name,
@@ -118,7 +113,7 @@ if(!class_exists('SlwProductTaxonomy')) {
          *
          * @return mixed
          */
-        public function editColumns($columns) {
+        public function editColumns( $columns ) {
             if(isset($columns['description'])) {
                 unset($columns['description']);
             }
@@ -131,7 +126,7 @@ if(!class_exists('SlwProductTaxonomy')) {
          *
          * @param $tag
          */
-        public function formFields($tag) {
+        public function formFields( $tag ) {
             // Defaults
             $view = 'taxonomy-fields-new';
             $default_location = 0;
@@ -162,7 +157,7 @@ if(!class_exists('SlwProductTaxonomy')) {
          *
          * @param $term_id
          */
-        public function formSave($term_id) {
+        public function formSave( $term_id ) {
             if ($_POST && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate_priority'])) {
                 update_term_meta($term_id, 'slw_default_location', $_POST['default_location']);
                 update_term_meta($term_id, 'slw_backorder_location', $_POST['primary_location']);

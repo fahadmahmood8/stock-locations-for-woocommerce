@@ -7,16 +7,11 @@
 
 namespace SLW\SRC\Classes;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.0.0
- */
 if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-if(!class_exists('SlwBarcodesTab')) {
+if( !class_exists('SlwBarcodesTab') ) {
 
     class SlwBarcodesTab
     {
@@ -40,7 +35,7 @@ if(!class_exists('SlwBarcodesTab')) {
          * @since 1.0.0
          * @return array
          */
-        public function create_custom_barcodes_tab_wc_product($original_tabs)
+        public function create_custom_barcodes_tab_wc_product( $original_tabs )
         {
             // Define custom tab
             $new_tab[$this->tab_barcodes] = array(
@@ -64,7 +59,7 @@ if(!class_exists('SlwBarcodesTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function tab_content_barcodes_wc_product($array)
+        public function tab_content_barcodes_wc_product( $array )
         {
             // Replace the default WooCommerce icon for the this plugin tab
             echo '<style>#woocommerce-product-data ul.wc-tabs li.' . $this->tab_barcodes . '_options a:before { font-family: Font Awesome\ 5 Free; content: \'\f02a\'; font-weight: 900; }</style>';
@@ -115,7 +110,7 @@ if(!class_exists('SlwBarcodesTab')) {
          * @since 1.0.0
          * @return int|void
          */
-        public function save_tab_data_stock_barcodes_wc_product_save($post_id, $post)
+        public function save_tab_data_stock_barcodes_wc_product_save( $post_id, $post )
         {
             if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
                 return $post_id;

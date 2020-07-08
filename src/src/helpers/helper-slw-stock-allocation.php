@@ -1,4 +1,8 @@
 <?php
+/**
+ * SLW Stock Allocation Helper Class
+ * @since 1.2.0
+ */
 
 namespace SLW\SRC\Helpers;
 
@@ -8,8 +12,9 @@ if (!defined('WPINC')) {
     die;
 }
 
-if(!class_exists('SlwStockAllocationHelper')) {
-    class SlwStockAllocationHelper
+if( !class_exists('SlwStockAllocationHelper') ) {
+	
+	class SlwStockAllocationHelper
     {
         /**
          * Decide how to allocate stock against a product and its locations
@@ -19,7 +24,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array
          */
-        public static function getStockAllocation($productId, $qtyToAllocation)
+        public static function getStockAllocation( $productId, $qtyToAllocation, array $ignoreLocationIds = null )
         {
             $response = array();
 
@@ -33,7 +38,14 @@ if(!class_exists('SlwStockAllocationHelper')) {
 
             // Get products stock locations
             // Sorted by priority
-            $productStockLocations = self::sortLocationsByPriority(self::getProductStockLocations($productId));
+			$productStockLocations = self::sortLocationsByPriority(self::getProductStockLocations($productId));
+			
+			// Remove ignored locations from the array
+			if( !is_null($ignoreLocationIds) && is_array($ignoreLocationIds) ) {
+				foreach( $ignoreLocationIds as $location_id ) {
+					unset($productStockLocations[$location_id]);
+				}
+			}
 
             // Map stock to locations
             foreach ($productStockLocations as $idx => $location) {
@@ -77,7 +89,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return bool
          */
-        public static function isManagedStock($productId)
+        public static function isManagedStock( $productId )
         {
             $product = wc_get_product($productId);
 
@@ -104,7 +116,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return false|\WP_Error|\WP_Term[]
          */
-        public static function getProductStockLocations($productId, $needMetaData = true, $filterByLocation = null)
+        public static function getProductStockLocations( $productId, $needMetaData = true, $filterByLocation = null )
         {
             // Get correct top level product
             // The one the stock locations are actually allocated to
@@ -152,7 +164,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array|mixed
          */
-        public static function getLocationMeta($locationId)
+        public static function getLocationMeta( $locationId )
         {
             // Get all terms
             $termMeta = get_term_meta($locationId);
@@ -172,7 +184,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array
          */
-        public static function sortLocationsByPriority($locations)
+        public static function sortLocationsByPriority( $locations )
         {
             // Not an array of empty
             if (!is_array($locations) || !sizeof($locations)) {
@@ -211,12 +223,12 @@ if(!class_exists('SlwStockAllocationHelper')) {
         public static function getBackOrderLocation()
         {
             $terms = get_terms(array(
-                'taxonomy'      =>  SlwProductTaxonomy::$tax_singular_name,
-                'hide_empty'    =>  false,
-                'meta_query' => array(array(
-                    'key' => 'slw_backorder_location',
-                    'value'   => 1,
-                    'compare' => '='
+                'taxonomy'		=>  SlwProductTaxonomy::$tax_singular_name,
+                'hide_empty' 	=>  false,
+                'meta_query' 	=> array(array(
+                    'key'		=> 'slw_backorder_location',
+                    'value'   	=> 1,
+                    'compare'	=> '='
                 ))
             ));
 
@@ -231,7 +243,7 @@ if(!class_exists('SlwStockAllocationHelper')) {
          *
          * @return array
          */
-        public static function getProductAvailableStockLocations($productId, $needMetaData = true)
+        public static function getProductAvailableStockLocations( $productId, $needMetaData = true )
         {
             $return = array();
 
@@ -259,5 +271,6 @@ if(!class_exists('SlwStockAllocationHelper')) {
 			return $stock_location;
 		}
 
-    }
+	}
+	
 }

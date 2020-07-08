@@ -7,11 +7,6 @@
 
 namespace SLW\SRC\Classes;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.1.4
- */
 if ( !defined( 'WPINC' ) ) {
     die;
 }
@@ -59,7 +54,7 @@ if(!class_exists('SlwProductRest')) {
          * @param $post
          * @return mixed
          */
-        public function product_get_callback($post, $attr, $request, $object_type)
+        public function product_get_callback( $post, $attr, $request, $object_type )
         {
             $terms = array();
 
@@ -88,12 +83,12 @@ if(!class_exists('SlwProductRest')) {
          * @param $post
          * @param $request
          */
-        public function product_update_callback($values, $post, $attr, $request, $object_type)
+        public function product_update_callback( $values, $post, $attr, $request, $object_type )
         {
             // Data is not valid or empty, nothing to do
             if (!is_array($values) || !sizeof($values)) {
                 return;
-            }
+			}
 
             // Get post ID, important we use this and not ->id,
             // as this will return the correct variation ID if required
@@ -103,7 +98,9 @@ if(!class_exists('SlwProductRest')) {
             // This is either the current product or its parent_id
             $parentPostId = ($object_type === 'product_variation') ? $post->parent_id : $postId;
 
-            $stockLocationTermIds = array();
+			$stockLocationTermIds = array();
+
+			$totalQuantity = 0;
 
             foreach ($values as $location) {
                 $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::$tax_singular_name)->term_id;
@@ -118,9 +115,17 @@ if(!class_exists('SlwProductRest')) {
                     $stockLocationTermIds[] = $locationId;
 
                     // Set locations stock level
-                    update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
+					update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
+
+					$totalQuantity += $quantity;
                 }
-            }
+			}
+
+			// Update product stock
+			if( $totalQuantity != 0 ) {
+				$product = wc_get_product($parentPostId);
+				wc_update_product_stock( $product, $totalQuantity, 'set', false );
+			}
 
             // Set terms
             wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwProductTaxonomy::$tax_singular_name);

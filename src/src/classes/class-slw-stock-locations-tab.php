@@ -6,11 +6,6 @@
 
 namespace SLW\SRC\Classes;
 
-/**
- * If this file is called directly, abort.
- *
- * @since 1.0.0
- */
 if ( !defined( 'WPINC' ) ) {
     die;
 }
@@ -39,7 +34,7 @@ if(!class_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return array
          */
-        public function create_custom_stock_locations_tab_wc_product($original_tabs) // Create the custom tabs for this plugin
+        public function create_custom_stock_locations_tab_wc_product( $original_tabs )
         {
             // Define custom tabs
             $new_tab[$this->tab_stock_locations] = array(
@@ -63,7 +58,7 @@ if(!class_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function tab_content_stock_locations_wc_product($array)
+        public function tab_content_stock_locations_wc_product( $array )
         {
             // Get the product ID
             $product_id = get_the_ID();
@@ -191,7 +186,7 @@ if(!class_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return array
          */
-        private function create_stock_location_input($id, $term)
+        private function create_stock_location_input( $id, $term )
         {
 
             // Create the input
@@ -219,7 +214,7 @@ if(!class_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return int|void
          */
-        public function save_tab_data_stock_locations_wc_product_save($post_id, $post, $update)
+        public function save_tab_data_stock_locations_wc_product_save( $post_id, $post, $update )
         {
 
             if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
@@ -290,7 +285,7 @@ if(!class_exists('SlwStockLocationsTab')) {
          * @since 1.0.0
          * @return void
          */
-        public function update_product_meta($id, $product_stock_location_terms, $terms_total)
+        public function update_product_meta( $id, $product_stock_location_terms, $terms_total )
         {
 			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
 			if( ! $manage_stock ) {

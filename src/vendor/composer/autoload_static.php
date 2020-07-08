@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
 {
     public static $files = array (
-        '70fcae18c6e39884423844bcec0d4cf7' => __DIR__ . '/../..' . '/src/helpers/view.php',
+        '4a6a586c2a198135debe2a301a011fd8' => __DIR__ . '/../..' . '/src/helpers/helper-slw-views.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -35,8 +35,8 @@ class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
         'SLW\\SRC\\Classes\\SlwSettings' => __DIR__ . '/../..' . '/src/classes/class-slw-settings.php',
         'SLW\\SRC\\Classes\\SlwShortcodes' => __DIR__ . '/../..' . '/src/classes/class-slw-shortcodes.php',
         'SLW\\SRC\\Classes\\SlwStockLocationsTab' => __DIR__ . '/../..' . '/src/classes/class-slw-stock-locations-tab.php',
-        'SLW\\SRC\\Helpers\\SlwOrderItemHelper' => __DIR__ . '/../..' . '/src/helpers/SlwOrderItemHelper.php',
-        'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => __DIR__ . '/../..' . '/src/helpers/SlwStockAllocationHelper.php',
+        'SLW\\SRC\\Helpers\\SlwOrderItemHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-order-item.php',
+        'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-stock-allocation.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

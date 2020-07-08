@@ -1,17 +1,21 @@
 <?php
+/**
+ * SLW Order Item Helper Class
+ * @since 1.2.0
+ */
 
 namespace SLW\SRC\Helpers;
 
-
-if (!defined('WPINC')) {
+if ( !defined('WPINC') ) {
     die;
 }
 
-if(!class_exists('SlwOrderItemHelper')) {
+if ( !class_exists('SlwOrderItemHelper') ) {
+
     class SlwOrderItemHelper
     {
 
-        public static function allocateLocationStock($orderItemId, $locationStockMap)
+        public static function allocateLocationStock( $orderItemId, $locationStockMap )
         {
             // Get line item
             $lineItem = new \WC_Order_Item_Product($orderItemId);
@@ -79,20 +83,22 @@ if(!class_exists('SlwOrderItemHelper')) {
                 // Update the itemmeta of the order item
                 wc_update_order_item_meta($orderItemId, '_item_stock_locations_updated', 'yes');
                 wc_update_order_item_meta($orderItemId, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
-            }
+			}
 
             // Update woocommerce product stock level
             if ($totalQtyAllocated) {
-                $mainProduct->set_stock_quantity($mainProduct->get_stock_quantity() - $totalQtyAllocated);
+				$quantityToUpdate = $mainProduct->get_stock_quantity() - $totalQtyAllocated;
+				wc_update_product_stock( $mainProduct, $quantityToUpdate, 'set', false );
             }
 
             // Check if stock in locations are updated for this item
-            if($counter !== sizeof($itemStockLocationTerms)) {
+            if ($counter !== sizeof($itemStockLocationTerms)) {
                return false;
             }
 
             return true;
         }
 
-    }
+	}
+	
 }
