@@ -21,10 +21,11 @@ if( !class_exists('SlwStockAllocationHelper') ) {
          *
          * @param $productId
          * @param $qtyToAllocation
+		 * @param $ignoreLocationId
          *
          * @return array
          */
-        public static function getStockAllocation( $productId, $qtyToAllocation, array $ignoreLocationIds = null )
+        public static function getStockAllocation( $productId, $qtyToAllocation, $ignoreLocationId = null )
         {
             $response = array();
 
@@ -40,11 +41,9 @@ if( !class_exists('SlwStockAllocationHelper') ) {
             // Sorted by priority
 			$productStockLocations = self::sortLocationsByPriority(self::getProductStockLocations($productId));
 			
-			// Remove ignored locations from the array
-			if( !is_null($ignoreLocationIds) && is_array($ignoreLocationIds) ) {
-				foreach( $ignoreLocationIds as $location_id ) {
-					unset($productStockLocations[$location_id]);
-				}
+			// Remove ignored location from the array
+			if( !is_null($ignoreLocationId) && !empty($ignoreLocationId) ) {
+				unset($productStockLocations[$ignoreLocationId]);
 			}
 
             // Map stock to locations

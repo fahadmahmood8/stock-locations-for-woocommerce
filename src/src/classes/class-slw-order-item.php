@@ -392,22 +392,30 @@ if( !class_exists('SlwOrderItem') ) {
 			// Check if customer selected a location
 			if( !empty($userLocationChoiceId = $item->get_meta('_stock_location')) ) {
 				if( !empty($userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId)) ) {
-					if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
-						$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
-					} else {
-						$itemQuantity = $itemQuantity - $userStockLocation[$userLocationChoiceId]->quantity;
-						$userStockLocation[$userLocationChoiceId]->allocated_quantity = $userStockLocation[$userLocationChoiceId]->quantity;
+					// get location meta
+					$location_meta = SlwStockAllocationHelper::getLocationMeta($userLocationChoiceId);
+					// check if location has auto allocation enabled
+					if( isset($location_meta['slw_auto_allocate']) && $location_meta['slw_auto_allocate'] == 1 ) {
+						if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
+							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
+						} else {
+							$itemQuantity = $itemQuantity - $userStockLocation[$userLocationChoiceId]->quantity;
+							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $userStockLocation[$userLocationChoiceId]->quantity;
+						}
+					} else { // auto allocation is disable
+						$userLocationChoiceId = null;
+						$userStockLocation = null;
 					}
 				}
 			}
 			// If the customer choosed a location add it to the ignore array when getting the 'getStockAllocation'
-			$ignoreUserLocation = isset($userLocationChoiceId) ? array($userLocationChoiceId) : null;
+			$ignoreUserLocation = isset($userLocationChoiceId) && !is_null($userLocationChoiceId) ? $userLocationChoiceId : null;
 
 			// Get products stock allocation
 			$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, $ignoreUserLocation);
 
 			// If customer has choosed a location merge the two arrays
-			if( isset($userStockLocation) ) {
+			if( isset($userStockLocation) && !is_null($userStockLocation) ) {
 				$stockAllocation = array_merge($userStockLocation, $stockAllocation);
 			}
 
