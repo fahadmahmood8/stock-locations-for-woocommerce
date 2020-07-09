@@ -121,7 +121,7 @@ if(!class_exists('SlwMain')) {
          */
         public function enqueue_frontend()
         {
-            wp_enqueue_style('styles-frontend', $this->pluginDirUrl() . 'assets//css/frontend/style.css', null, '1.0');
+            wp_enqueue_style('styles-frontend', $this->pluginDirUrl() . 'assets/css/frontend/style.css', null, '1.0');
 
             wp_register_script( 'scripts-frontend', $this->pluginDirUrl() . 'assets/js/frontend/scripts.js', array( 'jquery-blockui' ), '1.0', true );
             wp_localize_script( 'scripts-frontend', 'slw_frontend_ajax_url', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );

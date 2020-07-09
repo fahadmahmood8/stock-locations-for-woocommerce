@@ -144,6 +144,7 @@ if(!class_exists('SlwSettings')) {
 				<?php $selected = isset( $this->plugin_settings['show_in_cart'] ) && $this->plugin_settings['show_in_cart'] === 'no' ? 'selected' : ''; ?>
 				<option value="no" <?= $selected; ?>><?= __('No', 'stock-locations-for-woocommerce'); ?></option>
 			</select>
+			<p>&#9888; <?= __('If auto order allocation is enabled for the selected location in the cart, this setting will be ignored for stock reduction.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
 		}
 

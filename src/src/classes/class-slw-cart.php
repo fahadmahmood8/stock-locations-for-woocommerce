@@ -29,7 +29,8 @@ if(!class_exists('SlwCart')) {
 			// check if show in cart is enabled
 			if( $plugin_settings['show_in_cart'] == 'yes' ) {
 				add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 10, 2 );
-            	add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
+				add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
+				add_action( 'wp_ajax_nopriv_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
             	add_action( 'woocommerce_checkout_create_order_line_item', array($this, 'create_order_line_item_meta'), 10, 4 );
 			}
         }
