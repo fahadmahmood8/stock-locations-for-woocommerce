@@ -18,6 +18,8 @@ You can print the locations inside a product page on the frontend, with this sho
 
 `[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
 `[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
+`[slw_product_message is_available="yes" only_location_available="no" location="location-slug-or-id"]Your custom product message/HTML here[/slw_product_message]`
+`[slw_cart_message qty_from_location="location-slug-or-id" only_location_available="no"]Your custom cart message/HTML here[/slw_cart_message]`
 
 SLW also adds standardized barcode fields to WooCommerce products, for you to use.
 
@@ -51,6 +53,8 @@ This plugin requires at least *WooCommerce 3.4*.
 - Easy management of stock with multiple locations, both in product and orders
 - Standardized barcodes
 - Get and update product stock locations from the REST API
+- Allow customers to select locations when purchasing
+- Auto order allocation for locations stock reduction
 
 
 = Compatibility =
@@ -87,7 +91,7 @@ This plugin requires at least *WooCommerce 3.4*.
 == Frequently Asked Questions ==
 
 = I found a bug, where i can report it? =
-I prefer you to use the Github repo, you can find it here [GitHub](https://github.com/alexmigf/stock-locations-for-woocommerce)
+I prefer you to use the Github issues. You can submit a new one here [GitHub](https://github.com/alexmigf/stock-locations-for-woocommerce/issues/new)
 
 
 == Screenshots ==
@@ -99,9 +103,19 @@ I prefer you to use the Github repo, you can find it here [GitHub](https://githu
 5. Manage stock locations in variable products
 6. After successful subtraction of stock the locations inputs become inactive
 7. Insert the correct amount to subtract from one or more locations per item
+8. Allow customers to select locations in cart page
 
 
 == Changelog ==
+
+= 1.2.0 =
+- New: stock locations select in cart page
+- New: settings page
+- New: auto order allocation for stock
+- New: shortcode 'slw_cart_message' to display a custom message in the cart page
+- New: shortcode 'slw_product_message' to displaying a custom message on product page
+- New: options for stock locations: Default for New Products, Backorder Location, Auto Order Allocate and Stock Location Priority
+- Fix: several bugs and PHP legacy compatibilities
 
 = 1.1.5 =
 - Fixes bug on shortcodes method
