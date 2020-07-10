@@ -302,7 +302,9 @@ if(!class_exists('SlwShortcodes')) {
          */
         public function display_cart_message( $atts, $innerHtml = '' )
         {
-            global $woocommerce, $post;
+			if( is_admin() ) return;
+
+			global $woocommerce, $post;
 
             // Default values
             $values = shortcode_atts(array(

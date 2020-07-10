@@ -18,8 +18,8 @@ You can print the locations inside a product page on the frontend, with this sho
 
 `[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
 `[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
-`[slw_product_message is_available="yes" only_location_available="no" location="location-slug-or-id"]Your custom product message/HTML here[/slw_product_message]`
-`[slw_cart_message qty_from_location="location-slug-or-id" only_location_available="no"]Your custom cart message/HTML here[/slw_cart_message]`
+`[slw_product_message is_available="yes" only_location_available="no" location="location-slug"]Your custom product message/HTML here[/slw_product_message]`
+`[slw_cart_message qty_from_location="location-slug" only_location_available="no"]Your custom cart message/HTML here[/slw_cart_message]`
 
 SLW also adds standardized barcode fields to WooCommerce products, for you to use.
 
