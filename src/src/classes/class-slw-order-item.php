@@ -22,6 +22,8 @@ if( !class_exists('SlwOrderItem') ) {
 		private $items;
 		private $plugin_settings;
 		private $show_in_cart;
+		private $wc_manage_stock;
+		private $wc_hold_stock_minutes;
 
 		/**
          * Construct.
@@ -42,6 +44,11 @@ if( !class_exists('SlwOrderItem') ) {
 			if( isset($this->plugin_settings['show_in_cart']) ) {
 				$this->show_in_cart = $this->plugin_settings['show_in_cart'];
 			}
+
+			// WC manage stock
+			$this->wc_manage_stock = get_option( 'woocommerce_manage_stock' );
+			// WC hold stock minutes
+			$this->wc_hold_stock_minutes = get_option( 'woocommerce_hold_stock_minutes' );
 		}
 
         /**
@@ -424,8 +431,11 @@ if( !class_exists('SlwOrderItem') ) {
                 return;
 			}
 			
-			// Allocations exist, disable WC hold stock
-			add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
+			// If WC manage stock is enabled
+			if ( $this->wc_manage_stock == 'yes' && !empty($this->wc_hold_stock_minutes) ) {
+				// Allocations exist, disable WC hold stock
+				add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
+			}
 
             // Build simple location term to stock quantity allocation array
             $simpleLocationAllocations = array();
