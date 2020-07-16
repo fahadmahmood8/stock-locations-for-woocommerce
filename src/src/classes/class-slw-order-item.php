@@ -422,7 +422,10 @@ if( !class_exists('SlwOrderItem') ) {
             // Nothing to do, either no allocations valid or product does not have multi locations
             if (empty($stockAllocation)) {
                 return;
-            }
+			}
+			
+			// Allocations exist, disable WC hold stock
+			add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
 
             // Build simple location term to stock quantity allocation array
             $simpleLocationAllocations = array();
