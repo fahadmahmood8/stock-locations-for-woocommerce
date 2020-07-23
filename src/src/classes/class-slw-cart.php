@@ -42,7 +42,7 @@ if(!class_exists('SlwCart')) {
          */
         public function add_cart_item_stock_locations( $cart_item, $cart_item_key )
         {
-            if( empty($cart_item) ) return;
+			if( empty($cart_item) ) return;
 
             $product_id = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
             
@@ -50,7 +50,7 @@ if(!class_exists('SlwCart')) {
                 echo '<select class="slw_cart_item_stock_location" style="display:block;" required>';
                 echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
                 foreach( $stock_locations as $id => $location ) {
-                    if( $location->quantity > 0 ) {
+                    if( $location->quantity > 0 && $location->quantity >= $cart_item['quantity'] ) {
                         echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'">'.$location->name.'</option>';
                     }
                 }

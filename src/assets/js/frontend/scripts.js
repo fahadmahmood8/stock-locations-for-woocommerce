@@ -8,6 +8,7 @@
     // Functions to initiate
     function init() {
 		slwWcCartItemStockLocation();
+		slwWcCartItemLockSelectedLocation();
 	}
 
 	function slwWcCartItemStockLocation()
@@ -34,6 +35,14 @@
 					$('.cart_totals').unblock();
 				}
 			});
+		});
+	}
+
+	function slwWcCartItemLockSelectedLocation()
+	{
+		$('.slw_cart_item_stock_location').on('change', function() {
+			var location_id = $(this).val();
+			$(this).closest('.woocommerce-cart-form').find('.slw_cart_item_stock_location').val(location_id).prop('disabled', true);
 		});
 	}
 
