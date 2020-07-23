@@ -108,6 +108,11 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.2.1 =
+- New: plugin setting to lock selected location in cart for every cart item
+- Fix: check if location stock is enough for the cart item, if not hide from select option
+- Fix: if auto allocation exist for the location disable WC hold stock
+
 = 1.2.0 =
 - New: stock locations select in cart page
 - New: settings page
