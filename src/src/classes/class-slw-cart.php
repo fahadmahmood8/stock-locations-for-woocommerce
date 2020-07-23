@@ -26,12 +26,18 @@ if(!class_exists('SlwCart')) {
         {
 			// get option
 			$plugin_settings = get_option( 'slw_settings' );
+
 			// check if show in cart is enabled
 			if( $plugin_settings['show_in_cart'] == 'yes' ) {
 				add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 10, 2 );
 				add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
 				add_action( 'wp_ajax_nopriv_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
             	add_action( 'woocommerce_checkout_create_order_line_item', array($this, 'create_order_line_item_meta'), 10, 4 );
+			}
+
+			// check if different location per cart item is enabled
+			if( $plugin_settings['different_location_per_cart_item'] == 'yes' ) {
+				add_action( 'wp_footer', array($this, 'lock_cart_item_location') );
 			}
         }
 
@@ -95,7 +101,26 @@ if(!class_exists('SlwCart')) {
                     $item->add_meta_data( '_stock_location', $cart_item['stock_location'], true );
                 }
             }
-        }
+		}
+		
+		/**
+         * Locks the cart item location.
+         *
+         * @since 1.2.1
+         */
+        public function lock_cart_item_location()
+        {
+			?>
+			<script>
+			jQuery( function ( $ ) {
+				$('.slw_cart_item_stock_location').on('change', function() {
+					var location_id = $(this).val();
+					$(this).closest('.woocommerce-cart-form').find('.slw_cart_item_stock_location').val(location_id).prop('disabled', true);
+				});
+			} );
+			</script>
+			<?php
+		}
 
     }
 

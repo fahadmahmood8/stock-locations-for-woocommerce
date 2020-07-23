@@ -95,7 +95,15 @@ if(!class_exists('SlwSettings')) {
 			add_settings_field(
 				'show_in_cart',
 				__('Show stock locations in cart', 'stock-locations-for-woocommerce'),
-				array( $this, 'cart_dropdown_options_callback' ),
+				array( $this, 'show_in_cart_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
+
+			add_settings_field(
+				'different_location_per_cart_item',
+				__('Different location per cart item', 'stock-locations-for-woocommerce'),
+				array( $this, 'different_location_per_cart_item_callback' ),
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
@@ -111,9 +119,12 @@ if(!class_exists('SlwSettings')) {
 		{
 			$sanitary_values = array();
 
-			// sanitize show stock locations in cart dropdown option
+			// sanitize option
 			if ( isset( $input['show_in_cart'] ) ) {
 				$sanitary_values['show_in_cart'] = $input['show_in_cart'];
+			}
+			if ( isset( $input['different_location_per_cart_item'] ) ) {
+				$sanitary_values['different_location_per_cart_item'] = $input['different_location_per_cart_item'];
 			}
 	
 			return $sanitary_values;
@@ -133,18 +144,42 @@ if(!class_exists('SlwSettings')) {
          * @since 1.2.0
          * @return void
          */
-		public function cart_dropdown_options_callback()
+		public function show_in_cart_callback()
+		{
+			$this->select_yes_no_callback('show_in_cart');
+			?>
+			<p>&#9888; <?= __('If auto order allocation is enabled for the selected location in the cart, this setting will be ignored for stock reduction.', 'stock-locations-for-woocommerce'); ?></p>
+			<?php
+		}
+
+		/**
+         * Different location per cart item dropdown callback.
+         *
+         * @since 1.2.1
+         * @return void
+         */
+		public function different_location_per_cart_item_callback()
+		{
+			$this->select_yes_no_callback('different_location_per_cart_item');
+		}
+
+		/**
+         * Select yes/no callback.
+         *
+         * @since 1.2.1
+         * @return void
+         */
+		public function select_yes_no_callback( $id )
 		{
 			?> 
-			<select name="slw_settings[show_in_cart]" id="show_in_cart">
-				<?php $selected = isset($this->plugin_settings['show_in_cart']) ?: 'selected'; ?>
+			<select name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>">
+				<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
 				<option disabled <?= $selected; ?>><?= __('Select...', 'stock-locations-for-woocommerce'); ?></option>
-				<?php $selected = isset( $this->plugin_settings['show_in_cart'] ) && $this->plugin_settings['show_in_cart'] === 'yes' ? 'selected' : ''; ?>
+				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
 				<option value="yes" <?= $selected; ?>><?= __('Yes', 'stock-locations-for-woocommerce'); ?></option>
-				<?php $selected = isset( $this->plugin_settings['show_in_cart'] ) && $this->plugin_settings['show_in_cart'] === 'no' ? 'selected' : ''; ?>
+				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected' : ''; ?>
 				<option value="no" <?= $selected; ?>><?= __('No', 'stock-locations-for-woocommerce'); ?></option>
 			</select>
-			<p>&#9888; <?= __('If auto order allocation is enabled for the selected location in the cart, this setting will be ignored for stock reduction.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
 		}
 
