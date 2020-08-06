@@ -1,5 +1,7 @@
 <?php
 
+namespace SLW\SRC\Helpers;
+
 /**
  * Return a view
  *

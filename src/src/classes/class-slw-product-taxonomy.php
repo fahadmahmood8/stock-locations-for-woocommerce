@@ -144,7 +144,7 @@ if(!class_exists('SlwProductTaxonomy')) {
             }
 
             // Echo view
-            echo view($view, [
+            echo \SLW\SRC\Helpers\view($view, [
                 'default_location' => $default_location,
                 'primary_location' => $primary_location,
                 'auto_order_allocate' => $auto_order_allocate,

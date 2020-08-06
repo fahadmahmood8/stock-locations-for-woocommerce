@@ -195,7 +195,7 @@ if(!class_exists('SlwProductListing')) {
                 }
             }
 
-            echo view('product-pre-select-location-scripts', ['locations' => $locations]);
+            echo \SLW\SRC\Helpers\view('product-pre-select-location-scripts', ['locations' => $locations]);
         }
 
     }
