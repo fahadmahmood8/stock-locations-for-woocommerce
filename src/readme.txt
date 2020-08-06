@@ -16,9 +16,12 @@ Stock Locations for WooCommerce will help you manage your products stock across 
 
 You can print the locations inside a product page on the frontend, with this shortcodes:
 
+- Product pages
 `[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
 `[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
 `[slw_product_message is_available="yes" only_location_available="no" location="location-slug"]Your custom product message/HTML here[/slw_product_message]`
+
+- Cart page
 `[slw_cart_message qty_from_location="location-slug" only_location_available="no"]Your custom cart message/HTML here[/slw_cart_message]`
 
 SLW also adds standardized barcode fields to WooCommerce products, for you to use.
@@ -59,7 +62,7 @@ This plugin requires at least *WooCommerce 3.4*.
 
 = Compatibility =
 
-- PHP 7+
+- PHP 7.2+
 
 
 == Installation ==
@@ -107,6 +110,9 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 
 == Changelog ==
+
+= 1.2.2 =
+- Fix: helper 'view' function call, preventing colision with other plugins with the same function name
 
 = 1.2.1 =
 - New: plugin setting to lock selected location in cart for every cart item

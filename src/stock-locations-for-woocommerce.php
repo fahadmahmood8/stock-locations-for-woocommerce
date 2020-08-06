@@ -4,7 +4,7 @@
  * Description:       		This plugin will help you manage WooCommerce Products stocks throw locations and also different traditional barcodes.
  * Version:					__STABLE_TAG__
  * Requires at least: 		4.9
- * Requires PHP:      		7.0
+ * Requires PHP:      		7.2
  * Author:            		Alexandre Faustino
  * Author URI:        		mailto:alexmigf@gmail.com
  * License:           		GPL v2 or later
@@ -12,7 +12,7 @@
  * Text Domain:       		stock-locations-for-woocommerce
  * Domain Path:       		/languages
  * WC requires at least:	3.4.0
- * WC tested up to: 		4.3.0
+ * WC tested up to: 		4.3.1
  */
 
 /**
