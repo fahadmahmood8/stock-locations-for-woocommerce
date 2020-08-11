@@ -36,7 +36,7 @@ if(!class_exists('SlwCart')) {
 			}
 
 			// check if different location per cart item is enabled
-			if( $plugin_settings['different_location_per_cart_item'] == 'yes' ) {
+			if( $plugin_settings['different_location_per_cart_item'] == 'no' ) {
 				add_action( 'wp_footer', array($this, 'lock_cart_item_location') );
 			}
         }

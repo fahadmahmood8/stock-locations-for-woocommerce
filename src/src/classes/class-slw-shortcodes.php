@@ -150,7 +150,7 @@ if(!class_exists('SlwShortcodes')) {
             if( !empty($product) ) {
                 // Check for variations
                 $variations_products = array();
-                if( !empty($product) && $product->is_type( 'variable' ) ) {
+                if( $product->is_type( 'variable' ) ) {
 					$product_variations_ids = $product->get_children();
 					$product_variations = array();
 					foreach( $product_variations_ids as $variation_id ) {
