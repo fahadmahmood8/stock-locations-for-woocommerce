@@ -107,6 +107,14 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
+
+			add_settings_field(
+				'delete_unused_product_locations_meta',
+				__('Auto delete unused product locations meta', 'stock-locations-for-woocommerce'),
+				array( $this, 'delete_unused_product_locations_meta_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
 		}
 		
 		/**
@@ -125,6 +133,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['different_location_per_cart_item'] ) ) {
 				$sanitary_values['different_location_per_cart_item'] = $input['different_location_per_cart_item'];
+			}
+			if ( isset( $input['delete_unused_product_locations_meta'] ) ) {
+				$sanitary_values['delete_unused_product_locations_meta'] = $input['delete_unused_product_locations_meta'];
 			}
 	
 			return $sanitary_values;
@@ -161,6 +172,17 @@ if(!class_exists('SlwSettings')) {
 		public function different_location_per_cart_item_callback()
 		{
 			$this->select_yes_no_callback('different_location_per_cart_item');
+		}
+
+		/**
+         * Delete unused product locations meta dropdown callback.
+         *
+         * @since 1.2.3
+         * @return void
+         */
+		public function delete_unused_product_locations_meta_callback()
+		{
+			$this->select_yes_no_callback('delete_unused_product_locations_meta');
 		}
 
 		/**

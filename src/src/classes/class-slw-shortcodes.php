@@ -202,19 +202,19 @@ if(!class_exists('SlwShortcodes')) {
                     if( $values['show_qty'] == 'yes' ) {
                         $location_stock = $product->get_meta('_stock_at_'.$location->term_id);
                         if( !empty($location_stock) ) {
-                            $output .= '<li class="slw-product-location">'.apply_filters('slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-qty">'.$location_stock.'</span></li>';
+                            $output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-qty slw-product-location-qty__number">'.apply_filters( 'slw_shortcode_product_location_stock', $location_stock, $location ).'</span></li>';
                         } else {
-                            $output .= '<li class="slw-product-location">'.apply_filters('slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-qty">'.__('n/a', 'stock-locations-for-woocommerce').'</span></li>';
+                            $output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-qty slw-product-location-qty__notavailable">'.__('Not available', 'stock-locations-for-woocommerce').'</span></li>';
                         }
                     } elseif( $values['show_qty'] == 'no' && $values['show_stock_status'] == 'yes' ) {
                         $location_stock = $product->get_meta('_stock_at_'.$location->term_id);
                         if( !empty($location_stock) && $location_stock > 0 ) {
-                            $output .= '<li class="slw-product-location">'.apply_filters('slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status">'.__('In stock', 'stock-locations-for-woocommerce').'</span></li>';
+                            $output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__instock">'.__('In stock', 'stock-locations-for-woocommerce').'</span></li>';
                         } else {
-                            $output .= '<li class="slw-product-location">'.apply_filters('slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status">'.__('Out of stock', 'stock-locations-for-woocommerce').'</span></li>';
+                            $output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__outofstock">'.__('Out of stock', 'stock-locations-for-woocommerce').'</span></li>';
                         }
                     } else {
-                        $output .= '<li class="slw-product-location">'.apply_filters('slw_shortcode_product_location_name', $location->name, $location ).'</li>';
+                        $output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).'</li>';
                     }
                 }
                 $output .= '</ul>';

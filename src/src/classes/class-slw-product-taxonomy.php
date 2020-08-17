@@ -44,8 +44,8 @@ if(!class_exists('SlwProductTaxonomy')) {
         public static function get_tax_names( $type )
         {
             $data = [
-                'plural' => self::$tax_plural_name,
-                'singular' => self::$tax_singular_name
+                'plural' 	=> self::$tax_plural_name,
+                'singular' 	=> self::$tax_singular_name
             ];
 
             return $data[$type];

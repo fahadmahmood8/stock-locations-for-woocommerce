@@ -24,7 +24,7 @@ if(!class_exists('SlwCart')) {
          */
         public function __construct()
         {
-			// get option
+			// get settings
 			$plugin_settings = get_option( 'slw_settings' );
 
 			// check if show in cart is enabled
