@@ -183,6 +183,9 @@ if(!class_exists('SlwSettings')) {
 		public function delete_unused_product_locations_meta_callback()
 		{
 			$this->select_yes_no_callback('delete_unused_product_locations_meta');
+			?>
+			<p><?= __('Runs every day at midnight.', 'stock-locations-for-woocommerce'); ?></p>
+			<?php
 		}
 
 		/**

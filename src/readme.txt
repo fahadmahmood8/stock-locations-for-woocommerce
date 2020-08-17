@@ -2,7 +2,7 @@
 Contributors: alexmigf
 Tags: woocommerce, stock, stock locations, barcode, barcodes, ean, upc, asin, isbn, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -110,6 +110,13 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 
 == Changelog ==
+
+= 1.2.3 =
+- New: setting to auto delete unused product stock locations meta
+- New: filter 'slw_shortcode_product_location_stock' for shortcodes 'slw_product_locations' and 'slw_product_variations_locations'
+- New: CSS classes for shortcodes 'slw_product_locations' and 'slw_product_variations_locations'
+- Fix: 'outofstock' taxonomy on product save/update
+- Fix: setting 'Different location per cart item', values were exchanged
 
 = 1.2.2 =
 - Fix: helper 'view' function call, preventing colision with other plugins with the same function name
