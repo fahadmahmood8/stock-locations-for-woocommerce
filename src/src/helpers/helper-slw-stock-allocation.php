@@ -125,7 +125,10 @@ if( !class_exists('SlwStockAllocationHelper') ) {
             $returnLocations = array();
 
             // Get locations and stock
-            $locations = get_the_terms(((isset($parentProduct) && !empty($parentProduct)) ? $parentProduct->get_id() : $product->get_id()), SlwProductTaxonomy::$tax_singular_name);
+			$locations = get_the_terms(((isset($parentProduct) && !empty($parentProduct)) ? $parentProduct->get_id() : $product->get_id()), SlwProductTaxonomy::$tax_singular_name);
+
+			if( empty($locations) || ! is_array($locations) ) return $returnLocations;
+
             foreach ($locations as $idx => $location) {
                 // Only return the filter location
                 if ($filterByLocation != null && ($filterByLocation != $location->term_id && $filterByLocation != $location->slug)) {
