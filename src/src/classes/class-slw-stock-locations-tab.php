@@ -27,14 +27,14 @@ if(!class_exists('SlwStockLocationsTab')) {
 		public function __construct()
 		{
 			// get settings
-			$plugin_settings = get_option( 'slw_settings' );
+			$this->plugin_settings = get_option( 'slw_settings' );
 
 			add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_stock_locations_tab_wc_product'), 10, 1); // Since WC 3.0.2
 			add_action('woocommerce_product_data_panels', array($this, 'tab_content_stock_locations_wc_product'), 10, 1); // Since WC 3.0.2
 			add_action('save_post', array($this, 'save_tab_data_stock_locations_wc_product_save'), 10, 3);
 
 			// check setting
-			if( $plugin_settings['delete_unused_product_locations_meta'] == 'yes' ) {
+			if( $this->plugin_settings['delete_unused_product_locations_meta'] == 'yes' ) {
 				// Action scheduler action
 				add_action( 'init', array($this, 'schedule_action_to_delete_product_locations_meta') );
 				add_action( 'slw_delete_unused_product_locations_meta', array($this, 'delete_product_meta_callback') );	
@@ -147,7 +147,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 						$variation_id = $variation['variation_id'];
 
-						$variation_attributes = implode(",", $variation['attributes']);
+						if( is_array($variation['attributes']) ) {
+							$variation_attributes = implode(",", $variation['attributes']);
+						} else {
+							$variation_attributes = $variation['attributes'];
+						}
 
 						$variation_manage_stock = get_post_meta($variation_id, '_manage_stock', true);
 						$variation_price = get_post_meta($variation_id, '_price', true);
