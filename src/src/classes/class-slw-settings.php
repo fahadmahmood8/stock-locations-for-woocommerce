@@ -115,6 +115,14 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
+
+			add_settings_field(
+				'include_location_data_in_formatted_item_meta',
+				__('Include location data in formatted item meta', 'stock-locations-for-woocommerce'),
+				array( $this, 'include_location_data_in_formatted_item_meta_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
 		}
 		
 		/**
@@ -136,6 +144,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['delete_unused_product_locations_meta'] ) ) {
 				$sanitary_values['delete_unused_product_locations_meta'] = $input['delete_unused_product_locations_meta'];
+			}
+			if ( isset( $input['include_location_data_in_formatted_item_meta'] ) ) {
+				$sanitary_values['include_location_data_in_formatted_item_meta'] = $input['include_location_data_in_formatted_item_meta'];
 			}
 	
 			return $sanitary_values;
@@ -185,6 +196,20 @@ if(!class_exists('SlwSettings')) {
 			$this->select_yes_no_callback('delete_unused_product_locations_meta');
 			?>
 			<p><?= __('Runs every day at midnight.', 'stock-locations-for-woocommerce'); ?></p>
+			<?php
+		}
+
+		/**
+         * Delete unused product locations meta dropdown callback.
+         *
+         * @since 1.2.4
+         * @return void
+         */
+		public function include_location_data_in_formatted_item_meta_callback()
+		{
+			$this->select_yes_no_callback('include_location_data_in_formatted_item_meta');
+			?>
+			<p><?= __('This special meta can be used by third party plugins to show the location name and quantity subtracted.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
 		}
 

@@ -82,7 +82,21 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
                 // Update the itemmeta of the order item
                 wc_update_order_item_meta($orderItemId, '_item_stock_locations_updated', 'yes');
-                wc_update_order_item_meta($orderItemId, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
+				wc_update_order_item_meta($orderItemId, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
+
+				$current_slw_data = $lineItem->get_meta('_slw_data');
+				$new_data = array(
+					$term->term_id => array(
+						'location_name' 		=> $term->name,
+						'quantity_subtracted'	=> $item_stock_location_subtract_input_qty
+					)
+				);
+				if( !empty($current_slw_data) ) {
+					$data = array_merge($current_slw_data, $new_data);
+				} else {
+					$data = $new_data;
+				}
+                wc_update_order_item_meta($orderItemId, '_slw_data', $data);
 			}
 
             // Update woocommerce product stock level

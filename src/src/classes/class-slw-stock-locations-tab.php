@@ -34,7 +34,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			add_action('save_post', array($this, 'save_tab_data_stock_locations_wc_product_save'), 10, 3);
 
 			// check setting
-			if( $this->plugin_settings['delete_unused_product_locations_meta'] == 'yes' ) {
+			if( isset($this->plugin_settings['delete_unused_product_locations_meta']) && $this->plugin_settings['delete_unused_product_locations_meta'] == 'yes' ) {
 				// Action scheduler action
 				add_action( 'init', array($this, 'schedule_action_to_delete_product_locations_meta') );
 				add_action( 'slw_delete_unused_product_locations_meta', array($this, 'delete_product_meta_callback') );	

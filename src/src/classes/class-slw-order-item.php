@@ -40,9 +40,15 @@ if( !class_exists('SlwOrderItem') ) {
 
 			// get plugin settings
 			$this->plugin_settings = get_option( 'slw_settings' );
+
 			// get show in cart value from settings
 			if( isset($this->plugin_settings['show_in_cart']) ) {
 				$this->show_in_cart = $this->plugin_settings['show_in_cart'];
+			}
+
+			// check if we can include location data in formatted item meta
+			if( isset($this->plugin_settings['include_location_data_in_formatted_item_meta']) && $this->plugin_settings['include_location_data_in_formatted_item_meta'] == 'yes' ) {
+				add_filter( 'woocommerce_order_item_get_formatted_meta_data', array($this, 'include_location_data_in_formatted_item_meta'), 10, 2 );
 			}
 
 			// WC manage stock
@@ -446,7 +452,31 @@ if( !class_exists('SlwOrderItem') ) {
             // Allocate order item stock to locations
 			SlwOrderItemHelper::allocateLocationStock($item->get_id(), $simpleLocationAllocations);
 
-        }
+		}
+		
+		/**
+         * Adds stock location data to item formatted meta.
+         *
+         * @since 1.2.4
+         * @return array
+         */
+		public function include_location_data_in_formatted_item_meta( $formatted_meta, $item )
+		{
+			if( !empty($item) ) {
+				if( !empty($item_location_data = $item->get_meta('_slw_data')) ) {
+					foreach( $item_location_data as $location_id => $data ) {
+						$value = $data['location_name'].' (-'.$data['quantity_subtracted'].')';
+						$formatted_meta[] = (object) array(
+							'key' 			=> 'stock_location_' . $location_id,
+							'display_key'	=> __('Stock location', 'stock-locations-for-woocommerce'),
+							'value'			=> $value,
+							'display_value'	=> '<p>'.$value.'</p>'
+						);
+					}
+				}
+			}
+			return $formatted_meta;
+		}
 
     }
 
