@@ -62,7 +62,6 @@ if(!class_exists('SlwCart')) {
                 }
                 echo '</select>';
             }
-            
         }
 
 		/**

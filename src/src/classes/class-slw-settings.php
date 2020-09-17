@@ -123,6 +123,14 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
+
+			add_settings_field(
+				'display_barcodes_tab',
+				__('Disable barcodes tab', 'stock-locations-for-woocommerce'),
+				array( $this, 'display_barcodes_tab_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
 		}
 		
 		/**
@@ -147,6 +155,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['include_location_data_in_formatted_item_meta'] ) ) {
 				$sanitary_values['include_location_data_in_formatted_item_meta'] = $input['include_location_data_in_formatted_item_meta'];
+			}
+			if ( isset( $input['display_barcodes_tab'] ) ) {
+				$sanitary_values['display_barcodes_tab'] = $input['display_barcodes_tab'];
 			}
 	
 			return $sanitary_values;
@@ -214,6 +225,17 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
+         * Disable barcodes tab callback.
+         *
+         * @since 1.2.1
+         * @return void
+         */
+		public function display_barcodes_tab_callback()
+		{
+			$this->select_yes_no_callback('display_barcodes_tab');
+		}
+
+		/**
          * Select yes/no callback.
          *
          * @since 1.2.1
@@ -223,11 +245,14 @@ if(!class_exists('SlwSettings')) {
 		{
 			?> 
 			<select name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>">
-				<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
-				<option disabled <?= $selected; ?>><?= __('Select...', 'stock-locations-for-woocommerce'); ?></option>
+				<?php if( $id != 'display_barcodes_tab' ) : ?>
+					<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
+					<option disabled <?= $selected; ?>><?= __('Select...', 'stock-locations-for-woocommerce'); ?></option>
+				<?php endif; ?>
 				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
 				<option value="yes" <?= $selected; ?>><?= __('Yes', 'stock-locations-for-woocommerce'); ?></option>
 				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected' : ''; ?>
+				<?php $selected = !isset( $this->plugin_settings[$id] ) && $id == 'display_barcodes_tab' ? 'selected' : ''; ?>
 				<option value="no" <?= $selected; ?>><?= __('No', 'stock-locations-for-woocommerce'); ?></option>
 			</select>
 			<?php

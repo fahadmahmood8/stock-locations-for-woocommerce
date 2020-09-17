@@ -421,6 +421,7 @@ if( !class_exists('SlwOrderItem') ) {
 					}
 				}
 			}
+			
 			// If the customer choosed a location add it to the ignore array when getting the 'getStockAllocation'
 			$ignoreUserLocation = isset($userLocationChoiceId) && !is_null($userLocationChoiceId) ? $userLocationChoiceId : null;
 
