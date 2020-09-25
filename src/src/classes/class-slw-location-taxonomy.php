@@ -1,6 +1,6 @@
 <?php
 /**
- * SLW Product Taxonomy Class
+ * SLW Location Taxonomy Class
  *
  * @since 1.0.0
  */
@@ -11,12 +11,13 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-if(!class_exists('SlwProductTaxonomy')) {
+if(!class_exists('SlwLocationTaxonomy')) {
 
-    class SlwProductTaxonomy
+    class SlwLocationTaxonomy
     {
         public static $tax_plural_name = 'locations';
 		public static $tax_singular_name = 'location';
+		private $plugin_settings;
 
 		/**
          * Construct.
@@ -32,7 +33,10 @@ if(!class_exists('SlwProductTaxonomy')) {
             add_action( 'location_edit_form', array($this, 'formFields'), 100, 2 );
             add_action( 'location_add_form_fields', array($this, 'formFields'), 10, 2 );
             add_action( 'edited_location', array($this, 'formSave'), 10, 2 );
-            add_action( 'created_location', array($this, 'formSave'), 10, 2 );
+			add_action( 'created_location', array($this, 'formSave'), 10, 2 );
+			
+			// get settings
+			$this->plugin_settings = get_option( 'slw_settings' );
         }
 
         /**
@@ -133,7 +137,8 @@ if(!class_exists('SlwProductTaxonomy')) {
             $default_location = 0;
             $primary_location = 0;
             $auto_order_allocate = 0;
-            $auto_order_allocate_priority = 0;
+			$auto_order_allocate_priority = 0;
+			$location_email = '';
 
             // Is edit screen
             if (is_object($tag)) {
@@ -141,15 +146,22 @@ if(!class_exists('SlwProductTaxonomy')) {
                 $default_location = get_term_meta($tag->term_id, 'slw_default_location', true);
                 $primary_location = get_term_meta($tag->term_id, 'slw_backorder_location', true);
                 $auto_order_allocate = get_term_meta($tag->term_id, 'slw_auto_allocate', true);
-                $auto_order_allocate_priority = get_term_meta($tag->term_id, 'slw_location_priority', true);
-            }
+				$auto_order_allocate_priority = get_term_meta($tag->term_id, 'slw_location_priority', true);
+				$location_email = get_term_meta($tag->term_id, 'slw_location_email', true);
+			}
+			
+			// if email notifications are disable
+			if( $this->plugin_settings['location_email_notifications'] != 'on' ) {
+				$location_email = null;
+			}
 
             // Echo view
             echo \SLW\SRC\Helpers\view($view, [
-                'default_location' => $default_location,
-                'primary_location' => $primary_location,
-                'auto_order_allocate' => $auto_order_allocate,
-                'auto_order_allocate_priority' => $auto_order_allocate_priority
+                'default_location' 				=> $default_location,
+                'primary_location' 				=> $primary_location,
+                'auto_order_allocate' 			=> $auto_order_allocate,
+                'auto_order_allocate_priority'	=> $auto_order_allocate_priority,
+                'location_email'				=> $location_email
             ]);
         }
 
@@ -163,7 +175,10 @@ if(!class_exists('SlwProductTaxonomy')) {
                 update_term_meta($term_id, 'slw_default_location', $_POST['default_location']);
                 update_term_meta($term_id, 'slw_backorder_location', $_POST['primary_location']);
                 update_term_meta($term_id, 'slw_auto_allocate', $_POST['auto_order_allocate']);
-                update_term_meta($term_id, 'slw_location_priority', $_POST['auto_order_allocate_priority']);
+				update_term_meta($term_id, 'slw_location_priority', $_POST['auto_order_allocate_priority']);
+				if( isset($_POST['location_email']) ) {
+					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
+				}
             }
         }
 

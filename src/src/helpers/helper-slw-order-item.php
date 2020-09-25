@@ -84,6 +84,9 @@ if ( !class_exists('SlwOrderItemHelper') ) {
                 wc_update_order_item_meta($orderItemId, '_item_stock_locations_updated', 'yes');
 				wc_update_order_item_meta($orderItemId, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
 
+				// Send email notification to location if enabled and if match conditions (see helper method)
+				SlwMailHelper::stock_allocation_notification( $term, $lineItem, $item_stock_location_subtract_input_qty );
+
 				$current_slw_data = $lineItem->get_meta('_slw_data');
 				$new_data = array(
 					$term->term_id => array(

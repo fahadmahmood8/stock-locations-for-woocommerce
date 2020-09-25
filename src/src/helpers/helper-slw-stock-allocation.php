@@ -6,7 +6,7 @@
 
 namespace SLW\SRC\Helpers;
 
-use SLW\SRC\Classes\SlwProductTaxonomy;
+use SLW\SRC\Classes\SlwLocationTaxonomy;
 
 if (!defined('WPINC')) {
     die;
@@ -125,7 +125,7 @@ if( !class_exists('SlwStockAllocationHelper') ) {
             $returnLocations = array();
 
             // Get locations and stock
-			$locations = get_the_terms(((isset($parentProduct) && !empty($parentProduct)) ? $parentProduct->get_id() : $product->get_id()), SlwProductTaxonomy::$tax_singular_name);
+			$locations = get_the_terms(((isset($parentProduct) && !empty($parentProduct)) ? $parentProduct->get_id() : $product->get_id()), SlwLocationTaxonomy::$tax_singular_name);
 
 			if( empty($locations) || ! is_array($locations) ) return $returnLocations;
 
@@ -225,7 +225,7 @@ if( !class_exists('SlwStockAllocationHelper') ) {
         public static function getBackOrderLocation()
         {
             $terms = get_terms(array(
-                'taxonomy'		=>  SlwProductTaxonomy::$tax_singular_name,
+                'taxonomy'		=>  SlwLocationTaxonomy::$tax_singular_name,
                 'hide_empty' 	=>  false,
                 'meta_query' 	=> array(array(
                     'key'		=> 'slw_backorder_location',
@@ -259,6 +259,11 @@ if( !class_exists('SlwStockAllocationHelper') ) {
             return $return;
 		}
 		
+		/**
+         * Get product stock location
+         *
+         * @return array
+         */
 		public static function get_product_stock_location( $product_id, $location_id )
 		{
 			$product_stock_locations = self::getProductStockLocations($product_id, true, null);

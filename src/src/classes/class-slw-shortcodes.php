@@ -109,7 +109,7 @@ if(!class_exists('SlwShortcodes')) {
 
             if( !empty($product) ) {
                 // Get locations from parent product
-                $locations = wp_get_post_terms($product->get_id(), SlwProductTaxonomy::$tax_singular_name);
+                $locations = wp_get_post_terms($product->get_id(), SlwLocationTaxonomy::$tax_singular_name);
                 // Build output
                 $output .= '<div class="slw-product-locations">';
                 $output .= $this->output_product_locations_for_shortcode($product, $locations, $values);
@@ -162,7 +162,7 @@ if(!class_exists('SlwShortcodes')) {
                 }
 
                 // Get locations from parent product
-                $locations = wp_get_post_terms($product->get_id(), SlwProductTaxonomy::$tax_singular_name);
+                $locations = wp_get_post_terms($product->get_id(), SlwLocationTaxonomy::$tax_singular_name);
 
                 if( !empty($variations_products) ) {
                     foreach( $variations_products as $variation_product ) {

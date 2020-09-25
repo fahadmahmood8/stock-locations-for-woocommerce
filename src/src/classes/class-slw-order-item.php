@@ -403,6 +403,8 @@ if( !class_exists('SlwOrderItem') ) {
 			$itemQuantity = $item->get_quantity();
 			
 			// Check if customer selected a location
+			$userLocationChoiceId = null;
+			$userStockLocation = null;
 			if( !empty($userLocationChoiceId = $item->get_meta('_stock_location')) ) {
 				if( !empty($userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId)) ) {
 					// get location meta
@@ -423,14 +425,14 @@ if( !class_exists('SlwOrderItem') ) {
 			}
 			
 			// If the customer choosed a location add it to the ignore array when getting the 'getStockAllocation'
-			$ignoreUserLocation = isset($userLocationChoiceId) && !is_null($userLocationChoiceId) ? $userLocationChoiceId : null;
+			$ignoreUserLocation = !is_null($userLocationChoiceId) ? $userLocationChoiceId : null;
 
 			// Get products stock allocation
 			$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, $ignoreUserLocation);
 
 			// If customer has choosed a location merge the two arrays
-			if( isset($userStockLocation) && !is_null($userStockLocation) ) {
-				$stockAllocation = array_merge($userStockLocation, $stockAllocation);
+			if( !is_null($userStockLocation) ) {
+				$stockAllocation = $userStockLocation;
 			}
 
             // Nothing to do, either no allocations valid or product does not have multi locations

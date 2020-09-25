@@ -90,7 +90,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			}
 
 			// Get product location terms
-			$product_stock_location_terms = get_the_terms($product_id, SlwProductTaxonomy::get_tax_Names('singular'));
+			$product_stock_location_terms = get_the_terms($product_id, SlwLocationTaxonomy::get_tax_Names('singular'));
 
 			// Define $postmeta variable as array type
 			$postmeta = array();
@@ -259,7 +259,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			}
 
 			// Product location terms
-			$product_stock_location_terms = get_the_terms($post_id, SlwProductTaxonomy::get_tax_Names('singular'));
+			$product_stock_location_terms = get_the_terms($post_id, SlwLocationTaxonomy::get_tax_Names('singular'));
 
 			// Count how many terms exist for this product
 			if( empty($product_stock_location_terms) ){

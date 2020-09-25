@@ -42,7 +42,7 @@ if(!class_exists('SlwProductListing')) {
         public function remove_product_listing_column($columns)
         {
 
-            unset($columns['taxonomy-' . SlwProductTaxonomy::get_Tax_Names('singular')]);
+            unset($columns['taxonomy-' . SlwLocationTaxonomy::get_Tax_Names('singular')]);
 
             return array_slice( $columns, 0, 5, true )
             + array( 'stock_at_locations' => __( 'Stock at locations', 'stock-locations-for-woocommerce' ) )
@@ -65,12 +65,12 @@ if(!class_exists('SlwProductListing')) {
                 return;
 
             // A list of taxonomy slugs to filter by
-            $taxonomies = array( SlwProductTaxonomy::get_Tax_Names('singular') );
+            $taxonomies = array( SlwLocationTaxonomy::get_Tax_Names('singular') );
 
             foreach ( $taxonomies as $taxonomy_slug ) {
 
                 // Retrieve taxonomy data
-                $taxonomy_name = SlwProductTaxonomy::get_Tax_Names('plural');
+                $taxonomy_name = SlwLocationTaxonomy::get_Tax_Names('plural');
 
                 // Retrieve taxonomy terms
                 $terms = get_terms( $taxonomy_slug );
@@ -121,7 +121,7 @@ if(!class_exists('SlwProductListing')) {
                     }
 
                     // Get locations from parent product
-                    $locations = wp_get_post_terms( $product->get_id(), SlwProductTaxonomy::get_Tax_Names('singular') );
+                    $locations = wp_get_post_terms( $product->get_id(), SlwLocationTaxonomy::get_Tax_Names('singular') );
 
                     // Print data
                     if( $product->is_type( 'simple' ) ) {
@@ -185,7 +185,7 @@ if(!class_exists('SlwProductListing')) {
 
             // Get Terms
             $terms = get_terms(array(
-                'taxonomy' => SlwProductTaxonomy::$tax_singular_name,
+                'taxonomy' => SlwLocationTaxonomy::$tax_singular_name,
                 'hide_empty' => false,
             ));
 

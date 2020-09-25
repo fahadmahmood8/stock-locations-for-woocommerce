@@ -33,13 +33,13 @@ if(!class_exists('SlwProductRest')) {
          */
         public function rest_api_init()
         {
-            register_rest_field('product', SlwProductTaxonomy::$tax_plural_name, array(
+            register_rest_field('product', SlwLocationTaxonomy::$tax_plural_name, array(
                 'get_callback'    => array($this, 'product_get_callback'),
                 'update_callback' => array($this, 'product_update_callback'),
                 'schema' => null,
             ));
 
-            register_rest_field('product_variation', SlwProductTaxonomy::$tax_plural_name, array(
+            register_rest_field('product_variation', SlwLocationTaxonomy::$tax_plural_name, array(
                 'get_callback'    => array($this, 'product_get_callback'),
                 'update_callback' => array($this, 'product_update_callback'),
                 'schema' => null,
@@ -63,7 +63,7 @@ if(!class_exists('SlwProductRest')) {
             $parentPostId = ($object_type === 'product_variation') ? wp_get_post_parent_id($post['id']) : $post['id'];
 
             // Get terms
-            foreach (wp_get_post_terms($parentPostId, SlwProductTaxonomy::$tax_singular_name) as $term) {
+            foreach (wp_get_post_terms($parentPostId, SlwLocationTaxonomy::$tax_singular_name) as $term) {
                 $terms[] = array(
                     'id'        => $term->term_id,
                     'name'      => $term->name,
@@ -103,7 +103,7 @@ if(!class_exists('SlwProductRest')) {
 			$totalQuantity = 0;
 
             foreach ($values as $location) {
-                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwProductTaxonomy::$tax_singular_name)->term_id;
+                $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwLocationTaxonomy::$tax_singular_name)->term_id;
                 $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
 
                 // It is possible to provide a null quantity to delete product from location
@@ -128,7 +128,7 @@ if(!class_exists('SlwProductRest')) {
 			}
 
             // Set terms
-            wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwProductTaxonomy::$tax_singular_name);
+            wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwLocationTaxonomy::$tax_singular_name);
         }
 
     }

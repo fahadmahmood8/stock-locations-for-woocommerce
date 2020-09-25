@@ -47,7 +47,7 @@ if(!class_exists('SlwMain')) {
 			$this->init();
 
 			// Instantiate classes
-			new SLW\SRC\Classes\SlwProductTaxonomy;
+			new SLW\SRC\Classes\SlwLocationTaxonomy;
 			new SLW\SRC\Classes\SlwStockLocationsTab;
 			new SLW\SRC\Classes\SlwBarcodesTab;
 			new SLW\SRC\Classes\SlwOrderItem;
