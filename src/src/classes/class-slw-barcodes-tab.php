@@ -27,7 +27,7 @@ if( !class_exists('SlwBarcodesTab') ) {
 			// get settings
 			$plugin_settings = get_option( 'slw_settings' );
 			
-			if( $plugin_settings['display_barcodes_tab'] == 'yes' ) {
+			if( ! isset($plugin_settings['display_barcodes_tab']) ) {
 				add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_barcodes_tab_wc_product'), 10, 1); // Since WC 3.0.2
 				add_action('woocommerce_product_data_panels', array($this, 'tab_content_barcodes_wc_product'), 10, 1); // Since WC 3.0.2
 				add_action('woocommerce_process_product_meta', array($this, 'save_tab_data_stock_barcodes_wc_product_save'), 10, 2);
