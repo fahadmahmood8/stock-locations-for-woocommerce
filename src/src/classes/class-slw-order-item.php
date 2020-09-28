@@ -7,8 +7,8 @@
 
 namespace SLW\SRC\Classes;
 
-use SLW\SRC\Helpers\SlwOrderItemHelper;
 use SLW\SRC\Classes\SlwAdminNotice;
+use SLW\SRC\Helpers\SlwOrderItemHelper;
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
 if ( !defined( 'WPINC' ) ) {
@@ -55,6 +55,11 @@ if( !class_exists('SlwOrderItem') ) {
 			$this->wc_manage_stock = get_option( 'woocommerce_manage_stock' );
 			// WC hold stock minutes
 			$this->wc_hold_stock_minutes = get_option( 'woocommerce_hold_stock_minutes' );
+
+			// Send copy of WC New Order email to location address
+			if( isset($this->plugin_settings['wc_new_order_location_copy']) ) {
+				add_filter( 'woocommerce_email_headers', array($this, 'wc_new_order_email_copy_to_locations_email'), 10, 3);
+			}
 		}
 
         /**
@@ -366,6 +371,7 @@ if( !class_exists('SlwOrderItem') ) {
 							foreach ( $item_stock_location_terms as $term ) {
 								$arr[] = '_item_stock_updated_at_' . $term->term_id;
 								$arr[] = '_stock_location';
+								$arr[] = '_slw_notification_mail_output';
 							}
 						}
 					}
@@ -479,6 +485,33 @@ if( !class_exists('SlwOrderItem') ) {
 				}
 			}
 			return $formatted_meta;
+		}
+
+		/**
+         * Adds stock location email address to WC new order email.
+         *
+         * @since 1.3.0
+         * @return array
+         */
+		public function wc_new_order_email_copy_to_locations_email( $headers, $email_id, $order, $email = null )
+		{
+			if( $email_id ==  'new_order' && !empty($order) ) {
+				foreach( $order->get_items() as $item_id => $item ) {
+					if( $item->get_type() == 'line_item' ) {
+						$item_slw_data = $item->get_meta('_slw_data');
+						if( !empty($item_slw_data) ) {
+							foreach( $item_slw_data as $location_id => $location ) {
+								$location_meta = SlwStockAllocationHelper::getLocationMeta( $location_id );
+								if( !empty($location_meta) && isset($location_meta['slw_location_email']) && is_email($location_meta['slw_location_email']) ) {
+									$location_term = get_term_by('id', $location_id, SlwLocationTaxonomy::$tax_singular_name);
+									$headers .= 'BCC: '.$location_term->name.' <'.$location_meta['slw_location_email'].'>' . "\r\n";
+								}
+							}
+						}
+					}
+				}
+			}
+			return $headers; 
 		}
 
     }

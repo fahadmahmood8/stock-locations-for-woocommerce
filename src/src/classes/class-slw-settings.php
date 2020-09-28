@@ -139,6 +139,14 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
+
+			add_settings_field(
+				'wc_new_order_location_copy',
+				__('Send copy of WC New Order email to location address', 'stock-locations-for-woocommerce'),
+				array( $this, 'wc_new_order_location_copy_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
 		}
 		
 		/**
@@ -169,6 +177,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['location_email_notifications'] ) ) {
 				$sanitary_values['location_email_notifications'] = $input['location_email_notifications'];
+			}
+			if ( isset( $input['wc_new_order_location_copy'] ) ) {
+				$sanitary_values['wc_new_order_location_copy'] = $input['wc_new_order_location_copy'];
 			}
 	
 			return $sanitary_values;
@@ -238,7 +249,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Disable barcodes tab callback.
          *
-         * @since 1.2.1
+         * @since 1.2.4
          * @return void
          */
 		public function display_barcodes_tab_callback()
@@ -249,7 +260,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Disable barcodes tab callback.
          *
-         * @since 1.2.1
+         * @since 1.3.0
          * @return void
          */
 		public function location_email_notifications_callback()
@@ -258,6 +269,17 @@ if(!class_exists('SlwSettings')) {
 			?>
 			<p><?= __('Auto order allocation must be enabled in the location.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
+		}
+
+		/**
+         * Send copy of WC New Order email to location address callback.
+         *
+         * @since 1.3.0
+         * @return void
+         */
+		public function wc_new_order_location_copy_callback()
+		{
+			$this->checkbox_callback('wc_new_order_location_copy');
 		}
 
 		/**
