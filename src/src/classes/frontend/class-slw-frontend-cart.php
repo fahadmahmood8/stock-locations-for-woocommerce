@@ -1,11 +1,11 @@
 <?php
 /**
- * SLW Cart Class
+ * SLW Frontend Cart Class
  *
  * @since 1.2.0
  */
 
-namespace SLW\SRC\Classes;
+namespace SLW\SRC\Classes\Frontend;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
@@ -13,10 +13,11 @@ if ( !defined( 'WPINC' ) ) {
     die;
 }
 
-if(!class_exists('SlwCart')) {
+if( !class_exists('SlwFrontendCart') ) {
 
-    class SlwCart
+    class SlwFrontendCart
     {
+		
         /**
          * Construct.
          *
@@ -28,7 +29,7 @@ if(!class_exists('SlwCart')) {
 			$plugin_settings = get_option( 'slw_settings' );
 
 			// check if show in cart is enabled
-			if( $plugin_settings['show_in_cart'] == 'yes' ) {
+			if( isset($plugin_settings['show_in_cart']) && $plugin_settings['show_in_cart'] == 'yes' ) {
 				add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 10, 2 );
 				add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
 				add_action( 'wp_ajax_nopriv_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
@@ -36,7 +37,7 @@ if(!class_exists('SlwCart')) {
 			}
 
 			// check if different location per cart item is enabled
-			if( $plugin_settings['different_location_per_cart_item'] == 'no' ) {
+			if( isset($plugin_settings['different_location_per_cart_item']) && $plugin_settings['different_location_per_cart_item'] == 'no' ) {
 				add_action( 'wp_footer', array($this, 'lock_cart_item_location') );
 			}
         }
@@ -51,13 +52,21 @@ if(!class_exists('SlwCart')) {
 			if( empty($cart_item) ) return;
 
             $product_id = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
-            
-            if( !empty($stock_locations = SlwStockAllocationHelper::getProductStockLocations($product_id, true, null)) ) {
-                echo '<select class="slw_cart_item_stock_location" style="display:block;" required>';
-                echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+            if( !empty($stock_locations = SlwStockAllocationHelper::getProductAvailableStockLocations($product_id, true)) ) {
+				if( isset($cart_item['stock_location']) ) {
+					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
+					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+				} else {
+					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
+					echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+				}
                 foreach( $stock_locations as $id => $location ) {
                     if( $location->quantity > 0 && $location->quantity >= $cart_item['quantity'] ) {
-                        echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'">'.$location->name.'</option>';
+						if( isset($cart_item['stock_location']) && $cart_item['stock_location'] == $location->term_id ) {
+							echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'" selected>'.$location->name.'</option>';
+						} else {
+							echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'">'.$location->name.'</option>';
+						}
                     }
                 }
                 echo '</select>';

@@ -490,12 +490,13 @@ if( !class_exists('SlwOrderItem') ) {
 		/**
          * Adds stock location email address to WC new order email.
          *
-         * @since 1.3.0
+         * @since 1.2.5
          * @return array
          */
 		public function wc_new_order_email_copy_to_locations_email( $headers, $email_id, $order, $email = null )
 		{
 			if( $email_id ==  'new_order' && !empty($order) ) {
+				$emails = array();
 				foreach( $order->get_items() as $item_id => $item ) {
 					if( $item->get_type() == 'line_item' ) {
 						$item_slw_data = $item->get_meta('_slw_data');
@@ -504,10 +505,17 @@ if( !class_exists('SlwOrderItem') ) {
 								$location_meta = SlwStockAllocationHelper::getLocationMeta( $location_id );
 								if( !empty($location_meta) && isset($location_meta['slw_location_email']) && is_email($location_meta['slw_location_email']) ) {
 									$location_term = get_term_by('id', $location_id, SlwLocationTaxonomy::$tax_singular_name);
-									$headers .= 'BCC: '.$location_term->name.' <'.$location_meta['slw_location_email'].'>' . "\r\n";
+									$emails[$location_id]['name'] = $location_term->name;
+									$emails[$location_id]['email'] = $location_meta['slw_location_email'];
 								}
 							}
 						}
+					}
+				}
+				// add email addresses to headers
+				if( !empty($emails) ) {
+					foreach( $emails as $key => $value ) {
+						$headers .= 'BCC: '.$value['name'].' <'.$value['email'].'>' . "\r\n";
 					}
 				}
 			}

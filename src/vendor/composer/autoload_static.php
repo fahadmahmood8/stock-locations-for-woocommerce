@@ -25,9 +25,10 @@ class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
     );
 
     public static $classMap = array (
+        'SLW\\SRC\\Classes\\Frontend\\SlwFrontendCart' => __DIR__ . '/../..' . '/src/classes/frontend/class-slw-frontend-cart.php',
+        'SLW\\SRC\\Classes\\Frontend\\SlwFrontendProduct' => __DIR__ . '/../..' . '/src/classes/frontend/class-slw-frontend-product.php',
         'SLW\\SRC\\Classes\\SlwAdminNotice' => __DIR__ . '/../..' . '/src/classes/class-slw-admin-notice.php',
         'SLW\\SRC\\Classes\\SlwBarcodesTab' => __DIR__ . '/../..' . '/src/classes/class-slw-barcodes-tab.php',
-        'SLW\\SRC\\Classes\\SlwCart' => __DIR__ . '/../..' . '/src/classes/class-slw-cart.php',
         'SLW\\SRC\\Classes\\SlwLocationTaxonomy' => __DIR__ . '/../..' . '/src/classes/class-slw-location-taxonomy.php',
         'SLW\\SRC\\Classes\\SlwOrderItem' => __DIR__ . '/../..' . '/src/classes/class-slw-order-item.php',
         'SLW\\SRC\\Classes\\SlwProductListing' => __DIR__ . '/../..' . '/src/classes/class-slw-product-listing.php',

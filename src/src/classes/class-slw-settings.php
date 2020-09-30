@@ -27,6 +27,8 @@ if(!class_exists('SlwSettings')) {
             add_action( 'admin_menu', array($this, 'create_admin_menu_page') );
 			add_action( 'admin_init', array($this, 'register_settings') );
 			add_filter( 'plugin_action_links_'.\SlwMain::$plugin_basename, array($this, 'settings_link') );
+
+			$this->plugin_settings = get_option( 'slw_settings' );
 		}
 
 		/**
@@ -55,8 +57,6 @@ if(!class_exists('SlwSettings')) {
          */
         public function admin_menu_page_callback()
         {
-			$this->plugin_settings = get_option( 'slw_settings' );
-
 			?>
 			<div class="wrap">
 				<h1><?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
@@ -94,7 +94,7 @@ if(!class_exists('SlwSettings')) {
 	
 			add_settings_field(
 				'show_in_cart',
-				__('Show stock locations in cart', 'stock-locations-for-woocommerce'),
+				__('Show location selection in cart', 'stock-locations-for-woocommerce'),
 				array( $this, 'show_in_cart_callback' ),
 				'slw-setting-admin',
 				'slw_setting_setting_section'
@@ -104,6 +104,14 @@ if(!class_exists('SlwSettings')) {
 				'different_location_per_cart_item',
 				__('Different location per cart item', 'stock-locations-for-woocommerce'),
 				array( $this, 'different_location_per_cart_item_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
+			
+			add_settings_field(
+				'show_in_product_page',
+				__('Show location selection in product page', 'stock-locations-for-woocommerce'),
+				array( $this, 'show_in_product_page_callback' ),
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
@@ -166,6 +174,9 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['different_location_per_cart_item'] ) ) {
 				$sanitary_values['different_location_per_cart_item'] = $input['different_location_per_cart_item'];
 			}
+			if ( isset( $input['show_in_product_page'] ) ) {
+				$sanitary_values['show_in_product_page'] = $input['show_in_product_page'];
+			}
 			if ( isset( $input['delete_unused_product_locations_meta'] ) ) {
 				$sanitary_values['delete_unused_product_locations_meta'] = $input['delete_unused_product_locations_meta'];
 			}
@@ -219,6 +230,17 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
+         * Different location per cart item dropdown callback.
+         *
+         * @since 1.2.5
+         * @return void
+         */
+		public function show_in_product_page_callback()
+		{
+			$this->select_yes_no_callback('show_in_product_page');
+		}
+
+		/**
          * Delete unused product locations meta dropdown callback.
          *
          * @since 1.2.3
@@ -260,7 +282,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Disable barcodes tab callback.
          *
-         * @since 1.3.0
+         * @since 1.2.5
          * @return void
          */
 		public function location_email_notifications_callback()
@@ -274,7 +296,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Send copy of WC New Order email to location address callback.
          *
-         * @since 1.3.0
+         * @since 1.2.5
          * @return void
          */
 		public function wc_new_order_location_copy_callback()

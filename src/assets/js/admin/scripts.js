@@ -10,6 +10,7 @@
 		slwDisableVariableStockInput();
 		slwWcProductManageStock();
 		slwWcOrderItemStockPositiveNumbersOnly();
+		slwEnableShowLocationsProductPage();
 	}
 	
 	function slwDisableVariableStockInput()
@@ -69,6 +70,28 @@
 			if ($(this).val() < 0) {
 				$(this).val('0');
 				alert('Positive numbers only!');
+			}
+		});
+	}
+
+	function slwEnableShowLocationsProductPage()
+	{
+		// initial
+		if( $('#show_in_cart').val() != 'yes' ) {
+			$('#different_location_per_cart_item').prop('disabled', true);
+			$('#show_in_product_page').prop('disabled', true);
+		} else {
+			$('#different_location_per_cart_item').prop('disabled', false);
+			$('#show_in_product_page').prop('disabled', false);
+		}
+		// on change
+		$('#show_in_cart').change(function() {
+			if( $(this).val() == 'yes' ) {
+				$('#different_location_per_cart_item').prop('disabled', false);
+				$('#show_in_product_page').prop('disabled', false);
+			} else {
+				$('#different_location_per_cart_item').prop('disabled', true);
+				$('#show_in_product_page').prop('disabled', true);
 			}
 		});
 	}
