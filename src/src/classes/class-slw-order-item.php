@@ -60,11 +60,6 @@ if( !class_exists('SlwOrderItem') ) {
 			if( isset($this->plugin_settings['wc_new_order_location_copy']) ) {
 				add_filter( 'woocommerce_email_headers', array($this, 'wc_new_order_email_copy_to_locations_email'), 10, 3);
 			}
-
-			// var_dump(get_option('testalex'));
-			// var_dump(get_option('testalex2'));
-			// var_dump(get_option('testalex3'));
-			// var_dump(get_option('testalex4'));
 		}
 
         /**
@@ -291,7 +286,7 @@ if( !class_exists('SlwOrderItem') ) {
                 return $post_id;
 
             // Get an instance of the WC_Order object
-            $order = wc_get_order( $post_id );
+			$order = wc_get_order( $post_id );
 
             // On order update
             if( $update ) {
@@ -329,10 +324,10 @@ if( !class_exists('SlwOrderItem') ) {
                     // No location stock data for line
                     if (empty($simpleLocationAllocations)) {
                         continue;
-                    }
+					}
 
                     // Allocate stock to locations
-                    $locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock($item_data->get_id(), $simpleLocationAllocations);
+					$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock($item_data->get_id(), $simpleLocationAllocations);
 
                     // Check if stock in locations are updated for this item
                     if(!$locationStockAllocationResponse) {
@@ -340,7 +335,7 @@ if( !class_exists('SlwOrderItem') ) {
                     } else {
                         SlwAdminNotice::displaySuccess(__('Stock in locations updated successfully!', 'stock-locations-for-woocommerce'));
                     }
-                }
+				}
             }
 
         }
