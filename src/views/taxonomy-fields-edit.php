@@ -38,7 +38,7 @@
             </td>
 		</tr>
 		<?php if( isset($location_email) && !is_null($location_email) ) : ?>
-		<tr class="form-field form-required term-name-wrap">
+		<tr class="form-field term-name-wrap">
             <th scope="row"><label><?php echo __('Location email', 'stock-locations-for-woocommerce'); ?></label></th>
             <td>
                 <input type="email" name="location_email" value="<?php echo $location_email; ?>">

@@ -60,6 +60,11 @@ if( !class_exists('SlwOrderItem') ) {
 			if( isset($this->plugin_settings['wc_new_order_location_copy']) ) {
 				add_filter( 'woocommerce_email_headers', array($this, 'wc_new_order_email_copy_to_locations_email'), 10, 3);
 			}
+
+			// var_dump(get_option('testalex'));
+			// var_dump(get_option('testalex2'));
+			// var_dump(get_option('testalex3'));
+			// var_dump(get_option('testalex4'));
 		}
 
         /**
@@ -423,27 +428,27 @@ if( !class_exists('SlwOrderItem') ) {
 							$itemQuantity = $itemQuantity - $userStockLocation[$userLocationChoiceId]->quantity;
 							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $userStockLocation[$userLocationChoiceId]->quantity;
 						}
-					} else { // auto allocation is disable
-						$userLocationChoiceId = null;
-						$userStockLocation = null;
+					} else {
+						return; // user selected location doesn't have auto allocation enabled so finish here and let the admin choose from the order
 					}
 				}
 			}
-			
-			// If the customer choosed a location add it to the ignore array when getting the 'getStockAllocation'
-			$ignoreUserLocation = !is_null($userLocationChoiceId) ? $userLocationChoiceId : null;
 
-			// Get products stock allocation
-			$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, $ignoreUserLocation);
-
-			// If customer has choosed a location merge the two arrays
-			if( !is_null($userStockLocation) ) {
-				$stockAllocation = $userStockLocation;
+			// Get product stock allocation locations if customer haven't select a location
+			if( is_null($userStockLocation) ) {
+				$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, null);
 			}
 
-            // Nothing to do, either no allocations valid or product does not have multi locations
-            if (empty($stockAllocation)) {
-                return;
+			// define stock allocation
+			if( !is_null($userStockLocation) ) {
+				// if user selected a location and has auto allocation enabled
+				$stockAllocation = $userStockLocation;
+			} elseif( is_null($userStockLocation) && isset($stockAllocation) && is_array($stockAllocation) ) {
+				// if user haven't selected a location define by available locations for this product
+				$stockAllocation = $stockAllocation;
+			} else {
+				// finish here if we don't have stock allocation set
+				return;
 			}
 			
 			// If WC manage stock is enabled
