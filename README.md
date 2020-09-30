@@ -14,8 +14,12 @@ Stock Locations for WooCommerce will help you manage your products stock across 
 
 ## Issues
 
-...
+For any issues while using this WordPress plugin please don't hesitate to submit an [issue here](https://github.com/alexmigf/stock-locations-for-woocommerce/issues/new).
 
 ## Contributing
 
-...
+All contributions are welcome, please submit a PR and we wil review it as soon as we can.
+
+## License
+
+Stock Locations for Woocommerce is licensed under GNU General Public License v3 - <https://opensource.org/licenses/GPL-3.0>
