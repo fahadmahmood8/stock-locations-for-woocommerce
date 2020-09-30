@@ -57,7 +57,7 @@ if(!class_exists('SlwMain')) {
 			new SLW\SRC\Classes\SlwSettings;
 			// Frontend
             new SLW\SRC\Classes\Frontend\SlwFrontendCart;
-            new SLW\SRC\Classes\Frontend\SlwFrontendProduct;
+			new SLW\SRC\Classes\Frontend\SlwFrontendProduct;
         }
 
         /**
@@ -97,8 +97,12 @@ if(!class_exists('SlwMain')) {
 
             // Display admin notices
 			add_action( 'admin_notices', [new SLW\SRC\Classes\SlwAdminNotice(), 'displayAdminNotice'] );
-		}
 
+			// Fix for Point of Sale for WooCommerce (https://woocommerce.com/products/point-of-sale-for-woocommerce/)
+			remove_filter( 'woocommerce_stock_amount', 'floatval', 99 );
+			add_filter( 'woocommerce_stock_amount', 'intval' );
+		}
+		
         /**
          * Adds scripts and styles for Admin.
          *
