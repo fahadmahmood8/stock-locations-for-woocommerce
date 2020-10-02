@@ -2,7 +2,7 @@
 Contributors: alexmigf
 Tags: woocommerce, stock, stock locations, barcode, barcodes, ean, upc, asin, isbn, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.5
+Tested up to: 5.6
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -60,6 +60,8 @@ This plugin requires at least *WooCommerce 3.4*.
 - Get and update product stock locations from the REST API
 - Allow customers to select locations when purchasing
 - Auto order allocation for locations stock reduction
+- Send email notifications when stock is allocated for a product in a location
+- Send WooCommerce New Order email copy to item location
 
 
 = Compatibility =
@@ -112,6 +114,15 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 
 == Changelog ==
+
+= 1.3.0 =
+- New: filter 'slw_stock_allocation_notification_message' to customize the email notification message
+- New: send email copy of New Order WC email to location registered address
+- New: send email notification when stock is allocated for a product in some location
+- New: show location taxonomy in REST API
+- New: setting to enable/disable the barcodes tab
+- Fix: stock allocation when customer selects or not a location
+- Fix: bug preventing stock deduction when using in conjugation with Point of Sale for WooCommerce plugin
 
 = 1.2.4 =
 - New: setting to include location data in formatted item meta
