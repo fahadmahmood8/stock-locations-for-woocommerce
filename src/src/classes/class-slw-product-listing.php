@@ -122,21 +122,30 @@ if(!class_exists('SlwProductListing')) {
 
                     // Get locations from parent product
                     $locations = wp_get_post_terms( $product->get_id(), SlwLocationTaxonomy::get_Tax_Names('singular') );
+					if( empty($locations) ) return;
 
                     // Print data
                     if( $product->is_type( 'simple' ) ) {
-                        echo '<label>#'.$product->get_id().':</label><br>';
+                        echo '<label>#'.$product->get_id().' &#8628;</label><br>';
                         $this->output_product_locations_for_column($product->get_id(), $locations);
                     } elseif( $product->is_type( 'variable' ) ) {
-                        echo '<label>#'.$product->get_id().':</label><br>';
+                        echo '<label>#'.$product->get_id().' &#8628;</label><br>';
                         $this->output_product_locations_for_column($product->get_id(), $locations);
                         if( !empty($variations_products) ) {
                             foreach( $variations_products as $variation_product ) {
 								$attributes = $variation_product->get_variation_attributes();
 								if( empty($attributes) || !is_array($attributes) ) return;
+								echo '<label>#'.$variation_product->get_id();
+								$c = 0;
                                 foreach( $attributes as $attribute ) {
-                                    echo '<label>#'.$variation_product->get_id().' ('.ucfirst($attribute).'):</label><br>';
-                                }
+									if( $c == 0 ) {
+										echo ' ('.ucfirst($attribute).')';
+									} else {
+										echo ', ('.ucfirst($attribute).')';
+									}
+									$c++;
+								}
+								echo ' &#8628;</label><br>';
                                 $this->output_product_locations_for_column($variation_product->get_id(), $locations);
                             }
                         }

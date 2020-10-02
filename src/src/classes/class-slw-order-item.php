@@ -490,7 +490,7 @@ if( !class_exists('SlwOrderItem') ) {
 		/**
          * Adds stock location email address to WC new order email.
          *
-         * @since 1.2.5
+         * @since 1.3.0
          * @return array
          */
 		public function wc_new_order_email_copy_to_locations_email( $headers, $email_id, $order, $email = null )

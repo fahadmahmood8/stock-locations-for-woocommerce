@@ -99,8 +99,10 @@ if(!class_exists('SlwMain')) {
 			add_action( 'admin_notices', [new SLW\SRC\Classes\SlwAdminNotice(), 'displayAdminNotice'] );
 
 			// Fix for Point of Sale for WooCommerce (https://woocommerce.com/products/point-of-sale-for-woocommerce/)
-			remove_filter( 'woocommerce_stock_amount', 'floatval', 99 );
-			add_filter( 'woocommerce_stock_amount', 'intval' );
+			if( class_exists('WC_POS') ) {
+				remove_filter( 'woocommerce_stock_amount', 'floatval', 99 );
+				add_filter( 'woocommerce_stock_amount', 'intval' );
+			}
 		}
 		
         /**

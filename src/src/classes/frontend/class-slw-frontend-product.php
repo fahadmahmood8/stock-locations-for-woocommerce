@@ -2,7 +2,7 @@
 /**
  * SLW Frontend Product Class
  *
- * @since 1.2.5
+ * @since 1.3.0
  */
 
 namespace SLW\SRC\Classes\Frontend;
@@ -20,7 +20,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		/**
 		 * Construct.
 		 *
-		 * @since 1.2.5
+		 * @since 1.3.0
 		 */
 		public function __construct()
 		{
@@ -39,7 +39,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		/**
 		 * Add stock locations selection to simple product page.
 		 *
-		 * @since 1.2.5
+		 * @since 1.3.0
 		 */
 		public function simple_location_select()
 		{
@@ -59,7 +59,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		/**
 		 * Add stock locations selection to variable product page.
 		 *
-		 * @since 1.2.5
+		 * @since 1.3.0
 		 */
 		public function variable_location_select()
 		{
@@ -74,7 +74,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		/**
 		 * Get variation locations.
 		 *
-		 * @since 1.2.5
+		 * @since 1.3.0
 		 */
 		public function get_variation_locations()
 		{
@@ -91,7 +91,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		/**
 		 * Validate cart item selected location.
 		 *
-		 * @since 1.2.5
+		 * @since 1.3.0
 		 */
 		function add_to_cart_location_validation( $cart_item_data, $product_id, $variation_id ) {
 			if( isset( $_POST['slw_add_to_cart_item_stock_location'] ) ) {

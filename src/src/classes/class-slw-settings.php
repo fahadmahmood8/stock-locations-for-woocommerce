@@ -232,7 +232,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Different location per cart item dropdown callback.
          *
-         * @since 1.2.5
+         * @since 1.3.0
          * @return void
          */
 		public function show_in_product_page_callback()
@@ -282,7 +282,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Disable barcodes tab callback.
          *
-         * @since 1.2.5
+         * @since 1.3.0
          * @return void
          */
 		public function location_email_notifications_callback()
@@ -296,7 +296,7 @@ if(!class_exists('SlwSettings')) {
 		/**
          * Send copy of WC New Order email to location address callback.
          *
-         * @since 1.2.5
+         * @since 1.3.0
          * @return void
          */
 		public function wc_new_order_location_copy_callback()

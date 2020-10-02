@@ -1,7 +1,7 @@
 <?php
 /**
  * SLW Mail Helper Class
- * @since 1.2.5
+ * @since 1.3.0
  */
 
 namespace SLW\SRC\Helpers;
