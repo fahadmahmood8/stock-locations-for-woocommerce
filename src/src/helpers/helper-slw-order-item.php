@@ -84,10 +84,8 @@ if ( !class_exists('SlwOrderItemHelper') ) {
                 wc_update_order_item_meta($orderItemId, '_item_stock_locations_updated', 'yes');
 				wc_update_order_item_meta($orderItemId, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
 
-				// Send email notification to location if enabled and if match conditions (see helper method)
-				SlwMailHelper::stock_allocation_notification( $term, $lineItem, $item_stock_location_subtract_input_qty );
-
-				$current_slw_data = $lineItem->get_meta('_slw_data');
+				// Save itemmeta _slw_data
+				$current_slw_data = wc_get_order_item_meta( $orderItemId, '_slw_data', true );
 				$new_data = array(
 					$term->term_id => array(
 						'location_name' 		=> $term->name,
@@ -95,11 +93,14 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 					)
 				);
 				if( !empty($current_slw_data) ) {
-					$data = array_merge($current_slw_data, $new_data);
+					$data = $current_slw_data + $new_data;
 				} else {
 					$data = $new_data;
 				}
-                wc_update_order_item_meta($orderItemId, '_slw_data', $data);
+                wc_update_order_item_meta( $orderItemId, '_slw_data', $data );
+
+				// Send email notification to location if enabled and if match conditions (see helper method)
+				SlwMailHelper::stock_allocation_notification( $term, $lineItem, $item_stock_location_subtract_input_qty );
 			}
 
             // Update woocommerce product stock level
@@ -114,7 +115,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
             }
 
             return true;
-        }
+		}
 
 	}
 	
