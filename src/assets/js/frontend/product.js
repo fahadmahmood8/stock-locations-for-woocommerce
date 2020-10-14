@@ -24,6 +24,7 @@
 					variation_id: variation_id
 				},
 				success: function( response ) {
+					$('select#slw_item_stock_location_variable_product').empty();
 					$.each(response.data.stock_locations, function(i) {
 						var obj = response.data.stock_locations[i];
 						$('select#slw_item_stock_location_variable_product').append(new Option(obj.name, obj.term_id));
