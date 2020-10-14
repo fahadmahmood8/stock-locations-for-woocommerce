@@ -103,8 +103,11 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				SlwMailHelper::stock_allocation_notification( $term, $lineItem, $item_stock_location_subtract_input_qty );
 			}
 
-            // Update woocommerce product stock level
-            if ($totalQtyAllocated) {
+			// Allow third party plugins to prevent WC stock reduction
+			$allow_wc_stock_reduce = apply_filters( 'slw_allow_order_item_wc_stock_reduce', true );
+			
+			// Update woocommerce product stock level
+            if( $totalQtyAllocated && $allow_wc_stock_reduce ) {
 				$quantityToUpdate = $mainProduct->get_stock_quantity() - $totalQtyAllocated;
 				wc_update_product_stock( $mainProduct, $quantityToUpdate, 'set', false );
             }
