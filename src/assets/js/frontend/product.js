@@ -13,7 +13,8 @@
 	function slwVariableProductVariationFound()
 	{
 		$('select#slw_item_stock_location_variable_product').hide();
-		$(document).on( 'found_variation', function() {
+		$(document).on( 'found_variation', function( event ) {
+			event.preventDefault();
             var variation_id = $(".woocommerce-variation-add-to-cart").find('.variation_id').val();
             $.ajax({
 				type: 'POST',
@@ -24,12 +25,17 @@
 					variation_id: variation_id
 				},
 				success: function( response ) {
-					$('select#slw_item_stock_location_variable_product').empty();
-					$.each(response.data.stock_locations, function(i) {
-						var obj = response.data.stock_locations[i];
-						$('select#slw_item_stock_location_variable_product').append(new Option(obj.name, obj.term_id));
+					if( response.success ) {
+						$('select#slw_item_stock_location_variable_product').empty();
+						$('select#slw_item_stock_location_variable_product').prop('required',true);
+						$.each(response.data.stock_locations, function(i) {
+							var obj = response.data.stock_locations[i];
+							$('select#slw_item_stock_location_variable_product').append(new Option(obj.name, obj.term_id));
+						});
 						$('select#slw_item_stock_location_variable_product').show();
-					});
+					} else {
+						return;
+					}
 				}
 			});
         });

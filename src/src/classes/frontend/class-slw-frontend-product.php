@@ -66,7 +66,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 			global $product;
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 			
-			echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" required>';
+			echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location">';
 			echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 			echo '</select>';
 		}
