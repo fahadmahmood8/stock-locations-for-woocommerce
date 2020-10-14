@@ -104,7 +104,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			}
 
 			// Allow third party plugins to prevent WC stock reduction
-			$allow_wc_stock_reduce = apply_filters( 'slw_allow_order_item_wc_stock_reduce', true );
+			$allow_wc_stock_reduce = apply_filters( 'slw_allow_wc_stock_reduce', true );
 			
 			// Update woocommerce product stock level
             if( $totalQtyAllocated && $allow_wc_stock_reduce ) {
