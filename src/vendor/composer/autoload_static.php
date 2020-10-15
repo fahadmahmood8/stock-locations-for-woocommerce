@@ -36,6 +36,7 @@ class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
         'SLW\\SRC\\Classes\\SlwSettings' => __DIR__ . '/../..' . '/src/classes/class-slw-settings.php',
         'SLW\\SRC\\Classes\\SlwShortcodes' => __DIR__ . '/../..' . '/src/classes/class-slw-shortcodes.php',
         'SLW\\SRC\\Classes\\SlwStockLocationsTab' => __DIR__ . '/../..' . '/src/classes/class-slw-stock-locations-tab.php',
+        'SLW\\SRC\\Helpers\\SlwFrontendHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-frontend.php',
         'SLW\\SRC\\Helpers\\SlwMailHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-mail.php',
         'SLW\\SRC\\Helpers\\SlwOrderItemHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-order-item.php',
         'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-stock-allocation.php',

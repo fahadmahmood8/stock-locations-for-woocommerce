@@ -456,7 +456,7 @@ if( !class_exists('SlwOrderItem') ) {
             $simpleLocationAllocations = array();
             foreach ($stockAllocation as $allocation) {
                 $simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
-            }
+			}
 
             // Allocate order item stock to locations
 			SlwOrderItemHelper::allocateLocationStock($item->get_id(), $simpleLocationAllocations);

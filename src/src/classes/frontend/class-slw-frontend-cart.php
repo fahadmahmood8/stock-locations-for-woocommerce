@@ -8,6 +8,7 @@
 namespace SLW\SRC\Classes\Frontend;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
+use SLW\SRC\Helpers\SlwFrontendHelper;
 
 if ( !defined( 'WPINC' ) ) {
     die;
@@ -51,8 +52,10 @@ if( !class_exists('SlwFrontendCart') ) {
         {
 			if( empty($cart_item) ) return;
 
-            $product_id = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
-            if( !empty($stock_locations = SlwStockAllocationHelper::getProductAvailableStockLocations($product_id, true)) ) {
+			$product_id = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
+			$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
+
+            if( !empty($stock_locations) ) {
 				if( isset($cart_item['stock_location']) ) {
 					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
 					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
@@ -61,13 +64,15 @@ if( !class_exists('SlwFrontendCart') ) {
 					echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
                 foreach( $stock_locations as $id => $location ) {
-                    if( $location->quantity > 0 && $location->quantity >= $cart_item['quantity'] ) {
-						if( isset($cart_item['stock_location']) && $cart_item['stock_location'] == $location->term_id ) {
-							echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'" selected>'.$location->name.'</option>';
-						} else {
-							echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'">'.$location->name.'</option>';
+					$selected = $disabled = '';
+                    if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < 1 && $location['allow_backorder'] == 1) ) {
+						if( isset($cart_item['stock_location']) && $cart_item['stock_location'] == $location['term_id'] ) {
+							$selected = 'selected="selected"';
 						}
-                    }
+                    } else {
+						$disabled = 'disabled="disabled"';
+					}
+					echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location['term_id'].'" '.$selected.' '.$disabled.'>'.$location['name'].'</option>';
                 }
                 echo '</select>';
             }
@@ -81,7 +86,7 @@ if( !class_exists('SlwFrontendCart') ) {
         public function update_cart_stock_locations()
         {
             // Do a nonce check
-            if( ! isset( $_POST['security'] ) || ! wp_verify_nonce( $_POST['security'], 'woocommerce-cart' ) ) {
+            if( ! isset($_POST['cart_id']) || ! isset( $_POST['security'] ) || ! wp_verify_nonce( $_POST['security'], 'woocommerce-cart' ) ) {
                 wp_send_json( array( 'nonce_fail' => 1 ) );
                 exit;
             }

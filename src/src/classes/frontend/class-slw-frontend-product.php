@@ -7,7 +7,7 @@
 
 namespace SLW\SRC\Classes\Frontend;
 
-use SLW\SRC\Helpers\SlwStockAllocationHelper;
+use SLW\SRC\Helpers\SlwFrontendHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -46,11 +46,17 @@ if( !class_exists('SlwFrontendProduct') ) {
 			global $product;
 			if( empty($product) || $product->get_type() != 'simple' ) return;
 
-			if( !empty($stock_locations = SlwStockAllocationHelper::getProductAvailableStockLocations($product->get_id(), true)) ) {
+			$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product->get_id() );
+
+			if( ! empty($stock_locations) ) {
 				echo '<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 				echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				foreach( $stock_locations as $id => $location ) {
-					echo '<option value="'.$location->term_id.'">'.$location->name.'</option>';
+					$disabled = '';
+					if( $location['quantity'] < 1 && $location['allow_backorder'] != 1 ) {
+						$disabled = 'disabled="disabled"';
+					}
+					echo '<option value="'.$location['term_id'].'" '.$disabled.'>'.$location['name'].'</option>';
 				}
 				echo '</select>';
 			}
@@ -80,7 +86,10 @@ if( !class_exists('SlwFrontendProduct') ) {
 		{
 			if( $_POST && isset($_POST['action']) && isset($_POST['variation_id']) && $_POST['action'] == 'get_variation_locations' ) {
 				$variation_id = sanitize_text_field($_POST['variation_id']);
-				if( !empty($stock_locations = SlwStockAllocationHelper::getProductAvailableStockLocations($variation_id, true)) ) {
+
+				$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
+
+				if( !empty($stock_locations) ) {
 					wp_send_json_success( compact('stock_locations') );
 				} else {
 					return;

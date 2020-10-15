@@ -136,12 +136,12 @@ if(!class_exists('SlwMain')) {
             wp_enqueue_style('styles-frontend', $this->pluginDirUrl() . 'assets/css/frontend/style.css', null, '1.3');
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
-				wp_register_script( 'scripts-frontend-cart', $this->pluginDirUrl() . 'assets/js/frontend/cart.js', array( 'jquery-blockui' ), '1.0', true );
+				wp_register_script( 'scripts-frontend-cart', $this->pluginDirUrl() . 'assets/js/frontend/cart.js', array( 'jquery-blockui' ), '1.3', true );
 				wp_localize_script( 'scripts-frontend-cart', 'slw_frontend_cart', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 				wp_enqueue_script( 'scripts-frontend-cart' );
 			}
 			if( isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
-				wp_register_script( 'scripts-frontend-product', $this->pluginDirUrl() . 'assets/js/frontend/product.js', array( 'jquery-blockui' ), '1.0', true );
+				wp_register_script( 'scripts-frontend-product', $this->pluginDirUrl() . 'assets/js/frontend/product.js', array( 'jquery-blockui' ), '1.3', true );
 				wp_localize_script( 'scripts-frontend-product', 'slw_frontend_product', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 				wp_enqueue_script( 'scripts-frontend-product' );
 			}

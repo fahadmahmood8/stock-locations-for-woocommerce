@@ -10,8 +10,6 @@ if ( !defined('WPINC') ) {
     die;
 }
 
-use SLW\SRC\Classes\SlwLocationTaxonomy;
-
 if ( !class_exists('SlwMailHelper') ) {
 
     class SlwMailHelper

@@ -30,7 +30,11 @@
 						$('select#slw_item_stock_location_variable_product').prop('required',true);
 						$.each(response.data.stock_locations, function(i) {
 							var obj = response.data.stock_locations[i];
-							$('select#slw_item_stock_location_variable_product').append(new Option(obj.name, obj.term_id));
+							if( obj.quantity < 1 && obj.allow_backorder != 1 ) {
+								$('select#slw_item_stock_location_variable_product').append('<option disabled="disabled">'+obj.name+'</option>');
+							} else {
+								$('select#slw_item_stock_location_variable_product').append(new Option(obj.name, obj.term_id));
+							}
 						});
 						$('select#slw_item_stock_location_variable_product').show();
 					} else {
