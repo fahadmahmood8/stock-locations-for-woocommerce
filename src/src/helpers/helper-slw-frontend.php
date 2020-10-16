@@ -29,7 +29,11 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				$stock_locations_to_display[$id]['allow_backorder'] = $location->slw_backorder_location;
 				$stock_locations_to_display[$id]['name'] = $location->name;
 				if( $location->quantity < 1 ) {
-					$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'stock-locations-for-woocommerce') . ')';
+					if( $location->slw_backorder_location == 1 ) {
+						$stock_locations_to_display[$id]['name'] .= ' (' . __('On backorder', 'stock-locations-for-woocommerce') . ')';
+					} else {
+						$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'stock-locations-for-woocommerce') . ')';
+					}
 				}
 			}
 
