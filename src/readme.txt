@@ -115,6 +115,14 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.3.1 =
+- New: include 'Out of stock' and 'On backorder' locations in frontend selections
+- New: filter 'slw_allow_wc_stock_reduce' to allow third party plugins to prevent WC stock reduction
+- Fix: jQuery error for variants without locations
+- Fix: jQuery bug on clearing location selection on variation in product page
+- Fix: jQuery error when frontend settings not enabled
+- Fix: meta '_slw_data' not beeing saved correctly
+
 = 1.3.0 =
 - New: filter 'slw_stock_allocation_notification_message' to customize the email notification message
 - New: send email copy of New Order WC email to location registered address
