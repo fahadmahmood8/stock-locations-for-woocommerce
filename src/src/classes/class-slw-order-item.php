@@ -235,8 +235,10 @@ if( !class_exists('SlwOrderItem') ) {
                         // Merge the two arrays
                         $args = array_merge($args_1, $args_2);
 
-                        // Create the input
-						woocommerce_wp_text_input($args);
+						// Create the input
+						if( function_exists('woocommerce_wp_text_input') ) {
+							woocommerce_wp_text_input($args);
+						}
 						
 						// Show location choosed by client in cart
 						if( !empty($this->show_in_cart) && $this->show_in_cart == 'yes' ) {
