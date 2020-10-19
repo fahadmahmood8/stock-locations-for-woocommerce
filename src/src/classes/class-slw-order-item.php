@@ -72,6 +72,8 @@ if( !class_exists('SlwOrderItem') ) {
          */
         public function add_stock_location_column_wc_order( $order )
         {
+			if( empty($order) ) return;
+			
             // display the column name
             echo '<th>' . __('Stock Locations', 'stock-locations-for-woocommerce') . '</th>';
 
@@ -85,8 +87,8 @@ if( !class_exists('SlwOrderItem') ) {
                 ];
 
                 // Check if the stock locations are already updated in items of this order and show warning if necessary
-                if( empty( wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) ) ) {
-                    SlwAdminNotice::displayWarning(__('Partial or total stock in locations is missing in this order. Please fill the remaining stock.', 'stock-locations-for-woocommerce'));
+                if( empty( wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) ) && $order->get_status() != 'completed' ) {
+                	SlwAdminNotice::displayWarning(__('Partial or total stock in locations is missing in this order. Please fill the remaining stock.', 'stock-locations-for-woocommerce'));
                 }
             }
             // Assign variable to the class property
