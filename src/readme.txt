@@ -115,6 +115,9 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.3.2 =
+- Fix: jQuery request returning 404 because of missing hook
+
 = 1.3.1 =
 - New: include 'Out of stock' and 'On backorder' locations in frontend selections
 - New: filter 'slw_allow_wc_stock_reduce' to allow third party plugins to prevent WC stock reduction
