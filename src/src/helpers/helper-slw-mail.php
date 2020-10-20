@@ -7,16 +7,16 @@
 namespace SLW\SRC\Helpers;
 
 if ( !defined('WPINC') ) {
-    die;
+	die;
 }
 
 if ( !class_exists('SlwMailHelper') ) {
 
-    class SlwMailHelper
-    {
+	class SlwMailHelper
+	{
 
-        public static function stock_allocation_notification( $term, $item, $quantity )
-        {
+		public static function stock_allocation_notification( $term, $item, $quantity )
+		{
 			if( empty($term) || empty($item) || empty($quantity) ) return;
 
 			// get location meta

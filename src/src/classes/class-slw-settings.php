@@ -24,7 +24,7 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function __construct()
 		{
-            add_action( 'admin_menu', array($this, 'create_admin_menu_page') );
+			add_action( 'admin_menu', array($this, 'create_admin_menu_page') );
 			add_action( 'admin_init', array($this, 'register_settings') );
 			add_filter( 'plugin_action_links_'.\SlwMain::$plugin_basename, array($this, 'settings_link') );
 
@@ -32,14 +32,14 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-         * Create Admin Menu Page.
-         *
-         * @since 1.2.0
-         * @return void
-         */
-        public function create_admin_menu_page()
-        {
-            // This page will be under "Settings"
+		 * Create Admin Menu Page.
+		 *
+		 * @since 1.2.0
+		 * @return void
+		 */
+		public function create_admin_menu_page()
+		{
+			// This page will be under "Settings"
 			add_options_page(
 				__('SLW Settings', 'stock-locations-for-woocommerce'), 
 				__('SLW Settings', 'stock-locations-for-woocommerce'), 
@@ -50,13 +50,13 @@ if(!class_exists('SlwSettings')) {
 		}
 		
 		/**
-         * Admin Menu Page Callback.
-         *
-         * @since 1.2.0
-         * @return void
-         */
-        public function admin_menu_page_callback()
-        {
+		 * Admin Menu Page Callback.
+		 *
+		 * @since 1.2.0
+		 * @return void
+		 */
+		public function admin_menu_page_callback()
+		{
 			?>
 			<div class="wrap">
 				<h1><?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
@@ -72,14 +72,14 @@ if(!class_exists('SlwSettings')) {
 		}
 		
 		/**
-         * Register Settings.
-         *
-         * @since 1.2.0
-         * @return void
-         */
-        public function register_settings()
-        {
-            register_setting(
+		 * Register Settings.
+		 *
+		 * @since 1.2.0
+		 * @return void
+		 */
+		public function register_settings()
+		{
+			register_setting(
 				'slw_setting_option_group',
 				'slw_settings',
 				array( $this, 'option_setting_sanitize' )
@@ -158,11 +158,11 @@ if(!class_exists('SlwSettings')) {
 		}
 		
 		/**
-         * Sanitize setting option value.
-         *
-         * @since 1.2.0
-         * @return string
-         */
+		 * Sanitize setting option value.
+		 *
+		 * @since 1.2.0
+		 * @return string
+		 */
 		public function option_setting_sanitize( $input )
 		{
 			$sanitary_values = array();
@@ -197,19 +197,19 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-         * Setting section info.
-         *
-         * @since 1.2.0
-         * @return void
-         */
+		 * Setting section info.
+		 *
+		 * @since 1.2.0
+		 * @return void
+		 */
 		public function setting_section_info() {}
 
 		/**
-         * Show in cart dropdown callback.
-         *
-         * @since 1.2.0
-         * @return void
-         */
+		 * Show in cart dropdown callback.
+		 *
+		 * @since 1.2.0
+		 * @return void
+		 */
 		public function show_in_cart_callback()
 		{
 			$this->select_yes_no_callback('show_in_cart');
@@ -219,33 +219,33 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-         * Different location per cart item dropdown callback.
-         *
-         * @since 1.2.1
-         * @return void
-         */
+		 * Different location per cart item dropdown callback.
+		 *
+		 * @since 1.2.1
+		 * @return void
+		 */
 		public function different_location_per_cart_item_callback()
 		{
 			$this->select_yes_no_callback('different_location_per_cart_item');
 		}
 
 		/**
-         * Different location per cart item dropdown callback.
-         *
-         * @since 1.3.0
-         * @return void
-         */
+		 * Different location per cart item dropdown callback.
+		 *
+		 * @since 1.3.0
+		 * @return void
+		 */
 		public function show_in_product_page_callback()
 		{
 			$this->select_yes_no_callback('show_in_product_page');
 		}
 
 		/**
-         * Delete unused product locations meta dropdown callback.
-         *
-         * @since 1.2.3
-         * @return void
-         */
+		 * Delete unused product locations meta dropdown callback.
+		 *
+		 * @since 1.2.3
+		 * @return void
+		 */
 		public function delete_unused_product_locations_meta_callback()
 		{
 			$this->select_yes_no_callback('delete_unused_product_locations_meta');
@@ -255,11 +255,11 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-         * Delete unused product locations meta dropdown callback.
-         *
-         * @since 1.2.4
-         * @return void
-         */
+		 * Delete unused product locations meta dropdown callback.
+		 *
+		 * @since 1.2.4
+		 * @return void
+		 */
 		public function include_location_data_in_formatted_item_meta_callback()
 		{
 			$this->select_yes_no_callback('include_location_data_in_formatted_item_meta');
@@ -269,22 +269,22 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-         * Disable barcodes tab callback.
-         *
-         * @since 1.2.4
-         * @return void
-         */
+		 * Disable barcodes tab callback.
+		 *
+		 * @since 1.2.4
+		 * @return void
+		 */
 		public function display_barcodes_tab_callback()
 		{
 			$this->checkbox_callback('display_barcodes_tab');
 		}
 
 		/**
-         * Disable barcodes tab callback.
-         *
-         * @since 1.3.0
-         * @return void
-         */
+		 * Disable barcodes tab callback.
+		 *
+		 * @since 1.3.0
+		 * @return void
+		 */
 		public function location_email_notifications_callback()
 		{
 			$this->checkbox_callback('location_email_notifications');
@@ -294,22 +294,22 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-         * Send copy of WC New Order email to location address callback.
-         *
-         * @since 1.3.0
-         * @return void
-         */
+		 * Send copy of WC New Order email to location address callback.
+		 *
+		 * @since 1.3.0
+		 * @return void
+		 */
 		public function wc_new_order_location_copy_callback()
 		{
 			$this->checkbox_callback('wc_new_order_location_copy');
 		}
 
 		/**
-         * Select yes/no callback.
-         *
-         * @since 1.2.1
-         * @return void
-         */
+		 * Select yes/no callback.
+		 *
+		 * @since 1.2.1
+		 * @return void
+		 */
 		public function select_yes_no_callback( $id )
 		{
 			?> 
@@ -325,11 +325,11 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-         * Checkbox callback.
-         *
-         * @since 1.2.1
-         * @return void
-         */
+		 * Checkbox callback.
+		 *
+		 * @since 1.2.1
+		 * @return void
+		 */
 		public function checkbox_callback( $id )
 		{
 			?> 

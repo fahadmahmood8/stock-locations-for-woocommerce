@@ -1,12 +1,12 @@
 (function($){
 
 	// Init after DOM is ready
-    $(document).ready(function() {
-        init();
-    });
+	$(document).ready(function() {
+		init();
+	});
 
-    // Functions to initiate
-    function init() {
+	// Functions to initiate
+	function init() {
 		slwDisableVariableStockInput();
 		slwWcProductManageStock();
 		slwWcOrderItemStockPositiveNumbersOnly();

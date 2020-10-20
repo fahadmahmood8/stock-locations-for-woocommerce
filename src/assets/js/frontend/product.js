@@ -1,12 +1,12 @@
 (function($){
 
 	// Init after DOM is ready
-    $(document).ready(function() {
-        init();
-    });
+	$(document).ready(function() {
+		init();
+	});
 
-    // Functions to initiate
-    function init() {
+	// Functions to initiate
+	function init() {
 		slwVariableProductVariationFound();
 	}
 
@@ -15,8 +15,8 @@
 		$('select#slw_item_stock_location_variable_product').hide();
 		$(document).on( 'found_variation', function( event ) {
 			event.preventDefault();
-            var variation_id = $(".woocommerce-variation-add-to-cart").find('.variation_id').val();
-            $.ajax({
+			var variation_id = $(".woocommerce-variation-add-to-cart").find('.variation_id').val();
+			$.ajax({
 				type: 'POST',
 				url: slw_frontend_product.ajaxurl,
 				data: {
@@ -45,7 +45,7 @@
 					//console.log( error, status );
 				}
 			});
-        });
+		});
 	}
 
 }(jQuery));

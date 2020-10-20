@@ -7,17 +7,17 @@
 namespace SLW\SRC\Helpers;
 
 if ( !defined('WPINC') ) {
-    die;
+	die;
 }
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
 if ( !class_exists('SlwFrontendHelper') ) {
 
-    class SlwFrontendHelper
-    {
+	class SlwFrontendHelper
+	{
 
-        public static function get_all_product_stock_locations_for_selection( $product_id )
+		public static function get_all_product_stock_locations_for_selection( $product_id )
 		{
 			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
 			if( empty($stock_locations) ) return;
