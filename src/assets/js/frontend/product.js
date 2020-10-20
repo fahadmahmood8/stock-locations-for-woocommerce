@@ -24,7 +24,7 @@
 					security: $('#woocommerce-cart-nonce').val(),
 					variation_id: variation_id
 				},
-				success: function( response ) {
+				success ( response ) {
 					if( response.success ) {
 						$('select#slw_item_stock_location_variable_product').empty();
 						$('select#slw_item_stock_location_variable_product').prop('required',true);
@@ -40,6 +40,9 @@
 					} else {
 						return;
 					}
+				},
+				error ( xhr, error, status ) {
+					//console.log( error, status );
 				}
 			});
         });

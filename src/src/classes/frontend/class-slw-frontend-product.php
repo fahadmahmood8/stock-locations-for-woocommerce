@@ -33,6 +33,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				add_action( 'woocommerce_single_variation', array($this, 'variable_location_select') );
 				add_filter( 'woocommerce_add_cart_item_data', array($this, 'add_to_cart_location_validation'), 10, 3 );
 				add_action( 'wp_ajax_get_variation_locations', array($this, 'get_variation_locations') );
+				add_action( 'wp_ajax_nopriv_get_variation_locations', array($this, 'get_variation_locations') );
 			}
 		}
 
@@ -92,9 +93,12 @@ if( !class_exists('SlwFrontendProduct') ) {
 				if( !empty($stock_locations) ) {
 					wp_send_json_success( compact('stock_locations') );
 				} else {
-					return;
+					wp_send_json_error( array(
+						'error' => __('No locations found for this product/variant!', 'stock-locations-for-woocommerce')
+					) );
 				}
 			}
+			die();
 		}
 
 		/**
