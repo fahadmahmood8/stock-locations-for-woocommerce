@@ -120,12 +120,17 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			// Get correct top level product
 			// The one the stock locations are actually allocated to
 			$product = wc_get_product($productId);
-			$parentProduct = wc_get_product($product->get_parent_id());
+			if( empty($product) || ! is_callable( array( $product, 'get_id' ) ) ) return array();
+
+			$parentProduct = '';
+			if( ! empty($product) && is_callable( array( $product, 'get_parent_id' ) ) ) {
+				$parentProduct = wc_get_product( $product->get_parent_id() );
+			}
 
 			$returnLocations = array();
 
 			// Get locations and stock
-			$locations = get_the_terms(((isset($parentProduct) && !empty($parentProduct)) ? $parentProduct->get_id() : $product->get_id()), SlwLocationTaxonomy::$tax_singular_name);
+			$locations = get_the_terms( ( ( isset($parentProduct) && !empty($parentProduct) ) ? $parentProduct->get_id() : $product->get_id() ), SlwLocationTaxonomy::$tax_singular_name );
 
 			if( empty($locations) || ! is_array($locations) ) return $returnLocations;
 

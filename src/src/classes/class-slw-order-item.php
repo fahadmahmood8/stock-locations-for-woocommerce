@@ -397,12 +397,14 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function newOrderItemAllocateStock( $item_id, $item, $order_id )
 		{
-			if (is_admin()) {
+			// add exception to third party plugins
+			$disallow = apply_filters( 'slw_disallow_third_party_allocate_order_item_stock', __return_true() );
+			if( is_admin() && $disallow ) {
 				return;
 			}
 
 			// This is not the correct product
-			if (!($item instanceof \WC_Order_Item_Product)) {
+			if( !($item instanceof \WC_Order_Item_Product) ) {
 				return;
 			}
 
