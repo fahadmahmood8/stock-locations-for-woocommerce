@@ -41,6 +41,10 @@ if( !class_exists('SlwFrontendCart') ) {
 			if( isset($plugin_settings['different_location_per_cart_item']) && $plugin_settings['different_location_per_cart_item'] == 'no' ) {
 				add_action( 'wp_footer', array($this, 'lock_cart_item_location') );
 			}
+
+			if( isset($plugin_settings['cart_location_selection_required']) && $plugin_settings['cart_location_selection_required'] == 'on' ) {
+				add_action( 'wp_footer', array($this, 'cart_item_location_selection_required') );
+			}
 		}
 
 		/**
@@ -56,6 +60,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 
 			if( !empty($stock_locations) ) {
+				echo '<label class="slw_cart_item_stock_location_label">'.__('Nearest Location', 'stock-locations-for-woocommerce').':</label>';
 				if( isset($cart_item['stock_location']) ) {
 					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
 					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
@@ -123,16 +128,56 @@ if( !class_exists('SlwFrontendCart') ) {
 		 */
 		public function lock_cart_item_location()
 		{
-			?>
-			<script>
-			jQuery( function ( $ ) {
-				$('.slw_cart_item_stock_location').on('change', function() {
-					var location_id = $(this).val();
-					$(this).closest('.woocommerce-cart-form').find('.slw_cart_item_stock_location').val(location_id).prop('disabled', true);
-				});
-			} );
-			</script>
-			<?php
+			if( is_cart() ) {
+				?>
+				<script>
+				jQuery( function ( $ ) {
+					$('.slw_cart_item_stock_location').on('change', function() {
+						var location_id = $(this).val();
+						$(this).closest('.woocommerce-cart-form').find('.slw_cart_item_stock_location').val(location_id).prop('disabled', true);
+					});
+				} );
+				</script>
+				<?php
+			}
+		}
+
+		/**
+		 * Make locations selection in cart required.
+		 *
+		 * @since 1.3.3
+		 */
+		public function cart_item_location_selection_required()
+		{
+			if( is_cart() ) {
+				?>
+				<script>
+				jQuery( function( $ ) {
+					$(document).ready(function() {
+						validate();
+						$('.slw_cart_item_stock_location_selection').on('change', validate);
+					});
+
+					function validate() {
+						var inputsWithValues = 0;
+						var myInputs = $(".slw_cart_item_stock_location_selection");
+
+						myInputs.each(function(e) {
+							if ($(this).val()) {
+								inputsWithValues += 1;
+							}
+						});
+
+						if (inputsWithValues != myInputs.length) {
+							$('.checkout-button').addClass('slw_checkout_disable');
+						} else {
+							$('.checkout-button').removeClass('slw_checkout_disable');
+						}
+					}
+				} );
+				</script>
+				<?php
+			}
 		}
 
 	}

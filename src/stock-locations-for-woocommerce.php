@@ -133,7 +133,7 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_frontend()
 		{
-			wp_enqueue_style('styles-frontend', $this->pluginDirUrl() . 'assets/css/frontend/style.css', null, '1.3');
+			wp_enqueue_style('styles-frontend', $this->pluginDirUrl() . 'assets/css/frontend/style.css', null, '1.3.3');
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
 				wp_register_script( 'scripts-frontend-cart', $this->pluginDirUrl() . 'assets/js/frontend/cart.js', array( 'jquery-blockui' ), '1.3', true );

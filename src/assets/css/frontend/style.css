@@ -1,3 +1,9 @@
+.slw_cart_item_stock_location_label {
+	font-size: 13px;
+	margin-top: 5px;
+	margin-bottom: 0;
+	font-weight: bold;
+}
 .slw_item_stock_location {
 	font-size: 14px;
 	line-height: 2;
@@ -14,6 +20,11 @@
 	cursor: pointer;
 	vertical-align: middle;
 	border: 1px solid #7e8993;
-	margin: 8px 0;
+	margin: 3px 0 5px 0;
 	text-align: left;
+}
+.slw_checkout_disable {
+	opacity: 0.5 !important;
+	pointer-events: none !important;
+	cursor: default !important;
 }

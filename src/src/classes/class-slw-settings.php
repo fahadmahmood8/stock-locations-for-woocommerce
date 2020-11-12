@@ -101,6 +101,14 @@ if(!class_exists('SlwSettings')) {
 			);
 
 			add_settings_field(
+				'cart_location_selection_required',
+				null,
+				array( $this, 'cart_location_selection_required_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
+
+			add_settings_field(
 				'different_location_per_cart_item',
 				__('Different location per cart item', 'stock-locations-for-woocommerce'),
 				array( $this, 'different_location_per_cart_item_callback' ),
@@ -171,6 +179,9 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['show_in_cart'] ) ) {
 				$sanitary_values['show_in_cart'] = $input['show_in_cart'];
 			}
+			if ( isset( $input['cart_location_selection_required'] ) ) {
+				$sanitary_values['cart_location_selection_required'] = $input['cart_location_selection_required'];
+			}
 			if ( isset( $input['different_location_per_cart_item'] ) ) {
 				$sanitary_values['different_location_per_cart_item'] = $input['different_location_per_cart_item'];
 			}
@@ -215,6 +226,20 @@ if(!class_exists('SlwSettings')) {
 			$this->select_yes_no_callback('show_in_cart');
 			?>
 			<p>&#9888; <?= __('If auto order allocation is enabled for the selected location in the cart, this setting will be ignored for stock reduction.', 'stock-locations-for-woocommerce'); ?></p>
+			<?php
+		}
+
+		/**
+		 * Make cart location selection required.
+		 *
+		 * @since 1.3.0
+		 * @return void
+		 */
+		public function cart_location_selection_required_callback()
+		{
+			$this->checkbox_callback('cart_location_selection_required');
+			?>
+			<span><?= __('Make location selection in cart required.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
 
