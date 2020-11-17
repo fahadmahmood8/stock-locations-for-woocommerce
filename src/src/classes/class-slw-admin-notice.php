@@ -11,7 +11,7 @@ if ( !defined( 'WPINC' ) ) {
 	die;
 }
 
-if( !class_exists('AdminNotice') ) {
+if( !class_exists('SlwAdminNotice') ) {
 
 	class SlwAdminNotice
 	{
