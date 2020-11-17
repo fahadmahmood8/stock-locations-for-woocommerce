@@ -96,7 +96,7 @@ if(!class_exists('SlwProductRest')) {
 
 			// Get parent post ID
 			// This is either the current product or its parent_id
-			$parentPostId = ($object_type === 'product_variation') ? $post->parent_id : $postId;
+			$parentPostId = ($object_type === 'product_variation') ? $post->get_parent_id() : $postId;
 
 			$stockLocationTermIds = array();
 
