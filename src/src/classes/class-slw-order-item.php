@@ -60,6 +60,13 @@ if( !class_exists('SlwOrderItem') ) {
 			if( isset($this->plugin_settings['wc_new_order_location_copy']) ) {
 				add_filter( 'woocommerce_email_headers', array($this, 'wc_new_order_email_copy_to_locations_email'), 10, 3);
 			}
+
+			if( $this->wc_manage_stock === 'yes' ) {
+				add_action( 'woocommerce_restore_order_stock', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
+			} else {
+				add_action( 'woocommerce_order_status_cancelled', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
+				add_action( 'woocommerce_order_status_pending', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
+			}
 		}
 
 		/**
@@ -376,6 +383,7 @@ if( !class_exists('SlwOrderItem') ) {
 								$arr[] = '_item_stock_updated_at_' . $term->term_id;
 								$arr[] = '_stock_location';
 								$arr[] = '_slw_notification_mail_output';
+								$arr[] = 'stock_location_' . $term->term_id;
 							}
 						}
 					}
@@ -526,6 +534,50 @@ if( !class_exists('SlwOrderItem') ) {
 				}
 			}
 			return $headers; 
+		}
+
+		/**
+		 * Restore locations stock on WC restore
+		 *
+		 * @since 1.3.3
+		 * @return array
+		 */
+		public function restore_order_items_locations_stock( $order )
+		{
+			if( empty($order) || ! is_object($order) ) return;
+
+			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_order_stock_reduced', true );
+			if( ! $wc_order_stock_reduced ) return;
+
+			foreach( $order->get_items( 'line_item' ) as $item_id => $item ) {
+				$product_id = $item['variation_id'] != 0 ? $item['variation_id'] : $item['product_id'];
+				$product = wc_get_product( $product_id );
+				if( empty($product) || ! is_object($product) ) return;
+				if ( ! SlwStockAllocationHelper::isManagedStock( $product_id ) ) return;
+
+				$itemStockLocationTerms = SlwStockAllocationHelper::getProductStockLocations( $product_id, false );
+				if( empty($itemStockLocationTerms) ) return;
+
+				$slw_data = wc_get_order_item_meta( $item_id, '_slw_data', true );
+				if( empty($slw_data) ) return;
+
+				foreach( $itemStockLocationTerms as $location_id => $location ) {
+					if( isset( $slw_data[$location_id] ) ) {
+						// update the product location stock
+						update_post_meta( $product_id, '_stock_at_' . $location_id, $location->quantity + $slw_data[$location_id]['quantity_subtracted'] );
+
+						// delete the order item meta
+						wc_delete_order_item_meta( $item_id, '_item_stock_locations_updated' );
+						wc_delete_order_item_meta( $item_id, '_item_stock_updated_at_' . $location_id );
+						wc_delete_order_item_meta( $item_id, '_slw_data' );
+
+						// add order note
+						$order->add_order_note(
+							sprintf( __('The stock in the location %1$s was restores in %2$d for the product %3$s', 'stock-locations-for-woocommerce'), $location->name, $slw_data[$location_id]['quantity_subtracted'], $product->get_name() )
+						);
+					}
+				}
+			}
 		}
 
 	}
