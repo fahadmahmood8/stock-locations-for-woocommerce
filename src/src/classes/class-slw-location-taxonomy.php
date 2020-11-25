@@ -151,7 +151,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			}
 			
 			// if email notifications are disable
-			if( $this->plugin_settings['location_email_notifications'] != 'on' ) {
+			if( ! isset($this->plugin_settings['location_email_notifications']) || $this->plugin_settings['location_email_notifications'] != 'on' ) {
 				$location_email = null;
 			}
 

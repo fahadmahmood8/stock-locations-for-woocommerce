@@ -540,7 +540,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 * Restore locations stock on WC restore
 		 *
 		 * @since 1.3.3
-		 * @return array
+		 * @return void
 		 */
 		public function restore_order_items_locations_stock( $order )
 		{
