@@ -24,7 +24,7 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function __construct()
 		{
-			add_action( 'admin_menu', array($this, 'create_admin_menu_page') );
+			add_action( 'admin_menu', array($this, 'create_admin_menu_page'), 99 );
 			add_action( 'admin_init', array($this, 'register_settings') );
 			add_filter( 'plugin_action_links_'.\SlwMain::$plugin_basename, array($this, 'settings_link') );
 
@@ -39,11 +39,12 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function create_admin_menu_page()
 		{
-			// This page will be under "Settings"
-			add_options_page(
+			// This page will be under "WooCommerce"
+			add_submenu_page(
+				'woocommerce',
 				__('SLW Settings', 'stock-locations-for-woocommerce'), 
 				__('SLW Settings', 'stock-locations-for-woocommerce'), 
-				'manage_options', 
+				'manage_woocommerce',
 				'slw-settings', 
 				array( $this, 'admin_menu_page_callback' )
 			);

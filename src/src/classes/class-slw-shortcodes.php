@@ -228,7 +228,7 @@ if(!class_exists('SlwShortcodes')) {
 		}
 
 		/**
-		 * Displays the product locations
+		 * Displays a product message
 		 *
 		 * @param $atts
 		 * @param string $innerHtml
@@ -293,7 +293,7 @@ if(!class_exists('SlwShortcodes')) {
 		}
 
 		/**
-		 * Displays the product locations
+		 * Displays a cart message
 		 *
 		 * @param $atts
 		 * @param string $innerHtml
