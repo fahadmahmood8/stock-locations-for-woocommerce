@@ -106,12 +106,13 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			// Allow third party plugins to prevent WC stock reduction
 			$allow_wc_stock_reduce = apply_filters( 'slw_allow_wc_stock_reduce', true );
 			
-			// Update woocommerce product stock level
+			// Decrease woocommerce product stock level
 			$order_id = wc_get_order_id_by_order_item_id( $orderItemId );
 			$wc_order_stock_reduced = get_post_meta( $order_id, '_order_stock_reduced', true ); // prevents reducing stock twice for the product
 			if( $totalQtyAllocated && $allow_wc_stock_reduce && ! $wc_order_stock_reduced ) {
-				$quantityToUpdate = $mainProduct->get_stock_quantity() - $totalQtyAllocated;
-				wc_update_product_stock( $mainProduct, $quantityToUpdate, 'set', false );
+				if( $totalQtyAllocated <= $mainProduct->get_stock_quantity() ) { // don't allow to decrease below zero
+					wc_update_product_stock( $mainProduct, $totalQtyAllocated, 'decrease', false );
+				}
 			}
 
 			// Check if stock in locations are updated for this item

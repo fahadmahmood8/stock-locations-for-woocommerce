@@ -370,7 +370,7 @@ if(!class_exists('SlwSettings')) {
 		 * @return void
 		 */
 		public function settings_link( $links ) {
-			$settings_link = '<a href="' . admin_url( 'options-general.php?page=slw-settings' ) . '">'. __( 'Settings', 'woocommerce' ) . '</a>';
+			$settings_link = '<a href="' . admin_url( 'admin.php?page=slw-settings' ) . '">'. __( 'Settings', 'stock-locations-for-woocommerce' ) . '</a>';
 			array_push( $links, $settings_link );
 			return $links;
 		}
