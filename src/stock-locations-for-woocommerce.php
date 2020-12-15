@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       		Stock Locations for WooCommerce
- * Description:       		This plugin will help you manage WooCommerce Products stocks throw locations and also different traditional barcodes.
+ * Description:       		This plugin will help you manage WooCommerce Products stocks throw locations.
  * Version:					__STABLE_TAG__
  * Requires at least: 		4.9
  * Requires PHP:      		7.2
@@ -50,7 +50,6 @@ if(!class_exists('SlwMain')) {
 			// Instantiate classes
 			new SLW\SRC\Classes\SlwLocationTaxonomy;
 			new SLW\SRC\Classes\SlwStockLocationsTab;
-			new SLW\SRC\Classes\SlwBarcodesTab;
 			new SLW\SRC\Classes\SlwOrderItem;
 			new SLW\SRC\Classes\SlwShortcodes;
 			new SLW\SRC\Classes\SlwProductListing;

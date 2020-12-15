@@ -142,14 +142,6 @@ if(!class_exists('SlwSettings')) {
 			);
 
 			add_settings_field(
-				'display_barcodes_tab',
-				__('Disable barcodes tab', 'stock-locations-for-woocommerce'),
-				array( $this, 'display_barcodes_tab_callback' ),
-				'slw-setting-admin',
-				'slw_setting_setting_section'
-			);
-
-			add_settings_field(
 				'location_email_notifications',
 				__('Enable location email notifications', 'stock-locations-for-woocommerce'),
 				array( $this, 'location_email_notifications_callback' ),
@@ -194,9 +186,6 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['include_location_data_in_formatted_item_meta'] ) ) {
 				$sanitary_values['include_location_data_in_formatted_item_meta'] = $input['include_location_data_in_formatted_item_meta'];
-			}
-			if ( isset( $input['display_barcodes_tab'] ) ) {
-				$sanitary_values['display_barcodes_tab'] = $input['display_barcodes_tab'];
 			}
 			if ( isset( $input['location_email_notifications'] ) ) {
 				$sanitary_values['location_email_notifications'] = $input['location_email_notifications'];
@@ -295,18 +284,7 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-		 * Disable barcodes tab callback.
-		 *
-		 * @since 1.2.4
-		 * @return void
-		 */
-		public function display_barcodes_tab_callback()
-		{
-			$this->checkbox_callback('display_barcodes_tab');
-		}
-
-		/**
-		 * Disable barcodes tab callback.
+		 * Location email notifications callback.
 		 *
 		 * @since 1.3.0
 		 * @return void

@@ -6,10 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'SLW\\SRC\\Classes\\Frontend\\SlwFrontendCart' => $baseDir . '/src/classes/frontend/class-slw-frontend-cart.php',
     'SLW\\SRC\\Classes\\Frontend\\SlwFrontendProduct' => $baseDir . '/src/classes/frontend/class-slw-frontend-product.php',
     'SLW\\SRC\\Classes\\SlwAdminNotice' => $baseDir . '/src/classes/class-slw-admin-notice.php',
-    'SLW\\SRC\\Classes\\SlwBarcodesTab' => $baseDir . '/src/classes/class-slw-barcodes-tab.php',
     'SLW\\SRC\\Classes\\SlwLocationTaxonomy' => $baseDir . '/src/classes/class-slw-location-taxonomy.php',
     'SLW\\SRC\\Classes\\SlwOrderItem' => $baseDir . '/src/classes/class-slw-order-item.php',
     'SLW\\SRC\\Classes\\SlwProductListing' => $baseDir . '/src/classes/class-slw-product-listing.php',

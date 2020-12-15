@@ -1,6 +1,6 @@
 === Stock Locations for WooCommerce ===
 Contributors: alexmigf
-Tags: woocommerce, stock, stock locations, barcode, barcodes, ean, upc, asin, isbn, simple, variable, products, product
+Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
 Tested up to: 5.6
 Requires PHP: 7.2
@@ -8,7 +8,7 @@ Stable tag: __STABLE_TAG__
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin will help you manage WooCommerce Products stocks through locations and also different traditional barcodes.
+This plugin will help you manage WooCommerce Products stocks through locations.
 
 
 == Description ==
@@ -26,26 +26,14 @@ You can print the locations inside a product page on the frontend, with this sho
 
 `[slw_cart_message qty_from_location="location-slug" only_location_available="no"]Your custom cart message/HTML here[/slw_cart_message]`
 
-SLW also adds standardized barcode fields to WooCommerce products, for you to use.
-
-Barcodes available:
-
-* UPC
-* EAN
-* ISBN
-* ASIN
-
-You can call the barcodes inside a product page on the frontend, with this shortcodes:
-
-`[slw_barcode type="upc"]`
-`[slw_barcode type="ean"]`
-`[slw_barcode type="isbn"]`
-`[slw_barcode type="asin"]`
+= REST API =
 
 REST API endpoints (both accept `GET` and `PUT` requests):
 
 `/wp-json/wc/v3/products/id`
 `/wp-json/wc/v3/products/id/variations/id (first ID is for parent product, the second one for the variation ID)`
+`/wp-json/wp/v2/location/`
+`/wp-json/wp/v2/location/id`
 
 
 This plugin requires at least *WooCommerce 3.4*.
@@ -56,7 +44,6 @@ This plugin requires at least *WooCommerce 3.4*.
 - New taxonomy for stock locations
 - Works on both, simple and variable products
 - Easy management of stock with multiple locations, both in product and orders
-- Standardized barcodes
 - Get and update product stock locations from the REST API
 - Allow customers to select locations when purchasing
 - Auto order allocation for locations stock reduction
@@ -90,10 +77,6 @@ This plugin requires at least *WooCommerce 3.4*.
 5. In each variation > Activate Manage Stock & Add Price > Update Post
 6. Under Stock Locations Tab > Manage the stock for the locations for each variation
 
-**Barcodes**
-
-1. Under Product > Barcodes Tab > Fill the barcodes
-
 
 == Frequently Asked Questions ==
 
@@ -103,14 +86,16 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Screenshots ==
 
-1. Product list filter based on stock locations
+1. Product list filter and stock locations column
 2. Stock locations taxonomy
 3. Manage stock locations in simple products
-4. Manage barcodes
-5. Manage stock locations in variable products
-6. After successful subtraction of stock the locations inputs become inactive
-7. Insert the correct amount to subtract from one or more locations per item
-8. Allow customers to select locations in cart page
+4. Manage stock locations in variable products
+5. Deduct stock from locations manually
+6. Deduct stock from location automatically
+7. Allow customers to select locations in cart page
+8. Allow customers to select location in variable products
+9. Allow customers to select location in simple products
+10. Plugin settings
 
 
 == Changelog ==
