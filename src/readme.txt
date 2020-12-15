@@ -100,6 +100,18 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.4.0 =
+- New: removed barcodes feature from plugin to focus only on stock locations
+- New: plugin settings moved to the WooCommerce menu 
+- New: restore order items stock locations on WooCommerce order restore
+- New: setting to make locations selection in cart required 
+- New: filter 'slw_disallow_third_party_allocate_order_item_stock' to allow third party plugins to allocate item locations stock
+- Fix: to prevent product WC stock decrease below zero 
+- Fix: undefined index error for plugin setting 'location_email_notifications'
+- Fix: to prevent reducing the stock twice for the product if the order was already reduced
+- Fix: replace post parent_id property by get_parent_id() method stopping warnings thrown by woocommerce
+- Fix: adding callable check for product method get_id() in stock allocation helper
+
 = 1.3.2 =
 - Fix: jQuery request returning 404 because of missing hook
 
