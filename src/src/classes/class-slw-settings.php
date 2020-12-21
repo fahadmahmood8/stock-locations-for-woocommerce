@@ -49,6 +49,14 @@ if(!class_exists('SlwSettings')) {
 				array( $this, 'admin_menu_page_callback' )
 			);
 		}
+
+		public function settings_tabs()
+		{
+			return apply_filters( 'slw_settings_tabs', array(
+				'default'	=> __( 'Settings', 'stock-locations-for-woocommerce' ),
+				'contact'	=> __( 'Contact', 'stock-locations-for-woocommerce' ),
+			) );
+		}
 		
 		/**
 		 * Admin Menu Page Callback.
@@ -61,13 +69,19 @@ if(!class_exists('SlwSettings')) {
 			?>
 			<div class="wrap">
 				<h1><?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
-				<form method="post" action="options.php">
+				<h2 class="nav-tab-wrapper">
+					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
+					<?php foreach( $this->settings_tabs() as $key => $label ) : $class = 'nav-tab'; ?>
+					<?php if( isset($_REQUEST['tab']) && $_REQUEST['tab'] == $key ) { $class .= ' nav-tab-active'; } ?>
+					<a href="<?= admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?= $key; ?>" class="<?= $class; ?>"><?= $label; ?></a>
+					<?php endforeach; ?>
+				</h2>
 				<?php
-					settings_fields( 'slw_setting_option_group' );
-					do_settings_sections( 'slw-setting-admin' );
-					submit_button();
+					// echo view
+					if( isset( $_REQUEST['tab'] ) ) {
+						echo \SLW\SRC\Helpers\view( 'settings-'.$_REQUEST['tab'] );
+					}
 				?>
-				</form>
 			</div>
 			<?php
 		}
