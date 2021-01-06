@@ -32,10 +32,11 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function __construct()
 		{
-			add_action('woocommerce_admin_order_item_headers', array($this, 'add_stock_location_column_wc_order'), 10, 1);  // Since WC 3.0.2
-			add_action('woocommerce_admin_order_item_values', array($this, 'add_stock_location_inputs_wc_order'), 10, 3);   // Since WC 3.0.2
+			add_action('woocommerce_admin_order_item_headers', array($this, 'add_stock_location_column_wc_order'), 10, 1);
+			add_action('woocommerce_admin_order_item_values', array($this, 'add_stock_location_inputs_wc_order'), 10, 3);
 			add_action('save_post_shop_order', array($this, 'update_stock_locations_data_wc_order_save'), 10, 3);
-			add_filter('woocommerce_hidden_order_itemmeta', array($this, 'hide_stock_locations_itemmeta_wc_order'), 10, 1); // Since WC 3.0.2
+			add_action('woocommerce_before_save_order_item', array($this, 'disable_wc_order_adjust_line_item_product_stock'), 99, 1);
+			add_filter('woocommerce_hidden_order_itemmeta', array($this, 'hide_stock_locations_itemmeta_wc_order'), 10, 1);
 			add_action('woocommerce_new_order_item', array($this, 'newOrderItemAllocateStock'), 10, 3);
 
 			// get plugin settings
@@ -67,6 +68,11 @@ if( !class_exists('SlwOrderItem') ) {
 				add_action( 'woocommerce_order_status_cancelled', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
 				add_action( 'woocommerce_order_status_pending', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
 			}
+		}
+
+		public function disable_wc_order_adjust_line_item_product_stock( $item )
+		{
+			add_filter( 'woocommerce_prevent_adjust_line_item_product_stock', '__return_true' );
 		}
 
 		/**
