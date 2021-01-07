@@ -100,6 +100,11 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.4.1 =
+- New: POT file for languages
+- New: settings tabs
+- Fix: issue on WC reducing product stock on line item save
+
 = 1.4.0 =
 - New: removed barcodes feature from plugin to focus only on stock locations
 - New: plugin settings moved to the WooCommerce menu 
