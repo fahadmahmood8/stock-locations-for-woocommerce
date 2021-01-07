@@ -54,7 +54,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			return apply_filters( 'slw_settings_tabs', array(
 				'default'	=> __( 'Settings', 'stock-locations-for-woocommerce' ),
-				'contact'	=> __( 'Contact', 'stock-locations-for-woocommerce' ),
+				'sponsor'	=> __( 'Sponsor', 'stock-locations-for-woocommerce' ),
 			) );
 		}
 		
