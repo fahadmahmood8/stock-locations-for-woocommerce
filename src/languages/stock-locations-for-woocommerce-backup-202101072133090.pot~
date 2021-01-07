@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stock Locations for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-07 21:33+0000\n"
+"POT-Creation-Date: 2021-01-07 21:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -46,6 +46,10 @@ msgstr ""
 msgid "Client choosed: "
 msgstr ""
 
+#: ../../../../../stock-locations-for-woocommerce/src/src/classes/class-slw-settings.php:57
+msgid "Contact"
+msgstr ""
+
 #: ../../../../../stock-locations-for-woocommerce/src/views/taxonomy-fields-new.php:2
 #: ../../../../../stock-locations-for-woocommerce/src/views/taxonomy-fields-edit.php:4
 msgid "Default for new products"
@@ -53,10 +57,6 @@ msgstr ""
 
 #: ../../../../../stock-locations-for-woocommerce/src/src/classes/class-slw-settings.php:128
 msgid "Different location per cart item"
-msgstr ""
-
-#: ../../../../../stock-locations-for-woocommerce/src/views/settings-sponsor.php:4
-msgid "Donate"
 msgstr ""
 
 #: ../../../../../stock-locations-for-woocommerce/src/views/taxonomy-fields-edit.php:45
@@ -221,10 +221,6 @@ msgstr ""
 msgid "SLW Settings"
 msgstr ""
 
-#: ../../../../../stock-locations-for-woocommerce/src/src/classes/class-slw-settings.php:57
-msgid "Sponsor"
-msgstr ""
-
 #: ../../../../../stock-locations-for-woocommerce/src/src/helpers/helper-slw-mail.php:31
 msgid "Stock allocated in"
 msgstr ""
@@ -344,11 +340,6 @@ msgstr ""
 #: ../../../../../stock-locations-for-woocommerce/src/src/classes/class-slw-stock-locations-tab.php:120
 #: ../../../../../stock-locations-for-woocommerce/src/src/classes/class-slw-stock-locations-tab.php:182
 msgid "Total Stock:"
-msgstr ""
-
-#: ../../../../../stock-locations-for-woocommerce/src/views/settings-sponsor.php:3
-msgid ""
-"Would like to sponsor the development of new features and keep me motivated?"
 msgstr ""
 
 #: ../../../../../stock-locations-for-woocommerce/src/src/classes/class-slw-settings.php:338

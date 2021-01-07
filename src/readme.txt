@@ -2,7 +2,7 @@
 Contributors: alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later

@@ -11,8 +11,8 @@
  * License URI:       		https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       		stock-locations-for-woocommerce
  * Domain Path:       		/languages
- * WC requires at least:	3.4.0
- * WC tested up to: 		4.6.0
+ * WC requires at least:	3.4
+ * WC tested up to: 		4.9
  */
 
 /**
