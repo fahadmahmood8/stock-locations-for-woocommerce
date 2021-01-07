@@ -88,9 +88,6 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function init()
 		{
-			// Action to load textdomain
-			add_action( 'init', array($this, 'load_textdomain') );
-
 			// Enqueue scripts and styles
 			add_action( 'admin_enqueue_scripts', array($this, 'enqueue_admin') );
 			add_action( 'wp_enqueue_scripts', array($this, 'enqueue_frontend') );
@@ -144,17 +141,6 @@ if(!class_exists('SlwMain')) {
 				wp_localize_script( 'scripts-frontend-product', 'slw_frontend_product', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 				wp_enqueue_script( 'scripts-frontend-product' );
 			}
-		}
-
-		/**
-		 * Load plugin textdomain.
-		 *
-		 * @since 1.0.0
-		 * @return void
-		 */
-		public function load_textdomain()
-		{
-			load_plugin_textdomain( 'stock-locations-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 		}
 
 		/**

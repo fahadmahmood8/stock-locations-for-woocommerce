@@ -515,7 +515,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function wc_new_order_email_copy_to_locations_email( $headers, $email_id, $order, $email = null )
 		{
-			if( $email_id ==  'new_order' && !empty($order) ) {
+			if( $email_id == 'new_order' && !empty($order) ) {
 				$emails = array();
 				foreach( $order->get_items() as $item_id => $item ) {
 					if( $item->get_type() == 'line_item' ) {
