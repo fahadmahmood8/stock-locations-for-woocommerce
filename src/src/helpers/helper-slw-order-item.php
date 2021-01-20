@@ -105,11 +105,21 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 			// Allow third party plugins to prevent WC stock reduction
 			$allow_wc_stock_reduce = apply_filters( 'slw_allow_wc_stock_reduce', true );
+
+			update_option( 'testalex', $mainProduct );
 			
 			// Decrease woocommerce product stock level
 			$order_id = wc_get_order_id_by_order_item_id( $orderItemId );
 			$wc_order_stock_reduced = get_post_meta( $order_id, '_order_stock_reduced', true ); // prevents reducing stock twice for the product
 			if( $totalQtyAllocated && $allow_wc_stock_reduce && ! $wc_order_stock_reduced ) {
+				// check if we are dealing with a variation product
+				if( $mainProduct->get_type() == 'variation' ) {
+					$parent_product = wc_get_product( $mainProduct->get_parent_id() );
+					if( ! empty( $parent_product ) && is_object( $parent_product ) ) {
+						$mainProduct = $parent_product;
+					}
+				}
+				// update product WC stock
 				if( $totalQtyAllocated <= $mainProduct->get_stock_quantity() ) { // don't allow to decrease below zero
 					wc_update_product_stock( $mainProduct, $totalQtyAllocated, 'decrease', false );
 				}
