@@ -100,6 +100,9 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.4.3 =
+- Fix: bug of product variation WC stock not being updated when locations stock is deducted (updated)
+
 = 1.4.2 =
 - New: setting to show location stock quantities on product and cart pages on location selectors
 - Fix: bug of product variation WC stock not being updated when locations stock is deducted
