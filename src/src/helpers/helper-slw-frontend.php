@@ -34,6 +34,15 @@ if ( !class_exists('SlwFrontendHelper') ) {
 					} else {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'stock-locations-for-woocommerce') . ')';
 					}
+				} else {
+					$plugin_settings = get_option( 'slw_settings' );
+					if( isset($plugin_settings['product_location_selection_show_stock_qty']) && $plugin_settings['product_location_selection_show_stock_qty'] == 'on' ) {
+						$stock_locations_to_display[$id]['name'] .= sprintf(
+							' (%s %s)',
+							$location->quantity,
+							__( 'in stock', 'stock-locations-for-woocommerce' )
+						);
+					}
 				}
 			}
 

@@ -140,6 +140,14 @@ if(!class_exists('SlwSettings')) {
 			);
 
 			add_settings_field(
+				'product_location_selection_show_stock_qty',
+				__('Show stock quantities in location selection in frontend', 'stock-locations-for-woocommerce'),
+				array( $this, 'product_location_selection_show_stock_qty_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
+
+			add_settings_field(
 				'delete_unused_product_locations_meta',
 				__('Auto delete unused product locations meta', 'stock-locations-for-woocommerce'),
 				array( $this, 'delete_unused_product_locations_meta_callback' ),
@@ -195,6 +203,9 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['show_in_product_page'] ) ) {
 				$sanitary_values['show_in_product_page'] = $input['show_in_product_page'];
 			}
+			if ( isset( $input['product_location_selection_show_stock_qty'] ) ) {
+				$sanitary_values['product_location_selection_show_stock_qty'] = $input['product_location_selection_show_stock_qty'];
+			}
 			if ( isset( $input['delete_unused_product_locations_meta'] ) ) {
 				$sanitary_values['delete_unused_product_locations_meta'] = $input['delete_unused_product_locations_meta'];
 			}
@@ -244,6 +255,20 @@ if(!class_exists('SlwSettings')) {
 			$this->checkbox_callback('cart_location_selection_required');
 			?>
 			<span><?= __('Make location selection in cart required.', 'stock-locations-for-woocommerce'); ?></span>
+			<?php
+		}
+
+		/**
+		 * Make cart location selection required.
+		 *
+		 * @since 1.3.0
+		 * @return void
+		 */
+		public function product_location_selection_show_stock_qty_callback()
+		{
+			$this->checkbox_callback('product_location_selection_show_stock_qty');
+			?>
+			<span><?= __('It will affect location selectors on product and cart pages.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
 
