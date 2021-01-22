@@ -155,7 +155,9 @@ if( !class_exists('SlwFrontendCart') ) {
 				jQuery( function( $ ) {
 					$(document).ready(function() {
 						validate();
-						$('.slw_cart_item_stock_location_selection').on('change', validate);
+						$('.slw_cart_item_stock_location_selection').on('change', function() {
+							validate();
+						});
 					});
 
 					function validate() {
