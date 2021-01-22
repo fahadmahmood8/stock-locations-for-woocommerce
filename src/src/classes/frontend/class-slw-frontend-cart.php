@@ -132,9 +132,11 @@ if( !class_exists('SlwFrontendCart') ) {
 				?>
 				<script>
 				jQuery( function ( $ ) {
-					$('.slw_cart_item_stock_location').on('change', function() {
-						var location_id = $(this).val();
-						$(this).closest('.woocommerce-cart-form').find('.slw_cart_item_stock_location').val(location_id).prop('disabled', true);
+					$(document).ready(function() {
+						$('.slw_cart_item_stock_location_selection').on('change', function() {
+							var location_id = $(this).val();
+							$(this).closest('.woocommerce-cart-form').find('.slw_cart_item_stock_location_selection').val(location_id).prop('disabled', true);
+						});
 					});
 				} );
 				</script>
