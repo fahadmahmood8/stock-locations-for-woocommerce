@@ -113,6 +113,11 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				// update product WC stock
 				if( $mainProduct->get_stock_quantity() >= $totalQtyAllocated ) { // don't allow to decrease below zero
 					update_post_meta( $mainProduct->get_id(), '_stock', $mainProduct->get_stock_quantity() - $totalQtyAllocated );
+
+					// allow other functions to deduct WC stock on the main variation product
+					if( $mainProduct->get_type() == 'variation' ) {
+						do_action( 'slw_allow_variation_product_stock_reduce', $mainProduct->get_parent_id() );
+					}
 				}
 			}
 
