@@ -15,7 +15,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 	class SlwOrderItemHelper
 	{
 
-		public static function allocateLocationStock( $orderItemId, $locationStockMap )
+		public static function allocateLocationStock( $orderItemId, $locationStockMap, $allocationType )
 		{
 			// Get line item
 			$lineItem = new \WC_Order_Item_Product($orderItemId);
@@ -104,11 +104,18 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			}
 
 			// Allow third party plugins to prevent WC stock reduction
-			$allow_wc_stock_reduce = apply_filters( 'slw_allow_wc_stock_reduce', true );
+			$allow_wc_stock_reduce = apply_filters( 'slw_allow_wc_stock_reduce', '__return_true' );
 			
 			// Decrease woocommerce product stock level
 			$order_id = wc_get_order_id_by_order_item_id( $orderItemId );
-			$wc_order_stock_reduced = get_post_meta( $order_id, '_order_stock_reduced', true ); // prevents reducing stock twice for the product
+		
+			// Manual allocation doesn't need to be restricted to the order stock reduced meta
+			if( $allocationType == 'auto' ) {
+				$wc_order_stock_reduced = get_post_meta( $order_id, '_order_stock_reduced', true ); // prevents reducing stock twice for the product
+			} else {
+				$wc_order_stock_reduced = false;
+			}
+
 			if( $totalQtyAllocated && $allow_wc_stock_reduce && ! $wc_order_stock_reduced ) {
 				// update product WC stock
 				if( $mainProduct->get_stock_quantity() >= $totalQtyAllocated ) { // don't allow to decrease below zero

@@ -291,7 +291,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function update_stock_locations_data_wc_order_save( $post_id, $post, $update )
 		{
-			if( empty($post) ) return;
+			if ( empty( $post ) ) return;
 
 			if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
 				return $post_id;
@@ -344,7 +344,7 @@ if( !class_exists('SlwOrderItem') ) {
 					}
 
 					// Allocate stock to locations
-					$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock($item_data->get_id(), $simpleLocationAllocations);
+					$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock( $item_data->get_id(), $simpleLocationAllocations, $allocationType = 'manual' );
 
 					// Check if stock in locations are updated for this item
 					if(!$locationStockAllocationResponse) {
@@ -479,7 +479,7 @@ if( !class_exists('SlwOrderItem') ) {
 			}
 
 			// Allocate order item stock to locations
-			SlwOrderItemHelper::allocateLocationStock($item->get_id(), $simpleLocationAllocations);
+			SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'auto' );
 
 		}
 		
