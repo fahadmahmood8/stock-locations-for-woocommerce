@@ -34,6 +34,9 @@ if(!class_exists('SlwMain')) {
 		protected static $instance = null;
 		private $plugin_settings;
 
+		// add-ons versions
+		public $import_export_addon_version = '1.0.0';
+
 		/**
 		 * Class Constructor.
 		 * @since 1.0.0

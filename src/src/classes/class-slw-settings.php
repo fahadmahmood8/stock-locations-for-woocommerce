@@ -26,6 +26,8 @@ if(!class_exists('SlwSettings')) {
 		{
 			add_action( 'admin_menu', array($this, 'create_admin_menu_page'), 99 );
 			add_action( 'admin_init', array($this, 'register_settings') );
+			add_action( 'slw_after_settings_tabs', array( $this, 'import_export_addon_notice' ), 10, 1 );
+
 			add_filter( 'plugin_action_links_'.\SlwMain::$plugin_basename, array($this, 'settings_link') );
 
 			$this->plugin_settings = get_option( 'slw_settings' );
@@ -76,6 +78,7 @@ if(!class_exists('SlwSettings')) {
 					<a href="<?= admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?= $key; ?>" class="<?= $class; ?>"><?= $label; ?></a>
 					<?php endforeach; ?>
 				</h2>
+				<?php do_action( 'slw_after_settings_tabs', $_REQUEST['tab'] ); ?>
 				<?php
 					// echo view
 					if( isset( $_REQUEST['tab'] ) ) {
@@ -102,7 +105,7 @@ if(!class_exists('SlwSettings')) {
 	
 			add_settings_section(
 				'slw_setting_setting_section',
-				__('Frontend settings', 'stock-locations-for-woocommerce'),
+				null,
 				array( $this, 'setting_section_info' ),
 				'slw-setting-admin'
 			);
@@ -390,6 +393,33 @@ if(!class_exists('SlwSettings')) {
 			$settings_link = '<a href="' . admin_url( 'admin.php?page=slw-settings' ) . '">'. __( 'Settings', 'stock-locations-for-woocommerce' ) . '</a>';
 			array_push( $links, $settings_link );
 			return $links;
+		}
+
+		/**
+		 * Show Import/Export add-on notice
+		 *
+		 * @since 1.4.4
+		 * @return void
+		 */
+		public function import_export_addon_notice( $active_tab ) {
+			if( $active_tab != 'sponsor' && ! class_exists( 'Slw_Import_Export_Add_On_Class' ) ) :
+			?>
+			<div class="notice notice-info inline">
+				<p style="height:80px;">
+					<img class="slw-import-export-addon-logo" src="<?php echo Slw()->pluginDirUrl(); ?>/assets/img/import-export-add-on.svg" alt="Import/Export add-on">
+					<span style="display:block; margin-top:10px; margin-bottom:10px;">
+					<?php
+						printf(
+							esc_attr__( 'New stock locations %s!', 'stock-locations-for-woocommerce' ),
+							'<strong>'.esc_attr__( 'Import/Export add-on', 'stock-locations-for-woocommerce' ).'</strong>',
+						);
+					?>
+					</span>
+					<a class="button button-primary" href="<?php echo admin_url( 'admin.php?page=slw-settings&tab=sponsor' ); ?>"><?php esc_attr_e( 'Grab it here', 'stock-locations-for-woocommerce' ); ?></a>
+				</p>
+			</div>
+			<?php
+			endif;
 		}
 
 	}
