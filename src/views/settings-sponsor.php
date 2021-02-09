@@ -9,10 +9,11 @@
 
 <h3><?php _e( 'Available add-ons', 'stock-locations-for-woocommerce' ); ?></h3>
 <div class="wp-list-table widefat">
-
-	<!-- Import/Export -->
-	<?php include_once( Slw()->pluginDir().'/views/addons/import-export.php' ); ?>
-
+	<p><?php _e( 'Add-ons are sent by email to you after buying process completed. This is a manual procedure, so please be patient!', 'stock-locations-for-woocommerce' ); ?></p>
+	<div id="the-list">
+		<!-- Import/Export -->
+		<?php include_once( Slw()->pluginDir().'/views/addons/import-export.php' ); ?>
+	</div>
 </div>
 
 <!-- Support -->
