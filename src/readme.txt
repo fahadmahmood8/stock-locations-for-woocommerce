@@ -100,6 +100,13 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.4.4 =
+- New: branding
+- New: allow third party functions to deduct WC stock on the main variation product with new hook 'slw_allow_variation_product_stock_reduce'
+- Fix: restriction on manual stock allocation if the order has stock reduced meta
+- Fix: same location per cart item not being respected 
+- Fix: cart page location selection required not working 
+
 = 1.4.3 =
 - Fix: bug of product variation WC stock not being updated when locations stock is deducted (updated)
 
