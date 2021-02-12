@@ -386,7 +386,12 @@ if(!class_exists('SlwStockLocationsTab')) {
 	
 					}
 				} else {
-					update_post_meta($id, '_stock_status', 'onbackorder');
+					if( array_sum($input_amounts) > 0) {
+						//Product is in stock so no backorder needed
+						update_post_meta($id, '_stock_status', 'instock');
+					} else {
+						update_post_meta($id, '_stock_status', 'onbackorder');
+					}
 				}
 
 			}
