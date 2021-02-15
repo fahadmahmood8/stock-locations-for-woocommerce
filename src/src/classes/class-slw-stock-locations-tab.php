@@ -7,6 +7,7 @@
 namespace SLW\SRC\Classes;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
+use SLW\SRC\Helpers\SlwProductHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -369,36 +370,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 			
 			// Check if stock in terms exist
 			if( ! empty( $product_terms_stock ) ) {
-
-				// update stock
-				// backorders disabled
-				if( isset( $_POST['_backorders'] ) && sanitize_text_field( $_POST['_backorders'] ) === 'no' ) {
-					if( array_sum( $input_amounts ) > 0 ) {
-						update_post_meta( $id, '_stock_status', 'instock' );
-	
-						// Remove the link in outofstock taxonomy for the current product.
-						wp_remove_object_terms( $id, 'outofstock', 'product_visibility' ); 
-	
-					} else {
-						update_post_meta( $id, '_stock_status', 'outofstock' );
-	
-						// Add the link in outofstock taxonomy for the current product.
-						wp_set_post_terms( $id, 'outofstock', 'product_visibility', true ); 
-	
-					}
-				// backorders enabled
-				} else {
-					$current_stock_status = get_post_meta( $id, '_stock_status', true );
-					if( array_sum( $input_amounts ) > 0 && $current_stock_status != 'instock' ) {
-						update_post_meta( $id, '_stock_status', 'instock' );
-	
-						// Remove the link in outofstock taxonomy for the current product.
-						wp_remove_object_terms( $id, 'outofstock', 'product_visibility' ); 
-					} else {
-						update_post_meta( $id, '_stock_status', 'onbackorder' );
-					}
-				}
-
+				// update stock status
+				SlwProductHelper::update_wc_stock_status( $id, array_sum($input_amounts) );
 			}
 
 		}
