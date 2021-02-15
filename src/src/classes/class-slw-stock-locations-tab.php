@@ -370,9 +370,10 @@ if(!class_exists('SlwStockLocationsTab')) {
 			// Check if stock in terms exist
 			if( ! empty( $product_terms_stock ) ) {
 
-				// Update stock status if backorders are disabled
+				// update stock
+				// backorders disabled
 				if( isset( $_POST['_backorders'] ) && sanitize_text_field( $_POST['_backorders'] ) === 'no' ) {
-					if( array_sum( $input_amounts ) > 0) {
+					if( array_sum( $input_amounts ) > 0 ) {
 						update_post_meta( $id, '_stock_status', 'instock' );
 	
 						// Remove the link in outofstock taxonomy for the current product.
@@ -385,10 +386,10 @@ if(!class_exists('SlwStockLocationsTab')) {
 						wp_set_post_terms( $id, 'outofstock', 'product_visibility', true ); 
 	
 					}
+				// backorders enabled
 				} else {
-					$current_stock        = get_post_meta( $id, '_stock', true );
 					$current_stock_status = get_post_meta( $id, '_stock_status', true );
-					if( $current_stock > 0 && $current_stock_status != 'instock' ) {
+					if( array_sum( $input_amounts ) > 0 && $current_stock_status != 'instock' ) {
 						update_post_meta( $id, '_stock_status', 'instock' );
 	
 						// Remove the link in outofstock taxonomy for the current product.
