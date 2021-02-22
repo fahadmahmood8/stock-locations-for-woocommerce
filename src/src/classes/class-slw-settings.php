@@ -411,7 +411,7 @@ if(!class_exists('SlwSettings')) {
 					<?php
 						printf(
 							esc_attr__( 'New stock locations %s!', 'stock-locations-for-woocommerce' ),
-							'<strong>'.esc_attr__( 'Import/Export add-on', 'stock-locations-for-woocommerce' ).'</strong>',
+							'<strong>'.esc_attr__( 'Import/Export add-on', 'stock-locations-for-woocommerce' ).'</strong>'
 						);
 					?>
 					</span>
