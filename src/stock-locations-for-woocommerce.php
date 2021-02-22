@@ -12,7 +12,7 @@
  * Text Domain:       		stock-locations-for-woocommerce
  * Domain Path:       		/languages
  * WC requires at least:	3.4
- * WC tested up to: 		4.9
+ * WC tested up to: 		5.0
  */
 
 /**
