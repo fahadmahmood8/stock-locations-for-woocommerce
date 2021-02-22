@@ -100,6 +100,11 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.4.5 =
+- Fix: updates stock status on stock reduction
+- Fix: marking product 'instock' if has stock instead of backorder 
+- Fix: bug that crashes WP
+
 = 1.4.4 =
 - New: branding
 - New: allow third party functions to deduct WC stock on the main variation product with new hook 'slw_allow_variation_product_stock_reduce'
