@@ -203,7 +203,7 @@ if(!class_exists('SlwShortcodes')) {
 
 			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
 
-			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product_id = SlwWpmlHelper::object_id( get_the_ID(), get_post_type( get_the_ID() ) );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 
@@ -234,10 +234,10 @@ if(!class_exists('SlwShortcodes')) {
 			}
 
 			// Get stock location data
-			$stockLocation = SlwStockAllocationHelper::getProductStockLocations($product->get_id(), false, $location);
+			$stockLocation = SlwStockAllocationHelper::getProductStockLocations($product_id, false, $location);
 
 			// Get available product stock locations
-			$availableStockLocations = SlwStockAllocationHelper::getProductAvailableStockLocations($product->get_id(), false);
+			$availableStockLocations = SlwStockAllocationHelper::getProductAvailableStockLocations($product_id, false);
 
 			// Multiple available stock
 			if (strtoupper($onlyLocationAvailable) === 'YES' && sizeof($availableStockLocations) > 1) {
@@ -295,8 +295,12 @@ if(!class_exists('SlwShortcodes')) {
 			// Work out what locations stock will be allocated
 			$items = $woocommerce->cart->get_cart();
 			foreach ($items as $item => $values) {
+				// get product id
+				$product_id = $values['data']->get_id();
+				$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+
 				// Get product stock allocation
-				$stockAllocation = SlwStockAllocationHelper::getStockAllocation($values['data']->get_id(), $values['quantity'], null);
+				$stockAllocation = SlwStockAllocationHelper::getStockAllocation( $product_id, $values['quantity'], null );
 
 				foreach ($stockAllocation as $location) {
 					if (!isset($allocatedLocations[$location->slug])) {

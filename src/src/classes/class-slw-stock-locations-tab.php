@@ -219,6 +219,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		private function create_stock_location_input( $id, $term )
 		{
+			$id = SlwWpmlHelper::object_id( $id, get_post_type( $id ) );
 
 			// Create the input
 			woocommerce_wp_text_input( array(
@@ -247,7 +248,6 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		public function save_tab_data_stock_locations_wc_product_save( $post_id, $post, $update )
 		{
-
 			if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
 				return $post_id;
 
@@ -256,6 +256,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 			if ( ! current_user_can( 'edit_product', $post_id ) )
 				return $post_id;
+			
+			// WPML
+			$post_id = SlwWpmlHelper::object_id( $post_id, get_post_type( $post_id ) );
 
 			// Get product object
 			$product = wc_get_product( $post_id );
@@ -318,6 +321,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		public function update_product_meta( $id, $product_stock_location_terms, $terms_total )
 		{
+			// WPML
+			$id           = SlwWpmlHelper::object_id( $id, get_post_type( $id ) );
 			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
 			if( ! $manage_stock ) {
 				return;
