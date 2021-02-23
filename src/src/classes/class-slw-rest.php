@@ -7,6 +7,8 @@
 
 namespace SLW\SRC\Classes;
 
+use SLW\SRC\Helpers\SlwWpmlHelper;
+
 if ( !defined( 'WPINC' ) ) {
 	die;
 }
@@ -58,9 +60,11 @@ if(!class_exists('SlwProductRest')) {
 		{
 			$terms = array();
 
+			$product_id = SlwWpmlHelper::object_id( $post['id'], get_post_type( $post['id'] ) );
+
 			// Get parent post ID
 			// This is either the current product or its parent_id
-			$parentPostId = ($object_type === 'product_variation') ? wp_get_post_parent_id($post['id']) : $post['id'];
+			$parentPostId = ($object_type === 'product_variation') ? wp_get_post_parent_id($product_id) : $product_id;
 
 			// Get terms
 			foreach (wp_get_post_terms($parentPostId, SlwLocationTaxonomy::$tax_singular_name) as $term) {
@@ -93,6 +97,7 @@ if(!class_exists('SlwProductRest')) {
 			// Get post ID, important we use this and not ->id,
 			// as this will return the correct variation ID if required
 			$postId = $post->get_id();
+			$postId = SlwWpmlHelper::object_id( $postId, get_post_type( $postId ) );
 
 			// Get parent post ID
 			// This is either the current product or its parent_id

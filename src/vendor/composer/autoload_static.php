@@ -41,6 +41,7 @@ class ComposerStaticInita3b005ccfb4ccbe1db7437bf2d108a36
         'SLW\\SRC\\Helpers\\SlwOrderItemHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-order-item.php',
         'SLW\\SRC\\Helpers\\SlwProductHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-product.php',
         'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-stock-allocation.php',
+        'SLW\\SRC\\Helpers\\SlwWpmlHelper' => __DIR__ . '/../..' . '/src/helpers/helper-slw-wpml.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

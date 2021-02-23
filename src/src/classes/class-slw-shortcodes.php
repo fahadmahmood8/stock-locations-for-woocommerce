@@ -8,6 +8,7 @@
 namespace SLW\SRC\Classes;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
+use SLW\SRC\Helpers\SlwWpmlHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -44,6 +45,10 @@ if(!class_exists('SlwShortcodes')) {
 			if( ! is_product() ) return;
 
 			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
+
+			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product    = wc_get_product( $product_id );
+			if( empty($product) ) return;
 
 			// Default values
 			$values = shortcode_atts(array(
@@ -84,6 +89,10 @@ if(!class_exists('SlwShortcodes')) {
 			if( ! is_product() ) return;
 
 			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
+
+			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product    = wc_get_product( $product_id );
+			if( empty($product) ) return;
 
 			// Default values
 			$values = shortcode_atts(array(
@@ -193,6 +202,10 @@ if(!class_exists('SlwShortcodes')) {
 			if( ! is_product() ) return;
 
 			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
+
+			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product    = wc_get_product( $product_id );
+			if( empty($product) ) return;
 
 			// Default values
 			$values = shortcode_atts(array(

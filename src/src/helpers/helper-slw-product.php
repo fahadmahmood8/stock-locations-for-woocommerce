@@ -1,6 +1,6 @@
 <?php
 /**
- * SLW Frontend Product Class
+ * SLW Product Helper Class
  * @since 1.4.5
  */
 
