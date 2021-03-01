@@ -10,8 +10,6 @@ if ( !defined('WPINC') ) {
 	die;
 }
 
-use SLW\SRC\Helpers\SlwStockAllocationHelper;
-
 if ( !class_exists('SlwFrontendHelper') ) {
 
 	class SlwFrontendHelper

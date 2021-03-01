@@ -316,9 +316,10 @@ if( !class_exists('SlwOrderItem') ) {
 			// On order update
 			if( $update ) {
 				// Loop through order items
-				foreach ( $order->get_items() as $item => $item_data ) {
+				foreach ( $order->get_items() as $item_id => $item ) {
+					update_option( 'testalex', $item );
 					// Product ID
-					$pid = ($item_data->get_variation_id()) ? $item_data->get_variation_id() : $item_data->get_product_id();
+					$pid = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
 					$pid = SlwWpmlHelper::object_id( $pid, get_post_type( $pid ) );
 
 					// Not managed stock
@@ -337,8 +338,8 @@ if( !class_exists('SlwOrderItem') ) {
 					// Convert POST data to array
 					$simpleLocationAllocations = array();
 					foreach ($locations as $location) {
-						$productId = $item_data->get_product()->get_id();
-						$postIdx = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
+						$productId = SlwWpmlHelper::object_id( $item->get_product()->get_id(), $item->get_product()->get_type() );
+						$postIdx = SLW_PLUGIN_SLUG . '_oitem_' . $item->get_id() . '_' . $productId . '_' . $location->term_id;
 
 						if (!isset($_POST[$postIdx])) {
 							continue;
@@ -353,7 +354,7 @@ if( !class_exists('SlwOrderItem') ) {
 					}
 
 					// Allocate stock to locations
-					$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock( $item_data->get_id(), $simpleLocationAllocations, $allocationType = 'manual' );
+					$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'manual' );
 
 					// Check if stock in locations are updated for this item
 					if(!$locationStockAllocationResponse) {
@@ -427,7 +428,7 @@ if( !class_exists('SlwOrderItem') ) {
 			}
 
 			// Get product ID
-			$productId  = ($item->get_variation_id()) ? $item->get_variation_id() : $item->get_product_id();
+			$productId  = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
 			$productId  = SlwWpmlHelper::object_id( $productId, get_post_type( $productId ) );
 			
 			// Get item quantity

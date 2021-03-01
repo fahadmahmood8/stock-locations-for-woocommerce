@@ -7,7 +7,6 @@
 namespace SLW\SRC\Helpers;
 
 use SLW\SRC\Classes\SlwLocationTaxonomy;
-use SLW\SRC\Helpers\SlwWpmlHelper;
 
 if (!defined('WPINC')) {
 	die;

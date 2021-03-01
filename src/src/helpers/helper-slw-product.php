@@ -6,8 +6,6 @@
 
 namespace SLW\SRC\Helpers;
 
-use SLW\SRC\Helpers\SlwWpmlHelper;
-
 if ( ! defined( 'WPINC' ) ) die;
 
 if ( ! class_exists( 'SlwProductHelper' ) ) {

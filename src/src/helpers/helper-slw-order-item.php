@@ -21,7 +21,10 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			$lineItem = new \WC_Order_Item_Product($orderItemId);
 
 			// Get item product
-			$mainProduct = $lineItem->get_product();
+			$product_id  = $lineItem->get_variation_id() != 0 ? $lineItem->get_variation_id() : $lineItem->get_product_id();
+			$product_id  = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+			$mainProduct = wc_get_product( $product_id );
+			if( empty( $mainProduct ) ) return false;
 
 			// Resolve product ID from parent or self
 			$resolvedProductId = ($lineItem->get_variation_id()) ? $lineItem->get_variation_id() : $lineItem->get_product_id();
