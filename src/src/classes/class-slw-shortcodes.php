@@ -46,7 +46,7 @@ if(!class_exists('SlwShortcodes')) {
 
 			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
 
-			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 
@@ -90,7 +90,7 @@ if(!class_exists('SlwShortcodes')) {
 
 			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
 
-			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 

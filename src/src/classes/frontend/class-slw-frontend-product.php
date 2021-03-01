@@ -47,7 +47,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		{
 			global $product;
 			if( empty($product) ) return;
-			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'simple' ) return;
 
@@ -76,7 +76,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		{
 			global $product;
 			if( empty($product) ) return;
-			$product_id = SlwWpmlHelper::object_id( $product->ID, $product->get_type() );
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 			
