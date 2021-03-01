@@ -6,6 +6,8 @@
 
 namespace SLW\SRC\Helpers;
 
+use SLW\SRC\Helpers\SlwWpmlHelper;
+
 if ( ! defined( 'WPINC' ) ) die;
 
 if ( ! class_exists( 'SlwProductHelper' ) ) {
@@ -15,7 +17,8 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 
 		public static function update_wc_stock_status( $product_id, $stock_qty )
 		{
-			$product = wc_get_product( $product_id );
+			$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 
 			// backorder disabled

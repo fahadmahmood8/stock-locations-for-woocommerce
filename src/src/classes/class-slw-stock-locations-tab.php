@@ -79,7 +79,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			// Get the product ID
 			$product_id = get_the_ID();
 			// WPML
-			$product_id = SlwWpmlHelper::object_id( intval( $product_id ), get_post_type( $product_id ) );
+			$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
 
 			// Get the product object
 			$product = wc_get_product( $product_id );
