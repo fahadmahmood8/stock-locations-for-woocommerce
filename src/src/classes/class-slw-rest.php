@@ -96,8 +96,7 @@ if(!class_exists('SlwProductRest')) {
 
 			// Get post ID, important we use this and not ->id,
 			// as this will return the correct variation ID if required
-			$postId = $post->get_id();
-			$postId = SlwWpmlHelper::object_id( $postId, get_post_type( $postId ) );
+			$postId = SlwWpmlHelper::object_id( $post->get_id(), $post->get_type() );
 
 			// Get parent post ID
 			// This is either the current product or its parent_id

@@ -77,12 +77,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 		public function tab_content_stock_locations_wc_product( $array )
 		{
 			// Get the product ID
-			$product_id = get_the_ID();
-			// WPML
-			$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+			$product_id = SlwWpmlHelper::object_id( get_the_ID(), get_post_type( get_the_ID() ) );
 
 			// Get the product object
 			$product = wc_get_product( $product_id );
+			if( empty($product) ) return;
 
 			// if product is variable
 			if( $product->is_type('variable') ) {

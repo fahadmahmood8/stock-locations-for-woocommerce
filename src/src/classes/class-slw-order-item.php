@@ -317,18 +317,17 @@ if( !class_exists('SlwOrderItem') ) {
 			if( $update ) {
 				// Loop through order items
 				foreach ( $order->get_items() as $item_id => $item ) {
-					update_option( 'testalex', $item );
 					// Product ID
-					$pid = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
-					$pid = SlwWpmlHelper::object_id( $pid, get_post_type( $pid ) );
+					$productId = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
+					$productId = SlwWpmlHelper::object_id( $productId, get_post_type( $productId ) );
 
 					// Not managed stock
-					if (!SlwStockAllocationHelper::isManagedStock($pid)) {
+					if (!SlwStockAllocationHelper::isManagedStock($productId)) {
 						continue;
 					}
 
 					// Get locations
-					$locations = SlwStockAllocationHelper::getProductStockLocations($pid, false);
+					$locations = SlwStockAllocationHelper::getProductStockLocations($productId, false);
 
 					// No locations set
 					if (empty($locations)) {
@@ -338,7 +337,6 @@ if( !class_exists('SlwOrderItem') ) {
 					// Convert POST data to array
 					$simpleLocationAllocations = array();
 					foreach ($locations as $location) {
-						$productId = SlwWpmlHelper::object_id( $item->get_product()->get_id(), $item->get_product()->get_type() );
 						$postIdx = SLW_PLUGIN_SLUG . '_oitem_' . $item->get_id() . '_' . $productId . '_' . $location->term_id;
 
 						if (!isset($_POST[$postIdx])) {
