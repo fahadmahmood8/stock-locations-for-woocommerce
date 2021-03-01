@@ -21,9 +21,9 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			$lineItem = new \WC_Order_Item_Product($orderItemId);
 
 			// Get item product
-			$product_id  = $lineItem->get_variation_id() != 0 ? $lineItem->get_variation_id() : $lineItem->get_product_id();
-			$product_id  = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
-			$mainProduct = wc_get_product( $product_id );
+			$mainProductId = $lineItem->get_variation_id() != 0 ? $lineItem->get_variation_id() : $lineItem->get_product_id();
+			$mainProductId = SlwWpmlHelper::object_id( $mainProductId, get_post_type( $mainProductId ) );
+			$mainProduct   = wc_get_product( $mainProductId );
 			if( empty( $mainProduct ) ) return false;
 
 			// Resolve product ID from parent or self
@@ -76,7 +76,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				$totalQtyAllocated += $item_stock_location_subtract_input_qty;
 
 				// Update the postmeta of the product
-				update_post_meta( $mainProduct->get_id(), '_stock_at_' . $term->term_id, $postmeta_stock_at_term - $item_stock_location_subtract_input_qty );
+				update_post_meta( $mainProductId, '_stock_at_' . $term->term_id, $postmeta_stock_at_term - $item_stock_location_subtract_input_qty );
 
 				// Add the note
 				$lineItem->get_order()->add_order_note(
@@ -124,9 +124,9 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				if( $mainProduct->get_stock_quantity() >= $totalQtyAllocated ) { // don't allow to decrease below zero
 					$stock_qty = $mainProduct->get_stock_quantity() - $totalQtyAllocated;
 					// update stock
-					update_post_meta( $mainProduct->get_id(), '_stock', $stock_qty );
+					update_post_meta( $mainProductId, '_stock', $stock_qty );
 					// update stock status
-					SlwProductHelper::update_wc_stock_status( $mainProduct->get_id(), $stock_qty );
+					SlwProductHelper::update_wc_stock_status( $mainProductId, $stock_qty );
 
 					// allow other functions to deduct WC stock on the main variation product
 					if( $mainProduct->get_type() == 'variation' ) {
