@@ -102,24 +102,28 @@ if(!class_exists('SlwProductRest')) {
 
 			$totalQuantity = 0;
 
-			foreach ($values as $location) {
-				$locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwLocationTaxonomy::$tax_singular_name)->term_id;
-				$quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
+			if (sizeof($values)) {
+                foreach ($values as $location) {
+                    $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwLocationTaxonomy::$tax_singular_name)->term_id;
+                    $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
 
-				// It is possible to provide a null quantity to delete product from location
-				if (is_null($quantity)) {
-					// Delete post meta
-					delete_post_meta($postId, '_stock_at_' . $locationId);
-				} else {
-					// We must only keep location IDs we wish to keep as valid locations
-					$stockLocationTermIds[] = $locationId;
+                    // It is possible to provide a null quantity to delete product from location
+                    if (is_null($quantity)) {
+                        // Delete post meta
+                        delete_post_meta($postId, '_stock_at_' . $locationId);
+                    } else {
+                        // We must only keep location IDs we wish to keep as valid locations
+                        $stockLocationTermIds[] = $locationId;
 
-					// Set locations stock level
-					update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
+                        // Set locations stock level
+                        update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
 
-					$totalQuantity += $quantity;
-				}
-			}
+                        $totalQuantity += $quantity;
+                    }
+                }
+            } else {
+			    // TODO: look at clearing old stock meta to keep things clean
+            }
 
 			// Update product stock
 			if( $totalQuantity != 0 ) {
@@ -128,7 +132,7 @@ if(!class_exists('SlwProductRest')) {
 			}
 
 			// Set terms
-			wp_set_object_terms($parentPostId, $stockLocationTermIds, SlwLocationTaxonomy::$tax_singular_name);
+			wp_set_object_terms($parentPostId, (sizeof($values)) ? $stockLocationTermIds : null, SlwLocationTaxonomy::$tax_singular_name);
 		}
 
 	}
