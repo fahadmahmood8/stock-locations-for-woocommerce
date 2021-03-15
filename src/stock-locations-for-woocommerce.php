@@ -35,7 +35,7 @@ if(!class_exists('SlwMain')) {
 		private $plugin_settings;
 
 		// add-ons versions
-		public $import_export_addon_version = '1.0.0';
+		public $import_export_addon_version = '1.1.0';
 
 		/**
 		 * Class Constructor.
