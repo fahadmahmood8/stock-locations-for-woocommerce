@@ -292,9 +292,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					}
 
 				}
-				
 			}
-
 		}
 
 		/**
@@ -330,14 +328,6 @@ if(!class_exists('SlwStockLocationsTab')) {
 					// Save input amounts to array
 					$input_amounts[] = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
 
-					// Get post meta
-					$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
-
-					// Pass terms stock to variable
-					if($postmeta_stock_at_term) {
-						$product_terms_stock[] = $postmeta_stock_at_term;
-					}
-
 					// Check if input is empty
 					if(strlen($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) === 0) {
 						// Show admin notice
@@ -346,6 +336,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 					} else {
 
 						$stock_location_term_input = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
+
+						// Get post meta
+						$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
 
 						// Check if the $_POST value is the same as the postmeta, if not update the postmeta
 						if( $stock_location_term_input !== $postmeta_stock_at_term ) {
@@ -362,6 +355,14 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 					}
 
+				}
+
+				// Get post meta
+				$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
+
+				// Pass terms stock to variable
+				if( $postmeta_stock_at_term ) {
+					$product_terms_stock[] = $postmeta_stock_at_term;
 				}
 
 			}

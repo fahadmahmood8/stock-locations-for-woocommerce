@@ -13,10 +13,14 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 	class SlwProductHelper
 	{
 
-		public static function update_wc_stock_status( $product_id, $stock_qty )
+		public static function update_wc_stock_status( $product_id, $stock_qty = null )
 		{
 			$product = wc_get_product( $product_id );
 			if( empty($product) ) return;
+
+			if( is_null( $stock_qty ) ) {
+				$stock_qty = $product->get_stock_quantity();
+			}
 
 			// backorder disabled
 			if( ! $product->is_on_backorder() ) {
