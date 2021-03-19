@@ -11,6 +11,8 @@
 		slwWcProductManageStock();
 		slwWcOrderItemStockPositiveNumbersOnly();
 		slwEnableShowLocationsProductPage();
+		slwAjaxSaveProductDefaultLocation();
+		slwAjaxRemoveProductDefaultLocation();
 	}
 	
 	function slwDisableVariableStockInput()
@@ -28,9 +30,9 @@
 
 	function slwWcProductManageStock()
 	{
-		var pluginWrapper = $('#' + slw_plugin_slug.slug + '_tab_stock_locations_wrapper'); // Plugin class
-		var pluginNotice = $('#' + slw_plugin_slug.slug + '_tab_stock_locations_notice'); // Plugin class
-		var pluginAlert = $('#' + slw_plugin_slug.slug + '_tab_stock_locations_alert'); // Plugin class
+		var pluginWrapper = $('#' + slw_admin_scripts.slug + '_tab_stock_locations_wrapper'); // Plugin class
+		var pluginNotice = $('#' + slw_admin_scripts.slug + '_tab_stock_locations_notice'); // Plugin class
+		var pluginAlert = $('#' + slw_admin_scripts.slug + '_tab_stock_locations_alert'); // Plugin class
 		var wcStock = $('#_stock'); // Default WooCommerce class
 		var wcManageStock = $('#_manage_stock'); // Default WooCommerce class
 
@@ -94,6 +96,94 @@
 				$('#show_in_product_page').prop('disabled', true);
 			}
 		});
+	}
+
+	function slwAjaxSaveProductDefaultLocation()
+	{
+		$( '.post-type-product #taxonomy-location .slw_location_make_default' ).on( 'click', function( e ) {
+			e.preventDefault();
+			var elem       = $( this );
+			var product_id = $( this ).data( 'product_id' );
+			var term_id    = $( this ).data( 'term_id' );
+
+			// block UI
+			$( '#locationdiv' ).block({
+				message:    null,
+				overlayCSS: {
+					background: '#fff',
+					opacity: 0.6
+				}
+			});
+
+			// ajax request
+			$.ajax({
+				url:  ajaxurl,
+				data: {
+					action:		'slw_save_product_default_location',
+					nonce:	    slw_admin_scripts.nonce,
+					product_id:	product_id,
+					term_id:	term_id,
+				},
+				type: 'POST',
+				cache: false,
+				success: function( response ) {
+					console.log( response );
+
+					// reload page
+					location.reload();
+				},
+				error: function( xhr, status, error ) {
+					console.log( error );
+
+					// unblock UI
+					$( '#locationdiv' ).unblock();
+				},
+			});
+
+		} );
+	}
+
+	function slwAjaxRemoveProductDefaultLocation()
+	{
+		$( '.post-type-product #taxonomy-location .slw_location_remove_default' ).on( 'click', function( e ) {
+			e.preventDefault();
+			var elem       = $( this );
+			var product_id = $( this ).data( 'product_id' );
+
+			// block UI
+			$( '#locationdiv' ).block({
+				message:    null,
+				overlayCSS: {
+					background: '#fff',
+					opacity: 0.6
+				}
+			});
+
+			// ajax request
+			$.ajax({
+				url:  ajaxurl,
+				data: {
+					action:		'slw_remove_product_default_location',
+					nonce:	    slw_admin_scripts.nonce,
+					product_id:	product_id,
+				},
+				type: 'POST',
+				cache: false,
+				success: function( response ) {
+					console.log( response );
+
+					// reload page
+					location.reload();
+				},
+				error: function( xhr, status, error ) {
+					console.log( error );
+
+					// unblock UI
+					$( '#locationdiv' ).unblock();
+				},
+			});
+
+		} );
 	}
 
 }(jQuery));

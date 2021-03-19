@@ -3,7 +3,7 @@
 		<div class="name column-name">
 			<h3>
 				<?php esc_attr_e( 'Import/Export add-on', 'stock-locations-for-woocommerce' ); ?>
-				<img class="plugin-icon" src="<?php echo Slw()->pluginDirUrl(); ?>/assets/img/import-export-add-on.svg" alt="Import/Export add-on">
+				<img class="plugin-icon" src="<?php echo SLW_PLUGIN_DIR_URL; ?>/assets/img/import-export-add-on.svg" alt="Import/Export add-on">
 			</h3>
 		</div>
 		<div class="action-links">
