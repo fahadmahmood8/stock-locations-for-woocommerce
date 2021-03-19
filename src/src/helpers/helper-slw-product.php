@@ -53,21 +53,6 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			}
 		}
 
-		public static function get_product_locations_stock_total( $product_id )
-		{
-			if( empty( $product_id ) ) return;
-
-			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
-			if( empty( $stock_locations ) ) return;
-
-			$product_locations_total_stock = 0;
-			foreach( $stock_locations as $id => $location ) {
-				$product_locations_total_stock += intval( $location->quantity );
-			}
-
-			return $product_locations_total_stock;
-		}
-
 	}
 	
 }
