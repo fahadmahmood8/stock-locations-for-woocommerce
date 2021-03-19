@@ -1,6 +1,6 @@
 <?php
 /**
- * SLW Frontend Product Class
+ * SLW Product Helper Class
  * @since 1.4.5
  */
 
@@ -13,10 +13,15 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 	class SlwProductHelper
 	{
 
-		public static function update_wc_stock_status( $product_id, $stock_qty )
+		public static function update_wc_stock_status( $product_id, $stock_qty = null )
 		{
-			$product = wc_get_product( $product_id );
+			$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
+
+			if( is_null( $stock_qty ) ) {
+				$stock_qty = $product->get_stock_quantity();
+			}
 
 			// backorder disabled
 			if( ! $product->is_on_backorder() ) {
@@ -46,6 +51,21 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 					update_post_meta( $product_id, '_stock_status', 'onbackorder' );
 				}
 			}
+		}
+
+		public static function get_product_locations_stock_total( $product_id )
+		{
+			if( empty( $product_id ) ) return;
+
+			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
+			if( empty( $stock_locations ) ) return;
+
+			$product_locations_total_stock = 0;
+			foreach( $stock_locations as $id => $location ) {
+				$product_locations_total_stock += intval( $location->quantity );
+			}
+
+			return $product_locations_total_stock;
 		}
 
 	}
