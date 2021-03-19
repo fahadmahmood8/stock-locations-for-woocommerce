@@ -8,6 +8,7 @@
 namespace SLW\SRC\Classes\Frontend;
 
 use SLW\SRC\Helpers\SlwFrontendHelper;
+use SLW\SRC\Helpers\SlwWpmlHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -45,6 +46,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 		public function simple_location_select()
 		{
 			global $product;
+			if( empty($product) ) return;
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'simple' ) return;
 
 			$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product->get_id() );
@@ -71,6 +75,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 		public function variable_location_select()
 		{
 			global $product;
+			if( empty($product) ) return;
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 			
 			echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location">';
@@ -87,6 +94,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		{
 			if( $_POST && isset($_POST['action']) && isset($_POST['variation_id']) && $_POST['action'] == 'get_variation_locations' ) {
 				$variation_id = sanitize_text_field($_POST['variation_id']);
+				$variation_id = SlwWpmlHelper::object_id( $variation_id, get_post_type( $variation_id ) );
 
 				$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 

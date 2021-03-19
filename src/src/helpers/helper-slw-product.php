@@ -1,6 +1,6 @@
 <?php
 /**
- * SLW Frontend Product Class
+ * SLW Product Helper Class
  * @since 1.4.5
  */
 
@@ -15,7 +15,8 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 
 		public static function update_wc_stock_status( $product_id, $stock_qty = null )
 		{
-			$product = wc_get_product( $product_id );
+			$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 
 			if( is_null( $stock_qty ) ) {
