@@ -8,6 +8,7 @@
 namespace SLW\SRC\Classes\Frontend;
 
 use SLW\SRC\Helpers\SlwFrontendHelper;
+use SLW\SRC\Helpers\SlwWpmlHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -45,6 +46,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 		public function simple_location_select()
 		{
 			global $product;
+			if( empty($product) ) return;
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'simple' ) return;
 
 			$stock_locations  = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product->get_id() );
@@ -80,6 +84,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 		public function variable_location_select()
 		{
 			global $product;
+			if( empty($product) ) return;
+			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 
 			$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product->get_id(), '_slw_default_location', true ) : 0;
@@ -102,7 +109,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 		{
 			if( isset( $_POST['variation_id'] ) && isset( $_POST['product_id'] ) && $_POST['action'] == 'get_variation_locations' ) {
 				$variation_id = sanitize_text_field( $_POST['variation_id'] );
+        $variation_id = SlwWpmlHelper::object_id( $variation_id, get_post_type( $variation_id ) );
 				$product_id   = sanitize_text_field( $_POST['product_id'] );
+        $product_id   = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
 
 				$stock_locations  = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 				$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;

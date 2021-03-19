@@ -7,6 +7,8 @@
 
 namespace SLW\SRC\Classes;
 
+use SLW\SRC\Helpers\SlwWpmlHelper;
+
 /**
  * If this file is called directly, abort.
  *
@@ -103,7 +105,8 @@ if(!class_exists('SlwProductListing')) {
 			// Grab the correct column
 			if( $column_name  == 'stock_at_locations' ) {
 
-				$product = wc_get_product( get_the_ID() );
+				$product_id = SlwWpmlHelper::object_id( get_the_ID(), get_post_type( get_the_ID() ) );
+				$product    = wc_get_product( $product_id );
 				
 				if( !empty($product) ) {
 
@@ -165,6 +168,10 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		private function output_product_locations_for_column($product_id, $locations)
 		{
+			if( ! empty( $product_id ) ) {
+				$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+			}
+
 			if( !empty($locations) ) {
 				foreach($locations as $location) {
 					// If out of stock

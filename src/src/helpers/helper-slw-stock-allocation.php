@@ -90,7 +90,8 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 		 */
 		public static function isManagedStock( $productId )
 		{
-			$product = wc_get_product($productId);
+			$product_id = SlwWpmlHelper::object_id( $productId, get_post_type( $productId ) );
+			$product    = wc_get_product( $product_id );
 
 			// Not a product
 			if (is_null($product) || empty($product)) {
@@ -119,7 +120,8 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 		{
 			// Get correct top level product
 			// The one the stock locations are actually allocated to
-			$product = wc_get_product($productId);
+			$product_id = SlwWpmlHelper::object_id( $productId, get_post_type( $productId ) );
+			$product    = wc_get_product( $product_id );
 			if( empty($product) || ! is_callable( array( $product, 'get_id' ) ) ) return array();
 
 			$parentProduct = '';
