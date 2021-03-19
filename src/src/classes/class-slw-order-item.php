@@ -315,6 +315,7 @@ if( !class_exists('SlwOrderItem') ) {
 			foreach ( $order->get_items() as $item => $item_data ) {
 				// Product ID
 				$pid = ($item_data->get_variation_id()) ? $item_data->get_variation_id() : $item_data->get_product_id();
+				$pid = SlwWpmlHelper::object_id( $pid, get_post_type( $pid ) );
 
 				// Not managed stock
 				if (!SlwStockAllocationHelper::isManagedStock($pid)) {
@@ -324,45 +325,32 @@ if( !class_exists('SlwOrderItem') ) {
 				// Get locations
 				$locations = SlwStockAllocationHelper::getProductStockLocations($pid, false);
 
-			// On order update
-			if( $update ) {
-				// Loop through order items
-				foreach ( $order->get_items() as $item_id => $item ) {
-					// Product ID
-					$productId = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
+				// No locations set
+				if (empty($locations)) {
+					continue;
+				}
+
+				// Convert POST data to array
+				$simpleLocationAllocations = array();
+				foreach ($locations as $location) {
+					$productId = $item_data->get_product()->get_id();
 					$productId = SlwWpmlHelper::object_id( $productId, get_post_type( $productId ) );
-
-					// Not managed stock
-					if (!SlwStockAllocationHelper::isManagedStock($productId)) {
-						continue;
-					}
-
-					// Get locations
-					$locations = SlwStockAllocationHelper::getProductStockLocations($productId, false);
+					$postIdx   = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
 
 					if (!isset($_POST[$postIdx])) {
 						continue;
 					}
 
-					// Convert POST data to array
-					$simpleLocationAllocations = array();
-					foreach ($locations as $location) {
-						$postIdx = SLW_PLUGIN_SLUG . '_oitem_' . $item->get_id() . '_' . $productId . '_' . $location->term_id;
-
-						if (!isset($_POST[$postIdx])) {
-							continue;
-						}
-
-						$simpleLocationAllocations[$location->term_id] = $_POST[$postIdx];
-					}
+					$simpleLocationAllocations[$location->term_id] = $_POST[$postIdx];
+				}
 
 				// No location stock data for line
 				if (empty($simpleLocationAllocations)) {
 					continue;
 				}
 
-					// Allocate stock to locations
-					$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'manual' );
+				// Allocate stock to locations
+				$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock( $item_data->get_id(), $simpleLocationAllocations, $allocationType = 'manual' );
 
 				// Check if stock in locations are updated for this item
 				if(!$locationStockAllocationResponse) {
