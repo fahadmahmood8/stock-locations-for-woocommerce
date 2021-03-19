@@ -12,6 +12,7 @@
 		slwWcOrderItemStockPositiveNumbersOnly();
 		slwEnableShowLocationsProductPage();
 		slwAjaxSaveProductDefaultLocation();
+		slwAjaxRemoveProductDefaultLocation();
 	}
 	
 	function slwDisableVariableStockInput()
@@ -122,6 +123,49 @@
 					nonce:	    slw_admin_scripts.nonce,
 					product_id:	product_id,
 					term_id:	term_id,
+				},
+				type: 'POST',
+				cache: false,
+				success: function( response ) {
+					console.log( response );
+
+					// reload page
+					location.reload();
+				},
+				error: function( xhr, status, error ) {
+					console.log( error );
+
+					// unblock UI
+					$( '#locationdiv' ).unblock();
+				},
+			});
+
+		} );
+	}
+
+	function slwAjaxRemoveProductDefaultLocation()
+	{
+		$( '.post-type-product #taxonomy-location .slw_location_remove_default' ).on( 'click', function( e ) {
+			e.preventDefault();
+			var elem       = $( this );
+			var product_id = $( this ).data( 'product_id' );
+
+			// block UI
+			$( '#locationdiv' ).block({
+				message:    null,
+				overlayCSS: {
+					background: '#fff',
+					opacity: 0.6
+				}
+			});
+
+			// ajax request
+			$.ajax({
+				url:  ajaxurl,
+				data: {
+					action:		'slw_remove_product_default_location',
+					nonce:	    slw_admin_scripts.nonce,
+					product_id:	product_id,
 				},
 				type: 'POST',
 				cache: false,

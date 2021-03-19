@@ -41,6 +41,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			if( isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ) {
 				add_action( 'admin_footer', array( $this, 'product_default_location_selection' ), 99 );
 				add_action( 'wp_ajax_slw_save_product_default_location', array( $this, 'ajax_save_product_default_location' ) );
+				add_action( 'wp_ajax_slw_remove_product_default_location', array( $this, 'ajax_remove_product_default_location' ) );
 			}
 		}
 
@@ -208,13 +209,16 @@ if(!class_exists('SlwLocationTaxonomy')) {
 
 						$( items ).each( function( index ) {
 							let term_id          = $( this ).find( 'input' ).val();
+							let is_checked       = $( this ).find( 'input' ).is( ':checked' );
 							let product_id       = <?php echo $product_id; ?>;
 							let default_location = <?php echo $default_location; ?>;
 
-							if( term_id != default_location ) {
-								$( this ).append( '<span style="float:right;"><a class="slw_location_make_default" data-product_id="'+product_id+'" data-term_id="'+term_id+'"><?php _e( 'Make default', 'stock-locations-for-woocommerce' ); ?></a></span>' );
-							} else {
-								$( this ).append( '<span style="float:right;"><?php _e( 'Default', 'stock-locations-for-woocommerce' ); ?></span>' );
+							if( is_checked ) {
+								if( term_id != default_location ) {
+									$( this ).append( '<span style="float:right;"><a class="slw_location_make_default" data-product_id="'+product_id+'" data-term_id="'+term_id+'"><?php _e( 'Make default', 'stock-locations-for-woocommerce' ); ?></a></span>' );
+								} else {
+									$( this ).append( '<span style="float:right;"><a class="slw_location_remove_default" data-product_id="'+product_id+'" style="color:#d63638;"><?php _e( 'Remove', 'stock-locations-for-woocommerce' ); ?></a></span>' );
+								}
 							}
 						} );
 					}
@@ -243,6 +247,24 @@ if(!class_exists('SlwLocationTaxonomy')) {
 					wp_send_json_success( array( 'message' => __( 'Product default location saved!' ) ) );
 				} else {
 					wp_send_json_error( array( 'message' => __( 'Something went wrong saving the default location. Please check WooCommerce logs.' ) ) );
+				}
+			}
+		}
+
+		public function ajax_remove_product_default_location()
+		{
+			check_ajax_referer( 'slw_nonce', 'nonce' );
+
+			if( isset( $_POST['product_id'] ) ) {
+				$product_id = sanitize_text_field( $_POST['product_id'] );
+
+				// remove product default location
+				$response   = delete_post_meta( $product_id, '_slw_default_location' );
+
+				if( $response ) {
+					wp_send_json_success( array( 'message' => __( 'Product default location removed!' ) ) );
+				} else {
+					wp_send_json_error( array( 'message' => __( 'Something went wrong removing the default location. Please check WooCommerce logs.' ) ) );
 				}
 			}
 		}
