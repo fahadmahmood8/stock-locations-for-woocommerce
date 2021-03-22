@@ -210,7 +210,7 @@ if( !class_exists('SlwOrderItem') ) {
             // Add previous stock locations to view, this is so users can see how stock was previous allocated on past orders,
             // for example if 2 items where allocated to location 2, but location 2 is no longer a valid location for this stock item,
             // for this order the stock was stilled fulfilled by location 2 at the time of the order being processed.
-            $product_stock_location_terms = $this->productStockLocationsInputsAddPreviousStock($product_stock_location_terms, $item);
+            $product_stock_location_terms = SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock($product_stock_location_terms, $item);
 
             // If product allows stock management
 			if( $product->get_manage_stock() == 'true' ) {
@@ -297,33 +297,6 @@ if( !class_exists('SlwOrderItem') ) {
 			}
 
 		}
-
-        private function productStockLocationsInputsAddPreviousStock($product_stock_location_terms, $item)
-        {
-            // Additional locations to add on the fly
-            $additionalLocations = array();
-
-            // Get all locations
-            $locations = SlwLocationTaxonomy::getLocations();
-
-            // Find other locations which have been allocated previously but that location is no longer part of this product
-            foreach ($locations as $location) {
-                // Make sure we dont include already existing stock locations (duplicates)
-                if (!isset($product_stock_location_terms[$location->term_id])) {
-                    // Check if there is meta against the item
-                    $hiddenLocationStock = $item->get_meta('_item_stock_updated_at_' . $location->term_id);
-
-                    // Make sure we found meta and it is not empty
-                    // This means this item has previously had stock allocated to a location, which is no longer part of this item,
-                    // but for historic reasons we want to see how the stock was allocated at the time of the order.
-                    if ($hiddenLocationStock !== false && !empty($hiddenLocationStock)) {
-                        $additionalLocations[$location->term_id] = $location;
-                    }
-                }
-            }
-
-            return array_merge($product_stock_location_terms, $additionalLocations);
-        }
 
 		/**
 		 * Reduces order items locations stock.
