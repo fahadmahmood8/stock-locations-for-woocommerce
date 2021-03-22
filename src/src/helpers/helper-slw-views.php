@@ -21,7 +21,7 @@ function view( $viewName, $viewData = array() ) {
 
 	// view paths
 	$view_paths = apply_filters( 'slw_view_paths', array(
-		Slw()->pluginDir() . '/views/',
+		SLW_PLUGIN_DIR_URL_ABSOLUTE_PATH . '/views/',
 	) );
 
 	ob_start();

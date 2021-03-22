@@ -28,7 +28,7 @@ if(!class_exists('SlwSettings')) {
 			add_action( 'admin_init', array($this, 'register_settings') );
 			add_action( 'slw_after_settings_tabs', array( $this, 'import_export_addon_notice' ), 10, 1 );
 
-			add_filter( 'plugin_action_links_'.\SlwMain::$plugin_basename, array($this, 'settings_link') );
+			add_filter( 'plugin_action_links_'.SLW_PLUGIN_BASENAME, array($this, 'settings_link') );
 
 			$this->plugin_settings = get_option( 'slw_settings' );
 		}
@@ -68,6 +68,7 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function admin_menu_page_callback()
 		{
+			settings_errors();
 			?>
 			<div class="wrap">
 				<h1><?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
@@ -143,6 +144,14 @@ if(!class_exists('SlwSettings')) {
 			);
 
 			add_settings_field(
+				'default_location_in_frontend_selection',
+				__('Enable default location in frontend selection', 'stock-locations-for-woocommerce'),
+				array( $this, 'default_location_in_frontend_selection_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
+
+			add_settings_field(
 				'product_location_selection_show_stock_qty',
 				__('Show stock quantities in location selection in frontend', 'stock-locations-for-woocommerce'),
 				array( $this, 'product_location_selection_show_stock_qty_callback' ),
@@ -205,6 +214,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['show_in_product_page'] ) ) {
 				$sanitary_values['show_in_product_page'] = $input['show_in_product_page'];
+			}
+			if ( isset( $input['default_location_in_frontend_selection'] ) ) {
+				$sanitary_values['default_location_in_frontend_selection'] = $input['default_location_in_frontend_selection'];
 			}
 			if ( isset( $input['product_location_selection_show_stock_qty'] ) ) {
 				$sanitary_values['product_location_selection_show_stock_qty'] = $input['product_location_selection_show_stock_qty'];
@@ -272,6 +284,20 @@ if(!class_exists('SlwSettings')) {
 			$this->checkbox_callback('product_location_selection_show_stock_qty');
 			?>
 			<span><?= __('It will affect location selectors on product and cart pages.', 'stock-locations-for-woocommerce'); ?></span>
+			<?php
+		}
+
+		/**
+		 * Make cart location selection required.
+		 *
+		 * @since 1.3.0
+		 * @return void
+		 */
+		public function default_location_in_frontend_selection_callback()
+		{
+			$this->checkbox_callback('default_location_in_frontend_selection');
+			?>
+			<span><?= __('This option will set the default location in product pages in frontend. The default is set under the product edit page by clicking <code>Make Default</code>.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
 
@@ -406,7 +432,7 @@ if(!class_exists('SlwSettings')) {
 			?>
 			<div class="notice notice-info inline">
 				<p style="height:80px;">
-					<img class="slw-import-export-addon-logo" src="<?php echo Slw()->pluginDirUrl(); ?>/assets/img/import-export-add-on.svg" alt="Import/Export add-on">
+					<img class="slw-import-export-addon-logo" src="<?php echo SLW_PLUGIN_DIR_URL; ?>/assets/img/import-export-add-on.svg" alt="Import/Export add-on">
 					<span style="display:block; margin-top:10px; margin-bottom:10px;">
 					<?php
 						printf(

@@ -26,6 +26,9 @@ if(!class_exists('SlwLocationTaxonomy')) {
 		 */
 		public function __construct()
 		{
+			// get settings
+			$this->plugin_settings = get_option( 'slw_settings' );
+
 			add_action( 'init', array($this, 'create_taxonomy'), 1 );
 			add_action( 'location_edit_form', array($this, 'hideFields') );
 			add_action( 'location_add_form', array($this, 'hideFields') );
@@ -34,9 +37,12 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			add_action( 'location_add_form_fields', array($this, 'formFields'), 10, 2 );
 			add_action( 'edited_location', array($this, 'formSave'), 10, 2 );
 			add_action( 'created_location', array($this, 'formSave'), 10, 2 );
-			
-			// get settings
-			$this->plugin_settings = get_option( 'slw_settings' );
+
+			if( isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ) {
+				add_action( 'admin_footer', array( $this, 'product_default_location_selection' ), 99 );
+				add_action( 'wp_ajax_slw_save_product_default_location', array( $this, 'ajax_save_product_default_location' ) );
+				add_action( 'wp_ajax_slw_remove_product_default_location', array( $this, 'ajax_remove_product_default_location' ) );
+			}
 		}
 
 		/**
@@ -178,6 +184,87 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				update_term_meta($term_id, 'slw_location_priority', $_POST['auto_order_allocate_priority']);
 				if( isset($_POST['location_email']) ) {
 					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
+				}
+			}
+		}
+
+		public function product_default_location_selection()
+		{
+			$product_id = get_the_ID();
+			if( empty( $product_id ) ) return;
+
+			$default_location = ! empty( get_post_meta( $product_id, '_slw_default_location', true ) ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
+			?>
+			<script>
+				( function( $ ){
+					$( document ).ready( function() {
+						slwHideLocationsYoastMakePrimary();
+						slwWcProductEditSelectDefaultLocation();
+					} );
+
+					function slwWcProductEditSelectDefaultLocation()
+					{
+						let elem  = $( document ).find( '.post-type-product #taxonomy-location' );
+						let items = elem.find( '#locationchecklist > li > label' );
+
+						$( items ).each( function( index ) {
+							let term_id          = $( this ).find( 'input' ).val();
+							let is_checked       = $( this ).find( 'input' ).is( ':checked' );
+							let product_id       = <?php echo $product_id; ?>;
+							let default_location = <?php echo $default_location; ?>;
+
+							if( is_checked ) {
+								if( term_id != default_location ) {
+									$( this ).append( '<span style="float:right;"><a class="slw_location_make_default" data-product_id="'+product_id+'" data-term_id="'+term_id+'"><?php _e( 'Make default', 'stock-locations-for-woocommerce' ); ?></a></span>' );
+								} else {
+									$( this ).append( '<span style="float:right;"><a class="slw_location_remove_default" data-product_id="'+product_id+'" style="color:#d63638;"><?php _e( 'Remove', 'stock-locations-for-woocommerce' ); ?></a></span>' );
+								}
+							}
+						} );
+					}
+
+					function slwHideLocationsYoastMakePrimary()
+					{
+						$( document ).find( '#taxonomy-location .wpseo-make-primary-term' ).hide();
+					}
+				}( jQuery ) );
+			</script>
+			<?php
+		}
+
+		public function ajax_save_product_default_location()
+		{
+			check_ajax_referer( 'slw_nonce', 'nonce' );
+
+			if( isset( $_POST['product_id'] ) && isset( $_POST['term_id'] ) ) {
+				$product_id = sanitize_text_field( $_POST['product_id'] );
+				$term_id    = sanitize_text_field( $_POST['term_id'] );
+
+				// save product default location
+				$response   = update_post_meta( $product_id, '_slw_default_location', $term_id );
+
+				if( $response ) {
+					wp_send_json_success( array( 'message' => __( 'Product default location saved!' ) ) );
+				} else {
+					wp_send_json_error( array( 'message' => __( 'Something went wrong saving the default location. Please check WooCommerce logs.' ) ) );
+				}
+			}
+		}
+
+		public function ajax_remove_product_default_location()
+		{
+			check_ajax_referer( 'slw_nonce', 'nonce' );
+
+			if( isset( $_POST['product_id'] ) ) {
+				$product_id = sanitize_text_field( $_POST['product_id'] );
+
+				// remove product default location
+				$response   = delete_post_meta( $product_id, '_slw_default_location' );
+
+				if( $response ) {
+					wp_send_json_success( array( 'message' => __( 'Product default location removed!' ) ) );
+				} else {
+					wp_send_json_error( array( 'message' => __( 'Something went wrong removing the default location. Please check WooCommerce logs.' ) ) );
 				}
 			}
 		}

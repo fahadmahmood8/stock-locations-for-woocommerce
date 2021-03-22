@@ -9,6 +9,7 @@ namespace SLW\SRC\Classes\Frontend;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 use SLW\SRC\Helpers\SlwFrontendHelper;
+use SLW\SRC\Helpers\SlwWpmlHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -56,7 +57,8 @@ if( !class_exists('SlwFrontendCart') ) {
 		{
 			if( empty($cart_item) ) return;
 
-			$product_id = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
+			$product_id      = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
+			$product_id      = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
 			$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 
 			if( !empty($stock_locations) ) {

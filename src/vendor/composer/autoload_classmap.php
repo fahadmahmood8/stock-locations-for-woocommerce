@@ -22,4 +22,5 @@ return array(
     'SLW\\SRC\\Helpers\\SlwOrderItemHelper' => $baseDir . '/src/helpers/helper-slw-order-item.php',
     'SLW\\SRC\\Helpers\\SlwProductHelper' => $baseDir . '/src/helpers/helper-slw-product.php',
     'SLW\\SRC\\Helpers\\SlwStockAllocationHelper' => $baseDir . '/src/helpers/helper-slw-stock-allocation.php',
+    'SLW\\SRC\\Helpers\\SlwWpmlHelper' => $baseDir . '/src/helpers/helper-slw-wpml.php',
 );

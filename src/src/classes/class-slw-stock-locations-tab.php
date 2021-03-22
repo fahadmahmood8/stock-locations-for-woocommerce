@@ -8,6 +8,7 @@ namespace SLW\SRC\Classes;
 
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 use SLW\SRC\Helpers\SlwProductHelper;
+use SLW\SRC\Helpers\SlwWpmlHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -33,6 +34,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			add_filter('woocommerce_product_data_tabs', array($this, 'create_custom_stock_locations_tab_wc_product'), 10, 1); // Since WC 3.0.2
 			add_action('woocommerce_product_data_panels', array($this, 'tab_content_stock_locations_wc_product'), 10, 1); // Since WC 3.0.2
 			add_action('save_post', array($this, 'save_tab_data_stock_locations_wc_product_save'), 10, 3);
+			add_action('do_meta_boxes', array($this, 'location_sidebar_meta_box'), 10, 3);
 
 			// check setting
 			if( isset($this->plugin_settings['delete_unused_product_locations_meta']) && $this->plugin_settings['delete_unused_product_locations_meta'] == 'yes' ) {
@@ -75,10 +77,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 		public function tab_content_stock_locations_wc_product( $array )
 		{
 			// Get the product ID
-			$product_id = get_the_ID();
+			$product_id = SlwWpmlHelper::object_id( get_the_ID(), get_post_type( get_the_ID() ) );
 
 			// Get the product object
 			$product = wc_get_product( $product_id );
+			if( empty($product) ) return;
 
 			// if product is variable
 			if( $product->is_type('variable') ) {
@@ -102,6 +105,15 @@ if(!class_exists('SlwStockLocationsTab')) {
 			// Populate the tab content
 			echo '<div id="' . $this->tab_stock_locations . '" class="panel woocommerce_options_panel">';
 			echo '<div id="' . $this->tab_stock_locations . '_notice">' . __('To be able to manage stock locations, please activate the <b>Stock Management</b> option under the <b>Inventory Tab</b>, and add a location to this product.', 'stock-locations-for-woocommerce') . '</div>';
+
+			// WPML Lock on non default language products
+			if( $product_id != get_the_ID() ) {
+				printf(
+					'<div id="' . $this->tab_stock_locations . '_notice">&#128274; %s</div></div>',
+					__( 'Stock locations are locked for editing because WPML will copy its value from the original language.', 'stock-locations-for-woocommerce' )
+				);
+				return;
+			}
 
 			// Check if the product has terms
 			if($product_stock_location_terms) {
@@ -206,6 +218,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		private function create_stock_location_input( $id, $term )
 		{
+			$id = SlwWpmlHelper::object_id( $id, get_post_type( $id ) );
 
 			// Create the input
 			woocommerce_wp_text_input( array(
@@ -234,7 +247,6 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		public function save_tab_data_stock_locations_wc_product_save( $post_id, $post, $update )
 		{
-
 			if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
 				return $post_id;
 
@@ -243,6 +255,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 			if ( ! current_user_can( 'edit_product', $post_id ) )
 				return $post_id;
+			
+			// WPML
+			$post_id = SlwWpmlHelper::object_id( $post_id, get_post_type( $post_id ) );
 
 			// Get product object
 			$product = wc_get_product( $post_id );
@@ -292,9 +307,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					}
 
 				}
-				
 			}
-
 		}
 
 		/**
@@ -305,6 +318,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		public function update_product_meta( $id, $product_stock_location_terms, $terms_total )
 		{
+			// WPML
+			$id           = SlwWpmlHelper::object_id( $id, get_post_type( $id ) );
 			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
 			if( ! $manage_stock ) {
 				return;
@@ -330,14 +345,6 @@ if(!class_exists('SlwStockLocationsTab')) {
 					// Save input amounts to array
 					$input_amounts[] = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
 
-					// Get post meta
-					$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
-
-					// Pass terms stock to variable
-					if($postmeta_stock_at_term) {
-						$product_terms_stock[] = $postmeta_stock_at_term;
-					}
-
 					// Check if input is empty
 					if(strlen($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) === 0) {
 						// Show admin notice
@@ -346,6 +353,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 					} else {
 
 						$stock_location_term_input = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
+
+						// Get post meta
+						$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
 
 						// Check if the $_POST value is the same as the postmeta, if not update the postmeta
 						if( $stock_location_term_input !== $postmeta_stock_at_term ) {
@@ -362,6 +372,14 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 					}
 
+				}
+
+				// Get post meta
+				$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
+
+				// Pass terms stock to variable
+				if( $postmeta_stock_at_term ) {
+					$product_terms_stock[] = $postmeta_stock_at_term;
 				}
 
 			}
@@ -451,6 +469,23 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 			if ( false === as_next_scheduled_action( 'slw_delete_unused_product_locations_meta' ) ) {
 				as_schedule_recurring_action( strtotime( 'tomorrow' ), DAY_IN_SECONDS, 'slw_delete_unused_product_locations_meta' );
+			}
+		}
+
+		/**
+		 * Check if product is in the default WPML language, if not remove the location meta box in product sidebar
+		 *
+		 * @since 1.5.0
+		 * @return void
+		 */
+		public function location_sidebar_meta_box( $post_type, $priority, $post )
+		{
+			
+			if( ! empty($post) && is_object($post) && $post_type == 'product' ) {
+				$product_id = SlwWpmlHelper::object_id( $post->ID, $post_type );
+				if( $product_id != $post->ID ) {
+					remove_meta_box( 'locationdiv', $post_type, 'side' );
+				}
 			}
 		}
 
