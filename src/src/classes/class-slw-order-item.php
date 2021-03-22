@@ -156,7 +156,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$product_stock_location_terms = SlwStockAllocationHelper::getProductStockLocations($parent_id, true, null);
 
 					// If parent doesn't have terms show message
-					if(!$product_stock_location_terms) {
+					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
 						echo '<td width="15%">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
@@ -174,7 +174,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$product_stock_location_terms = SlwStockAllocationHelper::getProductStockLocations($product_id, true, null);
 
 					// If product doesn't have terms show message
-					if(!$product_stock_location_terms) {
+					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
 						echo '<td width="15%">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
