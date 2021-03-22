@@ -188,13 +188,13 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				}
 			}
 
-            wp_cache_delete(self::$location_cache_key, \SlwMain::$plugin_basename);
+            wp_cache_delete(self::$location_cache_key, SLW_PLUGIN_BASENAME);
 		}
 
 		public static function getLocations()
         {
             // Get cached value
-            $locations = wp_cache_get(self::$location_cache_key, \SlwMain::$plugin_basename);
+            $locations = wp_cache_get(self::$location_cache_key, SLW_PLUGIN_BASENAME);
 
             // Cache is not valid, lets get a fresh copy
             if ($locations === false) {
@@ -203,7 +203,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
                     'hide_empty' => false,
                 ) );
 
-                wp_cache_add(self::$location_cache_key, $locations, \SlwMain::$plugin_basename);
+                wp_cache_add(self::$location_cache_key, $locations, SLW_PLUGIN_BASENAME);
             }
 
             return $locations;
