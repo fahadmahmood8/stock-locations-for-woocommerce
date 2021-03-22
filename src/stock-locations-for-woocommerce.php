@@ -28,14 +28,13 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain
 	{
-		private $plugin_dir_url;
-		private $plugin_dir;
-		public static $plugin_basename;
-		protected static $instance = null;
-		private $plugin_settings;
+		// versions
+		public           $version  = '1.4.5';
+		public           $import_export_addon_version = '1.1.0';
 
-		// add-ons versions
-		public $import_export_addon_version = '1.0.0';
+		// others
+		protected static $instance = null;
+		private          $plugin_settings;
 
 		/**
 		 * Class Constructor.
@@ -43,10 +42,7 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function __construct()
 		{
-			// Save plugin dir url to property
-			$this->plugin_dir_url = plugin_dir_url(__FILE__);
-			$this->plugin_dir = realpath(plugin_dir_path(__FILE__));
-			self::$plugin_basename = plugin_basename(__FILE__);
+			define( 'SLW_PLUGIN_VERSION', $this->version );
 
 			$this->init();
 
@@ -116,12 +112,20 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			wp_enqueue_style('styles-admin', $this->pluginDirUrl() . 'assets//css/admin/style.css', null, '1.3');
-			wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', null, '5.11.2');
+			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'assets//css/admin/style.css', array(), SLW_PLUGIN_VERSION );
+			wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', array(), '5.11.2' );
 
-			wp_register_script( 'scripts-admin', $this->pluginDirUrl() . 'assets/js/admin/scripts.js', null, '1.2', true );
-			wp_localize_script( 'scripts-admin', 'slw_plugin_slug', array( 'slug' => SLW_PLUGIN_SLUG ) );
-			wp_enqueue_script( 'scripts-admin' );
+			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/admin/scripts.js', array( 'jquery', 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+			wp_localize_script(
+				'slw-admin-scripts',
+				'slw_admin_scripts',
+				array(
+					'slug'    => SLW_PLUGIN_SLUG,
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'nonce'   => wp_create_nonce( 'slw_nonce' ),
+				)
+			);
+			wp_enqueue_script( 'slw-admin-scripts' );
 		}
 
 		/**
@@ -132,51 +136,34 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_frontend()
 		{
-			wp_enqueue_style('styles-frontend', $this->pluginDirUrl() . 'assets/css/frontend/style.css', null, '1.3.3');
+			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'assets/css/frontend/style.css', null, SLW_PLUGIN_VERSION );
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
-				wp_register_script( 'scripts-frontend-cart', $this->pluginDirUrl() . 'assets/js/frontend/cart.js', array( 'jquery-blockui' ), '1.3', true );
-				wp_localize_script( 'scripts-frontend-cart', 'slw_frontend_cart', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-				wp_enqueue_script( 'scripts-frontend-cart' );
+				wp_register_script( 'slw-frontend-cart-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/frontend/cart.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+				wp_localize_script(
+					'slw-frontend-cart-scripts',
+					'slw_frontend_cart',
+					array(
+						'ajaxurl' => admin_url( 'admin-ajax.php' )
+					)
+				);
+				wp_enqueue_script( 'slw-frontend-cart-scripts' );
 			}
 			if( isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
-				wp_register_script( 'scripts-frontend-product', $this->pluginDirUrl() . 'assets/js/frontend/product.js', array( 'jquery-blockui' ), '1.3', true );
-				wp_localize_script( 'scripts-frontend-product', 'slw_frontend_product', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-				wp_enqueue_script( 'scripts-frontend-product' );
+				wp_register_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/frontend/product.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+				wp_localize_script(
+					'slw-frontend-product-scripts',
+					'slw_frontend_product',
+					array(
+						'ajaxurl' => admin_url( 'admin-ajax.php' )
+					)
+				);
+				wp_enqueue_script( 'slw-frontend-product-scripts' );
 			}
-		}
-
-		/**
-		 * Plugin Url directory
-		 *
-		 * @return mixed
-		 */
-		public function pluginDirUrl()
-		{
-			return $this->plugin_dir_url;
-		}
-
-		/**
-		 * Plugin directory
-		 *
-		 * @return mixed
-		 */
-		public function pluginDir()
-		{
-			return $this->plugin_dir;
 		}
 
 	}
 
-}
-
-/**
- * Define SLW_PLUGIN_SLUG.
- *
- * @since 1.0.0
- */
-if ( !defined( 'SLW_PLUGIN_SLUG' ) ) {
-	define( 'SLW_PLUGIN_SLUG', dirname( plugin_basename( __FILE__ ) ) );
 }
 
 /**
@@ -188,23 +175,30 @@ add_action( 'plugins_loaded', 'initiate_slw_plugin' );
 function initiate_slw_plugin()
 {
 
-	// Check if WooCommerce is active
+	// check if WooCommerce is active
 	if ( ! class_exists( 'woocommerce' ) ) {
 
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-		// Deactivate the plugin
+		// deactivate the plugin
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 
-		// Show error
+		// show error
 		echo '<div class="error"><p>' . __('Stock Locations for WooCommerce requires WooCommerce to be activaded. Please active WooCommerce plugin first.', 'stock-locations-for-woocommerce') . '</p></div>';
 
 	} else {
 
-		// Require autoload
+		// require autoload
 		require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
-		// Intantiate
+		// define constants
+		define( 'SLW_PLUGIN_SLUG', dirname( plugin_basename( __FILE__ ) ) );
+		define( 'SLW_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
+		define( 'SLW_PLUGIN_DIR_URL_ABSOLUTE_PATH', realpath( plugin_dir_path( __FILE__ ) ) );
+		define( 'SLW_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
+		define( 'SLW_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+
+		// intantiate
 		SlwMain::instance();
 
 	}

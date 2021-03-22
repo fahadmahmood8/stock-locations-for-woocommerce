@@ -12,7 +12,7 @@
 	<p><?php _e( 'Add-ons are sent by email to you after buying process completed. This is a manual procedure, so please be patient!', 'stock-locations-for-woocommerce' ); ?></p>
 	<div id="the-list">
 		<!-- Import/Export -->
-		<?php include_once( Slw()->pluginDir().'/views/addons/import-export.php' ); ?>
+		<?php include_once( SLW_PLUGIN_DIR_URL_ABSOLUTE_PATH.'/views/addons/import-export.php' ); ?>
 	</div>
 </div>
 
