@@ -6,6 +6,9 @@
 
 namespace SLW\SRC\Helpers;
 
+use SLW\SRC\Helpers\SlwWpmlHelper;
+use SLW\SRC\Helpers\SlwStockAllocationHelper;
+
 if ( ! defined( 'WPINC' ) ) die;
 
 if ( ! class_exists( 'SlwProductHelper' ) ) {

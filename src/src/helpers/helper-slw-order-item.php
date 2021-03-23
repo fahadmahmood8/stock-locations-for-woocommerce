@@ -7,6 +7,10 @@
 namespace SLW\SRC\Helpers;
 
 use SLW\SRC\Classes\SlwLocationTaxonomy;
+use SLW\SRC\Helpers\SlwWpmlHelper;
+use SLW\SRC\Helpers\SlwStockAllocationHelper;
+use SLW\SRC\Helpers\SlwMailHelper;
+use SLW\SRC\Helpers\SlwProductHelper;
 
 if ( !defined('WPINC') ) {
 	die;

@@ -6,6 +6,8 @@
 
 namespace SLW\SRC\Helpers;
 
+use SLW\SRC\Helpers\SlwStockAllocationHelper;
+
 if ( !defined('WPINC') ) {
 	die;
 }
