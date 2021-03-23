@@ -156,7 +156,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$product_stock_location_terms = SlwStockAllocationHelper::getProductStockLocations($parent_id, true, null);
 
 					// If parent doesn't have terms show message
-					if(!$product_stock_location_terms) {
+					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
 						echo '<td width="15%">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
@@ -174,7 +174,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$product_stock_location_terms = SlwStockAllocationHelper::getProductStockLocations($product_id, true, null);
 
 					// If product doesn't have terms show message
-					if(!$product_stock_location_terms) {
+					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
 						echo '<td width="15%">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
@@ -207,7 +207,12 @@ if( !class_exists('SlwOrderItem') ) {
 			if( empty($product) ) return;
 			if( empty($item) ) return;
 
-			// If product allows stock management
+            // Add previous stock locations to view, this is so users can see how stock was previous allocated on past orders,
+            // for example if 2 items where allocated to location 2, but location 2 is no longer a valid location for this stock item,
+            // for this order the stock was stilled fulfilled by location 2 at the time of the order being processed.
+            $product_stock_location_terms = SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock($product_stock_location_terms, $item);
+
+            // If product allows stock management
 			if( $product->get_manage_stock() == 'true' ) {
 
 				// Add the input field to values table

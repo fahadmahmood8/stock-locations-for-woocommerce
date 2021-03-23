@@ -6,6 +6,8 @@
 
 namespace SLW\SRC\Helpers;
 
+use SLW\SRC\Classes\SlwLocationTaxonomy;
+
 if ( !defined('WPINC') ) {
 	die;
 }
@@ -142,6 +144,33 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 			return true;
 		}
+
+        public static function productStockLocationsInputsAddPreviousStock($product_stock_location_terms, $item)
+        {
+            // Additional locations to add on the fly
+            $additionalLocations = array();
+
+            // Get all locations
+            $locations = SlwLocationTaxonomy::getLocations();
+
+            // Find other locations which have been allocated previously but that location is no longer part of this product
+            foreach ($locations as $location) {
+                // Make sure we dont include already existing stock locations (duplicates)
+                if (!isset($product_stock_location_terms[$location->term_id])) {
+                    // Check if there is meta against the item
+                    $hiddenLocationStock = $item->get_meta('_item_stock_updated_at_' . $location->term_id);
+
+                    // Make sure we found meta and it is not empty
+                    // This means this item has previously had stock allocated to a location, which is no longer part of this item,
+                    // but for historic reasons we want to see how the stock was allocated at the time of the order.
+                    if ($hiddenLocationStock !== false && !empty($hiddenLocationStock)) {
+                        $additionalLocations[$location->term_id] = $location;
+                    }
+                }
+            }
+
+            return array_merge($product_stock_location_terms, $additionalLocations);
+        }
 
 	}
 	

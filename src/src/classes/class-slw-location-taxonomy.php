@@ -17,6 +17,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 	{
 		public static $tax_plural_name = 'locations';
 		public static $tax_singular_name = 'location';
+		private static $location_cache_key = 'slw_locations';
 		private $plugin_settings;
 
 		/**
@@ -186,7 +187,27 @@ if(!class_exists('SlwLocationTaxonomy')) {
 					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
 				}
 			}
+
+            wp_cache_delete(self::$location_cache_key, SLW_PLUGIN_BASENAME);
 		}
+
+		public static function getLocations()
+        {
+            // Get cached value
+            $locations = wp_cache_get(self::$location_cache_key, SLW_PLUGIN_BASENAME);
+
+            // Cache is not valid, lets get a fresh copy
+            if ($locations === false) {
+                $locations = get_terms( array(
+                    'taxonomy' => SlwLocationTaxonomy::$tax_singular_name,
+                    'hide_empty' => false,
+                ) );
+
+                wp_cache_add(self::$location_cache_key, $locations, SLW_PLUGIN_BASENAME);
+            }
+
+            return $locations;
+        }
 
 		public function product_default_location_selection()
 		{
