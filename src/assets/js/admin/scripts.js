@@ -13,6 +13,7 @@
 		slwEnableShowLocationsProductPage();
 		slwAjaxSaveProductDefaultLocation();
 		slwAjaxRemoveProductDefaultLocation();
+		slwEnableLockDefaultLocation();
 	}
 	
 	function slwDisableVariableStockInput()
@@ -96,6 +97,25 @@
 				$('#show_in_product_page').prop('disabled', true);
 			}
 		});
+	}
+
+	function slwEnableLockDefaultLocation()
+	{
+		// initial
+		if( $( '#default_location_in_frontend_selection' ).is(":checked") ) {
+			$( '#lock_default_location_in_frontend' ).prop( 'disabled', false );
+		} else {
+			$( '#lock_default_location_in_frontend' ).prop( 'disabled', true );
+		}
+		// on change
+		$( '#default_location_in_frontend_selection' ).change( function() {
+			if( $( '#default_location_in_frontend_selection' ).is(":checked") ) {
+				$( '#lock_default_location_in_frontend' ).prop( 'disabled', false );
+			} else {
+				$( '#lock_default_location_in_frontend' ).prop( 'disabled', true );
+				$( '#lock_default_location_in_frontend' ).prop( 'checked', false );
+			}
+		} );
 	}
 
 	function slwAjaxSaveProductDefaultLocation()

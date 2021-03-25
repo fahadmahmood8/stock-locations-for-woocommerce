@@ -152,6 +152,14 @@ if(!class_exists('SlwSettings')) {
 			);
 
 			add_settings_field(
+				'lock_default_location_in_frontend',
+				__('Lock frontend location to default', 'stock-locations-for-woocommerce'),
+				array( $this, 'lock_default_location_in_frontend_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
+
+			add_settings_field(
 				'product_location_selection_show_stock_qty',
 				__('Show stock quantities in location selection in frontend', 'stock-locations-for-woocommerce'),
 				array( $this, 'product_location_selection_show_stock_qty_callback' ),
@@ -217,6 +225,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['default_location_in_frontend_selection'] ) ) {
 				$sanitary_values['default_location_in_frontend_selection'] = $input['default_location_in_frontend_selection'];
+			}
+			if ( isset( $input['lock_default_location_in_frontend'] ) ) {
+				$sanitary_values['lock_default_location_in_frontend'] = $input['lock_default_location_in_frontend'];
 			}
 			if ( isset( $input['product_location_selection_show_stock_qty'] ) ) {
 				$sanitary_values['product_location_selection_show_stock_qty'] = $input['product_location_selection_show_stock_qty'];
@@ -288,9 +299,9 @@ if(!class_exists('SlwSettings')) {
 		}
 
 		/**
-		 * Make cart location selection required.
+		 * Allow default location.
 		 *
-		 * @since 1.3.0
+		 * @since 1.5.0
 		 * @return void
 		 */
 		public function default_location_in_frontend_selection_callback()
@@ -298,6 +309,20 @@ if(!class_exists('SlwSettings')) {
 			$this->checkbox_callback('default_location_in_frontend_selection');
 			?>
 			<span><?= __('This option will set the default location in product pages in frontend. The default is set under the product edit page by clicking <code>Make Default</code>.', 'stock-locations-for-woocommerce'); ?></span>
+			<?php
+		}
+
+		/**
+		 * Lock default location in frontend.
+		 *
+		 * @since 1.5.0
+		 * @return void
+		 */
+		public function lock_default_location_in_frontend_callback()
+		{
+			$this->checkbox_callback('lock_default_location_in_frontend');
+			?>
+			<span><?= __('This option will lock location selectors in products and cart to the default location.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
 

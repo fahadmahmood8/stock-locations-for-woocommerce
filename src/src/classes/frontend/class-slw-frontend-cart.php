@@ -28,10 +28,10 @@ if( !class_exists('SlwFrontendCart') ) {
 		public function __construct()
 		{
 			// get settings
-			$plugin_settings = get_option( 'slw_settings' );
+			$this->plugin_settings = get_option( 'slw_settings' );
 
 			// check if show in cart is enabled
-			if( isset($plugin_settings['show_in_cart']) && $plugin_settings['show_in_cart'] == 'yes' ) {
+			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
 				add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 10, 2 );
 				add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
 				add_action( 'wp_ajax_nopriv_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
@@ -39,11 +39,12 @@ if( !class_exists('SlwFrontendCart') ) {
 			}
 
 			// check if different location per cart item is enabled
-			if( isset($plugin_settings['different_location_per_cart_item']) && $plugin_settings['different_location_per_cart_item'] == 'no' ) {
+			if( isset($this->plugin_settings['different_location_per_cart_item']) && $this->plugin_settings['different_location_per_cart_item'] == 'no' ) {
 				add_action( 'wp_footer', array($this, 'lock_cart_item_location') );
 			}
 
-			if( isset($plugin_settings['cart_location_selection_required']) && $plugin_settings['cart_location_selection_required'] == 'on' ) {
+			// check if location selection required is enabled
+			if( isset($this->plugin_settings['cart_location_selection_required']) && $this->plugin_settings['cart_location_selection_required'] == 'on' ) {
 				add_action( 'wp_footer', array($this, 'cart_item_location_selection_required') );
 			}
 		}
@@ -63,6 +64,17 @@ if( !class_exists('SlwFrontendCart') ) {
 
 			if( !empty($stock_locations) ) {
 				echo '<label class="slw_cart_item_stock_location_label">'.__('Nearest Location', 'stock-locations-for-woocommerce').':</label>';
+				
+				// lock to default location if enabled
+				$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
+				if( $default_location != 0 ) {
+					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
+					echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$default_location.'" selected="selected" disabled="disabled">'.$stock_locations[$default_location]['name'].'</option>';
+					echo '</select>';
+					return;
+				}
+
+				// default behaviour
 				if( isset($cart_item['stock_location']) ) {
 					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
 					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
@@ -70,6 +82,7 @@ if( !class_exists('SlwFrontendCart') ) {
 					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
 					echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
+
 				foreach( $stock_locations as $id => $location ) {
 					$selected = $disabled = '';
 					if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < 1 && $location['allow_backorder'] == 1) ) {
@@ -81,6 +94,7 @@ if( !class_exists('SlwFrontendCart') ) {
 					}
 					echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location['term_id'].'" '.$selected.' '.$disabled.'>'.$location['name'].'</option>';
 				}
+
 				echo '</select>';
 			}
 		}

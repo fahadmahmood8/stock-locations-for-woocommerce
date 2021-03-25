@@ -55,6 +55,16 @@ if( !class_exists('SlwFrontendProduct') ) {
 			$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product->get_id(), '_slw_default_location', true ) : 0;
 
 			if( ! empty($stock_locations) ) {
+				// lock to default location if enabled
+				$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
+				if( $default_location != 0 ) {
+					echo '<div><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled>';
+					echo '<option value="'.$default_location.'" disabled selected>'.$stock_locations[$default_location]['name'].'</option>';
+					echo '</select></div>';
+					return;
+				}
+
+				// default behaviour
 				echo '<div><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 				if( ! empty( $default_location ) ) {
 					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
@@ -108,10 +118,10 @@ if( !class_exists('SlwFrontendProduct') ) {
 		public function get_variation_locations()
 		{
 			if( isset( $_POST['variation_id'] ) && isset( $_POST['product_id'] ) && $_POST['action'] == 'get_variation_locations' ) {
-				$variation_id = sanitize_text_field( $_POST['variation_id'] );
-        $variation_id = SlwWpmlHelper::object_id( $variation_id, get_post_type( $variation_id ) );
-				$product_id   = sanitize_text_field( $_POST['product_id'] );
-        $product_id   = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+				$variation_id     = sanitize_text_field( $_POST['variation_id'] );
+				$variation_id     = SlwWpmlHelper::object_id( $variation_id, get_post_type( $variation_id ) );
+				$product_id       = sanitize_text_field( $_POST['product_id'] );
+				$product_id       = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
 
 				$stock_locations  = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 				$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
