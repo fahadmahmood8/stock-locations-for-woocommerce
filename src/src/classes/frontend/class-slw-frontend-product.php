@@ -55,7 +55,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 			$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product->get_id(), '_slw_default_location', true ) : 0;
 
 			if( ! empty($stock_locations) ) {
-				echo '<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
+				echo '<div><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 				if( ! empty( $default_location ) ) {
 					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				} else {
@@ -72,7 +72,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 						echo '<option value="'.$location['term_id'].'" '.$disabled.'>'.$location['name'].'</option>';
 					}
 				}
-				echo '</select>';
+				echo '</select></div>';
 			}
 		}
 
@@ -91,13 +91,13 @@ if( !class_exists('SlwFrontendProduct') ) {
 
 			$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product->get_id(), '_slw_default_location', true ) : 0;
 			
-			echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location">';
+			echo '<div><select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location">';
 			if( ! empty( $default_location ) ) {
 				echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 			} else {
 				echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 			}
-			echo '</select>';
+			echo '</select></div>';
 		}
 
 		/**
