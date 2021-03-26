@@ -58,7 +58,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				// lock to default location if enabled
 				$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 				if( $default_location != 0 ) {
-					echo '<div><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled>';
+					echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled>';
 					echo '<option value="'.$default_location.'" disabled selected>'.$stock_locations[$default_location]['name'].'</option>';
 					echo '</select></div>';
 					return;
@@ -101,7 +101,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 
 			$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product->get_id(), '_slw_default_location', true ) : 0;
 			
-			echo '<div><select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location">';
+			echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location">';
 			if( ! empty( $default_location ) ) {
 				echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 			} else {
