@@ -66,7 +66,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				}
 
 				// default behaviour
-				echo '<div><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
+				echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 				if( ! empty( $default_location ) ) {
 					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				} else {
