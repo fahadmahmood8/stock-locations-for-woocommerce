@@ -77,7 +77,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		public function tab_content_stock_locations_wc_product( $array )
 		{
 			// Get the product ID
-			$product_id = SlwWpmlHelper::object_id( get_the_ID(), get_post_type( get_the_ID() ) );
+			$product_id = SlwWpmlHelper::object_id( get_the_ID() );
 
 			// Get the product object
 			$product = wc_get_product( $product_id );
@@ -218,7 +218,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		private function create_stock_location_input( $id, $term )
 		{
-			$id = SlwWpmlHelper::object_id( $id, get_post_type( $id ) );
+			$id = SlwWpmlHelper::object_id( $id );
 
 			// Create the input
 			woocommerce_wp_text_input( array(
@@ -257,7 +257,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				return $post_id;
 			
 			// WPML
-			$post_id = SlwWpmlHelper::object_id( $post_id, get_post_type( $post_id ) );
+			$post_id = SlwWpmlHelper::object_id( $post_id );
 
 			// Get product object
 			$product = wc_get_product( $post_id );
@@ -319,7 +319,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		public function update_product_meta( $id, $product_stock_location_terms, $terms_total )
 		{
 			// WPML
-			$id           = SlwWpmlHelper::object_id( $id, get_post_type( $id ) );
+			$id           = SlwWpmlHelper::object_id( $id );
 			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
 			if( ! $manage_stock ) {
 				return;
@@ -482,7 +482,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		{
 			
 			if( ! empty($post) && is_object($post) && $post_type == 'product' ) {
-				$product_id = SlwWpmlHelper::object_id( $post->ID, $post_type );
+				$product_id = SlwWpmlHelper::object_id( $post->ID );
 				if( $product_id != $post->ID ) {
 					remove_meta_box( 'locationdiv', $post_type, 'side' );
 				}

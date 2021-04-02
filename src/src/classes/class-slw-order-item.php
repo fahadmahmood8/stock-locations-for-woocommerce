@@ -102,7 +102,7 @@ if( !class_exists('SlwOrderItem') ) {
 			// Loop through order items
 			foreach ( $order->get_items() as $item_id => $item ) {
 				$product_id = $item['variation_id'] != 0 ? $item['variation_id'] : $item['product_id'];
-				$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+				$product_id = SlwWpmlHelper::object_id( $product_id );
 
 				$items[] = [
 					'product_id'    => $product_id,
@@ -137,7 +137,7 @@ if( !class_exists('SlwOrderItem') ) {
 				echo '<td></td>';
 			}
 
-			$product_id = SlwWpmlHelper::object_id( $product->get_id(), $product->get_type() );
+			$product_id = SlwWpmlHelper::object_id( $product->get_id() );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 
@@ -202,7 +202,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function product_stock_location_inputs( $id, $product_stock_location_terms, $item, $item_id )
 		{
-			$product_id = SlwWpmlHelper::object_id( $id, get_post_type( $id ) );
+			$product_id = SlwWpmlHelper::object_id( $id );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 			if( empty($item) ) return;
@@ -320,7 +320,7 @@ if( !class_exists('SlwOrderItem') ) {
 			foreach ( $order->get_items() as $item => $item_data ) {
 				// Product ID
 				$pid = ($item_data->get_variation_id()) ? $item_data->get_variation_id() : $item_data->get_product_id();
-				$pid = SlwWpmlHelper::object_id( $pid, get_post_type( $pid ) );
+				$pid = SlwWpmlHelper::object_id( $pid );
 
 				// Not managed stock
 				if (!SlwStockAllocationHelper::isManagedStock($pid)) {
@@ -339,7 +339,7 @@ if( !class_exists('SlwOrderItem') ) {
 				$simpleLocationAllocations = array();
 				foreach ($locations as $location) {
 					$productId = $item_data->get_product()->get_id();
-					$productId = SlwWpmlHelper::object_id( $productId, get_post_type( $productId ) );
+					$productId = SlwWpmlHelper::object_id( $productId );
 					$postIdx   = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
 
 					if (!isset($_POST[$postIdx])) {
@@ -382,7 +382,7 @@ if( !class_exists('SlwOrderItem') ) {
 				// Loop through order items
 				foreach ( $order->get_items() as $item_id => $item ) {
 					$product_id = $item['variation_id'] != 0 ? $item['variation_id'] : $item['product_id'];
-					$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+					$product_id = SlwWpmlHelper::object_id( $product_id );
 					$product    = wc_get_product( $product_id );
 					if( empty( $product ) ) continue;
 
@@ -429,7 +429,7 @@ if( !class_exists('SlwOrderItem') ) {
 
 			// Get product ID
 			$productId  = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
-			$productId  = SlwWpmlHelper::object_id( $productId, get_post_type( $productId ) );
+			$productId  = SlwWpmlHelper::object_id( $productId );
 			
 			// Get item quantity
 			$itemQuantity = $item->get_quantity();
@@ -563,7 +563,7 @@ if( !class_exists('SlwOrderItem') ) {
 
 			foreach( $order->get_items( 'line_item' ) as $item_id => $item ) {
 				$product_id = $item['variation_id'] != 0 ? $item['variation_id'] : $item['product_id'];
-				$product_id = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
+				$product_id = SlwWpmlHelper::object_id( $product_id );
 				$product    = wc_get_product( $product_id );
 				if( empty($product) ) continue;
 

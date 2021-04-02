@@ -58,16 +58,17 @@ if( !class_exists('SlwFrontendCart') ) {
 		{
 			if( empty($cart_item) ) return;
 
-			$product_id      = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
-			$product_id      = SlwWpmlHelper::object_id( $product_id, get_post_type( $product_id ) );
-			$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
+			$product_id            = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
+			$product_id            = SlwWpmlHelper::object_id( $product_id );
+			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
+			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
+			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
 
 			if( !empty($stock_locations) ) {
 				echo '<label class="slw_cart_item_stock_location_label">'.__('Nearest Location', 'stock-locations-for-woocommerce').':</label>';
 				
 				// lock to default location if enabled
-				$default_location = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
-				if( $default_location != 0 ) {
+				if( $lock_default_location && $default_location != 0 ) {
 					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
 					echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$default_location.'" selected="selected" disabled="disabled">'.$stock_locations[$default_location]['name'].'</option>';
 					echo '</select>';

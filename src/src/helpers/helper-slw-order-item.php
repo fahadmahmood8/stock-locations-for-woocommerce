@@ -28,7 +28,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 			// Get item product
 			$mainProductId = $lineItem->get_variation_id() != 0 ? $lineItem->get_variation_id() : $lineItem->get_product_id();
-			$mainProductId = SlwWpmlHelper::object_id( $mainProductId, get_post_type( $mainProductId ) );
+			$mainProductId = SlwWpmlHelper::object_id( $mainProductId );
 			$mainProduct   = wc_get_product( $mainProductId );
 			if( empty( $mainProduct ) ) return false;
 

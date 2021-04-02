@@ -60,7 +60,7 @@ if(!class_exists('SlwProductRest')) {
 		{
 			$terms = array();
 
-			$product_id = SlwWpmlHelper::object_id( $post['id'], get_post_type( $post['id'] ) );
+			$product_id = SlwWpmlHelper::object_id( $post['id'] );
 
 			// Get parent post ID
 			// This is either the current product or its parent_id
@@ -96,7 +96,7 @@ if(!class_exists('SlwProductRest')) {
 
 			// Get post ID, important we use this and not ->id,
 			// as this will return the correct variation ID if required
-			$postId = SlwWpmlHelper::object_id( $post->get_id(), $post->get_type() );
+			$postId = SlwWpmlHelper::object_id( $post->get_id() );
 
 			// Get parent post ID
 			// This is either the current product or its parent_id
