@@ -2,7 +2,7 @@
 Contributors: alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -49,6 +49,7 @@ This plugin requires at least *WooCommerce 3.4*.
 - Auto order allocation for locations stock reduction
 - Send email notifications when stock is allocated for a product in a location
 - Send WooCommerce New Order email copy to item location
+- Compatible with WPML
 
 
 = Compatibility =
@@ -99,6 +100,19 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 
 == Changelog ==
+
+= 1.5.0 =
+- New: stock locations table in settings with each location ID
+- New: setting to define a default location to be locked in frontend
+- New: locations stocks reduction on pair with WooCommerce reduce actions
+- New: WPML compatibility
+- New: bumps Import/Export add-on version to 1.1.0
+- Fix: frontend selector style issues on variable products
+- Fix: if rest location is provided with an empty array we now clear the previous allocations as you would expect to happen. Thanks to @shanerutter
+- Fix: order item view, show previous stock locations when stock was allocated against a location but the location is no longer valid for that item. Thanks to @shanerutter
+- Fix: showing allocate stock message, if the product no longer has stock allocations and the order line has previous stock location allocations. Thanks to @shanerutter
+- Fix: missing stock or stock status in frontend selection 
+- Fix: bug on showing 'outofstock' when adding new products with stock available
 
 = 1.4.5 =
 - Fix: updates stock status on stock reduction
