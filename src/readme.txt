@@ -101,6 +101,9 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.5.1 =
+- Fix: bug that triggers fatal error
+
 = 1.5.0 =
 - New: stock locations table in settings with each location ID
 - New: setting to define a default location to be locked in frontend
