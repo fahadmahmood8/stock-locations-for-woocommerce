@@ -28,10 +28,9 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 				$variation_ids = $product->get_children();
 				if( ! empty( $variation_ids ) ) {
 					foreach( $variation_ids as $variation_id ) {
-						$variation        = wc_get_product( $variation_id );
-						if( empty( $variation_id ) ) continue;
-						$variations_stock += $variation->get_stock_quantity();
-						self::update_wc_stock_status( $variation_id, $variation->get_stock_quantity() );
+						$variation_stock_total = SlwProductHelper::get_product_locations_stock_total( $variation_id );
+						$variations_stock     += $variation_stock_total;
+						self::update_wc_stock_status( $variation_id, $variation_stock_total );
 					}
 				}
 			}
