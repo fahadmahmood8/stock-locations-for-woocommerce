@@ -22,8 +22,28 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
 
-			if( is_null( $stock_qty ) ) {
-				$stock_qty = $product->get_stock_quantity();
+			// check if we are dealing with a variable product
+			$variations_stock = 0;
+			if( $product->get_type() == 'variable' ) {
+				$variation_ids = $product->get_children();
+				if( ! empty( $variation_ids ) ) {
+					foreach( $variation_ids as $variation_id ) {
+						$variation        = wc_get_product( $variation_id );
+						if( empty( $variation_id ) ) continue;
+						$variations_stock += $variation->get_stock_quantity();
+						self::update_wc_stock_status( $variation_id, $variation->get_stock_quantity() );
+					}
+				}
+			}
+
+			// product stock
+			if( empty( $stock_qty ) ) {
+				$stock_qty = SlwProductHelper::get_product_locations_stock_total( $product_id );
+			}
+
+			// sum product stock with variations stock, if any
+			if( $variations_stock > 0 ) {
+				$stock_qty += $variations_stock;
 			}
 
 			// backorder disabled
