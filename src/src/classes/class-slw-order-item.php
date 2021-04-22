@@ -35,6 +35,7 @@ if( !class_exists('SlwOrderItem') ) {
 		{
 			add_action('woocommerce_admin_order_item_headers', array($this, 'add_stock_location_column_wc_order'), 10, 1);
 			add_action('woocommerce_admin_order_item_values', array($this, 'add_stock_location_inputs_wc_order'), 10, 3);
+			add_action('save_post_shop_order', array($this, 'reduce_order_items_locations_stock_on_save'), 10, 3);
 			add_action('woocommerce_before_save_order_item', array($this, 'disable_wc_order_adjust_line_item_product_stock'), 99, 1);
 			add_filter('woocommerce_hidden_order_itemmeta', array($this, 'hide_stock_locations_itemmeta_wc_order'), 10, 1);
 			add_action('woocommerce_new_order_item', array($this, 'newOrderItemAllocateStock'), 10, 3);
@@ -365,6 +366,17 @@ if( !class_exists('SlwOrderItem') ) {
 				}
 			}
 
+		}
+
+		/**
+		 * Reduces order items locations stock on order save.
+		 *
+		 * @return void
+		 * @since 1.5.2
+		 */
+		public function reduce_order_items_locations_stock_on_save( $post_id, $post, $update )
+		{
+			$this->reduce_order_items_locations_stock( $post_id );
 		}
 
 		/**

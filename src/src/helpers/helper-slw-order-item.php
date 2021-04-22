@@ -32,11 +32,8 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			$mainProduct   = wc_get_product( $mainProductId );
 			if( empty( $mainProduct ) ) return false;
 
-			// Resolve product ID from parent or self
-			$resolvedProductId = ($lineItem->get_variation_id()) ? $lineItem->get_variation_id() : $lineItem->get_product_id();
-
 			// Get item location terms
-			$itemStockLocationTerms = SlwStockAllocationHelper::getProductStockLocations($resolvedProductId, false);
+			$itemStockLocationTerms = SlwStockAllocationHelper::getProductStockLocations( $mainProductId, false );
 
 			// Nothing to do, we should have gotten this far
 			// Checks should have happened prior
