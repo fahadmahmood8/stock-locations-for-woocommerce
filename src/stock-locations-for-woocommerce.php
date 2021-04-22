@@ -12,7 +12,7 @@
  * Text Domain:       		stock-locations-for-woocommerce
  * Domain Path:       		/languages
  * WC requires at least:	3.4
- * WC tested up to: 		5.2
+ * WC tested up to: 		5.3
  */
 
 /**
@@ -29,8 +29,8 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.4.5';
-		public           $import_export_addon_version = '1.1.0';
+		public           $version  = '1.5.2';
+		public           $import_export_addon_version = '1.1.1';
 
 		// others
 		protected static $instance = null;

@@ -101,6 +101,10 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 == Changelog ==
 
+= 1.5.2 =
+- New: updated compatibility for WooCommerce 5.3
+- Fix: bug on order item manual stock reduction on order save
+
 = 1.5.1 =
 - Fix: bug that triggers fatal error
 
