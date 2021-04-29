@@ -73,6 +73,9 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 					update_post_meta( $product_id, '_stock_status', 'onbackorder' );
 				}
 			}
+
+			// hook
+			do_action( 'slw_product_wc_stock_status', $stock_qty, $product_id );
 		}
 
 		public static function get_product_locations_stock_total( $product_id )
