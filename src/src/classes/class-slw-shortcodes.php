@@ -156,6 +156,9 @@ if(!class_exists('SlwShortcodes')) {
 					}
 				}
 
+				// hook to filter product locations
+				$locations = apply_filters( 'slw_shortcode_product_locations', $locations, $product );
+
 				// Process the other 3 parameters
 				$output = '<ul class="slw-product-locations-list">';
 				foreach( $locations as $location ) {
