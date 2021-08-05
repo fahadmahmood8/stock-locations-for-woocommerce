@@ -11,6 +11,7 @@ use SLW\SRC\Classes\SlwAdminNotice;
 use SLW\SRC\Helpers\SlwOrderItemHelper;
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 use SLW\SRC\Helpers\SlwWpmlHelper;
+use SLW\SRC\Helpers\SlwProductHelper;
 
 if ( !defined( 'WPINC' ) ) {
 	die;
@@ -605,13 +606,13 @@ if( !class_exists('SlwOrderItem') ) {
 				}
 
 				// get product locations total stock
-				$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $product_id );
+				$locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
 
 				// update product main stock
 				update_post_meta( $product_id, '_stock', $locations_total_stock );
 
 				// update stock status
-				\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $product_id );
+				SlwProductHelper::update_wc_stock_status( $product_id );
 			}
 		}
 
