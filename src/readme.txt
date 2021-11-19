@@ -3,7 +3,7 @@ Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
 Tested up to: 5.8
-Requires PHP: 7.2
+Requires PHP: 7.1
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

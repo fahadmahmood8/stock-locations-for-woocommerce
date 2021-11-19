@@ -19,5 +19,5 @@
 <!-- Support -->
 
 <div class="tablenav bottom">
-	<p><?php _e( 'Having problems with add-ons or need updated versions?', 'stock-locations-for-woocommerce' ); ?> <a href="mailto:alexmigf@gmail.com"><?php _e( 'Contact', 'stock-locations-for-woocommerce' ); ?></a></p>
+	<p><?php _e( 'Having problems with add-ons or need updated versions?', 'stock-locations-for-woocommerce' ); ?> <a href="https://wordpress.org/support/plugin/stock-locations-for-woocommerce/" target="_blank"><?php _e( 'Create a Ticket', 'stock-locations-for-woocommerce' ); ?></a></p>
 </div>
