@@ -1,10 +1,10 @@
 === Stock Locations for WooCommerce ===
-Contributors: alexmigf
+Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
 Tested up to: 5.8
 Requires PHP: 7.2
-Stable tag: __STABLE_TAG__
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,6 +100,9 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 
 == Changelog ==
+= 1.5.3 =
+- New: Plugin support team extended and repositories are relocated. [Thanks to Alexandre Faustino][08/11/2021]
+- Fix: PHP warning fixed. [Thanks to dsl225/John & mustanoja][09/11/2021]
 
 = 1.5.2 =
 - New: updated compatibility for WooCommerce 5.3

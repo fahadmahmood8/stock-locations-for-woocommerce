@@ -73,7 +73,18 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			if ($remainingQty) {
 				$backorderLocation = self::getBackOrderLocation();
 
-				if ($backorderLocation !== false && isset($productStockLocations[$backorderLocation->term_id])) {
+				if (
+						$backorderLocation !== false 
+					&& 
+						isset($productStockLocations[$backorderLocation->term_id]) 
+					&& 
+						array_key_exists($backorderLocation->term_id, $response)
+					&&
+						is_object($response[$backorderLocation->term_id])
+					&& 
+						isset($response[$backorderLocation->term_id]->allocated_quantity)		
+				) {
+					
 					$response[$backorderLocation->term_id]->allocated_quantity += $remainingQty;
 					$remainingQty = 0;
 				}
@@ -212,8 +223,8 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			// Sort
 			uasort($locations, function($a, $b)
 			{
-				$a_priority = $a->slw_location_priority ?? $a->term_id;
-				$b_priority = $b->slw_location_priority ?? $b->term_id;
+				$a_priority = isset($a->slw_location_priority) ?: $a->term_id;
+				$b_priority = isset($b->slw_location_priority) ?: $b->term_id;
 				
 				if ($a_priority == $b_priority) {
 					return 0;
