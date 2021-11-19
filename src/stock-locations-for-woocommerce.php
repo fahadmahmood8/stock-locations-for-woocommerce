@@ -5,7 +5,7 @@
  * Version:					__STABLE_TAG__
  * Requires at least: 		4.9
  * Requires PHP:      		7.2
- * Author:            		Alexandre Faustino & Fahad Mahmood
+ * Author:            		Fahad Mahmood & Alexandre Faustino
  * Author URI:        		https://profiles.wordpress.org/fahadmahmood/#content-plugins
  * License:           		GPL v2 or later
  * License URI:       		https://www.gnu.org/licenses/gpl-2.0.html

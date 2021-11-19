@@ -69,7 +69,7 @@
 
 	function slwWcOrderItemStockPositiveNumbersOnly()
 	{
-		$('input.stock-locations-for-woocommerce_oitem').change(function() {
+		$('input.stock-locations-for-woocommerce_oitem').on('change', function() {
 			if ($(this).val() < 0) {
 				$(this).val('0');
 				alert('Positive numbers only!');
@@ -88,7 +88,7 @@
 			$('#show_in_product_page').prop('disabled', false);
 		}
 		// on change
-		$('#show_in_cart').change(function() {
+		$('#show_in_cart').on('change', function() {
 			if( $(this).val() == 'yes' ) {
 				$('#different_location_per_cart_item').prop('disabled', false);
 				$('#show_in_product_page').prop('disabled', false);
@@ -108,7 +108,7 @@
 			$( '#lock_default_location_in_frontend' ).prop( 'disabled', true );
 		}
 		// on change
-		$( '#default_location_in_frontend_selection' ).change( function() {
+		$( '#default_location_in_frontend_selection' ).on('change', function() {
 			if( $( '#default_location_in_frontend_selection' ).is(":checked") ) {
 				$( '#lock_default_location_in_frontend' ).prop( 'disabled', false );
 			} else {
