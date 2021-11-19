@@ -5,7 +5,7 @@
  * Version:					__STABLE_TAG__
  * Requires at least: 		4.9
  * Requires PHP:      		7.2
- * Author:            		Alexandre Faustino
+ * Author:            		Alexandre Faustino & Fahad Mahmood
  * Author URI:        		mailto:alexmigf@gmail.com
  * License:           		GPL v2 or later
  * License URI:       		https://www.gnu.org/licenses/gpl-2.0.html
