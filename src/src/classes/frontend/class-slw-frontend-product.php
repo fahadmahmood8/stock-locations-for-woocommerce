@@ -46,8 +46,11 @@ if( !class_exists('SlwFrontendProduct') ) {
 		public function simple_location_select()
 		{
 			global $product;
+			
 			if( empty( $product ) || $product->get_type() != 'simple' ) return;
-
+			
+			
+			
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
 			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
@@ -121,6 +124,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		public function get_variation_locations()
 		{
+			
 			if( isset( $_POST['variation_id'] ) && isset( $_POST['product_id'] ) && $_POST['action'] == 'get_variation_locations' ) {
 				$variation_id          = sanitize_text_field( $_POST['variation_id'] );
 				$variation_id          = SlwWpmlHelper::object_id( $variation_id );

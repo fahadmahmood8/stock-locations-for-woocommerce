@@ -28,6 +28,7 @@ function view( $viewName, $viewData = array() ) {
 	foreach( $view_paths as $path ) {
 		$dir_files = list_files( $path );
 		foreach( $dir_files as $file ) {
+			
 			$file_basename = basename( $file, '.php' );
 			if( $file_basename == $viewName ) {
 				include( $file );

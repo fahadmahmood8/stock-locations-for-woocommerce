@@ -24,12 +24,100 @@ if ( !defined( 'WPINC' ) ) {
 	die;
 }
 
+
+
+global $wc_slw_data;
+$wc_slw_data = get_plugin_data(__FILE__);
+
+
+if(!function_exists('pre')){
+function pre($data){
+	if(isset($_GET['debug'])){
+	  pree($data);
+	}
+  }
+}
+if(!function_exists('pree')){
+function pree($data){
+	  echo '<pre>';
+	  print_r($data);
+	  echo '</pre>';
+
+  }
+}
+if(!function_exists('slw_notices')){
+function slw_notices($data, $echo = false){
+	$ret = '<div class="slw-notice">';
+	$ret .= $data;
+	$ret .= '</div>';  
+	
+	if($echo){
+		echo $ret;
+	}else{
+		return $ret;
+	}
+
+  }
+}
+if(!function_exists('slw_logger')){
+	function slw_logger($type='debug', $data=array()){
+		$slw_logger = array();
+		
+		$debug_backtrace = debug_backtrace();
+		$function = $debug_backtrace[1]['function'];
+		$function .= (array_key_exists(2, $debug_backtrace)?' / '.$debug_backtrace[2]['function']:'');
+		$function .= (array_key_exists(3, $debug_backtrace)?' / '.$debug_backtrace[3]['function']:'');
+		$function .= (array_key_exists(4, $debug_backtrace)?' / '.$debug_backtrace[4]['function']:'');
+		$function .= (array_key_exists(5, $debug_backtrace)?' / '.$debug_backtrace[5]['function']:'');
+		
+		switch($type){
+			case 'debug':
+				$slw_logger = get_option('slw_logger');
+				
+				$slw_logger = is_array($slw_logger)?$slw_logger:array();
+				
+				if($data){//get_option('wc_os_debug_log') &&
+					$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+					update_option('slw_logger', $slw_logger);
+				}
+			break;
+		}
+		
+		return $slw_logger;
+	}
+}
+add_action('wp_ajax_slw_clear_debug_log', 'slw_clear_debug_log');
+
+if(!function_exists('slw_clear_debug_log')){
+	function slw_clear_debug_log(){
+
+		if(!empty($_POST) && isset($_POST['slw_clear_debug_log'])){
+
+			if (
+				! isset( $_POST['slw_clear_debug_log_field'] )
+				|| ! wp_verify_nonce( $_POST['slw_clear_debug_log_field'], 'slw_nonce' )
+			) {
+
+				_e('Sorry, your nonce did not verify.', 'stock-locations-for-woocommerce');
+				exit;
+
+			} else {
+				
+				update_option('slw_logger', array());
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
 if(!class_exists('SlwMain')) {
 
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.5.2';
+		public           $version  = '1.5.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -112,7 +200,8 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'assets//css/admin/style.css', array(), SLW_PLUGIN_VERSION );
+			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'assets/css/admin/style.css', array(), time() );
+			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'assets/css/common/style.css', array(), time() );
 			wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', array(), '5.11.2' );
 
 			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/admin/scripts.js', array( 'jquery', 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
@@ -136,7 +225,8 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_frontend()
 		{
-			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'assets/css/frontend/style.css', null, SLW_PLUGIN_VERSION );
+			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'assets/css/frontend/style.css', null, time() );
+			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'assets/css/common/style.css', array(), time() );
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
 				wp_register_script( 'slw-frontend-cart-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/frontend/cart.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
@@ -200,6 +290,7 @@ function initiate_slw_plugin()
 
 		// intantiate
 		SlwMain::instance();
+		
 
 	}
 
@@ -215,4 +306,3 @@ function Slw()
 {
 	return SlwMain::instance();
 }
-

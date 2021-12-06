@@ -308,6 +308,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 				}
 			}
+			//exit;
 		}
 
 		/**
@@ -367,6 +368,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 						// Update stock when reach the last term
 						if($counter === $terms_total) {
+							
 							update_post_meta( $id, '_stock', array_sum($input_amounts) );
 						}
 
@@ -391,6 +393,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 				// update stock status
 				SlwProductHelper::update_wc_stock_status( $id, array_sum($input_amounts) );
 			}
+			
+			//exit;
 
 		}
 

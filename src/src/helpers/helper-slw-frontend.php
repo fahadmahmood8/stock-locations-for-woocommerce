@@ -20,20 +20,28 @@ if ( !class_exists('SlwFrontendHelper') ) {
 
 		public static function get_all_product_stock_locations_for_selection( $product_id )
 		{
+
 			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
 			if( empty($stock_locations) ) return;
 
 			$product = wc_get_product( $product_id );
-			if( empty( $product ) ) return;
+			if( empty( $product ) ) return;// || $product->get_type() != 'simple'
 
 			// update stock and stock status first to not show wrong data to customers
 			$product_locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
+			
 			$product_wc_stock              = $product->get_stock_quantity();
+			
+			//pree($product_wc_stock.' != '.$product_locations_total_stock);
 			if( $product_wc_stock != $product_locations_total_stock ) {
+				
+				
 				update_post_meta( $product_id, '_stock', $product_locations_total_stock );
 				SlwProductHelper::update_wc_stock_status( $product_id );
+				slw_notices(__('Stock value updated. Please refresh this page.', 'stock-locations-for-woocommerce'), true);
+				slw_logger('debug', '$product_id: '.$product_id.' - $product_wc_stock: '.$product_wc_stock.' - $product_locations_total_stock: '.$product_locations_total_stock);
 				// refresh page
-				echo("<meta http-equiv='refresh' content='1'>");
+				//echo("<meta http-equiv='refresh' content='1'>");
 			}
 
 			$stock_locations_to_display = array();

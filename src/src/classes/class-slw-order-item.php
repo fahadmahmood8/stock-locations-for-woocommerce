@@ -63,8 +63,10 @@ if( !class_exists('SlwOrderItem') ) {
 			if( isset($this->plugin_settings['wc_new_order_location_copy']) ) {
 				add_filter( 'woocommerce_email_headers', array($this, 'wc_new_order_email_copy_to_locations_email'), 10, 3);
 			}
+			
+			
 
-			if( $this->wc_manage_stock === 'yes' ) {
+			if( $this->wc_manage_stock === 'yes' && false) {
 				add_action( 'woocommerce_reduce_order_stock', array( $this, 'reduce_order_items_locations_stock' ), 10, 1 );
 				add_action( 'woocommerce_restore_order_stock', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
 			} else {
@@ -310,6 +312,9 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function reduce_order_items_locations_stock( $order )
 		{
+			global $current_screen;
+			$is_shop_order = (is_object($current_screen) && isset($current_screen->post_type) && $current_screen->post_type=='shop_order');
+			
 			if( empty( $order ) ) return;
 
 			// some actions provide the order_id directly instead of the order object
@@ -317,13 +322,13 @@ if( !class_exists('SlwOrderItem') ) {
 				$order_id = $order;
 				$order    = wc_get_order( $order_id );
 			}
-
+			//pree($order->get_items());exit;
 			// Loop through order items
 			foreach ( $order->get_items() as $item => $item_data ) {
 				// Product ID
 				$pid = ($item_data->get_variation_id()) ? $item_data->get_variation_id() : $item_data->get_product_id();
 				$pid = SlwWpmlHelper::object_id( $pid );
-
+				
 				// Not managed stock
 				if (!SlwStockAllocationHelper::isManagedStock($pid)) {
 					continue;
@@ -336,26 +341,35 @@ if( !class_exists('SlwOrderItem') ) {
 				if (empty($locations)) {
 					continue;
 				}
-
+				//
+				
 				// Convert POST data to array
 				$simpleLocationAllocations = array();
 				foreach ($locations as $location) {
 					$productId = $item_data->get_product()->get_id();
 					$productId = SlwWpmlHelper::object_id( $productId );
-					$postIdx   = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
-
-					if (!isset($_POST[$postIdx])) {
-						continue;
+					
+					
+					
+					if (is_admin() && $is_shop_order){
+						$postIdx   = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
+						if(!empty($_POST) && isset($_POST[$postIdx])) {
+							$simpleLocationAllocations[$location->term_id] = $_POST[$postIdx];
+						}
+					}else{
+						
 					}
+					
 
-					$simpleLocationAllocations[$location->term_id] = $_POST[$postIdx];
+					
 				}
+				
 
 				// No location stock data for line
 				if (empty($simpleLocationAllocations)) {
 					continue;
 				}
-
+				
 				// Allocate stock to locations
 				$locationStockAllocationResponse = SlwOrderItemHelper::allocateLocationStock( $item_data->get_id(), $simpleLocationAllocations, $allocationType = 'manual' );
 
@@ -366,7 +380,7 @@ if( !class_exists('SlwOrderItem') ) {
 					SlwAdminNotice::displaySuccess(__('Stock in locations updated successfully!', 'stock-locations-for-woocommerce'));
 				}
 			}
-
+			//exit;
 		}
 
 		/**
@@ -496,7 +510,7 @@ if( !class_exists('SlwOrderItem') ) {
 			foreach ($stockAllocation as $allocation) {
 				$simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
 			}
-
+			
 			// Allocate order item stock to locations
 			SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'auto' );
 
@@ -609,6 +623,7 @@ if( !class_exists('SlwOrderItem') ) {
 				$locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
 
 				// update product main stock
+				
 				update_post_meta( $product_id, '_stock', $locations_total_stock );
 
 				// update stock status

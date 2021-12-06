@@ -19,7 +19,7 @@
 	padding-top:11px;
 	color:orange;
 }
-#stock-locations-for-woocommerce_tab_stock_locations_alert::before {
+#stock-locations-for-woocommerce_tab_stock_locations_alert:before {
 	font-family: Font Awesome\ 5 Free;
 	content: '\f071';
 	font-weight: 900;
@@ -39,4 +39,17 @@ table thead tr #stock_at_locations {
 	height: 80px;
 	float: left;
 	margin-right: 10px;
+}
+div.slw-settings-wrap a.nav-tab[data-id="help"] {
+	float: right;
+}
+a.current[href*="page=slw-settings"] {
+	background-color: #232431;
+	color: yellow !important;
+	font-size: 12px !important;
+	font-weight: bold !important;
+}
+.slw_logger ul {
+	height: 600px;
+	overflow-y: auto;
 }

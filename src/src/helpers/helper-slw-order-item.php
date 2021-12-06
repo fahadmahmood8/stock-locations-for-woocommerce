@@ -127,6 +127,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				if( $mainProduct->get_stock_quantity() >= $totalQtyAllocated ) { // don't allow to decrease below zero
 					$stock_qty = $mainProduct->get_stock_quantity() - $totalQtyAllocated;
 					// update stock
+					
 					update_post_meta( $mainProductId, '_stock', $stock_qty );
 					// update stock status
 					SlwProductHelper::update_wc_stock_status( $mainProductId, $stock_qty );

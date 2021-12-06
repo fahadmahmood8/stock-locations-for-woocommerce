@@ -205,5 +205,32 @@
 
 		} );
 	}
+	
+	$('a.slw_clear_debug_log').on('click', function (e) {
+
+		e.preventDefault();
+
+		$('.slw_logger ul.slw_debug_log').html('');
+
+		var data = {
+
+			action: 'slw_clear_debug_log',
+			slw_clear_debug_log: 'true',
+			slw_clear_debug_log_field: slw_admin_scripts.nonce,
+		}
+
+		// console.log(data);
+		$.post(ajaxurl, data, function (response, code) {
+
+			// console.log(response);
+			if (code == 'success') {
+
+
+				//
+			}
+
+		});
+
+	});
 
 }(jQuery));

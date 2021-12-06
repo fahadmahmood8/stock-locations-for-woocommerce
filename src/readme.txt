@@ -100,6 +100,11 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 
 == Changelog ==
+= 1.5.6 =
+- New: Debug log tab added for better troubleshooting. [Thanks to nickdill, rivalink and tomkolp][07/12/2021]
+- Fix: Infinite redirection replaced with a notice so customers can be saved from inconvenience.
+
+
 = 1.5.5 =
 - Fix: Update suggest by pacmanito. [20/11/2021]
 

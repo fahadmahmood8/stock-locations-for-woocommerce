@@ -26,7 +26,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			add_action( 'admin_menu', array($this, 'create_admin_menu_page'), 99 );
 			add_action( 'admin_init', array($this, 'register_settings') );
-			add_action( 'slw_after_settings_tabs', array( $this, 'import_export_addon_notice' ), 10, 1 );
+
 
 			add_filter( 'plugin_action_links_'.SLW_PLUGIN_BASENAME, array($this, 'settings_link') );
 
@@ -41,11 +41,16 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function create_admin_menu_page()
 		{
+			global $wc_slw_data;
 			// This page will be under "WooCommerce"
+			$title = __('SLW Settings', 'stock-locations-for-woocommerce');
+			if((isset($_GET['page']) && $_GET['page']=='slw-settings') || date('Y')>2022){
+				$title = str_replace('WooCommerce', 'WC', $wc_slw_data['Name']);
+			}
 			add_submenu_page(
 				'woocommerce',
-				__('SLW Settings', 'stock-locations-for-woocommerce'), 
-				__('SLW Settings', 'stock-locations-for-woocommerce'), 
+				$title, 
+				$title, 
 				'manage_woocommerce',
 				'slw-settings', 
 				array( $this, 'admin_menu_page_callback' )
@@ -55,8 +60,9 @@ if(!class_exists('SlwSettings')) {
 		public function settings_tabs()
 		{
 			return apply_filters( 'slw_settings_tabs', array(
-				'default'	=> __( 'Settings', 'stock-locations-for-woocommerce' ),
-				'sponsor'	=> __( 'Sponsor', 'stock-locations-for-woocommerce' ),
+				'default'	=> array('label'=>__( 'Settings', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-cogs"></i>'),
+				'logger'	=> array('label'=>__( 'Logs', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-route"></i>'),
+				'help'	=> array('label'=>__( 'Help', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-question-circle"></i>'),
 			) );
 		}
 		
@@ -70,16 +76,16 @@ if(!class_exists('SlwSettings')) {
 		{
 			settings_errors();
 			?>
-			<div class="wrap">
+			<div class="wrap slw-settings-wrap">
 				<h1><?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
 				<h2 class="nav-tab-wrapper">
 					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
-					<?php foreach( $this->settings_tabs() as $key => $label ) : $class = 'nav-tab'; ?>
+					<?php foreach( $this->settings_tabs() as $key => $data ) : $class = 'nav-tab'; ?>
 					<?php if( isset($_REQUEST['tab']) && $_REQUEST['tab'] == $key ) { $class .= ' nav-tab-active'; } ?>
-					<a href="<?= admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?= $key; ?>" class="<?= $class; ?>"><?= $label; ?></a>
+					<a data-id="<?php echo $key; ?>" href="<?= admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?= $key; ?>" class="<?= $class; ?>"><?= $data['icon']; ?>&nbsp;<?= $data['label']; ?></a>
 					<?php endforeach; ?>
 				</h2>
-				<?php do_action( 'slw_after_settings_tabs', $_REQUEST['tab'] ); ?>
+
 				<?php
 					// echo view
 					if( isset( $_REQUEST['tab'] ) ) {
@@ -446,32 +452,6 @@ if(!class_exists('SlwSettings')) {
 			return $links;
 		}
 
-		/**
-		 * Show Import/Export add-on notice
-		 *
-		 * @since 1.4.4
-		 * @return void
-		 */
-		public function import_export_addon_notice( $active_tab ) {
-			if( $active_tab != 'sponsor' && ! class_exists( 'Slw_Import_Export_Add_On_Class' ) ) :
-			?>
-			<div class="notice notice-info inline">
-				<p style="height:80px;">
-					<img class="slw-import-export-addon-logo" src="<?php echo SLW_PLUGIN_DIR_URL; ?>/assets/img/import-export-add-on.svg" alt="Import/Export add-on">
-					<span style="display:block; margin-top:10px; margin-bottom:10px;">
-					<?php
-						printf(
-							esc_attr__( 'New stock locations %s!', 'stock-locations-for-woocommerce' ),
-							'<strong>'.esc_attr__( 'Import/Export add-on', 'stock-locations-for-woocommerce' ).'</strong>'
-						);
-					?>
-					</span>
-					<a class="button button-primary" href="<?php echo admin_url( 'admin.php?page=slw-settings&tab=sponsor' ); ?>"><?php esc_attr_e( 'Grab it here', 'stock-locations-for-woocommerce' ); ?></a>
-				</p>
-			</div>
-			<?php
-			endif;
-		}
 
 	}
 
