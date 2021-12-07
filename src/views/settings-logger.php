@@ -1,7 +1,7 @@
 <?php if ( ! defined('WPINC') ) die; ?>
 
 
-<div class="slw_logger">
+<div class="slw_logger mt-4">
         <?php
 		
 		$slw_logger = slw_logger('debug');

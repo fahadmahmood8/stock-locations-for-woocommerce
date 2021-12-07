@@ -100,6 +100,13 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 
 
 == Changelog ==
+= 1.5.8 =
+- New: Hide location information from old orders. [Thanks to Petri Mustanoja / pemu.se][07/12/2021]
+
+= 1.5.7 =
+- New: Bootstrap and FontAwesome added. Assets are rearranged and simplified.
+- Fix: Fatal error fixed. [Thanks to kentakofot][07/12/2021]
+ 
 = 1.5.6 =
 - New: Debug log tab added for better troubleshooting. [Thanks to nickdill, rivalink and tomkolp][07/12/2021]
 - Fix: Infinite redirection replaced with a notice so customers can be saved from inconvenience.

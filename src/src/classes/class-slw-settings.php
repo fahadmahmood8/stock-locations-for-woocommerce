@@ -61,6 +61,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			return apply_filters( 'slw_settings_tabs', array(
 				'default'	=> array('label'=>__( 'Settings', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-cogs"></i>'),
+				'stock-locations'	=> array('label'=>__( 'Stock Locations', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-sitemap"></i>'),
 				'logger'	=> array('label'=>__( 'Logs', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-route"></i>'),
 				'help'	=> array('label'=>__( 'Help', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-question-circle"></i>'),
 			) );
@@ -77,7 +78,7 @@ if(!class_exists('SlwSettings')) {
 			settings_errors();
 			?>
 			<div class="wrap slw-settings-wrap">
-				<h1><?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
+				<h1><i class="fas fa-sitemap"></i> <?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
 				<h2 class="nav-tab-wrapper">
 					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
 					<?php foreach( $this->settings_tabs() as $key => $data ) : $class = 'nav-tab'; ?>

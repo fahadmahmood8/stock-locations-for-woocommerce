@@ -44,12 +44,30 @@ div.slw-settings-wrap a.nav-tab[data-id="help"] {
 	float: right;
 }
 a.current[href*="page=slw-settings"] {
-	background-color: #232431;
-	color: yellow !important;
+	background-color: #4200FF;
+	color: #fff !important;
 	font-size: 12px !important;
 	font-weight: bold !important;
 }
-.slw_logger ul {
+ul.slw_debug_log  {
 	height: 600px;
 	overflow-y: auto;
+}
+ul.slw_debug_log li{
+}
+ul.slw_debug_log li small{
+	color:#4200FF;
+}
+
+.wrap.slw-settings-wrap > div > ul {
+	margin: 0;
+	padding: 0;
+}
+.wrap.slw-settings-wrap > div > ul > li{
+	line-height:26px;
+}
+div.slw-settings-wrap h2.nav-tab-wrapper a.nav-tab.nav-tab-active svg,
+div.slw-settings-wrap h2.nav-tab-wrapper a.nav-tab:hover svg,
+div.slw-settings-wrap h1 > svg{
+	color:#4200FF;
 }

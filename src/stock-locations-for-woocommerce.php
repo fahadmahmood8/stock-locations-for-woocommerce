@@ -1,4 +1,4 @@
-<?php
+<?php if ( ! defined( 'ABSPATH' ) ){ exit; }else{ clearstatcache(); }
 /**
  * Plugin Name:       		Stock Locations for WooCommerce
  * Description:       		This plugin will help you manage WooCommerce Products stocks throw locations.
@@ -23,7 +23,7 @@
 if ( !defined( 'WPINC' ) ) {
 	die;
 }
-
+require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
 global $wc_slw_data;
@@ -176,7 +176,9 @@ if(!class_exists('SlwMain')) {
 		public function init()
 		{
 			// Enqueue scripts and styles
-			add_action( 'admin_enqueue_scripts', array($this, 'enqueue_admin') );
+			if(isset($_GET['page']) && $_GET['page']=='slw-settings'){
+				add_action( 'admin_enqueue_scripts', array($this, 'enqueue_admin') );
+			}
 			add_action( 'wp_enqueue_scripts', array($this, 'enqueue_frontend') );
 
 			// Prevent WooCommerce from reduce stock
@@ -200,11 +202,18 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'assets/css/admin/style.css', array(), time() );
-			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'assets/css/common/style.css', array(), time() );
-			wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', array(), '5.11.2' );
+			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'css/admin-style.css', array(), time() );
+			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
+			
+		
+			wp_enqueue_style( 'slw-bootstrap-styles', SLW_PLUGIN_DIR_URL . 'css/bootstrap.min.css', array(), date('m') );
+			wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('m') );
+			
+		    wp_enqueue_script( 'font-awesome', SLW_PLUGIN_DIR_URL . '/js/fontawesome.min.js', array( 'jquery' ), date('m') );
+			wp_enqueue_script( 'bootstrap', SLW_PLUGIN_DIR_URL . '/js/bootstrap.min.js', array( 'jquery' ), date('m') );
+		
 
-			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/admin/scripts.js', array( 'jquery', 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
 			wp_localize_script(
 				'slw-admin-scripts',
 				'slw_admin_scripts',
@@ -225,11 +234,11 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_frontend()
 		{
-			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'assets/css/frontend/style.css', null, time() );
-			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'assets/css/common/style.css', array(), time() );
+			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
+			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
-				wp_register_script( 'slw-frontend-cart-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/frontend/cart.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+				wp_register_script( 'slw-frontend-cart-scripts', SLW_PLUGIN_DIR_URL . 'js/cart.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
 				wp_localize_script(
 					'slw-frontend-cart-scripts',
 					'slw_frontend_cart',
@@ -240,7 +249,7 @@ if(!class_exists('SlwMain')) {
 				wp_enqueue_script( 'slw-frontend-cart-scripts' );
 			}
 			if( isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
-				wp_register_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'assets/js/frontend/product.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+				wp_register_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
 				wp_localize_script(
 					'slw-frontend-product-scripts',
 					'slw_frontend_product',
