@@ -1,5 +1,5 @@
 {
-    "name": "fahadmahmood8/stock-locations-for-woocommerce",
+    "name": "alexmigf/stock-locations-for-woocommerce",
     "description": "Stock Locations for WooCommerce Plugin",
     "autoload": {
       "psr-4": {

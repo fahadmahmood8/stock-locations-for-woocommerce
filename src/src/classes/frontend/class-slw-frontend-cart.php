@@ -19,7 +19,7 @@ if( !class_exists('SlwFrontendCart') ) {
 
 	class SlwFrontendCart
 	{
-
+		
 		/**
 		 * Construct.
 		 *
@@ -66,7 +66,7 @@ if( !class_exists('SlwFrontendCart') ) {
 
 			if( !empty($stock_locations) ) {
 				echo '<label class="slw_cart_item_stock_location_label">'.__('Nearest Location', 'stock-locations-for-woocommerce').':</label>';
-
+				
 				// lock to default location if enabled
 				if( $lock_default_location && $default_location != 0 ) {
 					echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
@@ -123,7 +123,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			wp_send_json( array( 'success' => 1 ) );
 			exit;
 		}
-
+		
 		/**
 		 * Save stock locations to order item meta.
 		 *
@@ -137,7 +137,7 @@ if( !class_exists('SlwFrontendCart') ) {
 				}
 			}
 		}
-
+		
 		/**
 		 * Locks the cart item location.
 		 *
