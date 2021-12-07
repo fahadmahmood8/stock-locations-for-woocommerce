@@ -14,7 +14,7 @@ Stock Locations for WooCommerce will help you manage your products stock across 
 
 ## Issues
 
-For any issues while using this WordPress plugin please don't hesitate to submit an [issue here](https://github.com/alexmigf/stock-locations-for-woocommerce/issues/new).
+For any issues while using this WordPress plugin please don't hesitate to submit an [issue here](https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/new).
 
 ## Contributing
 
