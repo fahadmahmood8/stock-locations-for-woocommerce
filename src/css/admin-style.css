@@ -71,3 +71,29 @@ div.slw-settings-wrap h2.nav-tab-wrapper a.nav-tab:hover svg,
 div.slw-settings-wrap h1 > svg{
 	color:#4200FF;
 }
+div.slw-settings-wrap table.form-table th {
+	width: 400px;
+}
+div.slw-settings-wrap table.form-table td{
+	position:relative;
+}
+div.slw-settings-wrap table.form-table td input[type="text"]{
+	width:400px;
+}
+div.slw-settings-wrap table.form-table td a{
+	position:relative;
+	display:inline-block;
+}
+div.slw-settings-wrap table.form-table td a.slw-settings-video svg{
+	color:#F00;
+	font-size:36px;
+    position: absolute;
+    top: -24px;
+}
+div.slw-settings-wrap table.form-table td a.slw-settings-screenshot svg{
+	color:#090;
+	font-size:36px;
+    position: absolute;
+    top: -24px;
+	left: 40px;
+}

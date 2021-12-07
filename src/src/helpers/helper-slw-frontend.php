@@ -21,6 +21,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 		public static function get_all_product_stock_locations_for_selection( $product_id )
 		{
 
+			
 			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
 			if( empty($stock_locations) ) return;
 
@@ -47,7 +48,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			$stock_locations_to_display = array();
 			foreach( $stock_locations as $id => $location ) {
 				$stock_locations_to_display[$id]['term_id']         = $location->term_id;
-				$stock_locations_to_display[$id]['quantity']        = $location->quantity;
+				$stock_locations_to_display[$id]['quantity']        = slw_quantity_format($location->quantity);
 				$stock_locations_to_display[$id]['allow_backorder'] = $location->slw_backorder_location;
 				$stock_locations_to_display[$id]['name']            = $location->name;
 

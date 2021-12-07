@@ -58,9 +58,10 @@ if( !class_exists('SlwFrontendProduct') ) {
 
 			if( ! empty( $stock_locations ) ) {
 				// lock to default location if enabled			
+				//pree($lock_default_location);exit;
 				if( $lock_default_location && $default_location != 0 ) {
 					echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled>';
-					echo '<option value="'.$default_location.'" selected>'.$stock_locations[$default_location]['name'].'</option>';
+					echo '<option data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" selected>'.$stock_locations[$default_location]['name'].'</option>';
 					echo '</select></div>';
 					return;
 				}
@@ -72,15 +73,16 @@ if( !class_exists('SlwFrontendProduct') ) {
 				} else {
 					echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
+				//pree($stock_locations);exit;
 				foreach( $stock_locations as $id => $location ) {
 					$disabled = '';
 					if( $location['quantity'] < 1 && $location['allow_backorder'] != 1 ) {
 						$disabled = 'disabled="disabled"';
 					}
 					if( $default_location != 0 && $location['term_id'] == $default_location ) {
-						echo '<option value="'.$location['term_id'].'" '.$disabled.' selected>'.$location['name'].'</option>';
+						echo '<option data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' selected>'.$location['name'].'</option>';
 					} else {
-						echo '<option value="'.$location['term_id'].'" '.$disabled.'>'.$location['name'].'</option>';
+						echo '<option data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.'>'.$location['name'].'</option>';
 					}
 				}
 				echo '</select></div>';
@@ -133,7 +135,8 @@ if( !class_exists('SlwFrontendProduct') ) {
 
 				$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 				$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
-
+				//pree($stock_locations);
+				//pree($default_location);
 				if( !empty($stock_locations) ) {
 					wp_send_json_success( compact( 'stock_locations', 'default_location' ) );
 				} else {

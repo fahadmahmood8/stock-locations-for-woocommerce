@@ -149,6 +149,14 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
+			
+			add_settings_field(
+				'show_with_postfix',
+				__('Show location stock quantity with a postfix e.g. 20+', 'stock-locations-for-woocommerce'),
+				array( $this, 'show_with_postfix_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section'
+			);
 
 			add_settings_field(
 				'default_location_in_frontend_selection',
@@ -230,6 +238,9 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['show_in_product_page'] ) ) {
 				$sanitary_values['show_in_product_page'] = $input['show_in_product_page'];
 			}
+			if ( isset( $input['show_with_postfix'] ) ) {
+				$sanitary_values['show_with_postfix'] = $input['show_with_postfix'];
+			}			
 			if ( isset( $input['default_location_in_frontend_selection'] ) ) {
 				$sanitary_values['default_location_in_frontend_selection'] = $input['default_location_in_frontend_selection'];
 			}
@@ -350,10 +361,22 @@ if(!class_exists('SlwSettings')) {
 		 * @since 1.3.0
 		 * @return void
 		 */
+		public function show_with_postfix_callback()
+		{
+			$this->get_input_text_callback('show_with_postfix', 
+							array(
+								'placeholder'=>__('Enter a maximum number to show + sign beyond', 'stock-locations-for-woocommerce'), 
+								'screenshot'=>'https://ps.w.org/stock-locations-for-woocommerce/assets/screenshot-11.png',
+								'video'=>'https://www.youtube.com/embed/qZ_wQ83bQ9A'
+							)
+						);
+		}
+
 		public function show_in_product_page_callback()
 		{
 			$this->select_yes_no_callback('show_in_product_page');
 		}
+
 
 		/**
 		 * Delete unused product locations meta dropdown callback.
@@ -453,7 +476,16 @@ if(!class_exists('SlwSettings')) {
 			return $links;
 		}
 
-
+		public function get_input_text_callback( $id, $args='' )
+		{
+			
+?> 
+		<input type="text" name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>" value="<?php echo array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:''; ?>" placeholder="<?php echo $args['placeholder']; ?>" /> 
+        
+        <?php if($args['video']): ?><a title="<?php echo __( 'Click here to watch video tutorial', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-video" href="<?php echo $args['video']; ?>" target="_blank"><i class="fab fa-youtube"></i></a><?php endif; ?>
+        <?php if($args['screenshot']): ?><a title="<?php echo __( 'Click here to preview illustration/screenshot', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-screenshot" href="<?php echo $args['screenshot']; ?>" target="_blank"><i class="fas fa-image"></i></a><?php endif; ?>
+<?php
+		}
 	}
 
 }

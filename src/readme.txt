@@ -82,8 +82,12 @@ This plugin requires at least *WooCommerce 3.4*.
 == Frequently Asked Questions ==
 
 = I found a bug, where i can report it? =
-I prefer you to use the Github issues. You can submit a new one here [GitHub](https://github.com/alexmigf/stock-locations-for-woocommerce/issues/new)
+I prefer you to use the Github issues. You can submit a new one here [GitHub](https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/new)
 
+= How to show location stock quantity with a postfix e.g. 20+? =
+On settings page you can define a number. If location stock value will be less than the given number, it will display the stock value else will not show the exact number but a plus sign "+" just after the maximum number given.
+
+[youtube http://www.youtube.com/watch?v=qZ_wQ83bQ9A]
 
 == Screenshots ==
 
@@ -97,11 +101,17 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 8. Allow customers to select location in variable products
 9. Allow customers to select location in simple products
 10. Plugin settings
+11. Show location stock quantity with a postfix e.g. 20+
 
 
 == Changelog ==
+
 = 1.5.8 =
-- New: Hide location information from old orders. [Thanks to Petri Mustanoja / pemu.se][07/12/2021]
+- New: (Name change and old orders for customers) - Hide location information from old orders, solution provided on support ticket thread. [Thanks to Petri Mustanoja / pemu.se][07/12/2021]
+- Fix: Can't manage my stock anymore. [Thanks to Jelle Tempelman][07/12/2021]
+- Fix: Stock at Locations set but Stock still shows 0. [Thanks to andrehlprr & leax] [07/12/2021]
+- New: Change Text for quantity value - new feature added. https://wordpress.org/support/topic/change-text-for-quantity-value/ [Thanks to Gina Pelli/mediih] [07/12/2021]
+- Fix: Make it possible to change location in cart #116. [Thanks to screenpartner & Michael Wilhelmsen][08/12/2021]
 
 = 1.5.7 =
 - New: Bootstrap and FontAwesome added. Assets are rearranged and simplified.

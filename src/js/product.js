@@ -15,6 +15,7 @@
 		$('select#slw_item_stock_location_variable_product').hide();
 		$(document).on( 'found_variation', function( event ) {
 			event.preventDefault();
+			$('.woocommerce-variation-availability p.stock').hide();
 			let variation_id = $(".woocommerce-variation-add-to-cart").find('.variation_id').val();
 			let product_id   = $(".woocommerce-variation-add-to-cart").find('input[name="product_id"]').val();
 			$.ajax({
@@ -39,10 +40,16 @@
 								if( obj.term_id == response.data.default_location ) {
 									selected = true;
 								}
-								$('select#slw_item_stock_location_variable_product').append( new Option( obj.name, obj.term_id, selected, selected ) );
+								
+								//new Option( obj.name, obj.term_id, selected, selected )
+								var option_str = '<option data-quantity="'+obj.quantity+'" value="'+obj.term_id+'" '+(selected?'selected="selected"':'')+'>'+obj.name+'</option>';
+								$('select#slw_item_stock_location_variable_product').append(option_str);
 							}
 						});
 						$('select#slw_item_stock_location_variable_product').show();
+
+						$('select[name="slw_add_to_cart_item_stock_location"]').change();
+
 					} else {
 						return;
 					}
@@ -53,5 +60,16 @@
 			});
 		});
 	}
+	
+	$('select[name="slw_add_to_cart_item_stock_location"]').on('change', function(){
+		var obj = $('div.woocommerce p.stock');
+		if(obj.length>0){
+			var qty = $('select[name="slw_add_to_cart_item_stock_location"] option:selected').data('quantity');
+			var str = obj.html();
+			var arr = str.split(' ');
+			str = str.replace(arr[0], qty);
+			obj.html(str).show();
+		}
+	});
 
 }(jQuery));
