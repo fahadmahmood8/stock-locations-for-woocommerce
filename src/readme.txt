@@ -105,6 +105,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.6.0 =
+- Fix: Bug on cart page - https://wordpress.org/support/topic/bug-on-cart-page/ [Thanks to designfin][08/12/2021]
+
 = 1.5.9 =
 - New: Assets updated.
 

@@ -43,10 +43,6 @@ if( !class_exists('SlwFrontendCart') ) {
 				add_action( 'wp_footer', array($this, 'lock_cart_item_location') );
 			}
 
-			// check if location selection required is enabled
-			if( isset($this->plugin_settings['cart_location_selection_required']) && $this->plugin_settings['cart_location_selection_required'] == 'on' ) {
-				add_action( 'wp_footer', array($this, 'cart_item_location_selection_required') );
-			}
 		}
 
 		/**
@@ -161,45 +157,6 @@ if( !class_exists('SlwFrontendCart') ) {
 			}
 		}
 
-		/**
-		 * Make locations selection in cart required.
-		 *
-		 * @since 1.3.3
-		 */
-		public function cart_item_location_selection_required()
-		{
-			if( is_cart() ) {
-				?>
-				<script>
-				jQuery( function( $ ) {
-					$(document).ready(function() {
-						validate();
-						$('.slw_cart_item_stock_location_selection').on('change', function() {
-							validate();
-						});
-					});
-
-					function validate() {
-						var inputsWithValues = 0;
-						var myInputs = $(".slw_cart_item_stock_location_selection");
-
-						myInputs.each(function(e) {
-							if ($(this).val()) {
-								inputsWithValues += 1;
-							}
-						});
-
-						if (inputsWithValues != myInputs.length) {
-							$('.checkout-button').addClass('slw_checkout_disable');
-						} else {
-							$('.checkout-button').removeClass('slw_checkout_disable');
-						}
-					}
-				} );
-				</script>
-				<?php
-			}
-		}
 
 	}
 

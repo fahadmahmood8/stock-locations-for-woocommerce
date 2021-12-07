@@ -20,7 +20,7 @@
 			let product_id   = $(".woocommerce-variation-add-to-cart").find('input[name="product_id"]').val();
 			$.ajax({
 				type: 'POST',
-				url: slw_frontend_product.ajaxurl,
+				url: slw_frontend.ajaxurl,
 				data: {
 					action:       'get_variation_locations',
 					security:     $('#woocommerce-cart-nonce').val(),

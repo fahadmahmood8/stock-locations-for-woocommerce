@@ -3,6 +3,7 @@
 	margin-top: 5px;
 	margin-bottom: 0;
 	font-weight: bold;
+	display: block;
 }
 .slw_item_stock_location {
 	font-size: 14px;

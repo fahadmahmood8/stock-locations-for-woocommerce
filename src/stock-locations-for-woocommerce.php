@@ -38,7 +38,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.5.9';
+		public           $version  = '1.6.0';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -160,25 +160,35 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
+			
+			$data = $this->plugin_settings;
+			$data['ajaxurl'] = admin_url( 'admin-ajax.php' );
+			$data['is_cart'] = is_cart();
+			$data['is_checkout'] = is_checkout();
+			$data['is_product'] = is_product();
+			
+			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
-				wp_register_script( 'slw-frontend-cart-scripts', SLW_PLUGIN_DIR_URL . 'js/cart.js', array( 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+				wp_enqueue_script(
+					'slw-frontend-cart-scripts',
+					SLW_PLUGIN_DIR_URL . 'js/cart.js',
+					array('jquery-blockui'),
+					time(),
+					true
+				);	
+
 				wp_localize_script(
 					'slw-frontend-cart-scripts',
-					'slw_frontend_cart',
-					array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' )
-					)
+					'slw_frontend',
+					$data
 				);
-				wp_enqueue_script( 'slw-frontend-cart-scripts' );
 			}
 			if( isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
 				wp_register_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), time(), true );
 				wp_localize_script(
 					'slw-frontend-product-scripts',
-					'slw_frontend_product',
-					array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' )
-					)
+					'slw_frontend',
+					$data
 				);
 				wp_enqueue_script( 'slw-frontend-product-scripts' );
 			}
