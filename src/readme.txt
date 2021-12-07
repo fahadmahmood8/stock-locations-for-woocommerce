@@ -105,6 +105,8 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.5.9 =
+- New: Assets updated.
 
 = 1.5.8 =
 - New: (Name change and old orders for customers) - Hide location information from old orders, solution provided on support ticket thread. [Thanks to Petri Mustanoja / pemu.se][07/12/2021]
