@@ -87,7 +87,11 @@ I prefer you to use the Github issues. You can submit a new one here [GitHub](ht
 = How to show location stock quantity with a postfix e.g. 20+? =
 On settings page you can define a number. If location stock value will be less than the given number, it will display the stock value else will not show the exact number but a plus sign "+" just after the maximum number given.
 
-[youtube http://www.youtube.com/watch?v=qZ_wQ83bQ9A]
+[youtube http://www.youtube.com/watch?v=nWj5MTLcPjI]
+
+= How to make location selection required on cart page? =
+
+[youtube http://www.youtube.com/watch?v=64N7-b90r3E]
 
 == Screenshots ==
 
@@ -105,6 +109,12 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.6.2 =
+- New: A new functionality to get a pick-list of how many orders for each product have been pre-made for each location. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to msbbill115 / MySalesButler.com][08/12/2021]
+
+= 1.6.1 =
+- New: Critical error after installation. https://wordpress.org/support/topic/critical-error-after-installation-2/ [Thanks to martinnijkamp][08/12/2021]
+
 = 1.6.0 =
 - Fix: Bug on cart page - https://wordpress.org/support/topic/bug-on-cart-page/ [Thanks to designfin][08/12/2021]
 

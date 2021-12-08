@@ -56,18 +56,23 @@
 
 	if(slw_frontend.is_cart){
 		
-		if(slw_frontend.cart_location_selection_required=='on'){
 		
-			$('.slw_cart_item_stock_location_selection').on('change', function() {
-				slw_cart_validate();
-			});
+		if(slw_frontend.show_in_cart=='yes'){
+		
+			if(slw_frontend.cart_location_selection_required=='on'){
 			
+				$('.slw_cart_item_stock_location_selection').on('change', function() {
+					slw_cart_validate();
+				});
 				
-			
-			
-			setInterval(function(){	
-				slw_cart_validate();
-			}, 500);
+					
+				
+				
+				setInterval(function(){	
+					slw_cart_validate();
+				}, 500);
+				
+			}
 			
 		}
 	}

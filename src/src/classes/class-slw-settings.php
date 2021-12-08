@@ -31,6 +31,7 @@ if(!class_exists('SlwSettings')) {
 			add_filter( 'plugin_action_links_'.SLW_PLUGIN_BASENAME, array($this, 'settings_link') );
 
 			$this->plugin_settings = get_option( 'slw_settings' );
+			$this->plugin_settings = (is_array($this->plugin_settings)?$this->plugin_settings:array());
 		}
 
 		/**
@@ -75,10 +76,11 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function admin_menu_page_callback()
 		{
+			global $wc_slw_data, $wc_slw_pro;
 			settings_errors();
 			?>
 			<div class="wrap slw-settings-wrap">
-				<h1><i class="fas fa-sitemap"></i> <?php _e('Stock Locations for WooCommerce Settings', 'stock-locations-for-woocommerce'); ?></h1>
+				<h1><i class="fas fa-sitemap"></i> <?php echo $wc_slw_data['Name'].' ('.SLW_PLUGIN_VERSION.') '.($wc_slw_pro?'Pro':''); ?></h1>
 				<h2 class="nav-tab-wrapper">
 					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
 					<?php foreach( $this->settings_tabs() as $key => $data ) : $class = 'nav-tab'; ?>
@@ -296,10 +298,14 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function cart_location_selection_required_callback()
 		{
-			$this->checkbox_callback('cart_location_selection_required');
-			?>
-			<span><?= __('Make location selection in cart required.', 'stock-locations-for-woocommerce'); ?></span>
-			<?php
+			
+			$this->checkbox_callback('cart_location_selection_required',		array(
+								'placeholder'=>__('', 'stock-locations-for-woocommerce'), 
+								'screenshot'=>'',
+								'video'=>'https://www.youtube.com/embed/64N7-b90r3E',
+								'label'=>__('Make location selection in cart required.', 'stock-locations-for-woocommerce'),
+							));
+		
 		}
 
 		/**
@@ -367,10 +373,12 @@ if(!class_exists('SlwSettings')) {
 							array(
 								'placeholder'=>__('Enter a maximum number to show + sign beyond', 'stock-locations-for-woocommerce'), 
 								'screenshot'=>'https://ps.w.org/stock-locations-for-woocommerce/assets/screenshot-11.png',
-								'video'=>'https://www.youtube.com/embed/qZ_wQ83bQ9A'
+								'video'=>'https://www.youtube.com/embed/nWj5MTLcPjI'
 							)
 						);
 		}
+
+		
 
 		public function show_in_product_page_callback()
 		{
@@ -457,10 +465,19 @@ if(!class_exists('SlwSettings')) {
 		 * @since 1.2.1
 		 * @return void
 		 */
-		public function checkbox_callback( $id )
+		public function checkbox_callback( $id, $args = array() )
 		{
 			?> 
-			<input name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>" type="checkbox" <?= isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on')) ? 'value="on"' : null; ?> <?= isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on')) ? 'checked="checked"' : null; ?>>
+			<input name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>" type="checkbox" <?= isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on')) ? 'value="on"' : null; ?> <?= isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on')) ? 'checked="checked"' : null; ?> />
+            
+            <?php if(!empty($args)): ?>
+            <?php if($args['label']): ?><label for="<?= $id; ?>"><?php echo $args['label']; ?></label><?php endif; ?>
+			<?php if($args['video']): ?><a title="<?php echo __( 'Click here to watch video tutorial', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-video" href="<?php echo $args['video']; ?>" target="_blank"><i class="fab fa-youtube"></i></a><?php endif; ?>
+            <?php if($args['screenshot']): ?><a title="<?php echo __( 'Click here to preview illustration/screenshot', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-screenshot" href="<?php echo $args['screenshot']; ?>" target="_blank"><i class="fas fa-image"></i></a><?php endif; ?>
+            <?php endif; ?>
+            
+            
+            
 			<?php
 		}
 
@@ -471,12 +488,19 @@ if(!class_exists('SlwSettings')) {
 		 * @return void
 		 */
 		public function settings_link( $links ) {
+			global $wc_slw_pro, $wc_slw_premium_copy;
 			$settings_link = '<a href="' . admin_url( 'admin.php?page=slw-settings' ) . '">'. __( 'Settings', 'stock-locations-for-woocommerce' ) . '</a>';
 			array_push( $links, $settings_link );
+			
+			if(!$wc_slw_pro){
+				$premium_link = '<a target="_blank" href="' . $wc_slw_premium_copy . '">'. __( 'Go Premium', 'stock-locations-for-woocommerce' ) . '</a>';
+				array_push( $links, $premium_link );				
+			}
+			
 			return $links;
 		}
 
-		public function get_input_text_callback( $id, $args='' )
+		public function get_input_text_callback( $id, $args=array() )
 		{
 			
 ?> 
