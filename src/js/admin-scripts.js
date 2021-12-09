@@ -231,6 +231,18 @@
 
 		});
 
+
 	});
+	if($('select[name="auto_order_allocate"]').length>0){
+		$('select[name="auto_order_allocate"]').on('change', function(){
+			var id = $(this).data('id');
+			if($('select[name="auto_order_allocate"] option:selected').val()=='1'){
+				$('tr.'+id).addClass('selected');
+			}else{
+				$('tr.'+id).removeClass('selected');
+			}
+		});
+		$('select[name="auto_order_allocate"]').trigger('change');
+	}
 
 }(jQuery));

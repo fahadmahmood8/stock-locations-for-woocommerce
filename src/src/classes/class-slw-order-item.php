@@ -279,13 +279,15 @@ if( !class_exists('SlwOrderItem') ) {
 						}
 						
 						// Show location choosed by client in cart
-						if( !empty($this->show_in_cart) && $this->show_in_cart == 'yes' ) {
+						//if( !empty($this->show_in_cart) && $this->show_in_cart == 'yes' ) {
 							$client_item_stock_location_id = $item->get_meta('_stock_location');
-							$stock_location = SlwStockAllocationHelper::get_product_stock_location( $id, $client_item_stock_location_id );
-							if( $term->term_id == $client_item_stock_location_id ) {
-								echo '<span class="slw-client-choosed-location">✔ <strong>'.__('Client choosed: ', 'stock-locations-for-woocommerce').'</strong><u>'.$stock_location[$client_item_stock_location_id]->name.'</u></span>';
+							if($client_item_stock_location_id){
+								$stock_location = SlwStockAllocationHelper::get_product_stock_location( $id, $client_item_stock_location_id );
+								if( $term->term_id == $client_item_stock_location_id ) {
+									echo '<span class="slw-client-choosed-location">✔ <strong>'.__('Client choosed: ', 'stock-locations-for-woocommerce').'</strong><u>'.$stock_location[$client_item_stock_location_id]->name.'</u></span>';
+								}
 							}
-						}
+						//}
 
 					}
 
@@ -443,6 +445,8 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function newOrderItemAllocateStock( $item_id, $item, $order_id )
 		{
+			
+			
 			// add exception to third party plugins
 			$disallow = apply_filters( 'slw_disallow_third_party_allocate_order_item_stock', true );
 			if( is_admin() && $disallow ) {
@@ -464,12 +468,22 @@ if( !class_exists('SlwOrderItem') ) {
 			// Check if customer selected a location
 			$userLocationChoiceId = null;
 			$userStockLocation = null;
-			if( !empty($userLocationChoiceId = $item->get_meta('_stock_location')) ) {
-				if( !empty($userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId)) ) {
+
+			$userLocationChoiceId = $item->get_meta('_stock_location');
+
+			if( !empty($userLocationChoiceId) ) {
+
+				$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
+
+
+				if( !empty($userStockLocation) ) {
 					// get location meta
 					$location_meta = SlwStockAllocationHelper::getLocationMeta($userLocationChoiceId);
 					// check if location has auto allocation enabled
 					if( isset($location_meta['slw_auto_allocate']) && $location_meta['slw_auto_allocate'] == 1 ) {
+						
+						
+						
 						if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
 							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
 						} else {
@@ -484,7 +498,7 @@ if( !class_exists('SlwOrderItem') ) {
 
 			// Get product stock allocation locations if customer haven't select a location
 			if( is_null($userStockLocation) ) {
-				$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, null);
+				$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity);
 			}
 
 			// define stock allocation
@@ -510,6 +524,7 @@ if( !class_exists('SlwOrderItem') ) {
 			foreach ($stockAllocation as $allocation) {
 				$simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
 			}
+			
 			
 			// Allocate order item stock to locations
 			SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'auto' );

@@ -86,14 +86,33 @@ div.slw-settings-wrap table.form-table td a{
 }
 div.slw-settings-wrap table.form-table td a.slw-settings-video svg{
 	color:#F00;
-	font-size:36px;
+	font-size:24px;
     position: absolute;
-    top: -24px;
+    top: -14px;
 }
 div.slw-settings-wrap table.form-table td a.slw-settings-screenshot svg{
 	color:#090;
-	font-size:36px;
+	font-size:24px;
     position: absolute;
-    top: -24px;
-	left: 40px;
+    top: -14px;
+	left: 26px;
+}
+a.slw_clear_debug_log{
+	
+}
+table.location-edit tr svg,
+table.location-edit tr div.alert{
+	display:none;
+}
+table.location-edit tr.selected svg{
+	display:inline-block;
+}
+table.location-edit tr.auto_order_allocate svg{
+	color:#CE0005;
+}
+table.location-edit tr.selected div.alert {
+	display: block;
+	line-height: 25px;
+	padding: 6px 20px;
+	margin-top: 10px;
 }

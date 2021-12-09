@@ -303,7 +303,7 @@ if(!class_exists('SlwShortcodes')) {
 				$product_id = SlwWpmlHelper::object_id( $product_id );
 
 				// Get product stock allocation
-				$stockAllocation = SlwStockAllocationHelper::getStockAllocation( $product_id, $values['quantity'], null );
+				$stockAllocation = SlwStockAllocationHelper::getStockAllocation( $product_id, $values['quantity'] );
 
 				foreach ($stockAllocation as $location) {
 					if (!isset($allocatedLocations[$location->slug])) {

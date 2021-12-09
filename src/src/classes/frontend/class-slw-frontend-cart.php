@@ -35,9 +35,12 @@ if( !class_exists('SlwFrontendCart') ) {
 				add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 10, 2 );
 				add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
 				add_action( 'wp_ajax_nopriv_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
-				add_action( 'woocommerce_checkout_create_order_line_item', array($this, 'create_order_line_item_meta'), 10, 4 );
+				add_action( 'woocommerce_checkout_create_order_line_item', array($this, 'create_order_line_item_meta_with_selected_location'), 10, 4 );
+			}else{
+				add_action( 'woocommerce_checkout_create_order_line_item', array($this, 'create_order_line_item_meta_with_auto_location'), 10, 4 );
 			}
 
+		 
 			// check if different location per cart item is enabled
 			if( isset($this->plugin_settings['different_location_per_cart_item']) && $this->plugin_settings['different_location_per_cart_item'] == 'no' ) {
 				add_action( 'wp_footer', array($this, 'lock_cart_item_location') );
@@ -125,14 +128,37 @@ if( !class_exists('SlwFrontendCart') ) {
 		 *
 		 * @since 1.2.0
 		 */
-		public function create_order_line_item_meta( $item, $cart_item_key, $values, $order )
+		 
+		public function create_order_line_item_meta_with_selected_location( $item, $cart_item_key, $values, $order )
 		{
+			
 			foreach( $item as $cart_item_key => $cart_item ) {
 				if( isset( $cart_item['stock_location'] ) ) {
-					$item->add_meta_data( '_stock_location', $cart_item['stock_location'], true );
+					$item->add_meta_data( '_stock_location', $cart_item['stock_location'], true );					
 				}
 			}
 		}
+		
+		public function create_order_line_item_meta_with_auto_location( $item, $cart_item_key_this, $values, $order )
+		{
+			
+			$product_id = ($item->get_variation_id()?$item->get_variation_id():$item->get_product_id());
+			
+			$stock_locations = SlwStockAllocationHelper::getStockAllocation($product_id, $item->get_quantity());
+			
+			if(!empty($stock_locations)) {				
+				foreach($stock_locations as $stock_location){
+					
+					if($stock_location->allocated_quantity>0){
+						$item->add_meta_data( '_stock_location', $stock_location->term_id, true );		
+					}
+				}
+			}
+	
+		}
+		
+		
+		
 		
 		/**
 		 * Locks the cart item location.

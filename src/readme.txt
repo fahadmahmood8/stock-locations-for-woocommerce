@@ -93,6 +93,10 @@ On settings page you can define a number. If location stock value will be less t
 
 [youtube http://www.youtube.com/watch?v=64N7-b90r3E]
 
+= How location priority work with auto order stock allocation? =
+
+[youtube http://www.youtube.com/watch?v=9kGVJZNNxRk]
+
 == Screenshots ==
 
 1. Product list filter and stock locations column
@@ -106,14 +110,18 @@ On settings page you can define a number. If location stock value will be less t
 9. Allow customers to select location in simple products
 10. Plugin settings
 11. Show location stock quantity with a postfix e.g. 20+
+12. Edit Stock locations taxonomy
 
 
 == Changelog ==
-= 1.6.2 =
+= 1.6.3 =
 - New: A new functionality to get a pick-list of how many orders for each product have been pre-made for each location. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to msbbill115 / MySalesButler.com][08/12/2021]
 
+= 1.6.2 =
+- Fix: Stock is not automatically allocated. https://wordpress.org/support/topic/stock-is-not-automatically-allocated/ [Thanks to weertman & freshwebno][09/12/2021]
+
 = 1.6.1 =
-- New: Critical error after installation. https://wordpress.org/support/topic/critical-error-after-installation-2/ [Thanks to martinnijkamp][08/12/2021]
+- Fix: Critical error after installation. https://wordpress.org/support/topic/critical-error-after-installation-2/ [Thanks to martinnijkamp][08/12/2021]
 
 = 1.6.0 =
 - Fix: Bug on cart page - https://wordpress.org/support/topic/bug-on-cart-page/ [Thanks to designfin][08/12/2021]

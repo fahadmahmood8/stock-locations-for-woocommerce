@@ -43,7 +43,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.6.1';
+		public           $version  = '1.6.2';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -128,7 +128,8 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			
+			global $current_screen;
+			//pree($current_screen);
 					
 			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'css/admin-style.css', array(), time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );			
@@ -145,7 +146,11 @@ if(!class_exists('SlwMain')) {
 			);
 			wp_enqueue_script( 'slw-admin-scripts' );
 				
-			if(isset($_GET['page']) && $_GET['page']=='slw-settings'){
+			if(
+					(isset($_GET['page']) && $_GET['page']=='slw-settings')
+				||
+					(isset($_GET['taxonomy']) && $_GET['taxonomy']=='location')
+			){
 				wp_enqueue_style( 'slw-bootstrap-styles', SLW_PLUGIN_DIR_URL . 'css/bootstrap.min.css', array(), date('m') );
 				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('m') );
 				

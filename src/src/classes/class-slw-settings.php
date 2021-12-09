@@ -63,6 +63,7 @@ if(!class_exists('SlwSettings')) {
 			return apply_filters( 'slw_settings_tabs', array(
 				'default'	=> array('label'=>__( 'Settings', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-cogs"></i>'),
 				'stock-locations'	=> array('label'=>__( 'Stock Locations', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-sitemap"></i>'),
+				'widgets'	=> array('label'=>__( 'Widgets', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-puzzle-piece"></i>'),
 				'logger'	=> array('label'=>__( 'Logs', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-route"></i>'),
 				'help'	=> array('label'=>__( 'Help', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-question-circle"></i>'),
 			) );
@@ -505,9 +506,10 @@ if(!class_exists('SlwSettings')) {
 			
 ?> 
 		<input type="text" name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>" value="<?php echo array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:''; ?>" placeholder="<?php echo $args['placeholder']; ?>" /> 
-        
+        <?php if(!empty($args)): ?>
         <?php if($args['video']): ?><a title="<?php echo __( 'Click here to watch video tutorial', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-video" href="<?php echo $args['video']; ?>" target="_blank"><i class="fab fa-youtube"></i></a><?php endif; ?>
         <?php if($args['screenshot']): ?><a title="<?php echo __( 'Click here to preview illustration/screenshot', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-screenshot" href="<?php echo $args['screenshot']; ?>" target="_blank"><i class="fas fa-image"></i></a><?php endif; ?>
+        <?php endif; ?>
 <?php
 		}
 	}

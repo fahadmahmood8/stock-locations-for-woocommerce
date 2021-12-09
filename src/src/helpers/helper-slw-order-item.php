@@ -144,6 +144,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			   return false;
 			}
 
+			
 			return true;
 		}
 

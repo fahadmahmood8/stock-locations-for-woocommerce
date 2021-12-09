@@ -29,8 +29,21 @@ function slw_notices($data, $echo = false){
 
   }
 }
-if(!function_exists('slw_logger')){
-	function slw_logger($type='debug', $data=array()){
+if(!function_exists('wc_slw_logger')){
+	function wc_slw_logger($type='debug', $data=array()){
+		
+		$types = array('debug');
+		
+		if(is_array($type) || is_object($type)){
+			$data = (array)$type;
+			$type = 'debug';
+		}else{
+			if(!array_key_exists($type, $types) && empty($data)){
+				$data = $type;
+				$type = 'debug';
+			}
+		}
+		
 		$slw_logger = array();
 		
 		$debug_backtrace = debug_backtrace();
@@ -47,7 +60,12 @@ if(!function_exists('slw_logger')){
 				$slw_logger = is_array($slw_logger)?$slw_logger:array();
 				
 				if($data){//get_option('wc_os_debug_log') &&
-					$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+					if(is_array($data)){
+						$slw_logger[] = $data;
+						$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+					}else{				
+						$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+					}
 					update_option('slw_logger', $slw_logger);
 				}
 			break;
