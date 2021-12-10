@@ -216,6 +216,24 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin',
 				'slw_setting_setting_section'
 			);
+			
+			add_settings_field(
+				'wc_restore_stock_on_cancelled',
+				__('<i class="fas fa-undo-alt"></i> Restore location stock value for <i>cancelled</i> order status <small>(Optional)</small>', 'stock-locations-for-woocommerce'),
+				array( $this, 'wc_restore_stock_on_cancelled_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'wc_restore_stock_cancelled')
+			);
+			
+			add_settings_field(
+				'wc_restore_stock_on_pending',
+				__('<i class="fas fa-undo-alt"></i> Restore location stock value for <i>pending</i> order status <small>(Optional)</small>', 'stock-locations-for-woocommerce'),
+				array( $this, 'wc_restore_stock_on_pending_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'wc_restore_stock_pending')
+			);
 		}
 		
 		/**
@@ -264,6 +282,12 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['wc_new_order_location_copy'] ) ) {
 				$sanitary_values['wc_new_order_location_copy'] = $input['wc_new_order_location_copy'];
+			}
+			if ( isset( $input['wc_restore_stock_on_cancelled'] ) ) {
+				$sanitary_values['wc_restore_stock_on_cancelled'] = $input['wc_restore_stock_on_cancelled'];
+			}
+			if ( isset( $input['wc_restore_stock_on_pending'] ) ) {
+				$sanitary_values['wc_restore_stock_on_pending'] = $input['wc_restore_stock_on_pending'];
 			}
 	
 			return $sanitary_values;
@@ -439,6 +463,17 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->checkbox_callback('wc_new_order_location_copy');
 		}
+		
+		public function wc_restore_stock_on_cancelled_callback()
+		{
+			$this->checkbox_callback('wc_restore_stock_on_cancelled');
+		}
+		public function wc_restore_stock_on_pending_callback()
+		{
+			$this->checkbox_callback('wc_restore_stock_on_pending');
+		}				
+		
+		
 
 		/**
 		 * Select yes/no callback.

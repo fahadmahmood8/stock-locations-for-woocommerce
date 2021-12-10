@@ -63,10 +63,11 @@ if( !class_exists('SlwOrderItem') ) {
 			if( isset($this->plugin_settings['wc_new_order_location_copy']) ) {
 				add_filter( 'woocommerce_email_headers', array($this, 'wc_new_order_email_copy_to_locations_email'), 10, 3);
 			}
-			
-			
 
-			if( $this->wc_manage_stock === 'yes' && false) {
+			
+			//pree($this->plugin_settings);exit;
+			//pree($this->wc_manage_stock);exit;
+			if( $this->wc_manage_stock === 'yes') {
 				add_action( 'woocommerce_reduce_order_stock', array( $this, 'reduce_order_items_locations_stock' ), 10, 1 );
 				add_action( 'woocommerce_restore_order_stock', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
 			} else {
@@ -76,7 +77,14 @@ if( !class_exists('SlwOrderItem') ) {
 				add_action( 'woocommerce_order_status_processing', array( $this, 'reduce_order_items_locations_stock' ), 10, 1 );
 				add_action( 'woocommerce_order_status_on-hold', array( $this, 'reduce_order_items_locations_stock' ), 10, 1 );
 				// on maybe restore stock levels
+				//add_action( 'woocommerce_order_status_cancelled', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
+				//add_action( 'woocommerce_order_status_pending', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
+			}
+			
+			if( isset($this->plugin_settings['wc_restore_stock_on_cancelled']) ) {
 				add_action( 'woocommerce_order_status_cancelled', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
+			}
+			if( isset($this->plugin_settings['wc_restore_stock_on_pending']) ) {
 				add_action( 'woocommerce_order_status_pending', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
 			}
 		}
@@ -598,10 +606,14 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function restore_order_items_locations_stock( $order )
 		{
+			//wc_slw_logger('$order: '.(is_object($order)?$order->get_order_number():'NULL'));
 			if( empty($order) || ! is_object($order) ) return;
 
 			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_order_stock_reduced', true );
+			//wc_slw_logger('$wc_order_stock_reduced: '.$wc_order_stock_reduced);
 			if( ! $wc_order_stock_reduced ) return;
+			
+			//wc_slw_logger('get_items: '.count($order->get_items( 'line_item' )));
 
 			foreach( $order->get_items( 'line_item' ) as $item_id => $item ) {
 				$product_id = $item['variation_id'] != 0 ? $item['variation_id'] : $item['product_id'];

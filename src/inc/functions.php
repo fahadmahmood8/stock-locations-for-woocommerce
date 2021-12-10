@@ -59,15 +59,19 @@ if(!function_exists('wc_slw_logger')){
 				
 				$slw_logger = is_array($slw_logger)?$slw_logger:array();
 				
-				if($data){//get_option('wc_os_debug_log') &&
-					if(is_array($data)){
-						$slw_logger[] = $data;
-						$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
-					}else{				
-						$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
-					}
+				
+				if(is_array($data) && !empty($data)){
+					$slw_logger[] = $data;
+					$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
 					update_option('slw_logger', $slw_logger);
+				}else{				
+					$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+					if($data){
+						update_option('slw_logger', $slw_logger);
+					}
 				}
+				
+				
 			break;
 		}
 		

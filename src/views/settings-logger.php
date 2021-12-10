@@ -10,20 +10,11 @@ use SLW\SRC\Helpers\SlwProductHelper;
 <div class="slw_logger mt-4">
         <?php
 		
-		if(array_key_exists('order_id', $_GET)){
-			$order = wc_get_order($_GET['order_id']);
-			if(!empty($order)){
-				foreach($order->get_items() as $key=>$data){
-					pree($data->get_product_id().' / '.$data->get_variation_id().' / '.$data->get_quantity());
-					pree(wc_get_order_item_meta($key, ''));
-				}
-			}
-		}
-		if(array_key_exists('product_id', $_GET)){
-			//$productStockLocations = SlwStockAllocationHelper::sortLocationsByPriority(SlwStockAllocationHelper::getProductStockLocations($_GET['product_id']));
-			//pree($productStockLocations);
-			$stockAllocation = SlwStockAllocationHelper::getStockAllocation($_GET['product_id'], 3);
-			pree($stockAllocation);
+		if(function_exists('wc_slw_logger_extended')){
+			$obj = new SlwOrderItem;
+			wc_slw_logger_extended($obj);
+		}else{
+			//pree('NO EXTENSION');
 		}
 		
 		$slw_logger = wc_slw_logger('debug');

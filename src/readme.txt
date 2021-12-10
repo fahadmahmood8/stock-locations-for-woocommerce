@@ -114,8 +114,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
-= 1.6.3 =
+= 1.6.4 =
 - New: A new functionality to get a pick-list of how many orders for each product have been pre-made for each location. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to msbbill115 / MySalesButler.com][08/12/2021]
+
+= 1.6.3 =
+- New: Settings page updated with two more options, restore stock for cancelled and pending order statuses. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to Phannaline Khemdy][11/12/2021]
 
 = 1.6.2 =
 - Fix: Stock is not automatically allocated. https://wordpress.org/support/topic/stock-is-not-automatically-allocated/ [Thanks to weertman & freshwebno][09/12/2021]

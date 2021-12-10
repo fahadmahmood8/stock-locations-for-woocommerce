@@ -31,11 +31,12 @@ $wc_slw_data = get_plugin_data(__FILE__);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
 $wc_slw_premium_copy = 'https://shop.androidbubbles.com/product/stock-locations-for-woocommerce/';
 
-$wc_slw_pro = file_exists(realpath(SLW_PLUGIN_DIR . '/pro/functions.php'));
-require_once(realpath(SLW_PLUGIN_DIR . '/inc/functions.php'));
-if($wc_slw_pro){
-	include_once(realpath(SLW_PLUGIN_DIR . '/pro/functions.php'));
+$wc_slw_pro_file = realpath(SLW_PLUGIN_DIR . '/pro/functions.php');
+$wc_slw_pro = file_exists($wc_slw_pro_file);
+if($wc_slw_pro){	
+	include_once($wc_slw_pro_file);
 }
+require_once(realpath(SLW_PLUGIN_DIR . '/inc/functions.php'));
 
 
 if(!class_exists('SlwMain')) {
@@ -43,7 +44,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.6.2';
+		public           $version  = '1.6.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others

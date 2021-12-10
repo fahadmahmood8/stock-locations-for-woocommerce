@@ -72,7 +72,7 @@ div.slw-settings-wrap h1 > svg{
 	color:#4200FF;
 }
 div.slw-settings-wrap table.form-table th {
-	width: 400px;
+	width: 460px;
 }
 div.slw-settings-wrap table.form-table td{
 	position:relative;
@@ -115,4 +115,20 @@ table.location-edit tr.selected div.alert {
 	line-height: 25px;
 	padding: 6px 20px;
 	margin-top: 10px;
+}
+.wc_restore_stock_cancelled {
+	border-top: 30px solid #4200FF12;
+}
+tr.wc_restore_stock_pending{
+	border-bottom: 30px solid #4200FF12;
+}
+div.slw-settings-wrap table.form-table th small{
+	color:#4200FFED;
+	font-size:12px;
+}
+div.slw-settings-wrap table.form-table th svg{
+	color:#4200FFED;
+}
+div.slw-settings-wrap table.form-table th i{
+	color:#e86060;;
 }
