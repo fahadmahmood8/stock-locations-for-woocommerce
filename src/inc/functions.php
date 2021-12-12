@@ -44,6 +44,8 @@ if(!function_exists('wc_slw_logger')){
 			}
 		}
 		
+		if(empty($data)){ return; }
+		
 		$slw_logger = array();
 		
 		$debug_backtrace = debug_backtrace();
