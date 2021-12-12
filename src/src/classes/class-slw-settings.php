@@ -225,7 +225,14 @@ if(!class_exists('SlwSettings')) {
 				'slw_setting_setting_section',
 				array('class'=>'wc_restore_stock_cancelled')
 			);
-			
+			add_settings_field(
+				'wc_restore_stock_on_failed',
+				__('<i class="fas fa-undo-alt"></i> Restore location stock value for <i>failed</i> order status <small>(Optional)</small>', 'stock-locations-for-woocommerce'),
+				array( $this, 'wc_restore_stock_on_failed_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'wc_restore_stock_on_failed')
+			);
 			add_settings_field(
 				'wc_restore_stock_on_pending',
 				__('<i class="fas fa-undo-alt"></i> Restore location stock value for <i>pending</i> order status <small>(Optional)</small>', 'stock-locations-for-woocommerce'),
@@ -285,6 +292,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['wc_restore_stock_on_cancelled'] ) ) {
 				$sanitary_values['wc_restore_stock_on_cancelled'] = $input['wc_restore_stock_on_cancelled'];
+			}
+			if ( isset( $input['wc_restore_stock_on_failed'] ) ) {
+				$sanitary_values['wc_restore_stock_on_failed'] = $input['wc_restore_stock_on_failed'];
 			}
 			if ( isset( $input['wc_restore_stock_on_pending'] ) ) {
 				$sanitary_values['wc_restore_stock_on_pending'] = $input['wc_restore_stock_on_pending'];
@@ -448,8 +458,7 @@ if(!class_exists('SlwSettings')) {
 		public function location_email_notifications_callback()
 		{
 			$this->checkbox_callback('location_email_notifications');
-			?>
-			<p><?= __('Auto order allocation must be enabled in the location.', 'stock-locations-for-woocommerce'); ?></p>
+			?><?= __('Auto order allocation must be enabled in the location.', 'stock-locations-for-woocommerce'); ?>
 			<?php
 		}
 
@@ -468,6 +477,11 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->checkbox_callback('wc_restore_stock_on_cancelled');
 		}
+		public function wc_restore_stock_on_failed_callback()
+		{
+			$this->checkbox_callback('wc_restore_stock_on_failed');
+		}
+		
 		public function wc_restore_stock_on_pending_callback()
 		{
 			$this->checkbox_callback('wc_restore_stock_on_pending');

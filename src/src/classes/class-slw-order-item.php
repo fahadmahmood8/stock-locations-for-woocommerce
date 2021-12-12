@@ -84,6 +84,10 @@ if( !class_exists('SlwOrderItem') ) {
 			if( isset($this->plugin_settings['wc_restore_stock_on_cancelled']) ) {
 				add_action( 'woocommerce_order_status_cancelled', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
 			}
+			if( isset($this->plugin_settings['wc_restore_stock_on_failed']) ) {
+				
+				add_action( 'woocommerce_order_status_changed', array( $this, 'restore_order_items_locations_stock_for_failed' ), 10, 2 );
+			}
 			if( isset($this->plugin_settings['wc_restore_stock_on_pending']) ) {
 				add_action( 'woocommerce_order_status_pending', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
 			}
@@ -604,9 +608,27 @@ if( !class_exists('SlwOrderItem') ) {
 		 * @since 1.3.3
 		 * @return void
 		 */
+		 
+		public function restore_order_items_locations_stock_for_failed($order, $status){
+			
+			if(is_numeric($order)){
+				$order = wc_get_order($order);
+			}
+			//wc_slw_logger($order->get_order_number().' / '.$order->get_status().' / '.$status);
+			
+			if( empty($order) || ! is_object($order) ) return;
+			
+			if($order->get_status()=='failed'){			
+				$this->restore_order_items_locations_stock( $order );
+			}
+			
+			
+		}
 		public function restore_order_items_locations_stock( $order )
 		{
 			//wc_slw_logger('$order: '.(is_object($order)?$order->get_order_number():'NULL'));
+			//wc_slw_logger('INSIDE wc_restore_stock_on_failed');
+			
 			if( empty($order) || ! is_object($order) ) return;
 
 			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_order_stock_reduced', true );

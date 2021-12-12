@@ -66,7 +66,7 @@ if(!function_exists('wc_slw_logger')){
 					update_option('slw_logger', $slw_logger);
 				}else{				
 					$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
-					if($data){
+					if(trim($data)){
 						update_option('slw_logger', $slw_logger);
 					}
 				}
