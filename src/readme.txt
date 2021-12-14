@@ -114,8 +114,12 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
-= 1.6.7 =
+= 1.6.8 =
 - New: A new functionality to get a pick-list of how many orders for each product have been pre-made for each location. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to msbbill115 / MySalesButler.com][08/12/2021]
+
+= 1.6.7 =
+- Fix: Variable product locations are empty, stock was not appearing as it was dependent on location selection. https://wordpress.org/support/topic/availability-not-displaying-after-upgrade-to-1-6-6/ [Thanks to Donny Tejeda][14/12/2021]
+- Fix: Product and Varitons stock values should be editable if locations are not yet selected. [14/12/2021]
 
 = 1.6.6 =
 - New: Settings page option for restore stock for failed order status tested with the user on Google meeting. [Thanks to Jere][12/12/2021]

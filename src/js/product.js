@@ -15,7 +15,10 @@
 		$('select#slw_item_stock_location_variable_product').hide();
 		$(document).on( 'found_variation', function( event ) {
 			event.preventDefault();
+			
+			if(slw_frontend.stock_locations>0)
 			$('.woocommerce-variation-availability p.stock').hide();
+			
 			let variation_id = $(".woocommerce-variation-add-to-cart").find('.variation_id').val();
 			let product_id   = $(".woocommerce-variation-add-to-cart").find('input[name="product_id"]').val();
 			$.ajax({
@@ -51,6 +54,7 @@
 						$('select[name="slw_add_to_cart_item_stock_location"]').change();
 
 					} else {
+						$('.woocommerce-variation-availability p.stock').show();
 						return;
 					}
 				},

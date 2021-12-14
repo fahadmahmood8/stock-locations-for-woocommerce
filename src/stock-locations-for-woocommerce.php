@@ -44,7 +44,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.6.6';
+		public           $version  = '1.6.7';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -129,21 +129,32 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			global $current_screen;
+			global $current_screen, $post;
 			//pree($current_screen);
 					
 			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'css/admin-style.css', array(), time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );			
 			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
 			
+			
+			$data = array(
+				'slug'    => SLW_PLUGIN_SLUG,
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'slw_nonce' ),
+				'stock_locations' => false
+			);
+			
+			if(is_object($post) && $post->post_type=='product'){
+				
+				$terms = get_the_terms( $post->ID, 'location' );
+				if(!empty($terms)){
+					$data['stock_locations'] = true;
+				}
+			}
 			wp_localize_script(
 				'slw-admin-scripts',
 				'slw_admin_scripts',
-				array(
-					'slug'    => SLW_PLUGIN_SLUG,
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( 'slw_nonce' ),
-				)
+				$data
 			);
 			wp_enqueue_script( 'slw-admin-scripts' );
 				
@@ -168,6 +179,7 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_frontend()
 		{
+			global $post, $wpdb;
 			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
@@ -177,6 +189,7 @@ if(!class_exists('SlwMain')) {
 			$data['is_cart'] = is_cart();
 			$data['is_checkout'] = is_checkout();
 			$data['is_product'] = is_product();
+			$data['stock_locations'] = 0;
 			
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
@@ -194,7 +207,15 @@ if(!class_exists('SlwMain')) {
 					$data
 				);
 			}
-			if( isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
+			if($data['is_product'] && (is_object($post) && $post->post_type=='product') && isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
+				
+				$product_id = $post->ID;
+				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($product_id).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
+				//pree(get_post_meta($product_id));
+				if(!empty($meta_obj) && $meta_obj->total_locations>0){
+					$data['stock_locations'] = $meta_obj->total_locations;
+				}
+				//pree($data);
 				wp_register_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), time(), true );
 				wp_localize_script(
 					'slw-frontend-product-scripts',

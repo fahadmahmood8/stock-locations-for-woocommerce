@@ -24,7 +24,7 @@ use SLW\SRC\Helpers\SlwProductHelper;
             ?>
             
        
-            <div style="float: right"><a class="btn btn-sm btn-danger slw_clear_debug_log"><?php _e('Clear Debug Log', 'woo-order-splitter'); ?> <i class="fas fa-trash"></i></a> </div>
+            <div style="float: right"><a class="btn btn-sm btn-danger slw_clear_debug_log"><?php _e('Clear Debug Log', 'stock-locations-for-woocommerce'); ?> <i class="fas fa-trash"></i></a> </div>
        
                     
             <ul class="slw_debug_log">

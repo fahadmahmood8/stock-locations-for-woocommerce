@@ -19,13 +19,15 @@
 	function slwDisableVariableStockInput()
 	{
 		$('#woocommerce-product-data').on('woocommerce_variations_loaded', function(event) {
-			$('input.variable_manage_stock').each(function(){
-				if( $(this).prop( "checked" ) === true ) {
-					for(i=0; i < $('input.variable_manage_stock').length; i++) {
-						$('input#variable_stock' + i).prop( "disabled", true );
+			if(slw_admin_scripts.stock_locations==true){
+				$('input.variable_manage_stock').each(function(){
+					if( $(this).prop( "checked" ) === true ) {
+						for(i=0; i < $('input.variable_manage_stock').length; i++) {
+							$('input#variable_stock' + i).prop( "disabled", true );
+						}
 					}
-				}
-			});
+				});
+			}
 		});
 	}
 
@@ -39,7 +41,9 @@
 
 		if(wcManageStock !== null) {
 			if(wcManageStock.is(':checked') === true) { // If stock management is active
-				wcStock.prop( "disabled", true );
+				if(slw_admin_scripts.stock_locations==true){
+					wcStock.prop( "disabled", true );
+				}
 				pluginWrapper.show();
 				pluginNotice.hide();
 				if(pluginAlert !== null) {
@@ -48,7 +52,9 @@
 			} else {
 				wcManageStock.on('click', function () {
 					if (pluginWrapper.css("display") === 'none') {
-						wcStock.prop( "disabled", true );
+						if(slw_admin_scripts.stock_locations==true){
+							wcStock.prop( "disabled", true );
+						}
 						pluginWrapper.show();
 						pluginNotice.hide();
 						if(pluginAlert !== null) {
