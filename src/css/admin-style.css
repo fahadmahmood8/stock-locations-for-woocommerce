@@ -10,9 +10,15 @@
 #stock-locations-for-woocommerce_tab_stock_locations_notice_variations {
 	padding: 9px;
 }
-#stock-locations-for-woocommerce_tab_stock_locations_total,
+#stock-locations-for-woocommerce_tab_stock_locations_total, 
 #stock-locations-for-woocommerce_tab_stock_locations_title {
-	padding-left:11px;
+	padding-left: 12px;
+	clear: both;
+	float: left;
+	width: 100%;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_total{
+	margin:20px 0 20px 0;
 }
 #stock-locations-for-woocommerce_tab_stock_locations_alert {
 	padding-left:11px;
@@ -73,6 +79,8 @@ div.slw-settings-wrap h1 > svg{
 }
 div.slw-settings-wrap table.form-table th {
 	width: 460px;
+	display:block;
+	text-indent: 14px;
 }
 div.slw-settings-wrap table.form-table td{
 	position:relative;
@@ -116,12 +124,97 @@ table.location-edit tr.selected div.alert {
 	padding: 6px 20px;
 	margin-top: 10px;
 }
+tr.general_display_settings{
+	border-top: 30px solid #B0B0B02E;
+}
+tr.show_in_cart{
+	border-top: 30px solid #F9008C12;
+}
+tr.show_in_product_page{
+	border-top: 30px solid #00F91017;
+}
+tr.delete_unused_product_locations_meta{
+	border-top: 30px solid #F9DE0033;
+}
+tr.location_email_notifications{
+	border-top: 30px solid #00D6F933;
+}
 .wc_restore_stock_cancelled {
 	border-top: 30px solid #4200FF12;
 }
-tr.wc_restore_stock_pending{
-	border-bottom: 30px solid #4200FF12;
+div.slw-settings-wrap form table.form-table tr{
+	position:relative;
 }
+tr.general_display_settings:after,
+tr.show_in_cart:after,
+tr.show_in_product_page:after,
+tr.delete_unused_product_locations_meta:after,
+tr.location_email_notifications:after,
+tr.wc_restore_stock_cancelled:after {
+	content: "Cart Related";
+	position: absolute;
+	right: 12px;
+	top: -18px;
+	font-size: 22px;
+	font-weight: bold;
+	color: #ff00009c;
+}
+tr.general_display_settings:before,
+tr.show_in_cart:before,
+tr.show_in_product_page:before,
+tr.delete_unused_product_locations_meta:before,
+tr.location_email_notifications:before,
+tr.wc_restore_stock_cancelled:before {
+	font-size: 20px;
+	position: absolute;
+	left: 12px;
+	top: -13px;
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	content: "\f07a";
+	color: #ff00009c;
+}
+tr.general_display_settings:after {
+	content: "Visibility";
+	color: #6C6C6CC4;
+}
+tr.general_display_settings:before{
+	content: "\f070";
+	color: #6C6C6CC4;
+}
+tr.show_in_product_page:after {
+	content: "Product Related";
+	color: #004D058A;
+}
+tr.show_in_product_page:before{
+	content: "\f543";
+	color: #004D058A;
+}
+tr.delete_unused_product_locations_meta:after {
+	content: "Meta Related";
+	color: #C1AD07AB;;
+}
+tr.delete_unused_product_locations_meta:before{
+	content: "\f187";
+	color: #C1AD07AB;
+}
+tr.location_email_notifications:after {
+	content: "Emails Related";
+	color: #04B2CE87;
+}
+tr.location_email_notifications:before{
+	content: "\f674";
+	color: #04B2CE87;
+}
+tr.wc_restore_stock_cancelled:after {
+	content: "Restore Stock";
+	color: #3C08D06B;
+}
+tr.wc_restore_stock_cancelled:before{
+	content: "\f2ea";
+	color: #3C08D06B;
+}
+
 div.slw-settings-wrap table.form-table th small{
 	color:#4200FFED;
 	font-size:12px;
@@ -131,4 +224,26 @@ div.slw-settings-wrap table.form-table th svg{
 }
 div.slw-settings-wrap table.form-table th i{
 	color:#e86060;;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper,
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper_variations{
+	position:relative;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper p.stock_location_qty,
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper p.stock_location_price,
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper_variations p.stock_location_qty,
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper_variations p.stock_location_price {
+	width: 40%;
+	position: relative;
+	float: left;
+	padding: 0 0 0 10% !important;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper p.stock_location_qty label, 
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper p.stock_location_price label,
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper_variations p.stock_location_qty label,
+#stock-locations-for-woocommerce_tab_stock_locations_wrapper_variations p.stock_location_price label {
+	float: left;
+	width: 100%;
+	padding: 0;
+	margin: 0 10px 0 0;
 }

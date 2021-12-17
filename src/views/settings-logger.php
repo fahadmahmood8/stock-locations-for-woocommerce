@@ -1,20 +1,25 @@
 <?php 
 namespace SLW\SRC\Classes;
+namespace SLW\SRC\Helpers;
+
 use SLW\SRC\Classes\SlwAdminNotice;
 use SLW\SRC\Helpers\SlwOrderItemHelper;
 use SLW\SRC\Helpers\SlwStockAllocationHelper;
 use SLW\SRC\Helpers\SlwWpmlHelper;
 use SLW\SRC\Helpers\SlwProductHelper;
+use SLW\SRC\Classes\SlwLocationTaxonomy;
+use SLW\SRC\Helpers\SlwMailHelper;
 ?>
 
 <div class="slw_logger mt-4">
         <?php
 		
-		if(function_exists('wc_slw_logger_extended')){
+		if(function_exists('wc_slw_logger_extended') && class_exists('SlwOrderItem')){
 			$obj = new SlwOrderItem;
 			wc_slw_logger_extended($obj);
 		}else{
 			//pree('NO EXTENSION');
+			wc_slw_logger_extended();
 		}
 		
 		$slw_logger = wc_slw_logger('debug');

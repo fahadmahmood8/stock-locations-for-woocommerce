@@ -121,6 +121,7 @@ if(!class_exists('SlwProductRest')) {
 
                         // Set locations stock level
                         update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
+						
 
                         $totalQuantity += $quantity;
                     }

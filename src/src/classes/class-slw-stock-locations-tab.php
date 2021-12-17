@@ -219,21 +219,36 @@ if(!class_exists('SlwStockLocationsTab')) {
 		private function create_stock_location_input( $id, $term )
 		{
 			$id = SlwWpmlHelper::object_id( $id );
-
+			
+			$_stock_at = get_post_meta($id, '_stock_at_' . $term->term_id, true);
+			$_stock_location_price = get_post_meta($id, '_stock_location_price_' . $term->term_id, true);
+			//pree($_stock_location_price);
 			// Create the input
 			woocommerce_wp_text_input( array(
 				'id'            => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id,
-				'label'         => $term->name,
+				'label'         => '<b>'.$term->name.'</b><br />'.__( 'Stock Qty.', 'stock-locations-for-woocommerce' ),
 				'description'   => __( 'Enter the stock amount for this location.', 'stock-locations-for-woocommerce' ),
 				'desc_tip'      => true,
 				'class'         => 'woocommerce',
 				'type'          => 'number',
 				'data_type'     => 'stock',
-				'value'         => get_post_meta($id, '_stock_at_' . $term->term_id, true),
+				'value'         => $_stock_at,
+				'wrapper_class' => 'stock_location_qty',
+			) );
+			woocommerce_wp_text_input( array(
+				'id'            => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id,
+				'label'         => '<br />'.__( 'Stock Price', 'stock-locations-for-woocommerce' ),
+				'description'   => __( 'Enter the price for the stock from this location.', 'stock-locations-for-woocommerce' ),
+				'desc_tip'      => true,
+				'class'         => 'woocommerce',
+				'type'          => 'number',
+				'data_type'     => 'decimal',
+				'value'         => $_stock_location_price,
+				'wrapper_class' => 'stock_location_price price-'.$_stock_location_price,
 			) );
 
 			// Save postmeta to variable
-			$postmeta[] = get_post_meta($id, '_stock_at_' . $term->term_id, true);
+			$postmeta[] = $_stock_at;
 
 			return $postmeta;
 
@@ -256,6 +271,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			if ( ! current_user_can( 'edit_product', $post_id ) )
 				return $post_id;
 			
+			//pree($post_id);pree($post->post_type);pree($update);exit;
 			// WPML
 			$post_id = SlwWpmlHelper::object_id( $post_id );
 
@@ -283,7 +299,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			} else{
 				$terms_total = count($product_stock_location_terms);
 			}
-
+			//pree($update);pree($terms_total);exit;
 			// On product update
 			if( $update ){
 
@@ -352,8 +368,14 @@ if(!class_exists('SlwStockLocationsTab')) {
 						SlwAdminNotice::displayError(__('An error occurred. Some field was empty.', 'stock-locations-for-woocommerce'));
 
 					} else {
-
-						$stock_location_term_input = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
+						
+						$stock_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id);
+						$price_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id);
+						
+						//pree($stock_input_id);pree($price_input_id);
+						//pree($_POST);exit;
+						$stock_location_term_input = sanitize_text_field($_POST[$stock_input_id]);
+						$stock_location_price_term_input = sanitize_slw_data($_POST[$price_input_id]);
 
 						// Get post meta
 						$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
@@ -363,9 +385,20 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 							// Update the post meta
 							update_post_meta( $id, '_stock_at_' . $term->term_id, $stock_location_term_input );
+							
 
 						}
-
+						
+						$postmeta_stock_price_at_term = get_post_meta($id, '_stock_location_price_' . $term->term_id, true);
+						
+						
+						
+						if( $stock_location_price_term_input !== $postmeta_stock_price_at_term ) {
+							
+							update_post_meta( $id, '_stock_location_price_' . $term->term_id, $stock_location_price_term_input );
+							
+						}
+						pree(get_post_meta( $id, '_stock_location_price_' . $term->term_id, true));
 						// Update stock when reach the last term
 						if($counter === $terms_total) {
 							
@@ -375,7 +408,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					}
 
 				}
-
+				
 				// Get post meta
 				$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
 

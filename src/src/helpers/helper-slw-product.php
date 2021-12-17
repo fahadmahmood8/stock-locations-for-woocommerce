@@ -78,6 +78,7 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			do_action( 'slw_product_wc_stock_status', $stock_qty, $product_id );
 		}
 
+
 		public static function get_product_locations_stock_total( $product_id )
 		{
 			if( empty( $product_id ) ) return;
@@ -96,3 +97,21 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 	}
 	
 }
+add_action( 'slw_product_wc_stock_status', function( $stock, $id ) {
+	
+	global $slw_plugin_settings;
+	$force_main_product_stock_status_to_instock = array_key_exists('force_main_product_stock_status_to_instock', $slw_plugin_settings);
+	
+	if( ! empty( $id ) && $force_main_product_stock_status_to_instock) {
+		$product = wc_get_product( $id );
+		if( empty( $product ) ) return;
+
+		$parent_id = $product->get_parent_id();
+		if( $parent_id == 0 ) {
+			$locations_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $parent_id );
+			if( $locations_stock == 0 ) {
+				update_post_meta( $parent_id, '_stock_status', 'instock' );
+			}
+		}
+	}
+}, 10, 2 );

@@ -26,13 +26,17 @@ if ( !defined( 'WPINC' ) ) {
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy;
+global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings;
+$slw_plugin_settings = get_option( 'slw_settings' );
+$slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array();
 $wc_slw_data = get_plugin_data(__FILE__);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
 $wc_slw_premium_copy = 'https://shop.androidbubbles.com/product/stock-locations-for-woocommerce/';
 
 $wc_slw_pro_file = realpath(SLW_PLUGIN_DIR . '/pro/functions.php');
 $wc_slw_pro = file_exists($wc_slw_pro_file);
+
+
 if($wc_slw_pro){	
 	include_once($wc_slw_pro_file);
 }
@@ -44,7 +48,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.6.7';
+		public           $version  = '1.6.8';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -190,6 +194,8 @@ if(!class_exists('SlwMain')) {
 			$data['is_checkout'] = is_checkout();
 			$data['is_product'] = is_product();
 			$data['stock_locations'] = 0;
+			$data['stock_quantity'] = 0;
+			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
 			
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
@@ -211,9 +217,12 @@ if(!class_exists('SlwMain')) {
 				
 				$product_id = $post->ID;
 				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($product_id).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
-				//pree(get_post_meta($product_id));
-				if(!empty($meta_obj) && $meta_obj->total_locations>0){
-					$data['stock_locations'] = $meta_obj->total_locations;
+				$wc_product = wc_get_product($product_id);
+				$data['stock_quantity'] = $wc_product->get_stock_quantity();
+				if(!empty($meta_obj)){
+					if($meta_obj->total_locations>0){
+						$data['stock_locations'] = $meta_obj->total_locations;
+					}
 				}
 				//pree($data);
 				wp_register_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), time(), true );

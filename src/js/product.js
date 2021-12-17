@@ -67,13 +67,33 @@
 	
 	$('select[name="slw_add_to_cart_item_stock_location"]').on('change', function(){
 		var obj = $('div.woocommerce p.stock');
+
 		if(obj.length>0){
-			var qty = $('select[name="slw_add_to_cart_item_stock_location"] option:selected').data('quantity');
-			var str = obj.html();
-			var arr = str.split(' ');
-			str = str.replace(arr[0], qty);
-			obj.html(str).show();
+			var qty_obj = $('select[name="slw_add_to_cart_item_stock_location"] option:selected');
+			
+			if(obj.length>0){	
+				var qty = qty_obj.data('quantity');
+				var str = obj.html();
+				
+				if(typeof qty!='undefined'){					
+					var arr = str.split(' ');
+					str = str.replace(arr[0], qty);					
+					obj.html(str).show();
+				}else{				
+					if(slw_frontend.stock_quantity==0){		
+						str = slw_frontend.out_of_stock;		
+						obj.html(str).removeClass('in-stock').addClass('out-of-stock').show();
+					}					
+				}
+				
+			}else{
+				
+			}
 		}
 	});
+	
+	if($('select[name="slw_add_to_cart_item_stock_location"]').length>0){
+		$('select[name="slw_add_to_cart_item_stock_location"]').change();
+	}
 
 }(jQuery));

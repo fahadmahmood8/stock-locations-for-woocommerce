@@ -175,10 +175,12 @@ if(!class_exists('SlwProductListing')) {
 			if( !empty($locations) ) {
 				foreach($locations as $location) {
 					// If out of stock
-					if( get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) <= 0 ) {
-						echo '<span style="margin-left: 10px;"><mark class="outofstock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')</span><br>';
+					$location_qty = get_post_meta( $product_id, '_stock_at_' . $location->term_id, true );
+					//pree($location_qty);exit;
+					if( $location_qty <= 0 ) {
+						echo '<span style="margin-left: 10px;"><mark class="outofstock">' . $location->name . '</mark> (' . $location_qty . ')</span><br>';
 					} else { // If in stock
-						echo '<span style="margin-left: 10px;"><mark class="instock">' . $location->name . '</mark> (' . get_post_meta( $product_id, '_stock_at_' . $location->term_id, true ) . ')</span><br>';
+						echo '<span style="margin-left: 10px;"><mark class="instock">' . $location->name . '</mark> (' . $location_qty . ')</span><br>';
 					}
 				}
 			}

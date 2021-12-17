@@ -179,10 +179,10 @@ if(!class_exists('SlwLocationTaxonomy')) {
 		 */
 		public function formSave( $term_id ) {
 			if ($_POST && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate_priority'])) {
-				update_term_meta($term_id, 'slw_default_location', $_POST['default_location']);
-				update_term_meta($term_id, 'slw_backorder_location', $_POST['primary_location']);
-				update_term_meta($term_id, 'slw_auto_allocate', $_POST['auto_order_allocate']);
-				update_term_meta($term_id, 'slw_location_priority', $_POST['auto_order_allocate_priority']);
+				update_term_meta($term_id, 'slw_default_location', sanitize_text_field($_POST['default_location']));
+				update_term_meta($term_id, 'slw_backorder_location', sanitize_text_field($_POST['primary_location']));
+				update_term_meta($term_id, 'slw_auto_allocate', sanitize_text_field($_POST['auto_order_allocate']));
+				update_term_meta($term_id, 'slw_location_priority', sanitize_text_field($_POST['auto_order_allocate_priority']));
 				if( isset($_POST['location_email']) ) {
 					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
 				}

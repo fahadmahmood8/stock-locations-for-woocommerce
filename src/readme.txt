@@ -114,8 +114,14 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
-= 1.6.8 =
+= 1.6.9 =
 - New: A new functionality to get a pick-list of how many orders for each product have been pre-made for each location. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to msbbill115 / MySalesButler.com][08/12/2021]
+
+= 1.6.8 =
+- Fix: Out of stock status not being displayed, showing 0 availabilty instead. https://wordpress.org/support/topic/out-of-stock-status-not-being-displayed-showing-0-availabilty-instead/ [Thanks to Donny Tejeda][15/12/2021]
+- New: Visibility section for stock location under cart items with checkbox options. [Thanks to Phannaline Khemdy][16/12/2021]
+- Fix: Show location selection in cart will not effect the user selected items. [17/12/2021]
+- New: Price for different warehouse on same product? https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/110 [Thanks to IHEnan99, Puigdemunt & oppssssss][17/12/2021]
 
 = 1.6.7 =
 - Fix: Variable product locations are empty, stock was not appearing as it was dependent on location selection. https://wordpress.org/support/topic/availability-not-displaying-after-upgrade-to-1-6-6/ [Thanks to Donny Tejeda][14/12/2021]

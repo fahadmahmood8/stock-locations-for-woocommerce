@@ -171,7 +171,7 @@ if(!class_exists('SlwShortcodes')) {
 						}
 					} elseif( $values['show_qty'] == 'no' && $values['show_stock_status'] == 'yes' ) {
 						$location_stock = $product->get_meta('_stock_at_'.$location->term_id);
-						if( !empty($location_stock) && $location_stock > 0 ) {
+						if( !empty($location_stock) && $location_stock >= 1 ) {
 							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__instock">'.__('In stock', 'stock-locations-for-woocommerce').'</span></li>';
 						} else {
 							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__outofstock">'.__('Out of stock', 'stock-locations-for-woocommerce').'</span></li>';

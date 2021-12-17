@@ -29,6 +29,26 @@ function slw_notices($data, $echo = false){
 
   }
 }
+if(!function_exists('sanitize_slw_data')){
+	function sanitize_slw_data( $input ) {
+		if(is_array($input)){		
+			$new_input = array();	
+			foreach ( $input as $key => $val ) {
+				$new_input[ $key ] = (is_array($val)?sanitize_slw_data($val):sanitize_text_field( $val ));
+			}			
+		}else{
+			$new_input = sanitize_text_field($input);			
+			if(stripos($new_input, '@') && is_email($new_input)){
+				$new_input = sanitize_email($new_input);
+			}
+			if(stripos($new_input, 'http') || wp_http_validate_url($new_input)){
+				$new_input = sanitize_url($new_input);
+			}			
+		}	
+		return $new_input;
+	}	
+}
+		
 if(!function_exists('wc_slw_logger')){
 	function wc_slw_logger($type='debug', $data=array()){
 		
@@ -43,10 +63,14 @@ if(!function_exists('wc_slw_logger')){
 				$type = 'debug';
 			}
 		}
+
+		$slw_logger = get_option('slw_logger');
 		
-		if(empty($data)){ return; }
+		$slw_logger = is_array($slw_logger)?$slw_logger:array();		
 		
-		$slw_logger = array();
+		if(empty($data) || $type==$data){ return $slw_logger; }
+		
+		
 		
 		$debug_backtrace = debug_backtrace();
 		$function = $debug_backtrace[1]['function'];
@@ -57,9 +81,7 @@ if(!function_exists('wc_slw_logger')){
 		
 		switch($type){
 			case 'debug':
-				$slw_logger = get_option('slw_logger');
-				
-				$slw_logger = is_array($slw_logger)?$slw_logger:array();
+
 				
 				
 				if(is_array($data) && !empty($data)){
@@ -129,3 +151,40 @@ if(!function_exists('slw_quantity_format')){
 		return $data;
 	}
 }
+if(!function_exists('wc_slw_admin_init')){
+	function wc_slw_admin_init($data){
+		//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
+
+		
+		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
+			
+			$order = get_post(sanitize_slw_data($_GET['post']));
+			if(is_object($order) && $order->post_type=='shop_order'){
+				
+				if(isset($_GET['get_keys'])){
+					pree(get_post_meta($order->ID));
+				}
+				if(isset($_GET['get_items'])){
+					$order_obj = wc_get_order($order->ID);
+					foreach($order_obj->get_items() as $item_key=>$item_data){
+						pree($item_key);
+						pree($item_data);
+					}
+				}
+				
+				if(isset($_GET['get_items_meta'])){
+					$order_obj = wc_get_order($order->ID);
+					foreach($order_obj->get_items() as $item_key=>$item_data){
+						pree($item_key);
+						pree(wc_get_order_item_meta($item_key, ''));
+					}
+					
+				}
+				exit;
+				
+			}
+		}
+		
+	}
+}
+add_action('admin_init', 'wc_slw_admin_init');

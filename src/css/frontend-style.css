@@ -5,6 +5,9 @@
 	font-weight: bold;
 	display: block;
 }
+.slw_cart_item_stock_location_label span{
+	font-weight:normal;
+}
 .slw_item_stock_location {
 	font-size: 14px;
 	line-height: 2;

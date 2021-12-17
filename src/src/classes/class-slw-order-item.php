@@ -49,11 +49,11 @@ if( !class_exists('SlwOrderItem') ) {
 				$this->show_in_cart = $this->plugin_settings['show_in_cart'];
 			}
 
-			// check if we can include location data in formatted item meta
-			if( isset($this->plugin_settings['include_location_data_in_formatted_item_meta']) && $this->plugin_settings['include_location_data_in_formatted_item_meta'] == 'yes' ) {
-				add_filter( 'woocommerce_order_item_get_formatted_meta_data', array($this, 'include_location_data_in_formatted_item_meta'), 10, 2 );
-			}
-
+			// check if we can include location data in formatted item meta			
+			
+			add_filter( 'woocommerce_order_item_get_formatted_meta_data', array($this, 'include_location_data_in_formatted_item_meta'), 99, 2 );
+			
+			
 			// WC manage stock
 			$this->wc_manage_stock = get_option( 'woocommerce_manage_stock' );
 			// WC hold stock minutes
@@ -324,8 +324,9 @@ if( !class_exists('SlwOrderItem') ) {
 		 * @return void
 		 * @since 1.0.0
 		 */
-		public function reduce_order_items_locations_stock( $order )
-		{
+		public function reduce_order_items_locations_stock( $order ){ 
+			
+			
 			global $current_screen;
 			$is_shop_order = (is_object($current_screen) && isset($current_screen->post_type) && $current_screen->post_type=='shop_order');
 			
@@ -551,22 +552,97 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function include_location_data_in_formatted_item_meta( $formatted_meta, $item )
 		{
-			if( !empty($item) ) {
-				if( !empty($item_location_data = $item->get_meta('_slw_data')) ) {
+			//pree($formatted_meta);
+			$order_id = $item->get_order_id();
+			$_slw_ts = get_post_meta($order_id, '_slw_ts', true);
+			$receipt_in_progress = get_post_meta($order_id, '_slw_ep', true);
+			
+			$ts = date('His');
+			if(!$_slw_ts){			
+				update_post_meta($order_id, '_slw_ts', $ts);
+			}
+			if($_slw_ts && $_slw_ts!=$ts && !$receipt_in_progress){
+				$receipt_in_progress = true;
+				update_post_meta($order_id, '_slw_ep', $receipt_in_progress);
+			}
+			
+			
+			$proceed = ( isset($this->plugin_settings['include_location_data_in_formatted_item_meta']) && $this->plugin_settings['include_location_data_in_formatted_item_meta'] == 'yes' );
+			
+			$proceed = (
+					
+					($receipt_in_progress && is_checkout() && isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['order_received_page']) && $this->plugin_settings['general_display_settings']['order_received_page'] == 'on' )
+				
+				||
+				
+					(!$receipt_in_progress && isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['order_email']) && $this->plugin_settings['general_display_settings']['order_email'] == 'on' )
+					
+					
+			
+			);
+			
+			//wc_slw_logger(($receipt_in_progress?'EMAIL':'ORDER').' / '.date('H:i:s A').' / '.($proceed?'GREEN':'RED').' / '.($_slw_ts.' != '.$ts.' / ').is_object($item).' / '.is_array($item));
+			
+			
+			//TESTED FOR THE FOLLOWING PAGE
+			//RECEIVED ORDER PAGE
+			//ORDER EMAIL
+				
+			if( !empty($item) && $proceed) {
+				
+				$item_location_data = (is_object($item)?$item->get_meta('_slw_data'):array());
+				//pree($item_location_data);
+				if( !empty($item_location_data) ) {
+					//pree($item_location_data);
+					
 					foreach( $item_location_data as $location_id => $data ) {
 						$value = $data['location_name'].' (-'.$data['quantity_subtracted'].')';
 						$formatted_meta[] = (object) array(
 							'key' 			=> 'stock_location_' . $location_id,
-							'display_key'	=> __('Stock location', 'stock-locations-for-woocommerce'),
+							'display_key'	=> __('Location', 'stock-locations-for-woocommerce'),
 							'value'			=> $value,
 							'display_value'	=> '<p>'.$value.'</p>'
 						);
 					}
+					//wc_slw_logger('$item_location_data: '.count($item_location_data).' / '.$value);
+				}else{
+					//pree($item);
+					$location_id = (is_object($item)?$item->get_meta('_stock_location'):0);
+					//wc_slw_logger($location_id);
+					
+					if(is_numeric($location_id) && $location_id>0){
+						
+						$product_id = ($item->get_variation_id()?$item->get_variation_id():$item->get_product_id());
+						$stock_location = SlwStockAllocationHelper::getProductStockLocations( $product_id, true, $location_id );
+						
+						$value = '';
+						
+						if(is_object($stock_location) && property_exists($stock_location, 'name')){
+	
+							$value = $stock_location->name;
+							
+						}
+						//wc_slw_logger('$stock_location: '.count($stock_location).' / '.$value);
+						if($value){
+							$formatted_meta[] = (object) array(
+								'key' 			=> 'stock_location_' . $location_id,
+								'display_key'	=> __('Location', 'stock-locations-for-woocommerce'),
+								'value'			=> $value,
+								'display_value'	=> '<p>'.$value.'</p>'
+							);
+							
+							
+						}
+							
+						
+					}
+					
 				}
 			}
+			
 			return $formatted_meta;
 		}
-
+ 
 		/**
 		 * Adds stock location email address to WC new order email.
 		 *
@@ -614,7 +690,7 @@ if( !class_exists('SlwOrderItem') ) {
 			if(is_numeric($order)){
 				$order = wc_get_order($order);
 			}
-			//wc_slw_logger($order->get_order_number().' From '.$status.' to '.$order->get_status());
+			
 			
 			if( empty($order) || ! is_object($order) ) return;
 			
@@ -626,20 +702,18 @@ if( !class_exists('SlwOrderItem') ) {
 		}
 		public function restore_order_items_locations_stock( $order )
 		{
-			//wc_slw_logger('$order: '.(is_object($order)?$order->get_order_number():'NULL'));
+
 			
 			
 			if( empty($order) || ! is_object($order) ) return;
 
 			//$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_order_stock_reduced', true );
 			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
-			//wc_slw_logger('$wc_order_stock_reduced: ');
-			//wc_slw_logger($wc_order_stock_reduced);
-			//wc_slw_logger(get_post_meta( $order->get_id()));
+
 			if( $wc_order_stock_reduced ) return;
 			
 			
-			//wc_slw_logger('get_items: '.count($order->get_items( 'line_item' )));
+			
 			
 			if(count($order->get_items( 'line_item' ))>0){
 				foreach( $order->get_items( 'line_item' ) as $item_id => $item ) {
@@ -684,7 +758,7 @@ if( !class_exists('SlwOrderItem') ) {
 					SlwProductHelper::update_wc_stock_status( $product_id );
 				}
 			
-				//wc_slw_logger('DONE _slw_order_stock_reduced');
+				
 				update_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
 			}
 		}

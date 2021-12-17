@@ -32,6 +32,8 @@ if(!class_exists('SlwSettings')) {
 
 			$this->plugin_settings = get_option( 'slw_settings' );
 			$this->plugin_settings = (is_array($this->plugin_settings)?$this->plugin_settings:array());
+			
+			
 		}
 
 		/**
@@ -121,12 +123,24 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin'
 			);
 	
+	
+			add_settings_field(
+				'general_display_settings',
+				__('Display stock location under cart items', 'stock-locations-for-woocommerce'),
+				array( $this, 'general_display_settings_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'general_display_settings')
+			);
+
+
 			add_settings_field(
 				'show_in_cart',
 				__('Show location selection in cart', 'stock-locations-for-woocommerce'),
 				array( $this, 'show_in_cart_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'show_in_cart')
 			);
 
 			add_settings_field(
@@ -134,7 +148,8 @@ if(!class_exists('SlwSettings')) {
 				null,
 				array( $this, 'cart_location_selection_required_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'cart_location_selection_required')
 			);
 
 			add_settings_field(
@@ -142,7 +157,8 @@ if(!class_exists('SlwSettings')) {
 				__('Different location per cart item', 'stock-locations-for-woocommerce'),
 				array( $this, 'different_location_per_cart_item_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'different_location_per_cart_item')
 			);
 			
 			add_settings_field(
@@ -150,7 +166,8 @@ if(!class_exists('SlwSettings')) {
 				__('Show location selection in product page', 'stock-locations-for-woocommerce'),
 				array( $this, 'show_in_product_page_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'show_in_product_page')
 			);
 			
 			add_settings_field(
@@ -158,7 +175,8 @@ if(!class_exists('SlwSettings')) {
 				__('Show location stock quantity with a postfix e.g. 20+', 'stock-locations-for-woocommerce'),
 				array( $this, 'show_with_postfix_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'show_with_postfix')
 			);
 
 			add_settings_field(
@@ -166,7 +184,8 @@ if(!class_exists('SlwSettings')) {
 				__('Enable default location in frontend selection', 'stock-locations-for-woocommerce'),
 				array( $this, 'default_location_in_frontend_selection_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'default_location_in_frontend_selection')
 			);
 
 			add_settings_field(
@@ -174,7 +193,8 @@ if(!class_exists('SlwSettings')) {
 				__('Lock frontend location to default', 'stock-locations-for-woocommerce'),
 				array( $this, 'lock_default_location_in_frontend_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'lock_default_location_in_frontend')
 			);
 
 			add_settings_field(
@@ -182,7 +202,17 @@ if(!class_exists('SlwSettings')) {
 				__('Show stock quantities in location selection in frontend', 'stock-locations-for-woocommerce'),
 				array( $this, 'product_location_selection_show_stock_qty_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'product_location_selection_show_stock_qty')
+			);			
+			
+			add_settings_field(
+				'force_main_product_stock_status_to_instock',
+				__('Force main product stock status to instock', 'stock-locations-for-woocommerce'),
+				array( $this, 'force_main_product_stock_status_to_instock_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'force_main_product_stock_status_to_instock')
 			);
 
 			add_settings_field(
@@ -190,7 +220,8 @@ if(!class_exists('SlwSettings')) {
 				__('Auto delete unused product locations meta', 'stock-locations-for-woocommerce'),
 				array( $this, 'delete_unused_product_locations_meta_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'delete_unused_product_locations_meta')
 			);
 
 			add_settings_field(
@@ -198,7 +229,8 @@ if(!class_exists('SlwSettings')) {
 				__('Include location data in formatted item meta', 'stock-locations-for-woocommerce'),
 				array( $this, 'include_location_data_in_formatted_item_meta_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'include_location_data_in_formatted_item_meta')
 			);
 
 			add_settings_field(
@@ -206,7 +238,8 @@ if(!class_exists('SlwSettings')) {
 				__('Enable location email notifications', 'stock-locations-for-woocommerce'),
 				array( $this, 'location_email_notifications_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'location_email_notifications')
 			);
 
 			add_settings_field(
@@ -214,7 +247,8 @@ if(!class_exists('SlwSettings')) {
 				__('Send copy of WC New Order email to location address', 'stock-locations-for-woocommerce'),
 				array( $this, 'wc_new_order_location_copy_callback' ),
 				'slw-setting-admin',
-				'slw_setting_setting_section'
+				'slw_setting_setting_section',
+				array('class'=>'wc_new_order_location_copy')
 			);
 			
 			add_settings_field(
@@ -254,6 +288,11 @@ if(!class_exists('SlwSettings')) {
 			$sanitary_values = array();
 
 			// sanitize option
+			
+			
+			if ( isset( $input['general_display_settings'] ) ) {
+				$sanitary_values['general_display_settings'] = $input['general_display_settings'];
+			}
 			if ( isset( $input['show_in_cart'] ) ) {
 				$sanitary_values['show_in_cart'] = $input['show_in_cart'];
 			}
@@ -278,6 +317,10 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['product_location_selection_show_stock_qty'] ) ) {
 				$sanitary_values['product_location_selection_show_stock_qty'] = $input['product_location_selection_show_stock_qty'];
 			}
+			if ( isset( $input['force_main_product_stock_status_to_instock'] ) ) {
+				$sanitary_values['force_main_product_stock_status_to_instock'] = $input['force_main_product_stock_status_to_instock'];
+			}			
+			
 			if ( isset( $input['delete_unused_product_locations_meta'] ) ) {
 				$sanitary_values['delete_unused_product_locations_meta'] = $input['delete_unused_product_locations_meta'];
 			}
@@ -331,6 +374,33 @@ if(!class_exists('SlwSettings')) {
 		 * @since 1.3.0
 		 * @return void
 		 */
+		 
+		public function general_display_settings_callback()
+		{
+			
+			$arr = array('cart-page', 'checkout-page', 'order-received-page', 'order-email');
+			
+			
+			if(!empty($arr)){
+				foreach($arr as $type){
+					
+
+					$label = str_replace(array('_', '-'), ' ', $type);
+					$label = ucwords($label);
+
+					$this->checkbox_callback('general_display_settings',		array(
+										'placeholder'=>'', 
+										'screenshot'=>'',
+										'video'=>'',
+										'label'=>$label,
+										'id_suffix'=>$type,
+									));
+									
+				}
+			}
+		
+		}
+		 
 		public function cart_location_selection_required_callback()
 		{
 			
@@ -349,6 +419,18 @@ if(!class_exists('SlwSettings')) {
 		 * @since 1.3.0
 		 * @return void
 		 */
+		 
+		 
+		 
+		public function force_main_product_stock_status_to_instock_callback()
+		{
+			$this->checkbox_callback('force_main_product_stock_status_to_instock',
+				array(
+					'links'=>array('https://wordpress.org/support/topic/stock-location-doesnt-change-default-stock-position/', 'https://gist.github.com/alexmigf/35091a0aed1549cfd85afa79ae7842db')
+				)
+			);
+			
+		}
 		public function product_location_selection_show_stock_qty_callback()
 		{
 			$this->checkbox_callback('product_location_selection_show_stock_qty');
@@ -517,14 +599,58 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function checkbox_callback( $id, $args = array() )
 		{
+			
+			
+			$id_suffix = ((array_key_exists('id_suffix', $args) && trim($args['id_suffix']))?$args['id_suffix']:'');
+			
+			$attribs = array('type="checkbox"');
+			
+			if($id_suffix){
+				$id_suffix = str_replace('-', '_', $id_suffix);
+				$name = 'slw_settings['.$id.']['.$id_suffix.']';
+				
+				
+				if(isset($this->plugin_settings[$id]) && isset($this->plugin_settings[$id][$id_suffix]) && in_array($this->plugin_settings[$id][$id_suffix], array('yes', 'on'))){
+					$attribs[] = 'value="on"';
+				}
+				if(isset($this->plugin_settings[$id]) && isset($this->plugin_settings[$id][$id_suffix]) && in_array($this->plugin_settings[$id][$id_suffix], array('yes', 'on'))){
+					$attribs[] = 'checked="checked"';
+				}
+				
+			}else{				
+				$name = 'slw_settings['.$id.']';
+				if(isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on'))){
+					$attribs[] = 'value="on"';
+				}
+				if(isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on'))){
+					$attribs[] = 'checked="checked"';
+				}
+            }
+			$id = ($id_suffix?'_'.$id_suffix:$id);
+			$attribs[] = 'id="'.$id.'"';
+			$attribs[] = 'name="'.$name.'"';
 			?> 
-			<input name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>" type="checkbox" <?= isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on')) ? 'value="on"' : null; ?> <?= isset($this->plugin_settings[$id]) && in_array($this->plugin_settings[$id], array('yes', 'on')) ? 'checked="checked"' : null; ?> />
+			<input <?php echo implode(' ', $attribs); ?> />
             
             <?php if(!empty($args)): ?>
-            <?php if($args['label']): ?><label for="<?= $id; ?>"><?php echo $args['label']; ?></label><?php endif; ?>
-			<?php if($args['video']): ?><a title="<?php echo __( 'Click here to watch video tutorial', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-video" href="<?php echo $args['video']; ?>" target="_blank"><i class="fab fa-youtube"></i></a><?php endif; ?>
-            <?php if($args['screenshot']): ?><a title="<?php echo __( 'Click here to preview illustration/screenshot', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-screenshot" href="<?php echo $args['screenshot']; ?>" target="_blank"><i class="fas fa-image"></i></a><?php endif; ?>
+            <?php if(isset($args['label']) && $args['label']): ?><label for="<?= $id; ?>"><?php echo $args['label']; ?></label><?php endif; ?>
+			<?php if(isset($args['video']) && $args['video']): ?><a title="<?php echo __( 'Click here to watch video tutorial', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-video" href="<?php echo $args['video']; ?>" target="_blank"><i class="fab fa-youtube"></i></a><?php endif; ?>
+            <?php if(isset($args['screenshot']) && $args['screenshot']): ?><a title="<?php echo __( 'Click here to preview illustration/screenshot', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-screenshot" href="<?php echo $args['screenshot']; ?>" target="_blank"><i class="fas fa-image"></i></a><?php endif; ?>
+
+<?php 
+			$links = ((array_key_exists('links', $args) && is_array($args['links']))?$args['links']:array());
+			if(!empty($links)){
+				foreach($links as $link){
+?>
+<a title="<?php echo __( 'Click here to visit', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-link" href="<?php echo $link; ?>" target="_blank"><i class="fas fa-link"></i></a>
+<?php					
+				}
+			}
+			
+?>            
             <?php endif; ?>
+            
+            
             
             
             
