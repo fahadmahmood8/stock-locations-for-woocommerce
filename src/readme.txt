@@ -81,6 +81,10 @@ This plugin requires at least *WooCommerce 3.4*.
 
 == Frequently Asked Questions ==
 
+= How to lock pre-selected location on frontend? =
+
+Turn ON "Enable default location in frontend selection" from WooCommerce > Stock Locations for WC. This option will allow you to select default location for a product on Product Edit page. Now turn ON "Lock frontend location to default" and it will lock frontend location which is selected as default.
+
 = I found a bug, where i can report it? =
 I prefer you to use the Github issues. You can submit a new one here [GitHub](https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/new)
 
@@ -111,11 +115,18 @@ On settings page you can define a number. If location stock value will be less t
 10. Plugin settings
 11. Show location stock quantity with a postfix e.g. 20+
 12. Edit Stock locations taxonomy
+13. Lock default location on frontend.
+14. Set price for product as per each stock location.
+15. Pre-select default location on product page (frontend).
+16. Stock locations for each variation.
 
 
 == Changelog ==
-= 1.6.9 =
+= 1.7.0 =
 - New: A new functionality to get a pick-list of how many orders for each product have been pre-made for each location. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to msbbill115 / MySalesButler.com][08/12/2021]
+
+= 1.6.9 =
+- Fix: Cancelled order location was staying with -1 stock. [Thanks to Phannaline Khemdy][19/12/2021]
 
 = 1.6.8 =
 - Fix: Out of stock status not being displayed, showing 0 availabilty instead. https://wordpress.org/support/topic/out-of-stock-status-not-being-displayed-showing-0-availabilty-instead/ [Thanks to Donny Tejeda][15/12/2021]
