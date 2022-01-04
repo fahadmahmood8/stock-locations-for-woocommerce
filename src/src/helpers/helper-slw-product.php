@@ -49,15 +49,17 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			if( ! $product->is_on_backorder() ) {
 				if( $stock_qty > 0 ) {
 					update_post_meta( $product_id, '_stock_status', 'instock' );
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 
 					// remove the link in outofstock taxonomy for the current product
-					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
+					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' );
 
 				} else {
 					update_post_meta( $product_id, '_stock_status', 'outofstock' );
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'outofstock' );
 
 					// add the link in outofstock taxonomy for the current product
-					wp_set_post_terms( $product_id, 'outofstock', 'product_visibility', true ); 
+					wp_set_post_terms( $product_id, 'outofstock', 'product_visibility', true );
 
 				}
 
@@ -66,11 +68,13 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 				$current_stock_status = get_post_meta( $product_id, '_stock_status', true );
 				if( $stock_qty > 0 && $current_stock_status != 'instock' ) {
 					update_post_meta( $product_id, '_stock_status', 'instock' );
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 
 					// remove the link in outofstock taxonomy for the current product
-					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
+					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' );
 				} else {
 					update_post_meta( $product_id, '_stock_status', 'onbackorder' );
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'onbackorder' );
 				}
 			}
 
@@ -78,6 +82,22 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			do_action( 'slw_product_wc_stock_status', $stock_qty, $product_id );
 		}
 
+
+		public static function call_wc_product_stock_status_action( $product_id, $status = '' )
+		{
+			if( empty( $product_id ) ) return;
+
+			// Check if status string is in array
+			$approved_status_string = array('instock', 'outofstock', 'onbackorder');
+			if ( ! in_array( $status, $approved_status_string ) ) return;
+
+			$product = wc_get_product( $product_id );
+			if ( $product->is_type( 'variation' ) ) {
+				do_action( 'woocommerce_variation_set_stock_status', $product_id, $status, $product );
+			} else {
+				do_action( 'woocommerce_product_set_stock_status', $product_id, $status, $product );
+			}
+		}
 
 		public static function get_product_locations_stock_total( $product_id )
 		{
@@ -95,13 +115,13 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 		}
 
 	}
-	
+
 }
 add_action( 'slw_product_wc_stock_status', function( $stock, $id ) {
-	
+
 	global $slw_plugin_settings;
 	$force_main_product_stock_status_to_instock = array_key_exists('force_main_product_stock_status_to_instock', $slw_plugin_settings);
-	
+
 	if( ! empty( $id ) && $force_main_product_stock_status_to_instock) {
 		$product = wc_get_product( $id );
 		if( empty( $product ) ) return;
