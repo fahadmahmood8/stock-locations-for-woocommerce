@@ -126,8 +126,9 @@ if(!class_exists('SlwShortcodes')) {
 
 				if( !empty($variations_products) ) {
 					foreach( $variations_products as $variation_product ) {
+						$output .= '<div class="slw-variation-'.$attribute.'-locations">';
 						foreach( $attributes = $variation_product->get_variation_attributes() as $attribute ) {
-							$output .= '<div class="slw-variation-'.$attribute.'-locations"><label>'.ucfirst($attribute).'</label>';
+							$output .= '<label>'.ucfirst($attribute).'</label>';
 						}
 						$output .= $this->output_product_locations_for_shortcode($variation_product, $locations, $values);
 						$output .= '</div>';

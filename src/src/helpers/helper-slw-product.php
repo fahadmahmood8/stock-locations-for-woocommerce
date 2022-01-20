@@ -46,16 +46,16 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			}
 
 			// backorder disabled
-			if( ! $product->is_on_backorder() ) {
+			if(!$product->backorders_allowed()){//( ! $product->is_on_backorder() ) { //20/01/2022 // https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/121
 				if( $stock_qty > 0 ) {
 					update_post_meta( $product_id, '_stock_status', 'instock' );
-
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 					// remove the link in outofstock taxonomy for the current product
 					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
 
 				} else {
 					update_post_meta( $product_id, '_stock_status', 'outofstock' );
-
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'outofstock' );
 					// add the link in outofstock taxonomy for the current product
 					wp_set_post_terms( $product_id, 'outofstock', 'product_visibility', true ); 
 
@@ -66,19 +66,32 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 				$current_stock_status = get_post_meta( $product_id, '_stock_status', true );
 				if( $stock_qty > 0 && $current_stock_status != 'instock' ) {
 					update_post_meta( $product_id, '_stock_status', 'instock' );
-
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 					// remove the link in outofstock taxonomy for the current product
 					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
 				} else {
 					update_post_meta( $product_id, '_stock_status', 'onbackorder' );
+					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'onbackorder' );
 				}
 			}
 
 			// hook
 			do_action( 'slw_product_wc_stock_status', $stock_qty, $product_id );
 		}
+		public static function call_wc_product_stock_status_action( $product_id, $status = '' ){ //20/01/2022 https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/120
+			if( empty( $product_id ) ) return;
 
+			// Check if status string is in array
+			$approved_status_string = array('instock', 'outofstock', 'onbackorder');
+			if ( ! in_array( $status, $approved_status_string ) ) return;
 
+			$product = wc_get_product( $product_id );
+			if ( $product->is_type( 'variation' ) ) {
+				do_action( 'woocommerce_variation_set_stock_status', $product_id, $status, $product );
+			} else {
+				do_action( 'woocommerce_product_set_stock_status', $product_id, $status, $product );
+			}
+		}
 		public static function get_product_locations_stock_total( $product_id )
 		{
 			if( empty( $product_id ) ) return;

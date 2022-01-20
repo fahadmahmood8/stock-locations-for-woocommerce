@@ -265,8 +265,8 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			// Sort
 			uasort($locations, function($a, $b)
 			{
-				$a_priority = isset($a->slw_location_priority) ?: $a->term_id;
-				$b_priority = isset($b->slw_location_priority) ?: $b->term_id;
+				$a_priority = isset($a->slw_location_priority) ? $a->slw_location_priority: $a->term_id;
+				$b_priority = isset($b->slw_location_priority) ? $b->slw_location_priority: $b->term_id;
 				
 				if ($a_priority == $b_priority) {
 					return 0;

@@ -146,6 +146,8 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			$auto_order_allocate = 0;
 			$auto_order_allocate_priority = 0;
 			$location_email = '';
+			$location_address = '';
+			$location_timings = '';
 
 			// Is edit screen
 			if (is_object($tag)) {
@@ -155,6 +157,8 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				$auto_order_allocate = get_term_meta($tag->term_id, 'slw_auto_allocate', true);
 				$auto_order_allocate_priority = get_term_meta($tag->term_id, 'slw_location_priority', true);
 				$location_email = get_term_meta($tag->term_id, 'slw_location_email', true);
+				$location_address = get_term_meta($tag->term_id, 'slw_location_address', true);
+				$location_timings = get_term_meta($tag->term_id, 'slw_location_timings', true);
 			}
 			
 			// if email notifications are disable
@@ -168,7 +172,9 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				'primary_location' 				=> $primary_location,
 				'auto_order_allocate' 			=> $auto_order_allocate,
 				'auto_order_allocate_priority'	=> $auto_order_allocate_priority,
-				'location_email'				=> $location_email
+				'location_email'				=> $location_email,
+				'location_address'				=> $location_email,
+				'location_timings'				=> $location_timings
 			]);
 		}
 
@@ -186,6 +192,8 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				if( isset($_POST['location_email']) ) {
 					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
 				}
+				update_term_meta($term_id, 'slw_location_address', sanitize_text_field($_POST['location_address']));
+				update_term_meta($term_id, 'slw_location_timings', sanitize_text_field($_POST['location_timings']));
 			}
 
             wp_cache_delete(self::$location_cache_key, SLW_PLUGIN_BASENAME);
