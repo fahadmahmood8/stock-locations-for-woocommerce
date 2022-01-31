@@ -205,6 +205,14 @@ if(!class_exists('SlwSettings')) {
 				'slw_setting_setting_section',
 				array('class'=>'product_location_selection_show_stock_qty')
 			);			
+			add_settings_field(
+				'product_stock_price_status',
+				__('Display stock location price instead of default product/variation price', 'stock-locations-for-woocommerce'),
+				array( $this, 'product_stock_price_status_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'product_stock_price_status slw-premium')
+			);
 			
 			add_settings_field(
 				'force_main_product_stock_status_to_instock',
@@ -317,9 +325,13 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['product_location_selection_show_stock_qty'] ) ) {
 				$sanitary_values['product_location_selection_show_stock_qty'] = $input['product_location_selection_show_stock_qty'];
 			}
+			if ( isset( $input['product_stock_price_status'] ) ) {
+				$sanitary_values['product_stock_price_status'] = $input['product_stock_price_status'];
+			}	
 			if ( isset( $input['force_main_product_stock_status_to_instock'] ) ) {
 				$sanitary_values['force_main_product_stock_status_to_instock'] = $input['force_main_product_stock_status_to_instock'];
 			}			
+			
 			
 			if ( isset( $input['delete_unused_product_locations_meta'] ) ) {
 				$sanitary_values['delete_unused_product_locations_meta'] = $input['delete_unused_product_locations_meta'];
@@ -421,7 +433,18 @@ if(!class_exists('SlwSettings')) {
 		 */
 		 
 		 
-		 
+		public function product_stock_price_status_callback()
+		{
+			$this->checkbox_callback('product_stock_price_status',
+				array(
+					'links'=>array()
+				)
+			);
+			?>
+			<span><?= __('It will display stock location prices with location names as well.', 'stock-locations-for-woocommerce'); ?></span>
+			<?php
+			
+		} 
 		public function force_main_product_stock_status_to_instock_callback()
 		{
 			$this->checkbox_callback('force_main_product_stock_status_to_instock',
@@ -429,6 +452,7 @@ if(!class_exists('SlwSettings')) {
 					'links'=>array('https://wordpress.org/support/topic/stock-location-doesnt-change-default-stock-position/', 'https://gist.github.com/alexmigf/35091a0aed1549cfd85afa79ae7842db')
 				)
 			);
+			
 			
 		}
 		public function product_location_selection_show_stock_qty_callback()

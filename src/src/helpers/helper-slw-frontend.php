@@ -27,6 +27,8 @@ if ( !class_exists('SlwFrontendHelper') ) {
 
 			$product = wc_get_product( $product_id );
 			if( empty( $product ) ) return;// || $product->get_type() != 'simple'
+			
+			$plugin_settings = get_option( 'slw_settings' );
 
 			// update stock and stock status first to not show wrong data to customers
 			$product_locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
@@ -51,6 +53,19 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				$stock_locations_to_display[$id]['quantity']        = slw_quantity_format($location->quantity);
 				$stock_locations_to_display[$id]['allow_backorder'] = $location->slw_backorder_location;
 				$stock_locations_to_display[$id]['name']            = $location->name;
+				
+				if(isset( $plugin_settings['product_stock_price_status'] ) && $plugin_settings['product_stock_price_status'] == 'on'){
+			
+					$_stock_location_price = '_stock_location_price_'.$id;
+					$product_stock_price = get_post_meta( $product_id, $_stock_location_price, true );
+					
+					$stock_locations_to_display[$id]['price']            = number_format($product_stock_price, 2);
+					
+				}else{
+					$stock_locations_to_display[$id]['price']            = number_format($product->get_price(), 2);
+				}
+				//pree($stock_locations_to_display);
+
 				//pree($location->quantity);
 				if( $location->quantity <= 0 ) {
 					if( $location->slw_backorder_location == 1 ) {
@@ -59,7 +74,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'stock-locations-for-woocommerce') . ')';
 					}
 				} else {
-					$plugin_settings = get_option( 'slw_settings' );
+					
 					if( isset($plugin_settings['product_location_selection_show_stock_qty']) && $plugin_settings['product_location_selection_show_stock_qty'] == 'on' ) {
 						$stock_locations_to_display[$id]['name'] .= sprintf(
 							' (%s %s)',

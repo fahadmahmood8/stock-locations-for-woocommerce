@@ -173,7 +173,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				'auto_order_allocate' 			=> $auto_order_allocate,
 				'auto_order_allocate_priority'	=> $auto_order_allocate_priority,
 				'location_email'				=> $location_email,
-				'location_address'				=> $location_email,
+				'location_address'				=> $location_address,
 				'location_timings'				=> $location_timings
 			]);
 		}

@@ -57,18 +57,18 @@
 		</tr>
 		<?php endif; ?>
         
-        <tr class="form-field form-required term-name-wrap">
+        <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Location Address', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-map-marker-alt"></i></th>
 			<td>
-				<input name="location_address" type="text" value="<?php echo $location_address; ?>" size="40"> 
+				<input name="location_address" type="text" value="<?php echo $location_address; ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
 			</td>
 		</tr>
-        <tr class="form-field form-required term-name-wrap">
+        <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Opening Timings', 'stock-locations-for-woocommerce'); ?></label> <i class="far fa-clock"></i></th>
 			<td>
-				<input name="location_timings" type="text" value="<?php echo $location_timings; ?>" size="40"> 
+				<input name="location_timings" type="text" value="<?php echo $location_timings; ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
 			</td>

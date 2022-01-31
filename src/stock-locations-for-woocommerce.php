@@ -48,7 +48,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.6.9';
+		public           $version  = '1.7.1';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -147,6 +147,7 @@ if(!class_exists('SlwMain')) {
 				'nonce'   => wp_create_nonce( 'slw_nonce' ),
 				'stock_locations' => false
 			);
+			$data['currency_symbol'] = get_woocommerce_currency_symbol();
 			
 			if(is_object($post) && $post->post_type=='product'){
 				
@@ -196,7 +197,8 @@ if(!class_exists('SlwMain')) {
 			$data['stock_locations'] = 0;
 			$data['stock_quantity'] = 0;
 			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
-			
+			$data['currency_symbol'] = get_woocommerce_currency_symbol();
+			//pree($data);exit;
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
 				wp_enqueue_script(
@@ -233,6 +235,7 @@ if(!class_exists('SlwMain')) {
 				);
 				wp_enqueue_script( 'slw-frontend-product-scripts' );
 			}
+			
 		}
 
 	}

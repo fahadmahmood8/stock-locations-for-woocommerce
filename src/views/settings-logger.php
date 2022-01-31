@@ -19,7 +19,7 @@ use SLW\SRC\Helpers\SlwMailHelper;
 			wc_slw_logger_extended($obj);
 		}else{
 			//pree('NO EXTENSION');
-			wc_slw_logger_extended();
+			//wc_slw_logger_extended();
 		}
 		
 		$slw_logger = wc_slw_logger('debug');

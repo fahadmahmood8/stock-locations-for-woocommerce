@@ -122,8 +122,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.7.1 =
+- New: Different prices according to the inventory locations. [Thanks to Justyn Thomas][20/01/2022]
+
 = 1.7.0 =
-- New: A new functionality to get a pick-list of how many orders for each product have been pre-made for each location. https://wordpress.org/support/topic/location-stock-summary/ [Thanks to msbbill115 / MySalesButler.com][08/12/2021]
 - Fix: https://wordpress.org/support/topic/variation-design-issue/ [Thanks to harute125][20/01/2022]
 
 = 1.6.9 =

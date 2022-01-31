@@ -55,13 +55,20 @@ if( !class_exists('SlwFrontendProduct') ) {
 			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
+			$product_stock_price_status = isset( $this->plugin_settings['product_stock_price_status'] ) && $this->plugin_settings['product_stock_price_status'] == 'on' ? true : false;
 
 			if( ! empty( $stock_locations ) ) {
 				// lock to default location if enabled			
 				//pree($lock_default_location);exit;
 				if( $lock_default_location && $default_location != 0 ) {
+					$stock_price = get_woocommerce_currency_symbol().$stock_locations[$default_location]['price'];
+					$stock_location_name = $stock_locations[$default_location]['name'];
+					if($product_stock_price_status){
+						$stock_location_name .= ' '.$stock_price;
+					}
+					
 					echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled>';
-					echo '<option data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" selected>'.$stock_locations[$default_location]['name'].'</option>';
+					echo '<option data-price="'.$stock_locations[$default_location]['price'].'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" selected>'.$stock_location_name.'</option>';
 					echo '</select></div>';
 					return;
 				}
@@ -75,14 +82,22 @@ if( !class_exists('SlwFrontendProduct') ) {
 				}
 				//pree($stock_locations);exit;
 				foreach( $stock_locations as $id => $location ) {
+					$stock_price = get_woocommerce_currency_symbol().$location['price'];
+					
+					$stock_location_name = $location['name'];
+					if($product_stock_price_status){
+						$stock_location_name .= ' '.$stock_price;
+					}
+
+
 					$disabled = '';
 					if( $location['quantity'] < 1 && $location['allow_backorder'] != 1 ) {
 						$disabled = 'disabled="disabled"';
 					}
 					if( $default_location != 0 && $location['term_id'] == $default_location ) {
-						echo '<option data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' selected>'.$location['name'].'</option>';
+						echo '<option data-price="'.$location['price'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' selected>'.$stock_location_name.'</option>';
 					} else {
-						echo '<option data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.'>'.$location['name'].'</option>';
+						echo '<option data-price="'.$location['price'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.'>'.$stock_location_name.'</option>';
 					}
 				}
 				echo '</select></div>';
@@ -128,15 +143,20 @@ if( !class_exists('SlwFrontendProduct') ) {
 		{
 			
 			if( isset( $_POST['variation_id'] ) && isset( $_POST['product_id'] ) && $_POST['action'] == 'get_variation_locations' ) {
+				
+				
 				$variation_id          = sanitize_text_field( $_POST['variation_id'] );
 				$variation_id          = SlwWpmlHelper::object_id( $variation_id );
 				$product_id            = sanitize_text_field( $_POST['product_id'] );
 				$product_id            = SlwWpmlHelper::object_id( $product_id );
+				$product_variation_id  = ($variation_id?$variation_id:$product_id);
 
 				$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 				$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
-				//pree($stock_locations);
-				//pree($default_location);
+				
+				
+				
+				
 				if( !empty($stock_locations) ) {
 					wp_send_json_success( compact( 'stock_locations', 'default_location' ) );
 				} else {

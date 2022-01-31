@@ -125,13 +125,18 @@ if(!class_exists('SlwShortcodes')) {
 				$locations = wp_get_post_terms($product->get_id(), SlwLocationTaxonomy::$tax_singular_name);
 
 				if( !empty($variations_products) ) {
+
 					foreach( $variations_products as $variation_product ) {
-						$output .= '<div class="slw-variation-'.$attribute.'-locations">';
-						foreach( $attributes = $variation_product->get_variation_attributes() as $attribute ) {
-							$output .= '<label>'.ucfirst($attribute).'</label>';
+						
+						foreach( $variation_product->get_variation_attributes() as $attribute ) {
+							if($attribute){
+								$output .= '<div class="slw-variation-'.$attribute.'-locations">';
+								$output .= '<label>'.ucfirst($attribute).'</label>';
+								$output .= $this->output_product_locations_for_shortcode($variation_product, $locations, $values);
+								$output .= '</div>';
+							}
 						}
-						$output .= $this->output_product_locations_for_shortcode($variation_product, $locations, $values);
-						$output .= '</div>';
+						
 					}
 				}
 			}

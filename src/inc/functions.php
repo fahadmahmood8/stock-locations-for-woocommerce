@@ -188,3 +188,37 @@ if(!function_exists('wc_slw_admin_init')){
 	}
 }
 add_action('admin_init', 'wc_slw_admin_init');
+
+if(!function_exists('wc_slw_display_stock_price')){
+	function wc_slw_display_stock_price($price, $product) {
+		global $post, $blog_id;		
+		if(is_object($post) && $post->post_type=='product' && $post->ID==$product->get_id()){			
+			
+		}
+		return $price;
+	}	
+}
+
+if(!function_exists('wc_slw_update_price')){
+	function wc_slw_update_price( $cart_object ) {
+		global $slw_plugin_settings, $wc_slw_pro;
+		
+		if(!$wc_slw_pro){ return; }
+		
+		$cart_items = $cart_object->cart_contents;
+		
+		if ( ! empty( $cart_items ) ) {		
+			$product_stock_price_status = array_key_exists('product_stock_price_status', $slw_plugin_settings);
+			if($product_stock_price_status){
+				foreach ( $cart_items as $key => $value ) {
+					$stock_location = (array_key_exists('stock_location', $value)?$value['stock_location']:0);
+					$_stock_location_price = '_stock_location_price_'.$stock_location;
+					$_stock_location_price = get_post_meta($value['data']->get_id(), $_stock_location_price, true);			
+					if($_stock_location_price && $value['data']->get_id()){
+						$value['data']->set_price( $_stock_location_price );
+					}
+				}
+			}
+		}
+	}	
+}

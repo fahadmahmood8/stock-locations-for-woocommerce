@@ -247,3 +247,12 @@ div.slw-settings-wrap table.form-table th i{
 	padding: 0;
 	margin: 0 10px 0 0;
 }
+tr.slw-premium td:after {
+	content: "<Premium Feature>";
+	position: absolute;
+	right: 0;
+	top: 20px;
+	color: #b03131;
+	font-size: 14px;
+	font-weight: normal;
+}
