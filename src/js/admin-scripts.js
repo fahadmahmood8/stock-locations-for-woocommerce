@@ -1,8 +1,36 @@
+function slw_gmap_initialize(input_id) {
+	var input = document.getElementById(input_id);//$('form#edittag input#name');//
+	var autocomplete = new google.maps.places.Autocomplete(input);
+
+	google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		var place = autocomplete.getPlace();	
+		jQuery('#slw-lat').val(place.geometry.location.lat());
+		jQuery('#slw-lng').val(place.geometry.location.lng());
+	});
+	
+}
 (function($){
 
 	// Init after DOM is ready
 	$(document).ready(function() {
 		init();
+		
+		
+		//google.maps.event.addDomListener(window, 'load', gmap_initialize);
+		var input_id = '';
+		if($('form#edittag input#location_address').length>0){
+			input_id = 'location_address';
+		}
+		if($('form#addtag input#tag-name').length>0){
+			//input_id = 'tag-name';
+		}
+		if(input_id){
+			slw_gmap_initialize(input_id);
+			
+			
+		}
+		
+		
 	});
 
 	// Functions to initiate
@@ -15,6 +43,9 @@
 		slwAjaxRemoveProductDefaultLocation();
 		slwEnableLockDefaultLocation();
 	}
+	
+	
+	
 	
 	function slwDisableVariableStockInput()
 	{
@@ -239,6 +270,34 @@
 
 
 	});
+	
+	$('input#slw-api-status').bind('click', function (e) {
+
+
+
+		var data = {
+
+			action: 'slw_api_status',
+			status: $(this).is(':checked')?$(this).val():'',
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		
+		$.post(ajaxurl, data, function (response, code) {
+
+			
+			if (code == 'success') {
+
+
+				//
+			}
+
+		});
+
+
+	});
+	
+	
 	if($('select[name="auto_order_allocate"]').length>0){
 		$('select[name="auto_order_allocate"]').on('change', function(){
 			var id = $(this).data('id');
@@ -250,5 +309,56 @@
 		});
 		$('select[name="auto_order_allocate"]').trigger('change');
 	}
+	
+	var slw_widgets_update_request = false;
+	$('div.slw_widgets ul li').on('change', 'input', function(){
+		var data = {
+			action: 'slw_widgets_settings',
+			slw_widget_key: $(this).attr('name'),
+			slw_widget_value: $(this).val(),
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		if(!slw_widgets_update_request){
+			slw_widgets_update_request = true;
+			$.post(ajaxurl, data, function (response, code) {
+	
+				// console.log(response);
+				if (code == 'success') {
+	
+	
+					//
+				}
+				
+				slw_widgets_update_request = false;
+			});
+		}
+	});
+	
+	$('div.slw_widgets ul li[data-type="screenshot"] a').magnificPopup({
+	  type: 'image',
+	  gallery: {
+		// options for gallery
+		enabled: false
+	  },
+	  mainClass: 'mfp-with-zoom', // this class is for CSS animation below
+	
+	  zoom: {
+		enabled: true, // By default it's false, so don't forget to enable it
+	
+		duration: 400, // duration of the effect, in milliseconds
+		easing: 'ease-in', // CSS transition easing function
+	
+		// The "opener" function should return the element from which popup will be zoomed in
+		// and to which popup will be scaled down
+		// By defailt it looks for an image tag:
+		opener: function(openerElement) {
+		  // openerElement is the element on which popup was initialized, in this case its <a> tag
+		  // you don't need to add "opener" option if this code matches your needs, it's defailt one.
+		  return openerElement.is('img') ? openerElement : openerElement.find('img');
+		}
+	  }
+	});
+	
 
 }(jQuery));

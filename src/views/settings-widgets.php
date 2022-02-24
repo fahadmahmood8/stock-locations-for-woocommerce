@@ -3,10 +3,10 @@
 
 <div class="slw_widgets mt-4">
         <?php
-		
+
 		
         if($wc_slw_pro && function_exists('wc_slw_widgets')){
-            
+            wc_slw_widgets();
 
         }else{
 			

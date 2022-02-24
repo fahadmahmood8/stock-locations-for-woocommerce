@@ -1,3 +1,5 @@
+<input type="hidden" name="slw-lat" value="<?php echo $slw_lat; ?>" id="slw-lat" />
+<input type="hidden" name="slw-lng" value="<?php echo $slw_lng; ?>" id="slw-lng" />
 <table class="form-table location-edit" role="presentation">
 	<tbody>
 		<tr class="form-field form-required term-name-wrap">
@@ -47,7 +49,7 @@
                 </p>
 			</td>
 		</tr>
-		<?php if( isset($location_email) && !is_null($location_email) ) : ?>
+		<?php //if( isset($location_email) && !is_null($location_email) ) : ?>
 		<tr class="form-field term-name-wrap auto_order_allocate">
 			<th scope="row"><label><?php echo __('Location email', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-link"></i></th>
 			<td>
@@ -55,12 +57,12 @@
 				<p class="description"><?php echo __('Email address for notifications when a customer buys from this location. Works only if auto order allocation is enabled for this location.', 'stock-locations-for-woocommerce'); ?></p>
 			</td>
 		</tr>
-		<?php endif; ?>
+		<?php //endif; ?>
         
         <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Location Address', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-map-marker-alt"></i></th>
 			<td>
-				<input name="location_address" type="text" value="<?php echo $location_address; ?>" size="40" /> 
+				<input name="location_address" id="location_address" type="text" value="<?php echo $location_address; ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
 			</td>

@@ -12,7 +12,7 @@
  * Text Domain:       		stock-locations-for-woocommerce
  * Domain Path:       		/languages
  * WC requires at least:	3.4
- * WC tested up to: 		5.3
+ * WC tested up to: 		5.9
  */
 
 /**
@@ -26,19 +26,31 @@ if ( !defined( 'WPINC' ) ) {
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings;
+global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys;
+$slw_gkey = get_option('slw-google-api-key');
 $slw_plugin_settings = get_option( 'slw_settings' );
 $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array();
 $wc_slw_data = get_plugin_data(__FILE__);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
+define( 'SLW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
 $wc_slw_premium_copy = 'https://shop.androidbubbles.com/product/stock-locations-for-woocommerce/';
 
 $wc_slw_pro_file = realpath(SLW_PLUGIN_DIR . '/pro/functions.php');
 $wc_slw_pro = file_exists($wc_slw_pro_file);
 
+$slw_api_valid_keys = array(			
+	'id' => array('type'=>'int', 'options'=>''),
+	'stock_value' => array('type'=>'int', 'options'=>''),
+	'action' => array('type'=>'string', 'options'=>'get|set'),
+	'item' => array('type'=>'string', 'options'=>'location|product|stock'),
+	'format' => array('type'=>'string', 'options'=>'json|default'),
+	'product_id'=>array('type'=>'int', 'options'=>''),
+	'location_id'=>array('type'=>'int', 'options'=>''),
+);
 
-if($wc_slw_pro){	
-	include_once($wc_slw_pro_file);
+if($wc_slw_pro){
+	include_once(SLW_PLUGIN_DIR . '/pro/functions.php');
 }
 require_once(realpath(SLW_PLUGIN_DIR . '/inc/functions.php'));
 
@@ -48,7 +60,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.7.1';
+		public           $version  = '1.7.2';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -133,12 +145,16 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			global $current_screen, $post;
+			global $current_screen, $post, $slw_gkey;
 			//pree($current_screen);
 					
 			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'css/admin-style.css', array(), time() );
+			
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );			
-			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), SLW_PLUGIN_VERSION, true );
+			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), time(), true );
+			
+			
+			
 			
 			
 			$data = array(
@@ -148,6 +164,7 @@ if(!class_exists('SlwMain')) {
 				'stock_locations' => false
 			);
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
+			
 			
 			if(is_object($post) && $post->post_type=='product'){
 				
@@ -171,8 +188,15 @@ if(!class_exists('SlwMain')) {
 				wp_enqueue_style( 'slw-bootstrap-styles', SLW_PLUGIN_DIR_URL . 'css/bootstrap.min.css', array(), date('m') );
 				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('m') );
 				
-				wp_enqueue_script( 'font-awesome', SLW_PLUGIN_DIR_URL . '/js/fontawesome.min.js', array( 'jquery' ), date('m') );
-				wp_enqueue_script( 'bootstrap', SLW_PLUGIN_DIR_URL . '/js/bootstrap.min.js', array( 'jquery' ), date('m') );				
+				wp_enqueue_script( 'font-awesome', SLW_PLUGIN_DIR_URL . 'js/fontawesome.min.js', array( 'jquery' ), date('m') );
+				wp_enqueue_script( 'bootstrap', SLW_PLUGIN_DIR_URL . 'js/bootstrap.min.js', array( 'jquery' ), date('m') );			
+				
+				if($slw_gkey){
+					wp_enqueue_script( 'slw-googleapis-scripts', 'https://maps.googleapis.com/maps/api/js?key='.$slw_gkey.'&libraries=places', array(), time() );	
+				}
+				
+				wp_enqueue_style( 'slw-magnific-popup', SLW_PLUGIN_DIR_URL . 'css/magnific-popup.css', array(), time() );
+				wp_enqueue_script( 'magnific-popup', SLW_PLUGIN_DIR_URL . 'js/jquery.magnific-popup.min.js', array( 'jquery' ), date('m') );
 			}
 		}
 
@@ -188,17 +212,37 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
+			$term_id = (is_archive()?get_queried_object_id():0);
 			
 			$data = $this->plugin_settings;
 			$data['ajaxurl'] = admin_url( 'admin-ajax.php' );
 			$data['is_cart'] = is_cart();
 			$data['is_checkout'] = is_checkout();
 			$data['is_product'] = is_product();
+			$data['product_id'] = 0;
+			$data['product_type'] = '';
 			$data['stock_locations'] = 0;
-			$data['stock_quantity'] = 0;
+			$data['stock_quantity'] = array();
 			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
+			$data['slw_term_url'] = ($term_id?get_term_link($term_id):'');
+			$data['slw_term_id'] = $term_id;
+			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
+			$data['dummy_price'] = wc_price(111);
+			
 			//pree($data);exit;
+			wp_enqueue_script(
+				'slw-common-scripts',
+				SLW_PLUGIN_DIR_URL . 'js/common.js',
+				array('jquery'),
+				time(),
+				true
+			);
+			wp_localize_script(
+				'slw-common-scripts',
+				'slw_frontend',
+				$data
+			);
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
 				wp_enqueue_script(
@@ -209,31 +253,65 @@ if(!class_exists('SlwMain')) {
 					true
 				);	
 
-				wp_localize_script(
-					'slw-frontend-cart-scripts',
-					'slw_frontend',
-					$data
-				);
+				
+			}else{
+				
 			}
+			
 			if($data['is_product'] && (is_object($post) && $post->post_type=='product') && isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
 				
 				$product_id = $post->ID;
 				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($product_id).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
 				$wc_product = wc_get_product($product_id);
-				$data['stock_quantity'] = $wc_product->get_stock_quantity();
+				
+				$terms = get_terms( 'location', array(
+					'hide_empty' => false,
+				) );	
+				
+				
 				if(!empty($meta_obj)){
 					if($meta_obj->total_locations>0){
 						$data['stock_locations'] = $meta_obj->total_locations;
 					}
 				}
-				//pree($data);
-				wp_register_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), time(), true );
+				
+				$data['product_type'] = $wc_product->get_type();
+				$data['product_id'] = $product_id;
+				if($data['product_type']=='variable'){
+				
+					
+					$product_variations_ids = $wc_product->get_children();
+					$product_variations = array();
+					
+					
+					//pree($terms);	
+					$locations = array();
+					
+					foreach( $product_variations_ids as $variation_id ) {
+						if(!empty($terms)){
+							$data['stock_quantity'][$variation_id][0] = 0;
+							foreach($terms as $term){		
+								$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);			
+								$data['stock_quantity'][$variation_id][$term->term_id] = get_post_meta($variation_id, '_stock_at_'.$term->term_id, true);
+							}
+						}
+					}
+					
+				}else{
+					if(!empty($terms)){
+						$data['stock_quantity'][$product_id][0] = 0;
+						foreach($terms as $term){					
+							$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);
+						}
+					}					
+				}
+				
+				wp_enqueue_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), time(), true );
 				wp_localize_script(
 					'slw-frontend-product-scripts',
 					'slw_frontend',
 					$data
 				);
-				wp_enqueue_script( 'slw-frontend-product-scripts' );
 			}
 			
 		}

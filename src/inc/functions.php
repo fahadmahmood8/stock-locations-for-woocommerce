@@ -102,6 +102,68 @@ if(!function_exists('wc_slw_logger')){
 		return $slw_logger;
 	}
 }
+
+
+add_action('wp_ajax_slw_api_status', 'slw_api_status');
+
+if(!function_exists('slw_api_status')){
+	function slw_api_status(){
+
+		if(!empty($_POST) && isset($_POST['status'])){
+
+			if (
+				! isset( $_POST['slw_nonce_field'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
+			) {
+
+				echo '0';
+				
+
+			} else {
+				$status = ($_POST['status']=='yes');
+				update_option('slw_api_status', $status);
+				
+				echo '1';
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
+
+add_action('wp_ajax_slw_widgets_settings', 'slw_widgets_settings');
+
+if(!function_exists('slw_widgets_settings')){
+	function slw_widgets_settings(){
+		
+		$wc_slw_widgets = wc_slw_widgets('fields');
+		if(!empty($_POST) && isset($_POST['slw_widget_key']) && in_array($_POST['slw_widget_key'], $wc_slw_widgets)){
+
+			if (
+				! isset( $_POST['slw_nonce_field'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
+			) {
+
+				echo '0';
+				
+
+			} else {
+				$posted = sanitize_slw_data($_POST);
+				$slw_widget_key = $posted['slw_widget_key'];
+				$slw_widget_value = $posted['slw_widget_value'];
+				update_option($slw_widget_key, $slw_widget_value);
+				
+				echo '1';
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
 add_action('wp_ajax_slw_clear_debug_log', 'slw_clear_debug_log');
 
 if(!function_exists('slw_clear_debug_log')){
@@ -189,36 +251,90 @@ if(!function_exists('wc_slw_admin_init')){
 }
 add_action('admin_init', 'wc_slw_admin_init');
 
-if(!function_exists('wc_slw_display_stock_price')){
-	function wc_slw_display_stock_price($price, $product) {
-		global $post, $blog_id;		
-		if(is_object($post) && $post->post_type=='product' && $post->ID==$product->get_id()){			
-			
-		}
-		return $price;
-	}	
-}
+add_action('wp_head', 'slw_wp_head');
+function slw_wp_head(){
+?>
+<script type="text/javascript" language="javascript">
+<?php if(!is_admin() && !wp_doing_ajax() && array_key_exists('add-to-cart', $_GET)  && array_key_exists('stock-location', $_GET)){ ?>
+var newURL = location.href.split("?")[0];
+window.history.pushState('object', document.title, newURL);
+<?php } ?>
+jQuery(document).ready(function($){
 
-if(!function_exists('wc_slw_update_price')){
-	function wc_slw_update_price( $cart_object ) {
-		global $slw_plugin_settings, $wc_slw_pro;
-		
-		if(!$wc_slw_pro){ return; }
-		
-		$cart_items = $cart_object->cart_contents;
-		
-		if ( ! empty( $cart_items ) ) {		
-			$product_stock_price_status = array_key_exists('product_stock_price_status', $slw_plugin_settings);
-			if($product_stock_price_status){
-				foreach ( $cart_items as $key => $value ) {
-					$stock_location = (array_key_exists('stock_location', $value)?$value['stock_location']:0);
-					$_stock_location_price = '_stock_location_price_'.$stock_location;
-					$_stock_location_price = get_post_meta($value['data']->get_id(), $_stock_location_price, true);			
-					if($_stock_location_price && $value['data']->get_id()){
-						$value['data']->set_price( $_stock_location_price );
-					}
-				}
-			}
-		}
-	}	
+});
+</script>
+<?php	
 }
+	if(!function_exists('wc_slw_widgets')){
+		function wc_slw_widgets($ret_type = ''){
+			
+			$arr = array(
+				'slw-map' => array(
+					'type' => __('Premium', 'stock-locations-for-woocommerce'),
+					'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
+					'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
+					'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
+					'shortcode' => '[SLW-MAP search-field="yes" locations-list="yes" map="yes"]',					
+					'screenshot' => SLW_PLUGIN_URL.'images/slw-map-thumb.png',
+					
+				)
+			);
+			
+			switch($ret_type){
+				default:
+				break;
+				case 'array':
+					return $arr;
+				break;
+				case 'fields':
+					$ret = array();
+					if(!empty($arr)):foreach($arr as $slug=>$wdata):foreach($wdata as $dtype=>$dvalue):
+						switch($dtype){
+							case 'input':
+								$ret[] = $dvalue['name'];
+							break;
+						}
+					endforeach;endforeach;endif;
+					return $ret;	
+				break;
+			}
+?>
+<?php if(!empty($arr)): ?>
+<ul>
+<?php foreach($arr as $slug=>$wdata): ?>
+	<li data-slug="<?php echo $slug; ?>">
+                
+        <?php if(!empty($wdata)): ?>
+        <ul>
+        <?php foreach($wdata as $dtype=>$dvalue): ?>
+        	<li data-type="<?php echo $dtype; ?>"><?php echo slw_widget_val($dtype, $dvalue); ?></li>            
+        <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    
+    </li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+<?php			
+		}
+	}
+	if(!function_exists('slw_widget_val')){
+		function slw_widget_val($type, $val){
+			$ret = $val;
+			switch($type){
+				case 'screenshot':
+					$ret = '<a href="'.$val.'"><img src="'.$val.'" /></a>';
+				break;
+				case 'input':
+					$db_val = get_option($val['name']);
+					$ret = '<label>'.$val['caption'].':</label><input type="'.$val['type'].'" name="'.$val['name'].'" id="'.$val['name'].'" value="'.$db_val.'" />';
+				break;
+				default:
+					$ret = '<span data-val="'.$val.'">'.$val.'</span>';
+				break;
+			}
+			return $ret;
+		}
+	}
+	include_once('functions-api.php');

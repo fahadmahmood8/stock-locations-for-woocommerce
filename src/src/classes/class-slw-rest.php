@@ -89,6 +89,7 @@ if(!class_exists('SlwProductRest')) {
 		 */
 		public function product_update_callback( $values, $post, $attr, $request, $object_type )
 		{
+			
 			// Data is not valid or empty, nothing to do
 			if (!is_array($values) || !sizeof($values)) {
 				return;
@@ -110,6 +111,8 @@ if(!class_exists('SlwProductRest')) {
                 foreach ($values as $location) {
                     $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwLocationTaxonomy::$tax_singular_name)->term_id;
                     $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
+					
+					//pree($quantity);
 
                     // It is possible to provide a null quantity to delete product from location
                     if (is_null($quantity)) {
@@ -135,6 +138,8 @@ if(!class_exists('SlwProductRest')) {
 				$product = wc_get_product($parentPostId);
 				wc_update_product_stock( $product, $totalQuantity, 'set', false );
 			}
+			
+			
 
 			// Set terms
 			wp_set_object_terms($parentPostId, (sizeof($values)) ? $stockLocationTermIds : null, SlwLocationTaxonomy::$tax_singular_name);

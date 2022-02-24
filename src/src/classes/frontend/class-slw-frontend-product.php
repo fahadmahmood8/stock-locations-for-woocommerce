@@ -60,15 +60,16 @@ if( !class_exists('SlwFrontendProduct') ) {
 			if( ! empty( $stock_locations ) ) {
 				// lock to default location if enabled			
 				//pree($lock_default_location);exit;
+				
 				if( $lock_default_location && $default_location != 0 ) {
-					$stock_price = get_woocommerce_currency_symbol().$stock_locations[$default_location]['price'];
+					$stock_price = $stock_locations[$default_location]['price'];
 					$stock_location_name = $stock_locations[$default_location]['name'];
 					if($product_stock_price_status){
-						$stock_location_name .= ' '.$stock_price;
+						$stock_location_name .= ' '.wc_price($stock_price);
 					}
 					
 					echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled>';
-					echo '<option data-price="'.$stock_locations[$default_location]['price'].'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" selected>'.$stock_location_name.'</option>';
+					echo '<option data-price="'.$stock_price.'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" selected>'.$stock_location_name.'</option>';
 					echo '</select></div>';
 					return;
 				}
@@ -76,17 +77,18 @@ if( !class_exists('SlwFrontendProduct') ) {
 				// default behaviour
 				echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 				if( $default_location != 0 ) {
-					echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				} else {
-					echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
 				//pree($stock_locations);exit;
+				
 				foreach( $stock_locations as $id => $location ) {
-					$stock_price = get_woocommerce_currency_symbol().$location['price'];
+					$stock_price = $location['price'];
 					
 					$stock_location_name = $location['name'];
 					if($product_stock_price_status){
-						$stock_location_name .= ' '.$stock_price;
+						$stock_location_name .= ' '.wc_price($stock_price);
 					}
 
 
@@ -95,9 +97,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 						$disabled = 'disabled="disabled"';
 					}
 					if( $default_location != 0 && $location['term_id'] == $default_location ) {
-						echo '<option data-price="'.$location['price'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' selected>'.$stock_location_name.'</option>';
+						echo '<option data-price="'.$stock_price.'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' selected>'.$stock_location_name.'</option>';
 					} else {
-						echo '<option data-price="'.$location['price'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.'>'.$stock_location_name.'</option>';
+						echo '<option data-price="'.$stock_price.'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.'>'.$stock_location_name.'</option>';
 					}
 				}
 				echo '</select></div>';
@@ -114,22 +116,29 @@ if( !class_exists('SlwFrontendProduct') ) {
 			global $product;
 			if( empty($product) ) return;
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
+			//pree($product_id);
+			$term_id = (is_product()?false:get_queried_object_id());
+			//pree($term_id);
 			$product               = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product->get_id(), '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
 			
-			echo '<div style="display:block; width:100%;">';
+			echo '<div style="display:'.($term_id?'none !important':'block').'; width:100%;">';
 			if( $lock_default_location && $default_location != 0 ) {
 				echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" required disabled>';
 			} else {
 				echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location" name="slw_add_to_cart_item_stock_location" required>';
 			}
-			if( $default_location != 0 ) {
-				echo '<option disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
-			} else {
-				echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+			if($term_id){
+				echo '<option data-price="" data-quantity="" value="'.$term_id.'" selected></option>';
+			}else{
+				if( $default_location != 0 ) {
+					echo '<option data-price="" data-quantity="" disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+				} else {
+					echo '<option data-price="" data-quantity="" disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+				}
 			}
 			echo '</select></div>';
 		}

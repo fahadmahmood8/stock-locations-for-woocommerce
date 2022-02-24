@@ -148,6 +148,9 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			$location_email = '';
 			$location_address = '';
 			$location_timings = '';
+			
+			$slw_lat = '';
+			$slw_lng = '';
 
 			// Is edit screen
 			if (is_object($tag)) {
@@ -159,12 +162,15 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				$location_email = get_term_meta($tag->term_id, 'slw_location_email', true);
 				$location_address = get_term_meta($tag->term_id, 'slw_location_address', true);
 				$location_timings = get_term_meta($tag->term_id, 'slw_location_timings', true);
+				
+				$slw_lat = get_term_meta($tag->term_id, 'slw_lat', true);
+				$slw_lng = get_term_meta($tag->term_id, 'slw_lng', true);
 			}
 			
 			// if email notifications are disable
-			if( ! isset($this->plugin_settings['location_email_notifications']) || $this->plugin_settings['location_email_notifications'] != 'on' ) {
-				$location_email = null;
-			}
+			//if( ! isset($this->plugin_settings['location_email_notifications']) || $this->plugin_settings['location_email_notifications'] != 'on' ) {
+				//$location_email = null;
+			//}
 
 			// Echo view
 			echo \SLW\SRC\Helpers\view($view, [
@@ -174,7 +180,9 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				'auto_order_allocate_priority'	=> $auto_order_allocate_priority,
 				'location_email'				=> $location_email,
 				'location_address'				=> $location_address,
-				'location_timings'				=> $location_timings
+				'location_timings'				=> $location_timings,
+				'slw_lat'						=> $slw_lat,
+				'slw_lng'						=> $slw_lng
 			]);
 		}
 
@@ -194,6 +202,9 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				}
 				update_term_meta($term_id, 'slw_location_address', sanitize_text_field($_POST['location_address']));
 				update_term_meta($term_id, 'slw_location_timings', sanitize_text_field($_POST['location_timings']));
+				
+				update_term_meta($term_id, 'slw_lat', sanitize_text_field($_POST['slw-lat']));
+				update_term_meta($term_id, 'slw_lng', sanitize_text_field($_POST['slw-lng']));
 			}
 
             wp_cache_delete(self::$location_cache_key, SLW_PLUGIN_BASENAME);
@@ -224,7 +235,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 
 			$default_location = ! empty( get_post_meta( $product_id, '_slw_default_location', true ) ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			?>
-			<script>
+			<script type="text/javascript" language="javascript">
 				( function( $ ){
 					$( document ).ready( function() {
 						slwHideLocationsYoastMakePrimary();

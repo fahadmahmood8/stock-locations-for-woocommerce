@@ -9,6 +9,8 @@
 	function init() {
 		slwWcCartItemStockLocation();
 	}
+	
+		
 
 	function slwWcCartItemStockLocation()
 	{

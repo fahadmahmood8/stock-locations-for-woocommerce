@@ -125,7 +125,7 @@ if( !class_exists('SlwFrontendCart') ) {
 					// lock to default location if enabled
 					if( $lock_default_location && $default_location != 0 ) {
 						echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
-						echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$default_location.'" selected="selected" disabled="disabled">'.$stock_locations[$default_location]['name'].'</option>';
+						echo '<option data-price="" data-quantity="" class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$default_location.'" selected="selected" disabled="disabled">'.$stock_locations[$default_location]['name'].'</option>';
 						echo '</select>';
 						return;
 					}
@@ -148,7 +148,7 @@ if( !class_exists('SlwFrontendCart') ) {
 						} else {
 							$disabled = 'disabled="disabled"';
 						}
-						echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location['term_id'].'" '.$selected.' '.$disabled.'>'.$location['name'].'</option>';
+						echo '<option data-price="" data-quantity="" class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location['term_id'].'" '.$selected.' '.$disabled.'>'.$location['name'].'</option>';
 					}
 	
 					echo '</select>';

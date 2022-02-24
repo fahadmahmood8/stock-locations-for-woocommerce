@@ -315,7 +315,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 						foreach( $product_variations as $variation ) {
 
 							$variation_id = $variation['variation_id'];
-
+							//pree($variation_id);pree($product_stock_location_terms);pree($terms_total);
 							$this->update_product_meta($variation_id, $product_stock_location_terms, $terms_total);
 
 						}
@@ -376,9 +376,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 						//pree($_POST);exit;
 						$stock_location_term_input = sanitize_text_field($_POST[$stock_input_id]);
 						$stock_location_price_term_input = sanitize_slw_data($_POST[$price_input_id]);
-
+						
 						// Get post meta
 						$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
+						
+						//pree(is_numeric($stock_location_term_input).' - '.$stock_location_term_input.' - '.$postmeta_stock_at_term.' = '.($stock_location_term_input==$postmeta_stock_at_term));
 
 						// Check if the $_POST value is the same as the postmeta, if not update the postmeta
 						if( $stock_location_term_input !== $postmeta_stock_at_term ) {
@@ -398,7 +400,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 							update_post_meta( $id, '_stock_location_price_' . $term->term_id, $stock_location_price_term_input );
 							
 						}
-						pree(get_post_meta( $id, '_stock_location_price_' . $term->term_id, true));
+						//pree(get_post_meta( $id, '_stock_location_price_' . $term->term_id, true));
 						// Update stock when reach the last term
 						if($counter === $terms_total) {
 							
@@ -427,7 +429,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				SlwProductHelper::update_wc_stock_status( $id, array_sum($input_amounts) );
 			}
 			
-			//exit;
+			
 
 		}
 

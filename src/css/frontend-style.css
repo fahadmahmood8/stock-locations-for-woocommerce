@@ -32,3 +32,6 @@
 	pointer-events: none !important;
 	cursor: default !important;
 }
+a.slw-variable-btn{
+	visibility:hidden;
+}

@@ -64,7 +64,8 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			// backorder enabled
 			} else {
 				$current_stock_status = get_post_meta( $product_id, '_stock_status', true );
-				if( $stock_qty > 0 && $current_stock_status != 'instock' ) {
+				//pree($current_stock_status.' - '.$stock_qty);exit;
+				if( $stock_qty > 0 ) { //&& $current_stock_status != 'instock'
 					update_post_meta( $product_id, '_stock_status', 'instock' );
 					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 					// remove the link in outofstock taxonomy for the current product

@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -122,6 +122,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.7.2 =
+- New: Different prices according to the inventory locations. [Thanks to Justyn Thomas][01/02/2022]
+- Fix: In stock / Out stock issue for zero value in both simple and variable products. [Thanks to Petri Mustanoja][17/02/2022]
+
 = 1.7.1 =
 - New: Different prices according to the inventory locations. [Thanks to Justyn Thomas][20/01/2022]
 

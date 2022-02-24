@@ -58,11 +58,17 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			
 					$_stock_location_price = '_stock_location_price_'.$id;
 					$product_stock_price = get_post_meta( $product_id, $_stock_location_price, true );
+					$product_stock_price = (float)$product_stock_price;
 					
 					$stock_locations_to_display[$id]['price']            = number_format($product_stock_price, 2);
 					
+					$product_stock_price = (float)$product->get_price();
+					
+					$stock_locations_to_display[$id]['price'] = ($stock_locations_to_display[$id]['price']>0?$stock_locations_to_display[$id]['price']:$product_stock_price);
+					
 				}else{
-					$stock_locations_to_display[$id]['price']            = number_format($product->get_price(), 2);
+					$product_stock_price = (float)$product->get_price();
+					$stock_locations_to_display[$id]['price']            = number_format($product_stock_price, 2);
 				}
 				//pree($stock_locations_to_display);
 
@@ -84,7 +90,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 					}
 				}
 			}
-			//pree($stock_locations_to_display);
+			//pree($stock_locations_to_display);exit;
 			return $stock_locations_to_display;
 		}
 

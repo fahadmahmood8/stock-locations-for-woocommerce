@@ -67,6 +67,7 @@ if(!class_exists('SlwSettings')) {
 				'stock-locations'	=> array('label'=>__( 'Stock Locations', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-sitemap"></i>'),
 				'widgets'	=> array('label'=>__( 'Widgets', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-puzzle-piece"></i>'),
 				'logger'	=> array('label'=>__( 'Logs', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-route"></i>'),
+				'api'	=> array('label'=>__( 'Developers', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-code"></i>'),
 				'help'	=> array('label'=>__( 'Help', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-question-circle"></i>'),
 			) );
 		}
@@ -283,6 +284,7 @@ if(!class_exists('SlwSettings')) {
 				'slw_setting_setting_section',
 				array('class'=>'wc_restore_stock_pending')
 			);
+			
 		}
 		
 		/**
