@@ -370,10 +370,12 @@ div.slw_widgets ul{
 	width:100%;
 	float:left;
 }
-div.slw_widgets ul li{
-	list-style:none;
-	cursor:pointer;
-	position:relative;
+div.slw_widgets ul li {
+	list-style: none;
+	cursor: pointer;
+	position: relative;
+	float: left;
+	width: 100%;
 }
 div.slw_widgets > ul > li{
 	border-bottom:1px solid #4200FF;
@@ -410,6 +412,12 @@ div.slw_widgets ul li[data-type="description"]{
 }
 div.slw_widgets ul li[data-type="shortcode"]{
 }
+div.slw_widgets ul li[data-type="shortcode"] ul{
+	margin:0 0 20px 0;
+}
+div.slw_widgets ul li[data-type="shortcode"] ul li{
+	line-height:24px;
+}
 div.slw_widgets ul li[data-type="screenshot"]{
 }
 div.slw_widgets ul li[data-type="shortcode"] span {
@@ -417,7 +425,13 @@ div.slw_widgets ul li[data-type="shortcode"] span {
 	display: block;
 	color: #aa2121;
 	font-weight: bold;
-	font-size: 18px;
+	font-size:12px;
+}
+div.slw_widgets ul li[data-type="screenshot"] a{
+	display:block;
+	float:left;
+	margin: 0 20px 0 0;
+	cursor:pointer;
 }
 div.slw_widgets ul li[data-type="screenshot"] img{
 	height:100px;
@@ -439,4 +453,39 @@ div.slw_widgets ul li[data-type="type"] span[data-val="Premium"] {
 }
 div.slw_widgets ul li[data-type="type"] span[data-val="Free"] {
 	
+}
+div.slw_crons ul{
+}
+div.slw_crons ul li{
+	
+}
+div.slw_crons ul li.hot{
+	color:#900;
+}
+.location_popup{
+	height:200px;
+}
+p.description small{
+	color:#960;
+}
+p.description small b{
+	color:#000;
+}
+div.slw-sample-codes{
+	position:relative;
+}
+div.slw-sample-codes a{
+	cursor:pointer;
+	display:block;
+	position:absolute;
+	top:-20px;
+	right:0;
+}
+div.slw-sample-codes a svg{
+	display:block;	
+	font-size:30px;
+	color:#900;
+}
+div.slw-sample-code{
+	display:none;
 }

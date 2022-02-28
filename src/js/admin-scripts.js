@@ -255,26 +255,17 @@ function slw_gmap_initialize(input_id) {
 			slw_clear_debug_log: 'true',
 			slw_clear_debug_log_field: slw_admin_scripts.nonce,
 		}
-
-		// console.log(data);
+		
+		$.blockUI({ message: false });
 		$.post(ajaxurl, data, function (response, code) {
-
-			// console.log(response);
+			$.unblockUI();
 			if (code == 'success') {
-
-
-				//
 			}
-
 		});
-
 
 	});
 	
 	$('input#slw-api-status').bind('click', function (e) {
-
-
-
 		var data = {
 
 			action: 'slw_api_status',
@@ -282,18 +273,33 @@ function slw_gmap_initialize(input_id) {
 			slw_nonce_field: slw_admin_scripts.nonce,
 		}
 
-		
+		$.blockUI({ message: false });
 		$.post(ajaxurl, data, function (response, code) {
-
-			
+			$.unblockUI();
 			if (code == 'success') {
-
-
-				//
 			}
 
 		});
 
+
+	});
+	
+	$('div.slw_widgets label.switch input[type="checkbox"]').bind('click', function (e) {
+		
+		var data = {
+
+			action: 'slw_widgets_settings',
+			slw_widget_key: $(this).attr('name'),
+			slw_widget_value: $(this).is(':checked')?$(this).val():'',
+			slw_nonce_field: slw_admin_scripts.nonce,			
+		}
+
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();			
+			if (code == 'success') {
+			}
+		});
 
 	});
 	
@@ -321,43 +327,47 @@ function slw_gmap_initialize(input_id) {
 
 		if(!slw_widgets_update_request){
 			slw_widgets_update_request = true;
+			$.blockUI({ message: false });
 			$.post(ajaxurl, data, function (response, code) {
-	
-				// console.log(response);
+				$.unblockUI();
+				
 				if (code == 'success') {
-	
-	
-					//
+					
 				}
 				
 				slw_widgets_update_request = false;
 			});
 		}
 	});
+	if($('div.slw_widgets').length>0){
+		$('div.slw_widgets ul li[data-type="screenshot"] a').magnificPopup({
+		  type: 'image',
+		  gallery: {
+			// options for gallery
+			enabled: false
+		  },
+		  mainClass: 'mfp-with-zoom', // this class is for CSS animation below
+		
+		  zoom: {
+			enabled: true, // By default it's false, so don't forget to enable it
+		
+			duration: 400, // duration of the effect, in milliseconds
+			easing: 'ease-in', // CSS transition easing function
+		
+			// The "opener" function should return the element from which popup will be zoomed in
+			// and to which popup will be scaled down
+			// By defailt it looks for an image tag:
+			opener: function(openerElement) {
+			  // openerElement is the element on which popup was initialized, in this case its <a> tag
+			  // you don't need to add "opener" option if this code matches your needs, it's defailt one.
+			  return openerElement.is('img') ? openerElement : openerElement.find('img');
+			}
+		  }
+		});
+	}
 	
-	$('div.slw_widgets ul li[data-type="screenshot"] a').magnificPopup({
-	  type: 'image',
-	  gallery: {
-		// options for gallery
-		enabled: false
-	  },
-	  mainClass: 'mfp-with-zoom', // this class is for CSS animation below
-	
-	  zoom: {
-		enabled: true, // By default it's false, so don't forget to enable it
-	
-		duration: 400, // duration of the effect, in milliseconds
-		easing: 'ease-in', // CSS transition easing function
-	
-		// The "opener" function should return the element from which popup will be zoomed in
-		// and to which popup will be scaled down
-		// By defailt it looks for an image tag:
-		opener: function(openerElement) {
-		  // openerElement is the element on which popup was initialized, in this case its <a> tag
-		  // you don't need to add "opener" option if this code matches your needs, it's defailt one.
-		  return openerElement.is('img') ? openerElement : openerElement.find('img');
-		}
-	  }
+	$('div.slw-sample-codes > a').on('click', function(){
+		$(this).parent().find('div.slw-sample-code').toggle();
 	});
 	
 

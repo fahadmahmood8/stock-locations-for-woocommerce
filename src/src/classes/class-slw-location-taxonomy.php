@@ -147,6 +147,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			$auto_order_allocate_priority = 0;
 			$location_email = '';
 			$location_address = '';
+			$location_popup = '';
 			$location_timings = '';
 			
 			$slw_lat = '';
@@ -161,6 +162,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				$auto_order_allocate_priority = get_term_meta($tag->term_id, 'slw_location_priority', true);
 				$location_email = get_term_meta($tag->term_id, 'slw_location_email', true);
 				$location_address = get_term_meta($tag->term_id, 'slw_location_address', true);
+				$location_popup = get_term_meta($tag->term_id, 'slw_location_popup', true);
 				$location_timings = get_term_meta($tag->term_id, 'slw_location_timings', true);
 				
 				$slw_lat = get_term_meta($tag->term_id, 'slw_lat', true);
@@ -180,6 +182,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				'auto_order_allocate_priority'	=> $auto_order_allocate_priority,
 				'location_email'				=> $location_email,
 				'location_address'				=> $location_address,
+				'location_popup'				=> $location_popup,
 				'location_timings'				=> $location_timings,
 				'slw_lat'						=> $slw_lat,
 				'slw_lng'						=> $slw_lng
@@ -201,6 +204,8 @@ if(!class_exists('SlwLocationTaxonomy')) {
 					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
 				}
 				update_term_meta($term_id, 'slw_location_address', sanitize_text_field($_POST['location_address']));
+				update_term_meta($term_id, 'slw_location_popup', wp_kses($_POST['location_popup'], 'post'));
+				
 				update_term_meta($term_id, 'slw_location_timings', sanitize_text_field($_POST['location_timings']));
 				
 				update_term_meta($term_id, 'slw_lat', sanitize_text_field($_POST['slw-lat']));

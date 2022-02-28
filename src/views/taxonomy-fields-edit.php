@@ -68,6 +68,33 @@
 			</td>
 		</tr>
         <tr class="form-field term-name-wrap">
+			<th scope="row"><label><?php echo __('Location Map Popup', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-map-marker-alt"></i></th>
+			<td><?php wp_editor( $location_popup, 'location_popup', array('editor_class'=>'location_popup') ); ?>
+				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
+                <small><b><?php echo __('Placeholders', 'stock-locations-for-woocommerce'); ?>:</b> LOCATION_ADDRESS, LOCATION_URL</small>
+                <div class="slw-sample-codes"><a title="<?php echo __('Click here to view the sample HTML for popup', 'stock-locations-for-woocommerce'); ?>"><i class="fas fa-code"></i></a><div class="slw-sample-code">&lt;div class=&quot;underlined&quot;&gt;LOCATION_ADDRESS&lt;/div&gt;<br>
+  &lt;strong class=&quot;red&quot;&gt;(999) 999-9999&lt;/strong&gt;
+&lt;h6&gt;Estimated Order Time:&lt;/h6&gt;<br>
+  &lt;ul&gt;<br>
+  &lt;li&gt;&lt;label&gt;Delivery:&lt;/label&gt;&lt;span class=&quot;red&quot;&gt;40 Minutes&lt;/span&gt;&lt;/li&gt;<br>
+  &lt;li&gt;&lt;label&gt;Carryout:&lt;/label&gt;&lt;span class=&quot;red&quot;&gt;15 Minutes&lt;/span&gt;&lt;/li&gt;<br>
+  &lt;/ul&gt;
+&lt;div class=&quot;map-popup-footer&quot;&gt;
+&lt;strong class=&quot;red&quot;&gt;Open until 8:00pm tonight&lt;/strong&gt;<br>
+  &lt;div class=&quot;clear-both&quot;&gt;<br>
+  &lt;a href=&quot;LOCATION_URL&quot; class=&quot;slw-button float-left&quot;&gt;ORDER&lt;/a&gt;<br>
+  &lt;ul class=&quot;float-right&quot;&gt;<br>
+  &lt;li&gt;&lt;a&gt;STORE MENU&lt;/a&gt;&lt;/li&gt;<br>
+  &lt;li&gt;&lt;a&gt;SPECIALS/DEALS&lt;/a&gt;&lt;/li&gt;<br>
+  &lt;li&gt;&lt;a&gt;MORE INFORMATION&lt;/a&gt;&lt;/li&gt;<br>
+  &lt;/ul&gt;<br>
+  &lt;/div&gt;<br>
+  &lt;/div&gt;</div>
+</div>
+                </p>
+			</td>
+		</tr>
+        <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Opening Timings', 'stock-locations-for-woocommerce'); ?></label> <i class="far fa-clock"></i></th>
 			<td>
 				<input name="location_timings" type="text" value="<?php echo $location_timings; ?>" size="40" /> 

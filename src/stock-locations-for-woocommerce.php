@@ -60,7 +60,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.7.2';
+		public           $version  = '1.7.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -229,6 +229,7 @@ if(!class_exists('SlwMain')) {
 			$data['slw_term_id'] = $term_id;
 			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
 			$data['dummy_price'] = wc_price(111);
+			$data['nonce']   = wp_create_nonce( 'slw_nonce' );
 			
 			//pree($data);exit;
 			wp_enqueue_script(

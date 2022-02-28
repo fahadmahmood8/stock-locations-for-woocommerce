@@ -122,6 +122,12 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.7.3 =
+- New: Crons tabs added. [Thanks to Dennis Broers - susNL][24/02/2022]
+- New: Locations map with a popup with useful information about the location/pickup. [Thanks to Justyn Thomas][28/02/2022]
+- Fix: Stock not updated correctly - https://wordpress.org/support/topic/stock-not-updated-correctly. [Thanks to Dennis Broers - susNL][24/02/2022]
+- Fix: In stock / Out stock issue for zero value in both simple and variable products. [Thanks to Russell Field][25/02/2022]
+
 = 1.7.2 =
 - New: Different prices according to the inventory locations. [Thanks to Justyn Thomas][01/02/2022]
 - Fix: In stock / Out stock issue for zero value in both simple and variable products. [Thanks to Petri Mustanoja][17/02/2022]

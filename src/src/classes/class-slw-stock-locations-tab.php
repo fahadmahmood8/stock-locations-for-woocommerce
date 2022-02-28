@@ -10,6 +10,7 @@ use SLW\SRC\Helpers\SlwStockAllocationHelper;
 use SLW\SRC\Helpers\SlwProductHelper;
 use SLW\SRC\Helpers\SlwWpmlHelper;
 
+
 if ( !defined( 'WPINC' ) ) {
 	die;
 }
@@ -260,7 +261,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 * @since 1.0.0
 		 * @return int|void
 		 */
-		public function save_tab_data_stock_locations_wc_product_save( $post_id, $post, $update )
+		public static function save_tab_data_stock_locations_wc_product_save( $post_id, $post, $update )
 		{
 			if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
 				return $post_id;
@@ -306,7 +307,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				// If has terms
 				if( $product_stock_location_terms ) {
 
-					$this->update_product_meta($post_id, $product_stock_location_terms, $terms_total);
+					self::update_product_meta($post_id, $product_stock_location_terms, $terms_total);
 
 					// Check if product has variations
 					if( isset($product_variations) && ( !empty($product_variations) || ($product_variations !== 0) ) ) {
@@ -316,7 +317,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 							$variation_id = $variation['variation_id'];
 							//pree($variation_id);pree($product_stock_location_terms);pree($terms_total);
-							$this->update_product_meta($variation_id, $product_stock_location_terms, $terms_total);
+							self::update_product_meta($variation_id, $product_stock_location_terms, $terms_total);
 
 						}
 
@@ -333,7 +334,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 * @since 1.0.0
 		 * @return void
 		 */
-		public function update_product_meta( $id, $product_stock_location_terms, $terms_total )
+		public static function update_product_meta( $id, $product_stock_location_terms, $terms_total )
 		{
 			// WPML
 			$id           = SlwWpmlHelper::object_id( $id );

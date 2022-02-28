@@ -68,6 +68,7 @@ if(!class_exists('SlwSettings')) {
 				'widgets'	=> array('label'=>__( 'Widgets', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-puzzle-piece"></i>'),
 				'logger'	=> array('label'=>__( 'Logs', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-route"></i>'),
 				'api'	=> array('label'=>__( 'Developers', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-code"></i>'),
+				'crons'	=> array('label'=>__( 'Crons', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-redo-alt"></i>'),
 				'help'	=> array('label'=>__( 'Help', 'stock-locations-for-woocommerce' ),'icon'=>'<i class="fas fa-question-circle"></i>'),
 			) );
 		}

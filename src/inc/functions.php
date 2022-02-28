@@ -221,10 +221,27 @@ if(!function_exists('wc_slw_admin_init')){
 		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
 			
 			$order = get_post(sanitize_slw_data($_GET['post']));
+			
+			if(is_object($order) && $order->post_type=='product'){
+				if(isset($_GET['get_keys'])){
+					
+					//slw_update_products();
+					
+					pree(get_post_meta($order->ID));
+					
+					$product = wc_get_product($order->ID);
+					
+					pree($product);
+					
+					exit;
+				}
+			}
+			
 			if(is_object($order) && $order->post_type=='shop_order'){
 				
 				if(isset($_GET['get_keys'])){
 					pree(get_post_meta($order->ID));
+					
 				}
 				if(isset($_GET['get_items'])){
 					$order_obj = wc_get_order($order->ID);
@@ -274,8 +291,17 @@ jQuery(document).ready(function($){
 					'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
 					'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
 					'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-					'shortcode' => '[SLW-MAP search-field="yes" locations-list="yes" map="yes"]',					
-					'screenshot' => SLW_PLUGIN_URL.'images/slw-map-thumb.png',
+					'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes"]'),					
+					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
+					
+				),
+				'slw-archives' => array(
+					'type' => __('Premium', 'stock-locations-for-woocommerce'),
+					'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
+					'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
+					'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
+					'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", $product_id, $cat_id, $location_id);','add_action("<strong>slw_archive_items_below_qty</strong>", $product_id, $cat_id, $location_id);'),										
+					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
 					
 				)
 			);
@@ -307,7 +333,7 @@ jQuery(document).ready(function($){
         <?php if(!empty($wdata)): ?>
         <ul>
         <?php foreach($wdata as $dtype=>$dvalue): ?>
-        	<li data-type="<?php echo $dtype; ?>"><?php echo slw_widget_val($dtype, $dvalue); ?></li>            
+        	<li data-type="<?php echo $dtype; ?>" data-is="<?php echo is_array($dvalue)?'array':'string'; ?>"><?php echo slw_widget_val($dtype, $dvalue); ?></li>            
         <?php endforeach; ?>
         </ul>
         <?php endif; ?>
@@ -320,15 +346,39 @@ jQuery(document).ready(function($){
 		}
 	}
 	if(!function_exists('slw_widget_val')){
-		function slw_widget_val($type, $val){
-			$ret = $val;
+		function slw_widget_val($type, $val=''){
+			$ret = (is_array($val)?'':$val);
+			if($val==''){return;}
 			switch($type){
 				case 'screenshot':
-					$ret = '<a href="'.$val.'"><img src="'.$val.'" /></a>';
+					if(is_array($val)){
+						foreach($val as $v){
+							$ret .= '<a href="'.$v.'"><img src="'.$v.'" /></a>';
+						}
+					}else{
+						$ret = '<a href="'.$val.'"><img src="'.$val.'" /></a>';
+					}
 				break;
 				case 'input':
 					$db_val = get_option($val['name']);
-					$ret = '<label>'.$val['caption'].':</label><input type="'.$val['type'].'" name="'.$val['name'].'" id="'.$val['name'].'" value="'.$db_val.'" />';
+
+					$ret = ($val['caption']?'<label>'.$val['caption'].':</label>':'');
+					
+					switch($val['type']){
+						case 'text':
+							$ret .= '<input type="'.$val['type'].'" name="'.$val['name'].'" id="'.$val['name'].'" value="'.$db_val.'" />';
+						break;
+						case 'toggle':
+							$ret .= '<label data-val="'.$db_val.'" class="switch" style="float:none; clear:both;"><input '.checked($db_val=='yes', true, false).' name="'.$val['name'].'" id="'.$val['name'].'" value="yes" type="checkbox" data-toggle="toggle" data-on="'.__('Enabled', 'stock-locations-for-woocommerce').'" data-off="'.__('Disabled', 'stock-locations-for-woocommerce').'" /><span class="slider round"></span></label>';
+						break;
+					}
+				break;
+				case 'shortcode':
+					if(is_array($val)){
+						$ret .= '<ul><li><span>'.implode('</span></li><li><span>', $val).'</span></li></ul>';
+					}else{
+						$ret .= '<span>'.$val.'</span>';
+					}
 				break;
 				default:
 					$ret = '<span data-val="'.$val.'">'.$val.'</span>';
@@ -336,5 +386,67 @@ jQuery(document).ready(function($){
 			}
 			return $ret;
 		}
+	}
+	if(!function_exists('slw_update_products')){
+		function slw_update_products(){
+			
+		
+			global $wpdb;
+			//$q = "SELECT p.ID FROM $wpdb->posts p RIGHT JOIN $wpdb->postmeta pm ON pm.post_id=p.ID AND pm.meta_key='_slw_cron_sniffed' AND pm.meta_value IS NULL WHERE p.post_date>'".date('Y-m-d')." 00:00:00' AND p.post_type='product' ORDER BY p.ID DESC LIMIT 1";
+			$limit = (isset($_GET['limit'])?sanitize_slw_data($_GET['limit']):0);
+			$limit = (is_numeric($limit) && $limit>0?$limit:10);
+			$args = array(
+				'numberposts' => $limit,
+				'post_type' => 'product',
+				'meta_query' => array(
+					array(
+						'key'       => '_slw_cron_sniffed',
+						'compare' => 'NOT EXISTS'
+					)
+				),
+				'date_query' => array(
+					array(
+						'column' => 'post_date',
+						'after'     => date('Y-m-d', strtotime('-1 day')).'',
+						'before'    => date('Y-m-d').'',
+						'inclusive' => true,
+					),
+				),
+			);
+			//pree($args);
+			$products = get_posts($args);
+			//$products = $wpdb->get_results($q);
+			//pree(count($products));
+			if(!empty($products)){
+				
+				foreach($products as $product_post){
+					//pree(product_post);
+					//pree($res_obj);
+	
+					//$product_post = get_post($res_obj->ID);
+					echo '<br />'.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>';
+					
+					switch($_GET['action']){
+						case 'update-stock':
+							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true);
+							update_post_meta($product_post->ID, '_slw_cron_sniffed', true);
+							echo ' stock updated.';
+						break;
+
+					}		
+				}
+			}
+			
+			exit;
+			
+		}
+	}
+	if(!function_exists('slw_crons')){
+		function slw_crons(){	
+			slw_update_products();
+		}
+	}
+	if(isset($_GET['slw-crons'])){
+		add_action('init', 'slw_crons');
 	}
 	include_once('functions-api.php');
