@@ -35,3 +35,6 @@
 a.slw-variable-btn{
 	visibility:hidden;
 }
+.woocommerce-variation-availability p.stock{
+	display:none;
+}

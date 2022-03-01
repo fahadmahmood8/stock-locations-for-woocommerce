@@ -95,6 +95,7 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 		}
 		public static function get_product_locations_stock_total( $product_id )
 		{
+
 			if( empty( $product_id ) ) return;
 
 			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );

@@ -16,7 +16,7 @@
 		$(document).on( 'found_variation', function( event ) {
 			event.preventDefault();
 			
-			if(slw_frontend.stock_locations>0)
+			//if(slw_frontend.stock_locations>0)
 			$('.woocommerce-variation-availability p.stock').hide();
 			
 			let variation_id = $(".woocommerce-variation-add-to-cart").find('.variation_id').val();
@@ -28,7 +28,7 @@
 					action:       'get_variation_locations',
 					security:     $('#woocommerce-cart-nonce').val(),
 					variation_id: variation_id,
-					product_id:   product_id,
+					product_id:   product_id,					
 				},
 				success ( response ) {
 					if( response.success ) {

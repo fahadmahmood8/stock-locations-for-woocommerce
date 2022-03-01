@@ -33,9 +33,11 @@ if( !class_exists('SlwFrontendProduct') ) {
 				add_action( 'woocommerce_before_add_to_cart_button', array($this, 'simple_location_select') );
 				add_action( 'woocommerce_single_variation', array($this, 'variable_location_select') );
 				add_filter( 'woocommerce_add_cart_item_data', array($this, 'add_to_cart_location_validation'), 10, 3 );
-				add_action( 'wp_ajax_get_variation_locations', array($this, 'get_variation_locations') );
-				add_action( 'wp_ajax_nopriv_get_variation_locations', array($this, 'get_variation_locations') );
 			}
+
+			add_action( 'wp_ajax_get_variation_locations', array($this, 'get_variation_locations') );
+			add_action( 'wp_ajax_nopriv_get_variation_locations', array($this, 'get_variation_locations') );
+			
 		}
 
 		/**

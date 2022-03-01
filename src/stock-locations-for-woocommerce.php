@@ -1,7 +1,7 @@
 <?php if ( ! defined( 'ABSPATH' ) ){ exit; }else{ clearstatcache(); }
 /**
  * Plugin Name:       		Stock Locations for WooCommerce
- * Description:       		This plugin will help you manage WooCommerce Products stocks throw locations.
+ * Description:       		This plugin will help you to manage WooCommerce Products stocks through locations.
  * Version:					__STABLE_TAG__
  * Requires at least: 		4.9
  * Requires PHP:      		7.2
@@ -60,7 +60,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.7.4';
+		public           $version  = '1.7.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -221,6 +221,7 @@ if(!class_exists('SlwMain')) {
 			$data['is_product'] = is_product();
 			$data['product_id'] = 0;
 			$data['product_type'] = '';
+			$data['show_in_product_page'] = $this->plugin_settings['show_in_product_page'];
 			$data['stock_locations'] = 0;
 			$data['stock_quantity'] = array();
 			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
@@ -259,7 +260,7 @@ if(!class_exists('SlwMain')) {
 				
 			}
 			
-			if($data['is_product'] && (is_object($post) && $post->post_type=='product') && isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
+			if($data['is_product'] && (is_object($post) && $post->post_type=='product')){// && isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
 				
 				$product_id = $post->ID;
 				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($product_id).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');

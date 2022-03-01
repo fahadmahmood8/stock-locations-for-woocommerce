@@ -449,4 +449,25 @@ jQuery(document).ready(function($){
 	if(isset($_GET['slw-crons'])){
 		add_action('init', 'slw_crons');
 	}
+	
+	
+
+    add_filter('woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock' );
+
+    function slw_woocommerce_product_is_in_stock($instock_status=false) {
+		global $product;
+		$type = (is_object($product)?$product->get_type():'');
+		//$product_id = $product->get_id();
+		switch($type){
+			case 'variable':
+			break;
+			case 'simple':
+				//$product_id	
+				$instock_status = ($product->get_stock_quantity()>0);
+			break;
+		}
+		//pree($product_id);
+		return $instock_status;
+	}
+
 	include_once('functions-api.php');
