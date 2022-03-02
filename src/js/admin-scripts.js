@@ -284,6 +284,47 @@ function slw_gmap_initialize(input_id) {
 
 	});
 	
+	$('input#slw-location-status').bind('click', function (e) {
+		var data = {
+
+			action: 'slw_location_status',
+			status: $(this).is(':checked')?$(this).val():'',
+			location_id: $(this).data('id'),
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+			}
+
+		});
+
+
+	});	
+	
+	$('input#slw-map-status').bind('click', function (e) {
+		var data = {
+
+			action: 'slw_map_status',
+			status: $(this).is(':checked')?$(this).val():'',
+			location_id: $(this).data('id'),
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+			}
+
+		});
+
+
+	});		
+	
+	
 	$('div.slw_widgets label.switch input[type="checkbox"]').bind('click', function (e) {
 		
 		var data = {
@@ -368,6 +409,9 @@ function slw_gmap_initialize(input_id) {
 	
 	$('div.slw-sample-codes > a').on('click', function(){
 		$(this).parent().find('div.slw-sample-code').toggle();
+	});
+	$('li[data-type="shortcode"]').on('click', function(){
+		$(this).toggleClass('collapsed');
 	});
 	
 

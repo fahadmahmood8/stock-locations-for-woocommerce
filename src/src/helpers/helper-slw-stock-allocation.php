@@ -285,15 +285,12 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 		 */
 		public static function getBackOrderLocation()
 		{
-			$terms = get_terms(array(
-				'taxonomy'		=>  SlwLocationTaxonomy::$tax_singular_name,
-				'hide_empty' 	=>  false,
-				'meta_query' 	=> array(array(
+			$meta_query = array(
 					'key'		=> 'slw_backorder_location',
 					'value'   	=> 1,
 					'compare'	=> '='
-				))
-			));
+			);
+			$terms = slw_get_locations(SlwLocationTaxonomy::$tax_singular_name, $meta_query);
 
 			return (sizeof($terms)) ? $terms[0] : false;
 		}

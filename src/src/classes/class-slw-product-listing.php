@@ -75,7 +75,7 @@ if(!class_exists('SlwProductListing')) {
 				$taxonomy_name = SlwLocationTaxonomy::get_Tax_Names('plural');
 
 				// Retrieve taxonomy terms
-				$terms = get_terms( $taxonomy_slug );
+				$terms = slw_get_locations($taxonomy_slug);
 
 				// Display filter HTML
 				echo "<select name='{$taxonomy_slug}' id='{$taxonomy_slug}' class='postform'>";
@@ -202,10 +202,7 @@ if(!class_exists('SlwProductListing')) {
 			$locations = array();
 
 			// Get Terms
-			$terms = get_terms(array(
-				'taxonomy' => SlwLocationTaxonomy::$tax_singular_name,
-				'hide_empty' => false,
-			));
+			$terms = slw_get_locations($tax_singular_name);
 
 			foreach ($terms as $term) {
 				$slw_default_location = get_term_meta($term->term_id, 'slw_default_location', true);

@@ -27,9 +27,7 @@
 							if($data['id']){
 								$response = get_term_by('id', $data['id'], 'location');
 							}else{
-								$response = get_terms( 'location', array(
-									'hide_empty' => false,
-								) );
+								$response = slw_get_locations();
 							}
 						break;
 						case 'stock':

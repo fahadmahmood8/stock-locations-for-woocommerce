@@ -104,6 +104,46 @@ if(!function_exists('wc_slw_logger')){
 }
 
 
+
+add_action('wp_ajax_slw_location_status', 'slw_location_status');
+
+if(!function_exists('slw_location_status')){
+	function slw_location_status(){
+		if(!empty($_POST) && isset($_POST['status'])){
+			if (! isset( $_POST['slw_nonce_field'] ) || ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )	) {	
+				echo '0';		
+			} else {
+				$status = ($_POST['status']=='yes');
+				$location_id = sanitize_slw_data($_POST['location_id']);
+				update_term_meta($location_id, 'slw_location_status', $status);				
+				echo '1';
+			}
+		}
+
+		wp_die();
+	}
+}
+
+add_action('wp_ajax_slw_map_status', 'slw_map_status');
+
+if(!function_exists('slw_map_status')){
+	function slw_map_status(){
+		if(!empty($_POST) && isset($_POST['status'])){
+			if (! isset( $_POST['slw_nonce_field'] ) || ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )	) {	
+				echo '0';		
+			} else {
+				$status = ($_POST['status']=='yes');
+				$location_id = sanitize_slw_data($_POST['location_id']);
+				update_term_meta($location_id, 'slw_map_status', $status);				
+				echo '1';
+			}
+		}
+
+		wp_die();
+	}
+}
+
+
 add_action('wp_ajax_slw_api_status', 'slw_api_status');
 
 if(!function_exists('slw_api_status')){
@@ -282,69 +322,7 @@ jQuery(document).ready(function($){
 </script>
 <?php	
 }
-	if(!function_exists('wc_slw_widgets')){
-		function wc_slw_widgets($ret_type = ''){
-			
-			$arr = array(
-				'slw-map' => array(
-					'type' => __('Premium', 'stock-locations-for-woocommerce'),
-					'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
-					'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
-					'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-					'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes"]'),					
-					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
-					
-				),
-				'slw-archives' => array(
-					'type' => __('Premium', 'stock-locations-for-woocommerce'),
-					'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
-					'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
-					'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
-					'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", $product_id, $cat_id, $location_id);','add_action("<strong>slw_archive_items_below_qty</strong>", $product_id, $cat_id, $location_id);'),										
-					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
-					
-				)
-			);
-			
-			switch($ret_type){
-				default:
-				break;
-				case 'array':
-					return $arr;
-				break;
-				case 'fields':
-					$ret = array();
-					if(!empty($arr)):foreach($arr as $slug=>$wdata):foreach($wdata as $dtype=>$dvalue):
-						switch($dtype){
-							case 'input':
-								$ret[] = $dvalue['name'];
-							break;
-						}
-					endforeach;endforeach;endif;
-					return $ret;	
-				break;
-			}
-?>
-<?php if(!empty($arr)): ?>
-<ul>
-<?php foreach($arr as $slug=>$wdata): ?>
-	<li data-slug="<?php echo $slug; ?>">
-                
-        <?php if(!empty($wdata)): ?>
-        <ul>
-        <?php foreach($wdata as $dtype=>$dvalue): ?>
-        	<li data-type="<?php echo $dtype; ?>" data-is="<?php echo is_array($dvalue)?'array':'string'; ?>"><?php echo slw_widget_val($dtype, $dvalue); ?></li>            
-        <?php endforeach; ?>
-        </ul>
-        <?php endif; ?>
-    
-    </li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
-<?php			
-		}
-	}
+
 	if(!function_exists('slw_widget_val')){
 		function slw_widget_val($type, $val=''){
 			$ret = (is_array($val)?'':$val);
@@ -375,7 +353,7 @@ jQuery(document).ready(function($){
 				break;
 				case 'shortcode':
 					if(is_array($val)){
-						$ret .= '<ul><li><span>'.implode('</span></li><li><span>', $val).'</span></li></ul>';
+						$ret .= '<i class="fas fa-code" title="'.__('Click here to show available hooks', 'stock-locations-for-woocommerce').'"></i><ul><li><span>'.implode('</span></li><li><span>', $val).'</span></li></ul>';
 					}else{
 						$ret .= '<span>'.$val.'</span>';
 					}
@@ -469,5 +447,92 @@ jQuery(document).ready(function($){
 		//pree($product_id);
 		return $instock_status;
 	}
+	
+	function slw_get_locations($taxonomy='location', $additional_meta_query=array()){
+		
+		$args = array('hide_empty' => false, 'meta_query' => array());
+		
+		switch($taxonomy){
+			case 'location':
+				$args['meta_query'][] =	array(
+					'key'       => 'slw_location_status',
+					'value'     => true,
+					'compare'   => '='
+				);			
+			break;
+		}
+		
+		if(!empty($additional_meta_query)){
+			$args['meta_query']['relation'] = 'AND';
+			$args['meta_query'][] = $additional_meta_query;
+		}
+		
+		$terms = get_terms($taxonomy, $args);
+		
+		return $terms;
+	}
 
+	if(!function_exists('wc_slw_widgets')){
+		function wc_slw_widgets($ret_type = ''){
+			
+			$arr = array(
+				'slw-map' => array(
+					'type' => __('Premium', 'stock-locations-for-woocommerce'),
+					'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
+					'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
+					'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
+					'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes"]'),					
+					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
+					
+				),
+				'slw-archives' => array(
+					'type' => __('Premium', 'stock-locations-for-woocommerce'),
+					'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
+					'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
+					'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
+					'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);'),					
+					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
+					
+				)
+			);
+			
+			switch($ret_type){
+				default:
+				break;
+				case 'array':
+					return $arr;
+				break;
+				case 'fields':
+					$ret = array();
+					if(!empty($arr)):foreach($arr as $slug=>$wdata):foreach($wdata as $dtype=>$dvalue):
+						switch($dtype){
+							case 'input':
+								$ret[] = $dvalue['name'];
+							break;
+						}
+					endforeach;endforeach;endif;
+					return $ret;	
+				break;
+			}
+?>
+<?php if(!empty($arr)): ?>
+<ul>
+<?php foreach($arr as $slug=>$wdata): ?>
+	<li data-slug="<?php echo $slug; ?>">
+                
+        <?php if(!empty($wdata)): ?>
+        <ul>
+        <?php foreach($wdata as $dtype=>$dvalue): ?>
+        	<li data-type="<?php echo $dtype; ?>" data-is="<?php echo is_array($dvalue)?'array':'string'; ?>"><?php echo slw_widget_val($dtype, $dvalue); ?></li>            
+        <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    
+    </li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+<?php			
+		}
+	}
 	include_once('functions-api.php');

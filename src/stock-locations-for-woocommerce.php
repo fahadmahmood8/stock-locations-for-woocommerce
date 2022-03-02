@@ -60,7 +60,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.7.5';
+		public           $version  = '1.7.6';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -221,7 +221,7 @@ if(!class_exists('SlwMain')) {
 			$data['is_product'] = is_product();
 			$data['product_id'] = 0;
 			$data['product_type'] = '';
-			$data['show_in_product_page'] = $this->plugin_settings['show_in_product_page'];
+			$data['show_in_product_page'] = (array_key_exists('show_in_product_page', $this->plugin_settings)?$this->plugin_settings['show_in_product_page']:'no');
 			$data['stock_locations'] = 0;
 			$data['stock_quantity'] = array();
 			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
@@ -266,9 +266,7 @@ if(!class_exists('SlwMain')) {
 				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($product_id).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
 				$wc_product = wc_get_product($product_id);
 				
-				$terms = get_terms( 'location', array(
-					'hide_empty' => false,
-				) );	
+				$terms = slw_get_locations();
 				
 				
 				if(!empty($meta_obj)){

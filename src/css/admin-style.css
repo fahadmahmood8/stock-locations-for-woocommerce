@@ -412,8 +412,20 @@ div.slw_widgets ul li[data-type="description"]{
 }
 div.slw_widgets ul li[data-type="shortcode"]{
 }
+div.slw_widgets ul li[data-type="shortcode"] > svg{
+	color:#900;
+	font-size:24px;
+	cursor:pointer;
+	opacity:0.1;
+}
 div.slw_widgets ul li[data-type="shortcode"] ul{
 	margin:0 0 20px 0;
+}
+div.slw_widgets ul li[data-type="shortcode"].collapsed > svg{
+	opacity:1;
+}
+div.slw_widgets ul li[data-type="shortcode"].collapsed ul{
+	display:none;
 }
 div.slw_widgets ul li[data-type="shortcode"] ul li{
 	line-height:24px;
@@ -488,4 +500,8 @@ div.slw-sample-codes a svg{
 }
 div.slw-sample-code{
 	display:none;
+}
+body.taxonomy-location div.wrap,
+body.taxonomy-location div.wrap .form-table td{
+	position:relative;
 }

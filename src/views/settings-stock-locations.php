@@ -5,11 +5,9 @@
 
 <?php
 	// show locations table
-	$terms = get_terms( 'location', array(
-		'hide_empty' => false,
-	) );
+	$terms = slw_get_locations();
 
-	?>
+?>
 	<a class="btn btn-sm btn-success mb-4" href="<?= admin_url( 'edit-tags.php?taxonomy=location&post_type=product' ); ?>"><?php _e( 'Add new', 'stock-locations-for-woocommerce' ); ?></a>
 	<table class="widefat w-50">
 		<thead>

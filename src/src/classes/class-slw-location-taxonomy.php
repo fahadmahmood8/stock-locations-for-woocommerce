@@ -141,6 +141,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 		public function formFields( $tag ) {
 			// Defaults
 			$view = 'taxonomy-fields-new';
+			$location_id = 0;
 			$default_location = 0;
 			$primary_location = 0;
 			$auto_order_allocate = 0;
@@ -152,6 +153,9 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			
 			$slw_lat = '';
 			$slw_lng = '';
+			
+			$location_status = false;
+			$map_status = false;
 
 			// Is edit screen
 			if (is_object($tag)) {
@@ -167,6 +171,12 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				
 				$slw_lat = get_term_meta($tag->term_id, 'slw_lat', true);
 				$slw_lng = get_term_meta($tag->term_id, 'slw_lng', true);
+				
+				$location_id = $tag->term_id;
+				
+				$location_status = get_term_meta($tag->term_id, 'slw_location_status', true);
+				$map_status = get_term_meta($tag->term_id, 'slw_map_status', true);
+				
 			}
 			
 			// if email notifications are disable
@@ -185,7 +195,10 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				'location_popup'				=> $location_popup,
 				'location_timings'				=> $location_timings,
 				'slw_lat'						=> $slw_lat,
-				'slw_lng'						=> $slw_lng
+				'slw_lng'						=> $slw_lng,
+				'location_id'					=> $location_id,
+				'location_status'				=> $location_status,
+				'map_status'					=> $map_status
 			]);
 		}
 
@@ -222,10 +235,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 
             // Cache is not valid, lets get a fresh copy
             if ($locations === false) {
-                $locations = get_terms( array(
-                    'taxonomy' => SlwLocationTaxonomy::$tax_singular_name,
-                    'hide_empty' => false,
-                ) );
+                $locations = slw_get_locations(SlwLocationTaxonomy::$tax_singular_name);
 
                 wp_cache_add(self::$location_cache_key, $locations, SLW_PLUGIN_BASENAME);
             }

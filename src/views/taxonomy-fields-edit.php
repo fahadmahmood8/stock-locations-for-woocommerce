@@ -1,3 +1,8 @@
+<label class="switch" style="position: absolute;right: 30px;top: 11px;" title="<?php echo __('Click here to enable/disable', 'stock-locations-for-woocommerce'); ?>">
+  <input <?php checked($location_status); ?> name="slw-location-status" id="slw-location-status" value="yes" data-id="<?php echo $location_id; ?>" type="checkbox" data-toggle="toggle" data-on="<?php echo __('Enabled', 'stock-locations-for-woocommerce'); ?>" data-off="<?php echo __('Disabled', 'stock-locations-for-woocommerce'); ?>" />
+  <span class="slider round"></span>
+</label>
+
 <input type="hidden" name="slw-lat" value="<?php echo $slw_lat; ?>" id="slw-lat" />
 <input type="hidden" name="slw-lng" value="<?php echo $slw_lng; ?>" id="slw-lng" />
 <table class="form-table location-edit" role="presentation">
@@ -65,6 +70,12 @@
 				<input name="location_address" id="location_address" type="text" value="<?php echo $location_address; ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
+                
+<label class="switch" style="position: absolute;right: 0;top: 64px;" title="<?php echo __('Click here to enable/disable on map', 'stock-locations-for-woocommerce'); ?>">
+  <input <?php checked($map_status); ?> name="slw-map-status" id="slw-map-status" value="yes" data-id="<?php echo $location_id; ?>" type="checkbox" data-toggle="toggle" data-on="<?php echo __('Enabled', 'stock-locations-for-woocommerce'); ?>" data-off="<?php echo __('Disabled', 'stock-locations-for-woocommerce'); ?>" />
+  <span class="slider round"></span>
+</label>
+                
 			</td>
 		</tr>
         <tr class="form-field term-name-wrap">
