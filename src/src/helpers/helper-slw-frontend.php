@@ -51,7 +51,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			foreach( $stock_locations as $id => $location ) {
 				$stock_locations_to_display[$id]['term_id']         = $location->term_id;
 				$stock_locations_to_display[$id]['quantity']        = slw_quantity_format($location->quantity);
-				$stock_locations_to_display[$id]['allow_backorder'] = $location->slw_backorder_location;
+				$stock_locations_to_display[$id]['allow_backorder'] = (property_exists($location, 'slw_backorder_location')?$location->slw_backorder_location:false);
 				$stock_locations_to_display[$id]['name']            = $location->name;
 				
 				if(isset( $plugin_settings['product_stock_price_status'] ) && $plugin_settings['product_stock_price_status'] == 'on'){
@@ -74,7 +74,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 
 				//pree($location->quantity);
 				if( $location->quantity <= 0 ) {
-					if( $location->slw_backorder_location == 1 ) {
+					if( $stock_locations_to_display[$id]['allow_backorder'] == 1 ) {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('On backorder', 'stock-locations-for-woocommerce') . ')';
 					} else {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'stock-locations-for-woocommerce') . ')';

@@ -410,8 +410,8 @@ function slw_gmap_initialize(input_id) {
 	$('div.slw-sample-codes > a').on('click', function(){
 		$(this).parent().find('div.slw-sample-code').toggle();
 	});
-	$('li[data-type="shortcode"]').on('click', function(){
-		$(this).toggleClass('collapsed');
+	$('body').on('click', 'li[data-type="shortcode"] > svg', function(){
+		$(this).parent().toggleClass('collapsed');
 	});
 	
 

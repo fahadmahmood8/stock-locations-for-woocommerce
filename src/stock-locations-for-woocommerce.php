@@ -27,12 +27,20 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
 global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys;
+
+
+
 $slw_gkey = get_option('slw-google-api-key');
 $slw_plugin_settings = get_option( 'slw_settings' );
 $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array();
 $wc_slw_data = get_plugin_data(__FILE__);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
 define( 'SLW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+$addons_file = realpath(SLW_PLUGIN_DIR . '/inc/addons.php');
+if(file_exists($addons_file)){
+	include_once($addons_file);
+}
 
 $wc_slw_premium_copy = 'https://shop.androidbubbles.com/product/stock-locations-for-woocommerce/';
 
@@ -60,7 +68,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.7.6';
+		public           $version  = '1.7.7';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others

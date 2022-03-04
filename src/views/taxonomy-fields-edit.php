@@ -79,7 +79,7 @@
 			</td>
 		</tr>
         <tr class="form-field term-name-wrap">
-			<th scope="row"><label><?php echo __('Location Map Popup', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-map-marker-alt"></i></th>
+			<th scope="row"><a href="https://www.youtube.com/embed/ZgmNWuKFyQI" target="_blank"><i class="fab fa-youtube"></i></a><label><?php echo __('Location Map Popup', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-map-marker-alt"></i></th>
 			<td><?php wp_editor( $location_popup, 'location_popup', array('editor_class'=>'location_popup') ); ?>
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 <small><b><?php echo __('Placeholders', 'stock-locations-for-woocommerce'); ?>:</b> LOCATION_ADDRESS, LOCATION_URL</small>

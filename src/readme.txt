@@ -81,6 +81,9 @@ This plugin requires at least *WooCommerce 3.4*.
 
 == Frequently Asked Questions ==
 
+= How Google Map and Location Archives work in Premium Version? =
+[youtube http://www.youtube.com/watch?v=ZgmNWuKFyQI]
+
 = How to lock pre-selected location on frontend? =
 
 Turn ON "Enable default location in frontend selection" from WooCommerce > Stock Locations for WC. This option will allow you to select default location for a product on Product Edit page. Now turn ON "Lock frontend location to default" and it will lock frontend location which is selected as default.
@@ -122,6 +125,16 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.7.7 =
+- Fix: Locations map with a popup with useful information about the location/pickup. [Thanks to Justyn Thomas][04/03/2022]
+
+= 1.7.6 =
+- New: Locations can be turned ON/OFF for Google Map. [Thanks to Justyn Thomas][02/03/2022]
+- New: Locations can be turned ON/OFF everywhere. [Thanks to Elika][02/03/2022]
+- New: Action hooks added to manage archive page template.
+- Fix: Issue #124 resolved on github repository. [Thanks to Wandavasquez95][02/03/2022]
+
+
 = 1.7.5 =
 - Fix: In stock / Out stock issue for zero value in both simple and variable products. [Thanks to Russell Field][01/03/2022]
 

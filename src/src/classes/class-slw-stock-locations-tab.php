@@ -244,6 +244,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				'class'         => 'woocommerce',
 				'type'          => 'number',
 				'data_type'     => 'decimal',
+				'custom_attributes' => array('step' => '0.01', 'min' => '0'),
 				'value'         => $_stock_location_price,
 				'wrapper_class' => 'stock_location_price price-'.$_stock_location_price,
 			) );
