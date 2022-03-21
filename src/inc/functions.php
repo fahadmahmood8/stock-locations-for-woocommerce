@@ -435,6 +435,7 @@ jQuery(document).ready(function($){
     function slw_woocommerce_product_is_in_stock($instock_status=false) {
 		global $product;
 		$type = (is_object($product)?$product->get_type():'');
+
 		//$product_id = $product->get_id();
 		switch($type){
 			case 'variable':
@@ -535,4 +536,29 @@ jQuery(document).ready(function($){
 <?php			
 		}
 	}
+
+	if(!function_exists('slw_parcels_meta_data_callback')){
+		function slw_parcels_meta_data_callback($meta_data=array(), $product_id=0, $variation_id=0){
+			
+			$str = '';
+			if(!empty($meta_data)){
+				foreach($meta_data as $key=>$val){
+					
+					switch($key){
+						case 'stock_location':
+							$location = get_term_by('id', $val, 'location');
+							if(is_object($location) && !empty($location)){
+								
+								$str = '<span data-product="'.$product_id.'" data-variation="'.$variation_id.'"><label><strong>'.__('Location', 'stock-locations-for-woocommerce').':</strong> <u>'.$location->name.'</u></span>';
+							}
+						break;
+					}
+				}
+			}
+			echo $str;
+		}
+		add_action('wc_os_parcels_meta_data', 'slw_parcels_meta_data_callback', 11, 3);
+	}
+
+
 	include_once('functions-api.php');

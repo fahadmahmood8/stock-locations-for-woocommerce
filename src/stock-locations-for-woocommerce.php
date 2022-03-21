@@ -68,7 +68,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.7.7';
+		public           $version  = '1.7.8';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -98,7 +98,8 @@ if(!class_exists('SlwMain')) {
 			new SLW\SRC\Classes\Frontend\SlwFrontendProduct;
 
 			// get settings
-			$this->plugin_settings = get_option( 'slw_settings' );
+			$this->plugin_settings = get_option( 'slw_settings', array() );
+			$this->plugin_settings = is_array($this->plugin_settings)?$this->plugin_settings:array();
 		}
 
 		/**
@@ -222,7 +223,7 @@ if(!class_exists('SlwMain')) {
 			
 			$term_id = (is_archive()?get_queried_object_id():0);
 			
-			$data = $this->plugin_settings;
+			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
 			$data['ajaxurl'] = admin_url( 'admin-ajax.php' );
 			$data['is_cart'] = is_cart();
 			$data['is_checkout'] = is_checkout();
@@ -232,7 +233,8 @@ if(!class_exists('SlwMain')) {
 			$data['show_in_product_page'] = (array_key_exists('show_in_product_page', $this->plugin_settings)?$this->plugin_settings['show_in_product_page']:'no');
 			$data['stock_locations'] = 0;
 			$data['stock_quantity'] = array();
-			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
+			$data['out_of_stock'] = __('out of stock', 'stock-locations-for-woocommerce');
+			$data['in_stock'] = __('in stock', 'stock-locations-for-woocommerce');
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
 			$data['slw_term_url'] = ($term_id?get_term_link($term_id):'');
 			$data['slw_term_id'] = $term_id;
@@ -291,8 +293,8 @@ if(!class_exists('SlwMain')) {
 					$product_variations_ids = $wc_product->get_children();
 					$product_variations = array();
 					
-					
-					//pree($terms);	
+					//pre($product_variations_ids);	
+					//pre($terms);
 					$locations = array();
 					
 					foreach( $product_variations_ids as $variation_id ) {

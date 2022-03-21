@@ -125,8 +125,13 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.7.8 =
+- Fix: https://wordpress.org/support/topic/error-after-activating-the-plugin-6 [Thanks to johnmunez1][05/03/2022]
+- Fix: Product page, elementor, backorder status, in stock status, out of stock status transitions ensured. [Thanks to Mario Kremser][21/03/2022]
+
 = 1.7.7 =
 - Fix: Locations map with a popup with useful information about the location/pickup. [Thanks to Justyn Thomas][04/03/2022]
+- Fix: Notice: Undefined property: stdClass::$slw_backorder_location. [Thanks to Shaun Hopkins][05/03/2022]
 
 = 1.7.6 =
 - New: Locations can be turned ON/OFF for Google Map. [Thanks to Justyn Thomas][02/03/2022]

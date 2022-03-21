@@ -391,7 +391,7 @@ if( !class_exists('SlwOrderItem') ) {
 							if($client_item_stock_location_id){
 								$stock_location = SlwStockAllocationHelper::get_product_stock_location( $id, $client_item_stock_location_id );
 								if( $term->term_id == $client_item_stock_location_id ) {
-									echo '<span class="slw-client-choosed-location">✔ <strong>'.__('Client choosed: ', 'stock-locations-for-woocommerce').'</strong><u>'.$stock_location[$client_item_stock_location_id]->name.'</u></span>';
+									echo '<span class="slw-client-choosed-location">✔ <strong>'.__('Client selected: ', 'stock-locations-for-woocommerce').'</strong><u>'.$stock_location[$client_item_stock_location_id]->name.'</u></span>';
 								}
 							}
 						//}
