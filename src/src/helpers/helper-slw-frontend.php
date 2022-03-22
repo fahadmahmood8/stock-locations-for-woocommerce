@@ -46,13 +46,20 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				// refresh page
 				//echo("<meta http-equiv='refresh' content='1'>");
 			}
-
+			$_backorders = get_post_meta($product_id, '_backorders', true);
+			$_backorder_status = ($_backorders!='no');
+				
 			$stock_locations_to_display = array();
 			foreach( $stock_locations as $id => $location ) {
+				
+				
+				$stock_locations_to_display[$id]['backorder_allowed'] = ($_backorder_status?'yes':'no');
 				$stock_locations_to_display[$id]['term_id']         = $location->term_id;
 				$stock_locations_to_display[$id]['quantity']        = slw_quantity_format($location->quantity);
 				$stock_locations_to_display[$id]['allow_backorder'] = (property_exists($location, 'slw_backorder_location')?$location->slw_backorder_location:false);
 				$stock_locations_to_display[$id]['name']            = $location->name;
+				
+				
 				
 				if(isset( $plugin_settings['product_stock_price_status'] ) && $plugin_settings['product_stock_price_status'] == 'on'){
 			
@@ -90,7 +97,8 @@ if ( !class_exists('SlwFrontendHelper') ) {
 					}
 				}
 			}
-			//pree($stock_locations_to_display);exit;
+			
+			
 			return $stock_locations_to_display;
 		}
 

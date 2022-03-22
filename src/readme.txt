@@ -125,6 +125,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.7.9 =
+- Fix: Product page, backorder status will contribute in stock status and product availability for sale. [Thanks to Mario Kremser][22/03/2022]
+
 = 1.7.8 =
 - Fix: https://wordpress.org/support/topic/error-after-activating-the-plugin-6 [Thanks to johnmunez1][05/03/2022]
 - Fix: Product page, elementor, backorder status, in stock status, out of stock status transitions ensured. [Thanks to Mario Kremser][21/03/2022]

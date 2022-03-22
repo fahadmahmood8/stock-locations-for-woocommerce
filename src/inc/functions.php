@@ -435,14 +435,16 @@ jQuery(document).ready(function($){
     function slw_woocommerce_product_is_in_stock($instock_status=false) {
 		global $product;
 		$type = (is_object($product)?$product->get_type():'');
+		
 
-		//$product_id = $product->get_id();
+		
 		switch($type){
 			case 'variable':
 			break;
 			case 'simple':
-				//$product_id	
-				$instock_status = ($product->get_stock_quantity()>0);
+				$_backorders = get_post_meta($product->get_id(), '_backorders', true);
+				$_backorder_status = ($_backorders!='no');
+				$instock_status = ($_backorder_status || $product->get_stock_quantity()>0);
 			break;
 		}
 		//pree($product_id);
