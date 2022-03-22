@@ -35,7 +35,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			
 			$product_wc_stock              = $product->get_stock_quantity();
 			
-			//pree($product_wc_stock.' != '.$product_locations_total_stock);
+
 			if( $product_wc_stock != $product_locations_total_stock ) {
 				
 				
@@ -77,9 +77,9 @@ if ( !class_exists('SlwFrontendHelper') ) {
 					$product_stock_price = (float)$product->get_price();
 					$stock_locations_to_display[$id]['price']            = number_format($product_stock_price, 2);
 				}
-				//pree($stock_locations_to_display);
 
-				//pree($location->quantity);
+
+
 				if( $location->quantity <= 0 ) {
 					if( $stock_locations_to_display[$id]['allow_backorder'] == 1 ) {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('On backorder', 'stock-locations-for-woocommerce') . ')';

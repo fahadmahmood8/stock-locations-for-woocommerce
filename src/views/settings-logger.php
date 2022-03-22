@@ -18,7 +18,7 @@ use SLW\SRC\Helpers\SlwMailHelper;
 			$obj = new SlwOrderItem;
 			wc_slw_logger_extended($obj);
 		}else{
-			//pree('NO EXTENSION');
+
 			//wc_slw_logger_extended();
 		}
 		
@@ -34,7 +34,7 @@ use SLW\SRC\Helpers\SlwMailHelper;
                     
             <ul class="slw_debug_log">
                 <?php
-				//pree($slw_logger);
+
                 foreach($slw_logger as $log){
                     ?>
                     <li>

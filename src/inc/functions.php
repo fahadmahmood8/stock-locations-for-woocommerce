@@ -9,9 +9,19 @@ function pre($data){
 }
 if(!function_exists('pree')){
 function pree($data){
-	  echo '<pre>';
-	  print_r($data);
-	  echo '</pre>';
+	
+	$debug_backtrace = debug_backtrace();
+		
+	$function = $debug_backtrace[0]['function'];
+	$function .= ' / '.$debug_backtrace[1]['function'];
+	$function .= ' / '.$debug_backtrace[2]['function'];
+	$function .= ' / '.$debug_backtrace[3]['function'];
+	$function .= ' / '.$debug_backtrace[4]['function'];
+	
+	echo '<pre>';
+	//print_r($function);
+	print_r($data);
+	echo '</pre>';
 
   }
 }
@@ -267,11 +277,11 @@ if(!function_exists('wc_slw_admin_init')){
 					
 					//slw_update_products();
 					
-					pree(get_post_meta($order->ID));
+					pre(get_post_meta($order->ID));
 					
 					$product = wc_get_product($order->ID);
 					
-					pree($product);
+					pre($product);
 					
 					exit;
 				}
@@ -370,49 +380,91 @@ jQuery(document).ready(function($){
 			
 		
 			global $wpdb;
-			//$q = "SELECT p.ID FROM $wpdb->posts p RIGHT JOIN $wpdb->postmeta pm ON pm.post_id=p.ID AND pm.meta_key='_slw_cron_sniffed' AND pm.meta_value IS NULL WHERE p.post_date>'".date('Y-m-d')." 00:00:00' AND p.post_type='product' ORDER BY p.ID DESC LIMIT 1";
+			
 			$limit = (isset($_GET['limit'])?sanitize_slw_data($_GET['limit']):0);
+			$reconsider = (isset($_GET['reconsider'])?sanitize_slw_data($_GET['reconsider']):'');
 			$limit = (is_numeric($limit) && $limit>0?$limit:10);
+			
+			$timestamp = 'once';
+			switch($reconsider){
+				default:
+					
+				break;
+				case 'second':
+					$timestamp = date('Ymdhis');
+				break;
+				case 'minute':
+					$timestamp = date('Ymdhi');
+				break;
+				case 'hour':
+					$timestamp = date('Ymdh');
+				break;
+				case 'day':
+					$timestamp = date('Ymd');
+				break;
+				case 'month':
+					$timestamp = date('Ym');
+				break;
+				case 'year':
+					$timestamp = date('Y');
+				break;				
+			}
+			
+			$today_slw_cron_sniffed = '_slw_cron_sniffed_'.$timestamp;
+			
+			$q = "DELETE * FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'";		
+			pree($q);	
+			$wpdb->query($q);
+			
 			$args = array(
 				'numberposts' => $limit,
 				'post_type' => 'product',
 				'meta_query' => array(
 					array(
-						'key'       => '_slw_cron_sniffed',
+						'key'       => $today_slw_cron_sniffed,
 						'compare' => 'NOT EXISTS'
 					)
 				),
 				'date_query' => array(
+					'relation'=>'OR',
 					array(
 						'column' => 'post_date',
 						'after'     => date('Y-m-d', strtotime('-1 day')).'',
 						'before'    => date('Y-m-d').'',
 						'inclusive' => true,
 					),
+					array(
+						'column' => 'post_modified',
+						'after'     => date('Y-m-d', strtotime('-1 day')).'',
+						'before'    => date('Y-m-d').'',
+						'inclusive' => true,
+					),
 				),
 			);
-			//pree($args);
+
+
 			$products = get_posts($args);
 			//$products = $wpdb->get_results($q);
-			//pree(count($products));
+
 			if(!empty($products)){
-				
+				echo '<ul>';
 				foreach($products as $product_post){
-					//pree(product_post);
-					//pree($res_obj);
 	
 					//$product_post = get_post($res_obj->ID);
-					echo '<br />'.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>';
+					echo '<li>ID: '.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>';
 					
 					switch($_GET['action']){
 						case 'update-stock':
-							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true);
-							update_post_meta($product_post->ID, '_slw_cron_sniffed', true);
-							echo ' stock updated.';
+							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true, true);
+							
+							update_post_meta($product_post->ID, $today_slw_cron_sniffed, $timestamp);
+							echo ' stock updated to '.$SlwStockLocationsTab.'.';
 						break;
 
-					}		
+					}	
+					echo '</li>';	
 				}
+				echo '</ul>';
 			}
 			
 			exit;
@@ -447,7 +499,7 @@ jQuery(document).ready(function($){
 				$instock_status = ($_backorder_status || $product->get_stock_quantity()>0);
 			break;
 		}
-		//pree($product_id);
+
 		return $instock_status;
 	}
 	

@@ -65,8 +65,8 @@ if( !class_exists('SlwOrderItem') ) {
 			}
 
 			
-			//pree($this->plugin_settings);exit;
-			//pree($this->wc_manage_stock);exit;
+
+
 			if( $this->wc_manage_stock === 'yes') {
 				add_action( 'woocommerce_reduce_order_stock', array( $this, 'reduce_order_items_locations_stock' ), 10, 1 );
 				add_action( 'woocommerce_restore_order_stock', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
@@ -432,7 +432,7 @@ if( !class_exists('SlwOrderItem') ) {
 				$order_id = $order;
 				$order    = wc_get_order( $order_id );
 			}
-			//pree($order->get_items());exit;
+
 			// Loop through order items
 			foreach ( $order->get_items() as $item => $item_data ) {
 				// Product ID
@@ -651,7 +651,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function include_location_data_in_formatted_item_meta( $formatted_meta, $item )
 		{
-			//pree($formatted_meta);
+
 			$order_id = $item->get_order_id();
 			$_slw_ts = get_post_meta($order_id, '_slw_ts', true);
 			$receipt_in_progress = get_post_meta($order_id, '_slw_ep', true);
@@ -690,9 +690,9 @@ if( !class_exists('SlwOrderItem') ) {
 			if( !empty($item) && $proceed) {
 				
 				$item_location_data = (is_object($item)?$item->get_meta('_slw_data'):array());
-				//pree($item_location_data);
+
 				if( !empty($item_location_data) ) {
-					//pree($item_location_data);
+
 					
 					foreach( $item_location_data as $location_id => $data ) {
 						$value = $data['location_name'].' (-'.$data['quantity_subtracted'].')';
@@ -705,7 +705,7 @@ if( !class_exists('SlwOrderItem') ) {
 					}
 					//wc_slw_logger('$item_location_data: '.count($item_location_data).' / '.$value);
 				}else{
-					//pree($item);
+
 					$location_id = (is_object($item)?$item->get_meta('_stock_location'):0);
 					//wc_slw_logger($location_id);
 					

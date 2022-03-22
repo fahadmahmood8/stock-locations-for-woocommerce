@@ -125,6 +125,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.8.0 =
+- Fix: Cron job query updated for the products with recently changed timestamp. [Thanks to Riley Pollard][22/03/2022]
+
 = 1.7.9 =
 - Fix: Product page, backorder status will contribute in stock status and product availability for sale. [Thanks to Mario Kremser][22/03/2022]
 

@@ -82,7 +82,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			//CHECKOUT PAGE
 						
 			if($proceed && array_key_exists('stock_location', $cart_item)){
-				//pree($cart_item);
+
 				$stock_location = '';
 				if( isset($cart_item['stock_location']) ) {
 					$product_id = ($cart_item['variation_id']?$cart_item['variation_id']:$cart_item['product_id']);

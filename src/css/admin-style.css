@@ -92,11 +92,15 @@ div.slw-settings-wrap table.form-table td a{
 	position:relative;
 	display:inline-block;
 }
-div.slw-settings-wrap table.form-table td a.slw-settings-video svg{
+div.slw-settings-wrap table.form-table td a.slw-settings-video svg,
+svg.fa-youtube{
 	color:#F00;
 	font-size:24px;
+}
+div.slw-settings-wrap table.form-table td a.slw-settings-video svg{
     position: absolute;
     top: -14px;
+	
 }
 div.slw-settings-wrap table.form-table td a.slw-settings-screenshot svg{
 	color:#090;
@@ -257,49 +261,49 @@ tr.slw-premium td:after {
 	font-size: 14px;
 	font-weight: normal;
 }
-div.slw_api table, div.slw_api table td {
+div.slw_api_crons table, div.slw_api_crons table td {
 	border: 1px solid;
 }
-div.slw_api table td {
+div.slw_api_crons table td {
 	padding: 2px 30px;
 }
-div.slw_api .slw-api-urls{
+div.slw_api_crons .slw-api-urls{
 }
-div.slw_api .slw-api-urls ul{
+div.slw_api_crons .slw-api-urls ul{
 	padding:0;
 	margin:0;
 }
-div.slw_api .slw-api-urls ul li{
+div.slw_api_crons .slw-api-urls ul li{
 	list-style:none;
 }
-div.slw_api .slw-api-urls ul li b{
+div.slw_api_crons .slw-api-urls ul li b{
 	font-size:14px;
 	font-weight:bold;
 	color:#000;
 }
-div.slw_api .slw-api-urls ul li span{
+div.slw_api_crons .slw-api-urls ul li span{
 	font-weight:bold;
 	font-size:12px;
 }
-div.slw_api .slw-api-urls ul li span:nth-child(1){
+div.slw_api_crons .slw-api-urls ul li span:nth-child(1){
 	color:#00F;
 }
-div.slw_api .slw-api-urls ul li span:nth-child(2){
+div.slw_api_crons .slw-api-urls ul li span:nth-child(2){
 	color:#900;
 }
-div.slw_api .slw-api-urls ul li span:nth-child(3){
+div.slw_api_crons .slw-api-urls ul li span:nth-child(3){
 	color:#060;
 }
-div.slw_api .slw-api-urls ul li span:nth-child(4){
+div.slw_api_crons .slw-api-urls ul li span:nth-child(4){
 	color:#F60;
 }
-div.slw_api .slw-api-urls ul li span:nth-child(5){
+div.slw_api_crons .slw-api-urls ul li span:nth-child(5){
 	color:#939;
 }
-div.slw_api .slw-api-urls ul li span:nth-child(6){
+div.slw_api_crons .slw-api-urls ul li span:nth-child(6){
 	color:#F90;
 }
-div.slw_api .slw-api-urls ul li span:nth-child(7){
+div.slw_api_crons .slw-api-urls ul li span:nth-child(7){
 	color:#3C0;
 }
 

@@ -112,7 +112,7 @@ if(!class_exists('SlwProductRest')) {
                     $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwLocationTaxonomy::$tax_singular_name)->term_id;
                     $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
 					
-					//pree($quantity);
+
 
                     // It is possible to provide a null quantity to delete product from location
                     if (is_null($quantity)) {

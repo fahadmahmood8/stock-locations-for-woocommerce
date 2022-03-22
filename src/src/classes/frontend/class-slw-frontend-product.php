@@ -61,7 +61,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 
 			if( ! empty( $stock_locations ) ) {
 				// lock to default location if enabled			
-				//pree($lock_default_location);exit;
+
 				
 				if( $lock_default_location && $default_location != 0 ) {
 					$stock_price = $stock_locations[$default_location]['price'];
@@ -83,7 +83,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				} else {
 					echo '<option data-price="" data-quantity="" disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
-				//pree($stock_locations);exit;
+
 				
 				foreach( $stock_locations as $id => $location ) {
 					$stock_price = $location['price'];
@@ -118,9 +118,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 			global $product;
 			if( empty($product) ) return;
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
-			//pree($product_id);
+
 			$term_id = (is_product()?false:get_queried_object_id());
-			//pree($term_id);
+
 			$product               = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 

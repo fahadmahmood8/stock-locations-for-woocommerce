@@ -44,7 +44,7 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 						
 			$productStockLocations = self::rearrangeByPriority($productStockLocations, $sortedByPriority);
 			
-			//pree($productStockLocations);
+
 			//exit;
 			// Remove ignored location from the array
 			if( !is_null($ignoreLocationId) && !empty($ignoreLocationId) ) {
@@ -82,7 +82,7 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			if(empty($response)){
 				$response = $productStockLocations;
 			}
-			//pree($response);
+
 			// Allocate remaining quantity to back order location if set
 			if ($remainingQty) {
 				$backorderLocation = self::getBackOrderLocation();
@@ -108,7 +108,7 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 				}
 			}
 			
-			//pree($response);exit;
+
 			
 
 			return $response;

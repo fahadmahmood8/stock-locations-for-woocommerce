@@ -29,16 +29,16 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			// Get item product
 			$mainProductId = $lineItem->get_variation_id() != 0 ? $lineItem->get_variation_id() : $lineItem->get_product_id();
 			$mainProductId = SlwWpmlHelper::object_id( $mainProductId );
-			//pree($lineItem->get_product_id());
+
 			$mainProduct   = wc_get_product( $mainProductId );
 			if( empty( $mainProduct ) ) return false;
 			
-			//pree($locationStockMap);exit;
+
 
 			// Get item location terms
 			$itemStockLocationTerms = SlwStockAllocationHelper::getProductStockLocations( $mainProductId, false );
 
-			//pree($itemStockLocationTerms);exit;
+
 			// Nothing to do, we should have gotten this far
 			// Checks should have happened prior
 			if (empty($itemStockLocationTerms)) {
@@ -60,7 +60,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				$counter++;
 				
 				
-				//pree($term);
+
 				// Get stock data
 				$item_stock_location_subtract_input_qty = $locationStockMap[$term->term_id];
 				if(is_object($item_stock_location_subtract_input_qty) && isset($item_stock_location_subtract_input_qty->quantity)){
@@ -73,7 +73,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				if (empty($item_stock_location_subtract_input_qty) || $item_stock_location_subtract_input_qty == 0) {
 					continue;
 				}
-				//pree($orderItemId.' / ('.$item_stock_location_subtract_input_qty.' > '.$lineItem->get_quantity().')');
+
 				
 				
 				// Stock input above needed quantity
@@ -81,7 +81,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 					continue;
 				}
 				
-				//pree($orderItemId.' / Stock input above needed quantity');
+
 
 				// Total quantity assignment does not match required quantity
 				// Not all stock has been allocated to locations

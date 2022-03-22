@@ -26,7 +26,7 @@ if ( !defined( 'WPINC' ) ) {
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys;
+global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys;
 
 
 
@@ -57,6 +57,12 @@ $slw_api_valid_keys = array(
 	'location_id'=>array('type'=>'int', 'options'=>''),
 );
 
+$slw_crons_valid_keys = array(				
+	'action' => array('type'=>'string', 'options'=>'update-stock'),
+	'limit' => array('type'=>'int', 'options'=>'Default: 10'),
+	'reconsider' => array('type'=>'string', 'options'=>'second|minute|hour|day|month|year|once'),
+);
+
 if($wc_slw_pro){
 	include_once(SLW_PLUGIN_DIR . '/pro/functions.php');
 }
@@ -68,7 +74,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.7.9';
+		public           $version  = '1.8.0';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -155,7 +161,7 @@ if(!class_exists('SlwMain')) {
 		public function enqueue_admin()
 		{
 			global $current_screen, $post, $slw_gkey;
-			//pree($current_screen);
+
 					
 			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'css/admin-style.css', array(), time() );
 			
@@ -243,7 +249,7 @@ if(!class_exists('SlwMain')) {
 			$data['dummy_price'] = wc_price(111);
 			$data['nonce']   = wp_create_nonce( 'slw_nonce' );
 			
-			//pree($data);exit;
+
 			wp_enqueue_script(
 				'slw-common-scripts',
 				SLW_PLUGIN_DIR_URL . 'js/common.js',
