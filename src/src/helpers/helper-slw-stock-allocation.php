@@ -186,7 +186,7 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			$returnLocations = array();
 
 			// Get locations and stock
-			$locations = get_the_terms( ( ( isset($parentProduct) && !empty($parentProduct) ) ? $parentProduct->get_id() : $product->get_id() ), SlwLocationTaxonomy::$tax_singular_name );
+			$locations = wp_get_post_terms( ( ( isset($parentProduct) && !empty($parentProduct) ) ? $parentProduct->get_id() : $product->get_id() ), SlwLocationTaxonomy::$tax_singular_name, array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=') );
 
 			if( empty($locations) || ! is_array($locations) ) return $returnLocations;
 

@@ -67,7 +67,7 @@ if(!class_exists('SlwProductRest')) {
 			$parentPostId = ($object_type === 'product_variation') ? wp_get_post_parent_id($product_id) : $product_id;
 
 			// Get terms
-			foreach (wp_get_post_terms($parentPostId, SlwLocationTaxonomy::$tax_singular_name) as $term) {
+			foreach (wp_get_post_terms($parentPostId, SlwLocationTaxonomy::$tax_singular_name, array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=')) as $term) {
 				$terms[] = array(
 					'id'        => $term->term_id,
 					'name'      => $term->name,

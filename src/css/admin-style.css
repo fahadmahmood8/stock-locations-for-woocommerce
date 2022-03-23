@@ -525,3 +525,34 @@ table.location-edit tr.term-name-wrap th > a svg{
 	color:#CE0005;
 	font-size:18px;
 }
+.slw-settings-wrap h2 > a.gopro {
+	font-size: 12px;
+	background-color: rgba(66,0,255,0.2);
+	border: 1px solid rgba(66,0,255,0.8);
+	color: rgba(66,0,255,1);
+	text-decoration: none;
+	padding: 4px 20px 6px 40px;
+	border-radius: 15px;
+	background-image: url(../images/star.png);
+	background-repeat: no-repeat;
+	background-size: 22px;
+	background-position: 10px 2px;
+	top: 2px;
+	position: absolute;
+	right: 10px;
+}
+.slw-settings-wrap h2 > a.gopro:hover {
+	background-color: rgba(66,0,255,0.4);
+	color:#fff;
+}
+div.slw-settings-wrap .fa-eye,
+div.slw-settings-wrap .fa-map-marked-alt{
+	color:#093;
+}
+div.slw-settings-wrap .fa-eye-slash,
+div.slw-settings-wrap .fa-map-marked{
+	color:#CCC;
+}
+body.wc-variable-product #stock-locations-for-woocommerce_tab_stock_locations #stock-locations-for-woocommerce_tab_stock_locations_wrapper{
+	display:none !important;
+}

@@ -124,7 +124,7 @@ if(!class_exists('SlwProductListing')) {
 					}
 
 					// Get locations from parent product
-					$locations = wp_get_post_terms( $product->get_id(), SlwLocationTaxonomy::get_Tax_Names('singular') );
+					$locations = wp_get_post_terms( $product->get_id(), SlwLocationTaxonomy::get_Tax_Names('singular'), array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=') );
 					if( empty($locations) ) return;
 
 					// Print data

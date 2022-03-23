@@ -26,7 +26,7 @@ if ( !defined( 'WPINC' ) ) {
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys;
+global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr;
 
 
 
@@ -62,6 +62,26 @@ $slw_crons_valid_keys = array(
 	'limit' => array('type'=>'int', 'options'=>'Default: 10'),
 	'reconsider' => array('type'=>'string', 'options'=>'second|minute|hour|day|month|year|once'),
 );
+$slw_widgets_arr = array(
+	'slw-map' => array(
+		'type' => __('Premium', 'stock-locations-for-woocommerce'),
+		'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
+		'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
+		'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
+		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes"]'),					
+		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
+		
+	),
+	'slw-archives' => array(
+		'type' => __('Premium', 'stock-locations-for-woocommerce'),
+		'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
+		'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
+		'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
+		'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);'),					
+		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
+		
+	)
+);
 
 if($wc_slw_pro){
 	include_once(SLW_PLUGIN_DIR . '/pro/functions.php');
@@ -74,7 +94,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.8.0';
+		public           $version  = '1.8.1';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -183,7 +203,7 @@ if(!class_exists('SlwMain')) {
 			
 			if(is_object($post) && $post->post_type=='product'){
 				
-				$terms = get_the_terms( $post->ID, 'location' );
+				$terms = wp_get_post_terms( $post->ID, 'location', array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=') );
 				if(!empty($terms)){
 					$data['stock_locations'] = true;
 				}
@@ -201,9 +221,9 @@ if(!class_exists('SlwMain')) {
 					(isset($_GET['taxonomy']) && $_GET['taxonomy']=='location')
 			){
 				wp_enqueue_style( 'slw-bootstrap-styles', SLW_PLUGIN_DIR_URL . 'css/bootstrap.min.css', array(), date('m') );
-				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('m') );
+				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('Ymdh') );
 				
-				wp_enqueue_script( 'font-awesome', SLW_PLUGIN_DIR_URL . 'js/fontawesome.min.js', array( 'jquery' ), date('m') );
+				wp_enqueue_script( 'font-awesome', SLW_PLUGIN_DIR_URL . 'js/fontawesome.min.js', array( 'jquery' ), date('Ymdh') );
 				wp_enqueue_script( 'bootstrap', SLW_PLUGIN_DIR_URL . 'js/bootstrap.min.js', array( 'jquery' ), date('m') );			
 				
 				if($slw_gkey){

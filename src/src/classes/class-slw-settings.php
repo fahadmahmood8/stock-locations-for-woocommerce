@@ -81,7 +81,7 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function admin_menu_page_callback()
 		{
-			global $wc_slw_data, $wc_slw_pro;
+			global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy;
 			settings_errors();
 			?>
 			<div class="wrap slw-settings-wrap">
@@ -90,8 +90,9 @@ if(!class_exists('SlwSettings')) {
 					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
 					<?php foreach( $this->settings_tabs() as $key => $data ) : $class = 'nav-tab'; ?>
 					<?php if( isset($_REQUEST['tab']) && $_REQUEST['tab'] == $key ) { $class .= ' nav-tab-active'; } ?>
-					<a data-id="<?php echo $key; ?>" href="<?= admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?= $key; ?>" class="<?= $class; ?>"><?= $data['icon']; ?>&nbsp;<?= $data['label']; ?></a>
+					<a data-id="<?php echo $key; ?>" href="<?php echo admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?php echo $key; ?>" class="<?php echo $class; ?>"><?php echo $data['icon']; ?>&nbsp;<?php echo $data['label']; ?></a>
 					<?php endforeach; ?>
+					<?php if(!$wc_slw_pro){ ?><a class="gopro" target="_blank" href="<?php echo esc_url($wc_slw_premium_copy); ?>"><?php _e("Go Premium",'stock-locations-for-woocommerce'); ?></a><?php } ?>
 				</h2>
 
 				<?php
@@ -379,7 +380,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->select_yes_no_callback('show_in_cart');
 			?>
-			<p>&#9888; <?= __('If auto order allocation is enabled for the selected location in the cart, this setting will be ignored for stock reduction.', 'stock-locations-for-woocommerce'); ?></p>
+			<p>&#9888; <?php echo __('If auto order allocation is enabled for the selected location in the cart, this setting will be ignored for stock reduction.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
 		}
 
@@ -444,7 +445,7 @@ if(!class_exists('SlwSettings')) {
 				)
 			);
 			?>
-			<span><?= __('It will display stock location prices with location names as well.', 'stock-locations-for-woocommerce'); ?></span>
+			<span><?php echo __('It will display stock location prices with location names as well.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 			
 		} 
@@ -462,7 +463,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->checkbox_callback('product_location_selection_show_stock_qty');
 			?>
-			<span><?= __('It will affect location selectors on product and cart pages.', 'stock-locations-for-woocommerce'); ?></span>
+			<span><?php echo __('It will affect location selectors on product and cart pages.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
 
@@ -476,7 +477,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->checkbox_callback('default_location_in_frontend_selection');
 			?>
-			<span><?= __('This option will set the default location in product pages in frontend. The default is set under the product edit page by clicking <code>Make Default</code>.', 'stock-locations-for-woocommerce'); ?></span>
+			<span><?php echo __('This option will set the default location in product pages in frontend. The default is set under the product edit page by clicking <code>Make Default</code>.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
 
@@ -490,7 +491,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->checkbox_callback('lock_default_location_in_frontend');
 			?>
-			<span><?= __('This option will lock location selectors in products and cart to the default location.', 'stock-locations-for-woocommerce'); ?></span>
+			<span><?php echo __('This option will lock location selectors in products and cart to the default location.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
 
@@ -540,7 +541,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->select_yes_no_callback('delete_unused_product_locations_meta');
 			?>
-			<p><?= __('Runs every day at midnight.', 'stock-locations-for-woocommerce'); ?></p>
+			<p><?php echo __('Runs every day at midnight.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
 		}
 
@@ -554,7 +555,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->select_yes_no_callback('include_location_data_in_formatted_item_meta');
 			?>
-			<p><?= __('This special meta can be used by third party plugins to show the location name and quantity subtracted.', 'stock-locations-for-woocommerce'); ?></p>
+			<p><?php echo __('This special meta can be used by third party plugins to show the location name and quantity subtracted.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
 		}
 
@@ -567,7 +568,7 @@ if(!class_exists('SlwSettings')) {
 		public function location_email_notifications_callback()
 		{
 			$this->checkbox_callback('location_email_notifications');
-			?><?= __('Auto order allocation must be enabled in the location.', 'stock-locations-for-woocommerce'); ?>
+			?><?php echo __('Auto order allocation must be enabled in the location.', 'stock-locations-for-woocommerce'); ?>
 			<?php
 		}
 
@@ -607,13 +608,13 @@ if(!class_exists('SlwSettings')) {
 		public function select_yes_no_callback( $id )
 		{
 			?> 
-			<select name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>">
+			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
 				<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
-				<option disabled <?= $selected; ?>><?= __('Select...', 'stock-locations-for-woocommerce'); ?></option>
+				<option disabled <?php echo $selected; ?>><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>
 				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
-				<option value="yes" <?= $selected; ?>><?= __('Yes', 'stock-locations-for-woocommerce'); ?></option>
+				<option value="yes" <?php echo $selected; ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>
 				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected' : ''; ?>
-				<option value="no" <?= $selected; ?>><?= __('No', 'stock-locations-for-woocommerce'); ?></option>
+				<option value="no" <?php echo $selected; ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
 			</select>
 			<?php
 		}
@@ -660,7 +661,7 @@ if(!class_exists('SlwSettings')) {
 			<input <?php echo implode(' ', $attribs); ?> />
             
             <?php if(!empty($args)): ?>
-            <?php if(isset($args['label']) && $args['label']): ?><label for="<?= $id; ?>"><?php echo $args['label']; ?></label><?php endif; ?>
+            <?php if(isset($args['label']) && $args['label']): ?><label for="<?php echo $id; ?>"><?php echo $args['label']; ?></label><?php endif; ?>
 			<?php if(isset($args['video']) && $args['video']): ?><a title="<?php echo __( 'Click here to watch video tutorial', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-video" href="<?php echo $args['video']; ?>" target="_blank"><i class="fab fa-youtube"></i></a><?php endif; ?>
             <?php if(isset($args['screenshot']) && $args['screenshot']): ?><a title="<?php echo __( 'Click here to preview illustration/screenshot', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-screenshot" href="<?php echo $args['screenshot']; ?>" target="_blank"><i class="fas fa-image"></i></a><?php endif; ?>
 
@@ -707,7 +708,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			
 ?> 
-		<input type="text" name="slw_settings[<?= $id; ?>]" id="<?= $id; ?>" value="<?php echo array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:''; ?>" placeholder="<?php echo $args['placeholder']; ?>" /> 
+		<input type="text" name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>" value="<?php echo array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:''; ?>" placeholder="<?php echo $args['placeholder']; ?>" /> 
         <?php if(!empty($args)): ?>
         <?php if($args['video']): ?><a title="<?php echo __( 'Click here to watch video tutorial', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-video" href="<?php echo $args['video']; ?>" target="_blank"><i class="fab fa-youtube"></i></a><?php endif; ?>
         <?php if($args['screenshot']): ?><a title="<?php echo __( 'Click here to preview illustration/screenshot', 'stock-locations-for-woocommerce' ); ?>" class="slw-settings-screenshot" href="<?php echo $args['screenshot']; ?>" target="_blank"><i class="fas fa-image"></i></a><?php endif; ?>

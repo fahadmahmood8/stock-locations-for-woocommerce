@@ -40,9 +40,10 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				
 				
 				update_post_meta( $product_id, '_stock', $product_locations_total_stock );
+				
 				SlwProductHelper::update_wc_stock_status( $product_id );
 				slw_notices(__('Stock value updated. Please refresh this page.', 'stock-locations-for-woocommerce'), true);
-				wc_slw_logger('debug', '$product_id: '.$product_id.' - $product_wc_stock: '.$product_wc_stock.' - $product_locations_total_stock: '.$product_locations_total_stock);
+				
 				// refresh page
 				//echo("<meta http-equiv='refresh' content='1'>");
 			}

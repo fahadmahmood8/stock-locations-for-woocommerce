@@ -243,10 +243,10 @@ add_action( 'pmxi_saved_post', function( $id )
 {
 	// get locations total stock
 	$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
-
+	
 	// update stock
 	update_post_meta( $id, '_stock', $locations_total_stock );
-
+	
 	// update stock status
 	\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
 
@@ -503,17 +503,19 @@ jQuery(document).ready(function($){
 		return $instock_status;
 	}
 	
-	function slw_get_locations($taxonomy='location', $additional_meta_query=array()){
+	function slw_get_locations($taxonomy='location', $additional_meta_query=array(), $enabled_only=true){
 		
 		$args = array('hide_empty' => false, 'meta_query' => array());
 		
 		switch($taxonomy){
 			case 'location':
-				$args['meta_query'][] =	array(
-					'key'       => 'slw_location_status',
-					'value'     => true,
-					'compare'   => '='
-				);			
+				if($enabled_only){
+					$args['meta_query'][] =	array(
+						'key'       => 'slw_location_status',
+						'value'     => true,
+						'compare'   => '='
+					);		
+				}
 			break;
 		}
 		
@@ -521,7 +523,7 @@ jQuery(document).ready(function($){
 			$args['meta_query']['relation'] = 'AND';
 			$args['meta_query'][] = $additional_meta_query;
 		}
-		
+
 		$terms = get_terms($taxonomy, $args);
 		
 		return $terms;
@@ -530,26 +532,9 @@ jQuery(document).ready(function($){
 	if(!function_exists('wc_slw_widgets')){
 		function wc_slw_widgets($ret_type = ''){
 			
-			$arr = array(
-				'slw-map' => array(
-					'type' => __('Premium', 'stock-locations-for-woocommerce'),
-					'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
-					'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
-					'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-					'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes"]'),					
-					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
-					
-				),
-				'slw-archives' => array(
-					'type' => __('Premium', 'stock-locations-for-woocommerce'),
-					'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
-					'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
-					'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
-					'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);'),					
-					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
-					
-				)
-			);
+			global $slw_widgets_arr;
+			$arr = $slw_widgets_arr;
+			
 			
 			switch($ret_type){
 				default:
@@ -613,6 +598,33 @@ jQuery(document).ready(function($){
 		}
 		add_action('wc_os_parcels_meta_data', 'slw_parcels_meta_data_callback', 11, 3);
 	}
+	add_filter( 'admin_body_class', 'slw_admin_body_class' );
+	if(!function_exists('slw_admin_body_class')){
+		function slw_admin_body_class($classes){
+			global $post;
+			$class = '';
+			if(is_object($post) && $post->post_type=='product'){
+				$product = wc_get_product($post->ID);
+				
+				if(is_object($product)){
+					$class = 'wc-'.$product->get_type().'-product';
+				}
+			}
 
+			return "$classes $class";
+		}
+	}
+
+	add_action('admin_head', 'slw_admin_head_init');
+	
+	if(!function_exists('slw_admin_head_init')){
+		function slw_admin_head_init(){
+?>
+
+<?php			
+		}
+	}
+	
+	
 
 	include_once('functions-api.php');

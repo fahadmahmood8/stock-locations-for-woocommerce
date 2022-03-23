@@ -176,6 +176,7 @@ if( !class_exists('SlwOrderItem') ) {
 					// update product main stock
 					
 					update_post_meta( $product_id, '_stock', $locations_total_stock );
+					
 	
 					// update stock status
 					SlwProductHelper::update_wc_stock_status( $product_id );

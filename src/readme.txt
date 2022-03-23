@@ -81,6 +81,16 @@ This plugin requires at least *WooCommerce 3.4*.
 
 == Frequently Asked Questions ==
 
+= How to use Cron Job? =
+[youtube http://www.youtube.com/watch?v=si_DUe-8ncY&t=114s]
+
+= How to use REST API? =
+[youtube http://www.youtube.com/watch?v=si_DUe-8ncY]
+
+= Do you want to sell products from only one stock location? =
+[youtube http://www.youtube.com/watch?v=rznc0WMbmh4]
+[youtube http://www.youtube.com/watch?v=7ZIv_d7prLA]
+
 = How Google Map and Location Archives work in Premium Version? =
 [youtube http://www.youtube.com/watch?v=ZgmNWuKFyQI]
 
@@ -125,6 +135,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.8.1 =
+- New: Sell products from only one stock location. [Thanks to Paul][23/03/2022]
+
 = 1.8.0 =
 - Fix: Cron job query updated for the products with recently changed timestamp. [Thanks to Riley Pollard][22/03/2022]
 

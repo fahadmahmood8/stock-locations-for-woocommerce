@@ -147,6 +147,7 @@ add_action( 'slw_product_wc_stock_status', function( $locations_stock, $id, $for
 				}
 			}
 			update_post_meta( $id, '_stock', $locations_stock );
+			
 		}
 	}
 }, 10, 3 );

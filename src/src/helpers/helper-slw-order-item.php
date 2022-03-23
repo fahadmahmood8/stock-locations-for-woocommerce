@@ -146,6 +146,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 					// update stock
 					
 					update_post_meta( $mainProductId, '_stock', $stock_qty );
+					
 					// update stock status
 					SlwProductHelper::update_wc_stock_status( $mainProductId, $stock_qty );
 

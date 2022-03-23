@@ -12,8 +12,8 @@
 <div class="slw-api-urls">
 
 	<ul>
-    	<li><?php echo home_url(); ?>/?slw-crons</li>
-    	<li><b><?php echo home_url(); ?>/?slw-crons&</b><?php echo '<span>'.implode('=</span>&<span>', array_keys($slw_crons_valid_keys)).'</span>'; ?> <a href="https://www.youtube.com/embed/si_DUe-8ncY?start=114" target="_blank"><i class="fab fa-youtube"></i></a></li>
+    	<li><i>curl "</i><?php echo home_url(); ?>/?slw-crons</li></li>
+    	<li><i>curl "</i><b><?php echo home_url(); ?>/?slw-crons&</b><?php echo '<span>'.implode('=</span>&<span>', array_keys($slw_crons_valid_keys)).'</span>'; ?></b><i>"</i> <a href="https://www.youtube.com/embed/si_DUe-8ncY?start=114" target="_blank"><i class="fab fa-youtube"></i></a></li>
 	</ul>        
 </div>
 <table cellpadding="0" cellspacing="0">

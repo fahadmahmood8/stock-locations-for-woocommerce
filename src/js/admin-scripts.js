@@ -380,8 +380,8 @@ function slw_gmap_initialize(input_id) {
 			});
 		}
 	});
-	if($('div.slw_widgets').length>0){
-		$('div.slw_widgets ul li[data-type="screenshot"] a').magnificPopup({
+	if($('.slw_need_popup').length>0){
+		$('.slw_need_popup ul li[data-type="screenshot"] a, .slw_need_popup a[data-type="screenshot"]').magnificPopup({
 		  type: 'image',
 		  gallery: {
 			// options for gallery
