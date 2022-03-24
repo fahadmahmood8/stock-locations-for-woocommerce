@@ -141,18 +141,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 				$postmeta_int = array();
 				for( $i = 0; $i < count($postmeta); $i++ ) {
-					
-					foreach($postmeta[$i] as $term_id=>$stock_val){
-						
-						$postmeta_int[] = intval($stock_val[$i][0]);
-						
-					}
-					
-					
-					
-					
+					$postmeta_int[] = intval($postmeta[$i][0]);
 				}
-
 				// Check if the total stock matches the sum of the locations stock, if not show warning message
 				if( $product->get_stock_quantity() != array_sum($postmeta_int) ) {
 					echo '<div id="' . $this->tab_stock_locations . '_alert" style="display:none;">' . __('The total stock does not match the sum of the locations stock. Please update this product to fix it or use', 'stock-locations-for-woocommerce') .' <a href="'.admin_url('admin.php?page=slw-settings&tab=crons').'" target="_blank">'.__('cron jobs.', 'stock-locations-for-woocommerce').'</a>.</div>';
