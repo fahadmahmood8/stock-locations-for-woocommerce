@@ -135,6 +135,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.8.3 =
+- New: Stock locations tab, enable/disable feature added. [Thanks to Paul Eagles][24/03/2022]
+
 = 1.8.2 =
 - Fix: The total stock does not match the sum of the locations stock. [Thanks to Jere Seppä][24/03/2022]
 

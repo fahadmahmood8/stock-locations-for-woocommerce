@@ -46,6 +46,9 @@ table thead tr #stock_at_locations {
 	float: left;
 	margin-right: 10px;
 }
+div.slw-settings-wrap a{
+	cursor:pointer;
+}
 div.slw-settings-wrap a.nav-tab[data-id="help"] {
 	float: right;
 }
@@ -555,4 +558,14 @@ div.slw-settings-wrap .fa-map-marked{
 }
 body.wc-variable-product #stock-locations-for-woocommerce_tab_stock_locations #stock-locations-for-woocommerce_tab_stock_locations_wrapper{
 	display:none !important;
+}
+div.slw-settings-wrap a.slw-location-status .fa-eye,
+div.slw-settings-wrap a.slw-location-status .fa-eye-slash{
+	display:none;
+}
+div.slw-settings-wrap a.slw-location-status.checked .fa-eye{
+	display:block;
+}
+div.slw-settings-wrap a.slw-location-status:not(.checked) .fa-eye-slash{
+	display:block;
 }

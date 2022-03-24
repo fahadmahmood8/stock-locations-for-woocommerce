@@ -94,7 +94,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.8.2';
+		public           $version  = '1.8.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -196,6 +196,7 @@ if(!class_exists('SlwMain')) {
 				'slug'    => SLW_PLUGIN_SLUG,
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'slw_nonce' ),
+				'slw_gkey' => $slw_gkey,
 				'stock_locations' => false
 			);
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();

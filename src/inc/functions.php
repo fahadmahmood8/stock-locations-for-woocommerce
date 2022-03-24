@@ -419,6 +419,7 @@ jQuery(document).ready(function($){
 			$args = array(
 				'numberposts' => $limit,
 				'post_type' => 'product',
+				'post_status' => 'publish',
 				'meta_query' => array(
 					array(
 						'key'       => $today_slw_cron_sniffed,
@@ -444,7 +445,6 @@ jQuery(document).ready(function($){
 
 
 			$products = get_posts($args);
-			//$products = $wpdb->get_results($q);
 
 			if(!empty($products)){
 				echo '<ul>';

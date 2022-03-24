@@ -24,10 +24,8 @@ function slw_gmap_initialize(input_id) {
 		if($('form#addtag input#tag-name').length>0){
 			//input_id = 'tag-name';
 		}
-		if(input_id){
+		if(input_id && slw_admin_scripts.slw_gkey!=''){
 			slw_gmap_initialize(input_id);
-			
-			
 		}
 		
 		
@@ -284,11 +282,21 @@ function slw_gmap_initialize(input_id) {
 
 	});
 	
-	$('input#slw-location-status').bind('click', function (e) {
+	$('#slw-location-status, a.slw-location-status').bind('click', function (e) {
+		
+		
+		var status_val = '';
+		
+		if($(this).is('input[type="checkbox"]')){
+			status_val = ($(this).is(':checked')?$(this).val():'');
+		}else{
+			status_val = $(this).hasClass('checked')?'':'yes';
+			$(this).toggleClass('checked');
+		}
+		
 		var data = {
-
 			action: 'slw_location_status',
-			status: $(this).is(':checked')?$(this).val():'',
+			status: status_val,
 			location_id: $(this).data('id'),
 			slw_nonce_field: slw_admin_scripts.nonce,
 		}
