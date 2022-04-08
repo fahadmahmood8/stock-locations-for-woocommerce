@@ -166,7 +166,7 @@ if(!class_exists('SlwSettings')) {
 			
 			add_settings_field(
 				'show_in_product_page',
-				__('Show location selection in product page', 'stock-locations-for-woocommerce'),
+				__('Stock management on product page', 'stock-locations-for-woocommerce'),
 				array( $this, 'show_in_product_page_callback' ),
 				'slw-setting-admin',
 				'slw_setting_setting_section',
@@ -527,7 +527,7 @@ if(!class_exists('SlwSettings')) {
 
 		public function show_in_product_page_callback()
 		{
-			$this->select_yes_no_callback('show_in_product_page');
+			$this->select_yes_no_product_page_callback('show_in_product_page');
 		}
 
 
@@ -605,6 +605,25 @@ if(!class_exists('SlwSettings')) {
 		 * @since 1.2.1
 		 * @return void
 		 */
+		public function select_yes_no_product_page_callback( $id )
+		{
+			?> 
+			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
+
+				<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
+				<option disabled <?php echo $selected; ?>><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>
+
+				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
+				<option value="yes_without" <?php echo $selected; ?>>1. <?php echo __('Without locations dropdown', 'stock-locations-for-woocommerce'); ?></option>
+
+				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
+				<option value="yes" <?php echo $selected; ?>>2. <?php echo __('With locations dropdown', 'stock-locations-for-woocommerce'); ?></option>                
+				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected' : ''; ?>
+				<option value="no" <?php echo $selected; ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
+
+			</select>
+			<?php
+		}		 
 		public function select_yes_no_callback( $id )
 		{
 			?> 

@@ -27,6 +27,9 @@
 	margin: 3px 0 5px 0;
 	text-align: left;
 }
+.slw_item_stock_location.display_yes_without{
+	display:none !important;
+}
 .slw_checkout_disable {
 	opacity: 0.5 !important;
 	pointer-events: none !important;

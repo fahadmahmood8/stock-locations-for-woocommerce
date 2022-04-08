@@ -76,7 +76,7 @@
 	}
 	
 	
-	$('body').on('change', 'select#slw_item_stock_location_variable_product', function(){
+	$('body').on('change', 'select#slw_item_stock_location_variable_product, select#slw_item_stock_location_simple_product', function(){
 		
 		slw_add_to_cart_item_stock_status_update();
 		
@@ -91,6 +91,7 @@
 	function slw_add_to_cart_item_stock_status_update(){
 		
 		var obj = $('p.stock').eq(0);
+
 		var item_stock_location_selector = 'select[name="slw_add_to_cart_item_stock_location"]';
 		var qty_obj = $(item_stock_location_selector+' option:selected');
 		
@@ -165,7 +166,9 @@
 				
 				obj.removeClass('out-of-stock available-on-backorder').addClass('in-stock');
 			}
-			
+
+			str = ((typeof str!='undefined')?str:'');
+			stock_quantity = ((typeof stock_quantity!='undefined')?stock_quantity:'');
 			if(include_number){
 				obj.html(stock_quantity+' '+str);
 			}else{

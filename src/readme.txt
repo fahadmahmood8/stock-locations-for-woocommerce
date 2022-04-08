@@ -135,6 +135,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+
+= 1.8.4 =
+- Fix: API will accept the zero qty. as well for the stock. [Thanks to kastiell93][25/03/2022]
+- Fix: https://www.youtube.com/embed/HIo9X5M8A5U [Thanks to Daniel Sieff][08/04/2022]
+
 = 1.8.3 =
 - New: Stock locations tab, enable/disable feature added. [Thanks to Paul Eagles][24/03/2022]
 

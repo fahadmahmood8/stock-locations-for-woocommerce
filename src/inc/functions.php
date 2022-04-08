@@ -384,6 +384,8 @@ jQuery(document).ready(function($){
 			$limit = (isset($_GET['limit'])?sanitize_slw_data($_GET['limit']):0);
 			$reconsider = (isset($_GET['reconsider'])?sanitize_slw_data($_GET['reconsider']):'');
 			$limit = (is_numeric($limit) && $limit>0?$limit:10);
+			$action = (isset($_GET['action'])?sanitize_slw_data($_GET['action']):'');
+
 			
 			$timestamp = 'once';
 			switch($reconsider){
@@ -453,7 +455,7 @@ jQuery(document).ready(function($){
 					//$product_post = get_post($res_obj->ID);
 					echo '<li>ID: '.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>';
 					
-					switch($_GET['action']){
+					switch($action){
 						case 'update-stock':
 							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true, true);
 							
@@ -494,9 +496,21 @@ jQuery(document).ready(function($){
 			case 'variable':
 			break;
 			case 'simple':
-				$_backorders = get_post_meta($product->get_id(), '_backorders', true);
-				$_backorder_status = ($_backorders!='no');
-				$instock_status = ($_backorder_status || $product->get_stock_quantity()>0);
+			
+				//pree($product->get_backorders().' - '.$product->get_manage_stock().' - '.$product->get_stock_status());
+				
+				$instock_status = (
+										(
+				
+												($product->get_manage_stock() && ($product->get_stock_quantity()>0 || $product->get_backorders()!='no'))
+											||
+											
+												(!$product->get_manage_stock() && $product->get_stock_status()!='outofstock')			
+										)
+										
+								);
+				
+				
 			break;
 		}
 

@@ -117,19 +117,19 @@ function slw_gmap_initialize(input_id) {
 		// initial
 		if( $('#show_in_cart').val() != 'yes' ) {
 			$('#different_location_per_cart_item').prop('disabled', true);
-			//$('#show_in_product_page').prop('disabled', true);
+
 		} else {
 			$('#different_location_per_cart_item').prop('disabled', false);
-			//$('#show_in_product_page').prop('disabled', false);
+
 		}
 		// on change
 		$('#show_in_cart').on('change', function() {
 			if( $(this).val() == 'yes' ) {
 				$('#different_location_per_cart_item').prop('disabled', false);
-				//$('#show_in_product_page').prop('disabled', false);
+
 			} else {
 				$('#different_location_per_cart_item').prop('disabled', true);
-				//$('#show_in_product_page').prop('disabled', true);
+
 			}
 		});
 	}

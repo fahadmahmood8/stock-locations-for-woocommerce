@@ -11,7 +11,7 @@
 			$response = array('response'=>false);
 			
 			
-			$data = array();
+			$data = array('action'=>'','format'=>'');
 			if(!empty($_GET)){
 				
 				$received = sanitize_slw_data($_GET);
@@ -73,7 +73,7 @@
 							
 							break;
 							case 'stock':
-								if($data['product_id'] && $data['location_id'] && $data['stock_value']){
+								if($data['product_id'] && $data['location_id'] && $data['stock_value']>=0){
 									$response['response'] = update_post_meta($data['product_id'], '_stock_at_' . $data['location_id'], $data['stock_value']);
 								}
 							break;

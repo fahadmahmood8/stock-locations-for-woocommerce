@@ -216,13 +216,21 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				if( isset($_POST['location_email']) ) {
 					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
 				}
-				update_term_meta($term_id, 'slw_location_address', sanitize_text_field($_POST['location_address']));
-				update_term_meta($term_id, 'slw_location_popup', wp_kses($_POST['location_popup'], 'post'));
-				
-				update_term_meta($term_id, 'slw_location_timings', sanitize_text_field($_POST['location_timings']));
-				
-				update_term_meta($term_id, 'slw_lat', sanitize_text_field($_POST['slw-lat']));
-				update_term_meta($term_id, 'slw_lng', sanitize_text_field($_POST['slw-lng']));
+				if( isset($_POST['location_address']) ) {
+					update_term_meta($term_id, 'slw_location_address', sanitize_text_field($_POST['location_address']));
+				}
+				if( isset($_POST['location_popup']) ) {
+					update_term_meta($term_id, 'slw_location_popup', wp_kses($_POST['location_popup'], 'post'));
+				}
+				if( isset($_POST['location_timings']) ) {
+					update_term_meta($term_id, 'slw_location_timings', sanitize_text_field($_POST['location_timings']));
+				}
+				if( isset($_POST['slw-lat']) ) {
+					update_term_meta($term_id, 'slw_lat', sanitize_text_field($_POST['slw-lat']));
+				}
+				if( isset($_POST['slw-lng']) ) {
+					update_term_meta($term_id, 'slw_lng', sanitize_text_field($_POST['slw-lng']));
+				}
 			}
 
             wp_cache_delete(self::$location_cache_key, SLW_PLUGIN_BASENAME);
