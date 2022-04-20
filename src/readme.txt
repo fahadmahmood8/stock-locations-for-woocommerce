@@ -135,6 +135,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.8.5 =
+- New: Features are added. [Thanks to Roland Steinmasdl][08/04/2022]
+- Fix: Removed the extra/empty stock location qty. brackets on products list page in admin panel. [Thansk to Fady Ilias][20/04/2022]
 
 = 1.8.4 =
 - Fix: API will accept the zero qty. as well for the stock. [Thanks to kastiell93][25/03/2022]

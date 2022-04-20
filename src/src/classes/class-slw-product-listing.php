@@ -132,8 +132,8 @@ if(!class_exists('SlwProductListing')) {
 						echo '<label>#'.$product->get_id().' &#8628;</label><br>';
 						$this->output_product_locations_for_column($product->get_id(), $locations);
 					} elseif( $product->is_type( 'variable' ) ) {
-						echo '<label>#'.$product->get_id().' &#8628;</label><br>';
-						$this->output_product_locations_for_column($product->get_id(), $locations);
+						//echo '<label>#'.$product->get_id().' &#8628;</label><br>';
+						//$this->output_product_locations_for_column($product->get_id(), $locations);
 						if( !empty($variations_products) ) {
 							foreach( $variations_products as $variation_product ) {
 								$attributes = $variation_product->get_variation_attributes();
@@ -171,6 +171,8 @@ if(!class_exists('SlwProductListing')) {
 			if( ! empty( $product_id ) ) {
 				$product_id = SlwWpmlHelper::object_id( $product_id );
 			}
+			
+			
 
 			if( !empty($locations) ) {
 				foreach($locations as $location) {

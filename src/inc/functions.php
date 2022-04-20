@@ -494,10 +494,35 @@ jQuery(document).ready(function($){
 		
 		switch($type){
 			case 'variable':
+				$variations = $product->get_children();
+				if(!empty($variations)){
+						$variations_stock_status = array();
+						foreach($variations as $variation_id){
+							
+							$product_variation = wc_get_product($variation_id);
+							
+							$instock_statuses = (
+									(
+			
+											($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity()>0 || $product_variation->get_backorders()!='no'))
+										||
+										
+											(!$product_variation->get_manage_stock() && $product_variation->get_stock_status()!='outofstock')			
+									)
+									
+							);
+							$variations_stock_status[$variation_id] = $instock_statuses;
+							
+							
+						}
+
+						$instock_status = (array_sum($variations_stock_status)>0);
+				}
+			
 			break;
 			case 'simple':
 			
-				//pree($product->get_backorders().' - '.$product->get_manage_stock().' - '.$product->get_stock_status());
+				
 				
 				$instock_status = (
 										(
