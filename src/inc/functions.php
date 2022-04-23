@@ -490,7 +490,7 @@ jQuery(document).ready(function($){
 		global $product;
 		$type = (is_object($product)?$product->get_type():'');
 		
-
+		
 		
 		switch($type){
 			case 'variable':
@@ -664,6 +664,18 @@ jQuery(document).ready(function($){
 		}
 	}
 	
+	function manage_my_category_columns($columns){		
+		$columns['slw_location_status'] = '<small>'.__('Enabled/Disabled', 'stock-locations-for-woocommerce').'</small>';		
+		return $columns;
+	}
+	add_filter('manage_edit-location_columns','manage_my_category_columns');
 	
+	function manage_category_custom_fields($deprecated, $column_name, $term_id){
+	 if ($column_name == 'slw_location_status') {
+		$slw_location_status = get_term_meta($term_id, 'slw_location_status', true);
+		echo '<a data-id="'.$term_id.'" class="slw-location-status '.($slw_location_status?'checked':'').'"><i class="fas fa-check-square slw_location_status-enabled"></i><i class="fas fa-eye-slash slw_location_status-disabled"></i></a>';
+	 }
+	}
+	add_filter ('manage_location_custom_column', 'manage_category_custom_fields', 10,3);
 
 	include_once('functions-api.php');

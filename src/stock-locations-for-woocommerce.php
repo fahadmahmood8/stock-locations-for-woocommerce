@@ -94,7 +94,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.8.5';
+		public           $version  = '1.8.6';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -180,7 +180,7 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			global $current_screen, $post, $slw_gkey;
+			global $current_screen, $post, $slw_gkey, $wc_slw_pro;
 
 					
 			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'css/admin-style.css', array(), time() );
@@ -197,7 +197,9 @@ if(!class_exists('SlwMain')) {
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'slw_nonce' ),
 				'slw_gkey' => $slw_gkey,
-				'stock_locations' => false
+				'stock_locations' => false,
+				'wc_slw_pro' => $wc_slw_pro,
+				'wc_slw_premium_feature' => __('This is a premium feature!', 'stock-locations-for-woocommerce')
 			);
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
 			

@@ -269,7 +269,7 @@ if( !class_exists('SlwOrderItem') ) {
 
 					// If parent doesn't have terms show message
 					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
-						echo '<td width="15%">';
+						echo '<td width="15%" title="variation">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
 					} else {
@@ -287,7 +287,7 @@ if( !class_exists('SlwOrderItem') ) {
 
 					// If product doesn't have terms show message
 					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
-						echo '<td width="15%">';
+						echo '<td width="15%" title="simple">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
 					} else {

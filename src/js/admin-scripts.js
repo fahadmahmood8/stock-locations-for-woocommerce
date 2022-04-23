@@ -422,5 +422,60 @@ function slw_gmap_initialize(input_id) {
 		$(this).parent().toggleClass('collapsed');
 	});
 	
+	$('body').on('click', 'table.table-view-list td.stock_at_locations span i', function(){
+		var n = $(this).html().replace('(', '').replace(')', '');
+		$('table.table-view-list td.stock_at_locations span.clicked').removeClass('clicked');
+		$(this).parent().addClass('clicked');
+		$('table.table-view-list td.stock_at_locations span input[name^="location_qty"]').val(n);
+	});
+	$('body').on('keydown', 'table.table-view-list td.stock_at_locations span input[name^="location_qty"]', function(e){	
+		if (e.which == 13) {
+			e.preventDefault();
+			$(this).trigger('blur');
+			return false;
+		}
+	
+	});
+	$('body').on('blur', 'table.table-view-list td.stock_at_locations span input[name^="location_qty"]', function(e){		
+		
+		
+		$(this).focus();
+		$.blockUI({message:slw_admin_scripts.wc_slw_pro?'':slw_admin_scripts.wc_slw_premium_feature, blockMsgClass: 'slw-premium-block',});
+		var n = ($(this).val())*1;
+		var obj = $(this).parents().closest('tr').find('td[data-colname="Stock"]');
+
+		$(this).parent().removeClass('clicked');		
+		$(this).parent().find('i').html('('+n+')');		
+		if(slw_admin_scripts.wc_slw_pro){
+		
+				var data = {
+					'action': 'slw_product_list_qty_update',
+					'quantity': n,
+					'product_id': $(this).data('product'),				
+					'location_id': $(this).data('location'),
+					'slw_nonce_field': slw_admin_scripts.nonce
+				};
+
+				$.post(slw_admin_scripts.ajaxurl, data, function(response) {
+					
+					obj.html('');
+					
+					$.unblockUI();
+					
+					
+					
+				});
+				
+				$(this).parent().find('mark').prop('class', (n>0?'instock':'outofstock'));
+	
+			
+		}else{
+			setTimeout(function(){
+				$.unblockUI();
+			}, 30000);
+		}
+		
+	});
+	
 
 }(jQuery));
