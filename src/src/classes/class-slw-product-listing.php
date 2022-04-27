@@ -171,10 +171,12 @@ if(!class_exists('SlwProductListing')) {
 			if( ! empty( $product_id ) ) {
 				$product_id = SlwWpmlHelper::object_id( $product_id );
 			}
-			
-			
+
 
 			if( !empty($locations) ) {
+				global $slw_plugin_settings;
+				$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
+			
 				foreach($locations as $location) {
 					// If out of stock
 					$location_qty = get_post_meta( $product_id, '_stock_at_' . $location->term_id, true );
@@ -182,10 +184,10 @@ if(!class_exists('SlwProductListing')) {
 					
 					$location_qty_edit = '<input data-product="'.$product_id.'" data-location="'.$location->term_id.'" type="text" value="'.$location_qty.'" name="location_qty['.$product_id.']['.$location->term_id.']" />';
 
-					if( $location_qty <= 0 ) {
-						echo '<span><mark class="outofstock">' . $location->name . '</mark> '.$location_qty_edit.'<i>(' . $location_qty . ')</i></span><br>';
+					if( $location_qty <= 0 && !$everything_stock_status_to_instock) {
+						echo '<span><mark class="outofstock">' . $location->name . '</mark> '.$location_qty_edit.'<i>(' . ($location_qty?$location_qty:0) . ')</i></span><br>';
 					} else { // If in stock
-						echo '<span><mark class="instock">' . $location->name . '</mark> '.$location_qty_edit.'<i>(' . $location_qty . ')</i></span><br>';
+						echo '<span><mark class="instock">' . $location->name . '</mark> '.$location_qty_edit.'<i>(' . ($location_qty?$location_qty:0) . ')</i></span><br>';
 					}
 				}
 			}

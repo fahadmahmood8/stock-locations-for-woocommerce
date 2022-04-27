@@ -135,6 +135,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.8.7 =
+- Fix: Priority based locaiton selection when default location as zero stock on product page, improved. [Thanks to Mario Kremser][26/04/2022]
+- New: Everything stock status to instock option added for product page. [Thanks to Darren Lew][26/04/2022]
+
 = 1.8.6 =
 - New features are in progress. [Thanks to Roland Steinmasdl][08/04/2022]
 - New: Stock location Enabled/Disabled column added on stock locations list. [Thanks to Andrew Gortchacow][21/04/2022]

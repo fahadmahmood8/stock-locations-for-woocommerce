@@ -118,6 +118,9 @@ add_action( 'slw_product_wc_stock_status', function( $locations_stock, $id, $for
 	
 	global $slw_plugin_settings;
 	$force_main_product_stock_status_to_instock = (!$force_main_product_stock_status_to_instock?array_key_exists('force_main_product_stock_status_to_instock', $slw_plugin_settings):$force_main_product_stock_status_to_instock);
+
+	
+	
 	
 	if( ! empty( $id ) && $force_main_product_stock_status_to_instock) {
 		$product = wc_get_product( $id );

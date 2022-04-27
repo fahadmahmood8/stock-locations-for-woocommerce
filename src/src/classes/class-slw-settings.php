@@ -218,6 +218,15 @@ if(!class_exists('SlwSettings')) {
 			);
 			
 			add_settings_field(
+				'everything_stock_status_to_instock',
+				__('Everything stock status to instock', 'stock-locations-for-woocommerce'),
+				array( $this, 'everything_stock_status_to_instock_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'everything_stock_status_to_instock  slw-premium')
+			);
+			
+			add_settings_field(
 				'force_main_product_stock_status_to_instock',
 				__('Force main product stock status to instock', 'stock-locations-for-woocommerce'),
 				array( $this, 'force_main_product_stock_status_to_instock_callback' ),
@@ -332,9 +341,14 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['product_stock_price_status'] ) ) {
 				$sanitary_values['product_stock_price_status'] = $input['product_stock_price_status'];
 			}	
+			if ( isset( $input['everything_stock_status_to_instock'] ) ) {
+				$sanitary_values['everything_stock_status_to_instock'] = $input['everything_stock_status_to_instock'];
+			}
 			if ( isset( $input['force_main_product_stock_status_to_instock'] ) ) {
 				$sanitary_values['force_main_product_stock_status_to_instock'] = $input['force_main_product_stock_status_to_instock'];
 			}			
+			
+			
 			
 			
 			if ( isset( $input['delete_unused_product_locations_meta'] ) ) {
@@ -437,6 +451,7 @@ if(!class_exists('SlwSettings')) {
 		 */
 		 
 		 
+		 
 		public function product_stock_price_status_callback()
 		{
 			$this->checkbox_callback('product_stock_price_status',
@@ -446,6 +461,19 @@ if(!class_exists('SlwSettings')) {
 			);
 			?>
 			<span><?php echo __('It will display stock location prices with location names as well.', 'stock-locations-for-woocommerce'); ?></span>
+			<?php
+			
+		} 
+		
+		public function everything_stock_status_to_instock_callback()
+		{
+			$this->checkbox_callback('everything_stock_status_to_instock',
+				array(
+					'links'=>array()
+				)
+			);
+			?>
+			<span><?php echo __('It will make all products and variations in stock with all stock locations.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 			
 		} 

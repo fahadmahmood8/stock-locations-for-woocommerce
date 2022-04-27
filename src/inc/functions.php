@@ -482,66 +482,7 @@ jQuery(document).ready(function($){
 		add_action('init', 'slw_crons');
 	}
 	
-	
 
-    add_filter('woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock' );
-
-    function slw_woocommerce_product_is_in_stock($instock_status=false) {
-		global $product;
-		$type = (is_object($product)?$product->get_type():'');
-		
-		
-		
-		switch($type){
-			case 'variable':
-				$variations = $product->get_children();
-				if(!empty($variations)){
-						$variations_stock_status = array();
-						foreach($variations as $variation_id){
-							
-							$product_variation = wc_get_product($variation_id);
-							
-							$instock_statuses = (
-									(
-			
-											($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity()>0 || $product_variation->get_backorders()!='no'))
-										||
-										
-											(!$product_variation->get_manage_stock() && $product_variation->get_stock_status()!='outofstock')			
-									)
-									
-							);
-							$variations_stock_status[$variation_id] = $instock_statuses;
-							
-							
-						}
-
-						$instock_status = (array_sum($variations_stock_status)>0);
-				}
-			
-			break;
-			case 'simple':
-			
-				
-				
-				$instock_status = (
-										(
-				
-												($product->get_manage_stock() && ($product->get_stock_quantity()>0 || $product->get_backorders()!='no'))
-											||
-											
-												(!$product->get_manage_stock() && $product->get_stock_status()!='outofstock')			
-										)
-										
-								);
-				
-				
-			break;
-		}
-
-		return $instock_status;
-	}
-	
 	function slw_get_locations($taxonomy='location', $additional_meta_query=array(), $enabled_only=true){
 		
 		$args = array('hide_empty' => false, 'meta_query' => array());
@@ -665,17 +606,87 @@ jQuery(document).ready(function($){
 	}
 	
 	function manage_my_category_columns($columns){		
-		$columns['slw_location_status'] = '<small>'.__('Enabled/Disabled', 'stock-locations-for-woocommerce').'</small>';		
+		$columns['slw_location_status'] = '<small>'.__('Enabled/Disabled', 'stock-locations-for-woocommerce').'</small>';
+		$columns['slw_location_priority'] = '<small title="'.__('Higher the number will have higher the priority.', 'stock-locations-for-woocommerce').'">'.__('Priority', 'stock-locations-for-woocommerce').'</small>';
+		$columns['slw_default_location'] = '<small title="'.__('Default for new products', 'stock-locations-for-woocommerce').'">'.__('Default Location', 'stock-locations-for-woocommerce').'</small>';
+	
 		return $columns;
 	}
 	add_filter('manage_edit-location_columns','manage_my_category_columns');
 	
 	function manage_category_custom_fields($deprecated, $column_name, $term_id){
-	 if ($column_name == 'slw_location_status') {
-		$slw_location_status = get_term_meta($term_id, 'slw_location_status', true);
-		echo '<a data-id="'.$term_id.'" class="slw-location-status '.($slw_location_status?'checked':'').'"><i class="fas fa-check-square slw_location_status-enabled"></i><i class="fas fa-eye-slash slw_location_status-disabled"></i></a>';
-	 }
+		if ($column_name == 'slw_location_status') {
+			$slw_location_status = get_term_meta($term_id, 'slw_location_status', true);
+			echo '<a data-id="'.$term_id.'" class="slw-location-status '.($slw_location_status?'checked':'').'"><i class="fas fa-check-square slw_location_status-enabled"></i><i class="fas fa-eye-slash slw_location_status-disabled"></i></a>';
+		}
+		if ($column_name == 'slw_location_priority') {
+			$slw_location_priority = get_term_meta($term_id, 'slw_location_priority', true);
+			echo '<a title="'.__('Higher the number will have higher the priority.', 'stock-locations-for-woocommerce').'" data-id="'.$term_id.'" class="slw-location-priority">'.$slw_location_priority.'</a>';
+		}	
+		if ($column_name == 'slw_default_location') {
+			$slw_default_location = get_term_meta($term_id, 'slw_default_location', true);
+			echo '<a title="'.__('Default for new products', 'stock-locations-for-woocommerce').'" data-id="'.$term_id.'" class="slw-default-location">'.($slw_default_location?'<i class="fas fa-check-circle"></i>':'').'</a>';
+		}	 
 	}
 	add_filter ('manage_location_custom_column', 'manage_category_custom_fields', 10,3);
 
+    function slw_woocommerce_product_is_in_stock($instock_status=false) {
+		
+		global $product, $slw_plugin_settings;
+		
+		$type = (is_object($product)?$product->get_type():'');
+		
+		switch($type){
+			case 'variable':
+				$variations = $product->get_children();
+				if(!empty($variations)){
+						$variations_stock_status = array();
+						foreach($variations as $variation_id){
+							
+							$product_variation = wc_get_product($variation_id);
+							
+							$instock_statuses = (
+									(
+			
+											($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity()>0 || $product_variation->get_backorders()!='no'))
+										||
+										
+											(!$product_variation->get_manage_stock() && $product_variation->get_stock_status()!='outofstock')			
+									)
+									
+							);
+							$variations_stock_status[$variation_id] = $instock_statuses;
+							
+							
+						}
+
+						$instock_status = (array_sum($variations_stock_status)>0);
+				}
+			
+			break;
+			case 'simple':
+			
+				
+				
+				$instock_status = (
+										(
+				
+												($product->get_manage_stock() && ($product->get_stock_quantity()>0 || $product->get_backorders()!='no'))
+											||
+											
+												(!$product->get_manage_stock() && $product->get_stock_status()!='outofstock')			
+										)
+										
+								);
+				
+				
+			break;
+		}
+		$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
+		if($everything_stock_status_to_instock){ $instock_status = true; }
+		return $instock_status;
+	}
+	
+	add_filter('woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock' );
+	
 	include_once('functions-api.php');

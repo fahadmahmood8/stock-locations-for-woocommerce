@@ -18,7 +18,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 	class SlwFrontendHelper
 	{
 
-		public static function get_all_product_stock_locations_for_selection( $product_id )
+		public static function get_all_product_stock_locations_for_selection( $product_id, $everything_stock_status_to_instock=false )
 		{
 
 			
@@ -81,7 +81,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 
 
 
-				if( $location->quantity <= 0 ) {
+				if( $location->quantity <= 0 && !$everything_stock_status_to_instock) {
 					if( $stock_locations_to_display[$id]['allow_backorder'] == 1 ) {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('On backorder', 'stock-locations-for-woocommerce') . ')';
 					} else {

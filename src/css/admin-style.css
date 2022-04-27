@@ -550,7 +550,8 @@ table.location-edit tr.term-name-wrap th > a svg{
 }
 div.slw-settings-wrap .fa-eye,
 div.slw-settings-wrap .fa-map-marked-alt,
-table.wp-list-table td.slw_location_status svg.slw_location_status-enabled{
+table.wp-list-table td.slw_location_status svg.slw_location_status-enabled,
+table.wp-list-table td.slw_default_location svg{
 	color:#093;
 }
 div.slw-settings-wrap .fa-eye-slash,
@@ -569,7 +570,8 @@ table.wp-list-table td.slw_location_status a.slw-location-status.checked svg.slw
 table.wp-list-table td.slw_location_status a.slw-location-status:not(.checked) svg.slw_location_status-disabled{
 	display:block;
 }
-table.wp-list-table td.slw_location_status svg{
+table.wp-list-table td.slw_location_status svg,
+table.wp-list-table td.slw_default_location svg{
 	font-size:18px;
 }
 body.wc-variable-product #stock-locations-for-woocommerce_tab_stock_locations #stock-locations-for-woocommerce_tab_stock_locations_wrapper{

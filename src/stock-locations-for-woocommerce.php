@@ -29,7 +29,6 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr;
 
 
-
 $slw_gkey = get_option('slw-google-api-key');
 $slw_plugin_settings = get_option( 'slw_settings' );
 $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array();
@@ -94,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.8.6';
+		public           $version  = '1.8.7';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -272,6 +271,8 @@ if(!class_exists('SlwMain')) {
 			$data['dummy_price'] = wc_price(111);
 			$data['nonce']   = wp_create_nonce( 'slw_nonce' );
 			
+			
+			
 
 			wp_enqueue_script(
 				'slw-common-scripts',
@@ -303,6 +304,13 @@ if(!class_exists('SlwMain')) {
 			if($data['is_product'] && (is_object($post) && $post->post_type=='product')){// && isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
 				
 				$product_id = $post->ID;
+				
+				$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $this->plugin_settings);
+				if($everything_stock_status_to_instock && function_exists('everything_stock_status_to_instock')){
+					everything_stock_status_to_instock($product_id);
+				}
+				
+				
 				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($product_id).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
 				$wc_product = wc_get_product($product_id);
 				

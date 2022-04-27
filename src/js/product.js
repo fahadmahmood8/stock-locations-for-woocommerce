@@ -146,8 +146,9 @@
 				break;
 			}
 			
+			var everything_stock_status_to_instock = (typeof slw_frontend.everything_stock_status_to_instock!='undefined' && slw_frontend.everything_stock_status_to_instock=='on');
 			
-			if(stock_quantity==0){		
+			if(stock_quantity==0 && !everything_stock_status_to_instock){		
 				
 				
 				if(backorder){
