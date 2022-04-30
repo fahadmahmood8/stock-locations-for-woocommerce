@@ -135,6 +135,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.8.9 =
+- New: Map page related improvements. [Thansk to Justyn Thomas][29/04/2022]
+
 = 1.8.8 =
 - New: Compatibility for "PowerPack Pro for Elementor" added. [Thansk to Fady Ilias][27/04/2022]
 
