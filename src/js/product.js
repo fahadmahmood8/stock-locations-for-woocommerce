@@ -48,7 +48,7 @@
 								
 								//new Option( obj.name, obj.term_id, selected, selected )
 								var product_stock_location_name = obj.name;
-								if(slw_frontend.product_stock_price_status=='on'){								
+								if(typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on'){								
 									product_stock_location_name += ' '+slw_frontend.currency_symbol+''+obj.price;
 								}
 								var option_str = '<option class="'+(obj.quantity>0?'has-stock':'')+'" data-backorder="'+obj.backorder_allowed+'" data-price="'+obj.price+'" data-quantity="'+obj.quantity+'" value="'+obj.term_id+'" '+(selected?'selected="selected"':'')+'>'+product_stock_location_name+'</option>';
@@ -194,7 +194,7 @@
 		
 		var price = qty_obj.data('price');
 		
-		if(price && slw_frontend.product_stock_price_status=='on'){
+		if(price && (typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on')){
 			var price_html = '<bdi><span class="woocommerce-Price-currencySymbol">'+slw_frontend.currency_symbol+'</span>'+price+'</bdi>';
 	
 			if(price_dom.length>0){

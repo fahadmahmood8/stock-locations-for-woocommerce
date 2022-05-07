@@ -67,7 +67,7 @@ $slw_widgets_arr = array(
 		'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
 		'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
 		'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes"]'),					
+		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px"]'),					
 		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
 		
 	),
@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.8.9';
+		public           $version  = '1.9.0';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -249,6 +249,7 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
+			
 			$term_id = (is_archive()?get_queried_object_id():0);
 			
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
@@ -275,7 +276,12 @@ if(!class_exists('SlwMain')) {
 			$data['dummy_price'] = wc_price(111);
 			$data['nonce']   = wp_create_nonce( 'slw_nonce' );
 			
-			
+
+			if($term_id){
+				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('Ymdh') );				
+				wp_enqueue_script( 'font-awesome', SLW_PLUGIN_DIR_URL . 'js/fontawesome.min.js', array( 'jquery' ), date('Ymdh') );
+			}
+
 			
 
 			wp_enqueue_script(

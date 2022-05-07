@@ -135,6 +135,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.9.0 =
+- New: Geo Location related improvements. [Thansk to Justyn Thomas][30/04/2022]
+- Fix: Location based archive page, default location selection tested. [Thansk to Justyn Thomas][07/05/2022]
+
 = 1.8.9 =
 - New: Map page related improvements. [Thansk to Justyn Thomas][29/04/2022]
 

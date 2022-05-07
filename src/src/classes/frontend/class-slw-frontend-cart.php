@@ -129,7 +129,7 @@ if( !class_exists('SlwFrontendCart') ) {
 						echo '</select>';
 						return;
 					}
-	
+					//pree($stock_locations);
 					// default behaviour
 					if( isset($cart_item['stock_location']) ) {
 						echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
@@ -138,10 +138,11 @@ if( !class_exists('SlwFrontendCart') ) {
 						echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
 						echo '<option selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 					}
-	
+					
 					foreach( $stock_locations as $id => $location ) {
 						$selected = $disabled = '';
-						if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < 1 && $location['allow_backorder'] == 1) ) {
+						//pree($location['quantity'].' >= '.$cart_item['quantity'].' * '.$location['backorder_allowed']);
+						if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < $cart_item['quantity'] && $location['backorder_allowed'] == 'yes') ) {
 							if( isset($cart_item['stock_location']) && $cart_item['stock_location'] == $location['term_id'] ) {
 								$selected = 'selected="selected"';
 							}
