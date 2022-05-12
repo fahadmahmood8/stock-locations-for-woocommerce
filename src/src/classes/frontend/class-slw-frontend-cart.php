@@ -211,7 +211,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			//wc_slw_logger('$stock_location->term_id: '.$stock_location->term_id);
 			if(!empty($stock_locations)) {				
 				foreach($stock_locations as $stock_location){					
-					if($stock_location->allocated_quantity>0){
+					if(property_exists($stock_location, 'allocated_quantity') && $stock_location->allocated_quantity>0){
 						$item->add_meta_data( '_stock_location', $stock_location->term_id, true );		
 					}else{
 						foreach( $item as $cart_item_key => $cart_item ) {

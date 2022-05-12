@@ -135,15 +135,18 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.9.1 =
+- Fix: Request-URI Too Long. [Thanks to @jarvistran and @beeloudglade][12/04/2022]
+
 = 1.9.0 =
-- New: Geo Location related improvements. [Thansk to Justyn Thomas][30/04/2022]
-- Fix: Location based archive page, default location selection tested. [Thansk to Justyn Thomas][07/05/2022]
+- New: Geo Location related improvements. [Thanks to Justyn Thomas][30/04/2022]
+- Fix: Location based archive page, default location selection tested. [Thanks to Justyn Thomas][07/05/2022]
 
 = 1.8.9 =
-- New: Map page related improvements. [Thansk to Justyn Thomas][29/04/2022]
+- New: Map page related improvements. [Thanks to Justyn Thomas][29/04/2022]
 
 = 1.8.8 =
-- New: Compatibility for "PowerPack Pro for Elementor" added. [Thansk to Fady Ilias][27/04/2022]
+- New: Compatibility for "PowerPack Pro for Elementor" added. [Thanks to Fady Ilias][27/04/2022]
 
 = 1.8.7 =
 - Fix: Priority based locaiton selection when default location as zero stock on product page, improved. [Thanks to Mario Kremser][26/04/2022]
@@ -155,7 +158,7 @@ On settings page you can define a number. If location stock value will be less t
 - New: Stock quantity can be updated from the products list as well. [Thanks to Andrew Gortchacow][23/04/2022]
 
 = 1.8.5 =
-- Fix: Removed the extra/empty stock location qty. brackets on products list page in admin panel. [Thansk to Fady Ilias][20/04/2022]
+- Fix: Removed the extra/empty stock location qty. brackets on products list page in admin panel. [Thanks to Fady Ilias][20/04/2022]
 
 = 1.8.4 =
 - Fix: API will accept the zero qty. as well for the stock. [Thanks to kastiell93][25/03/2022]

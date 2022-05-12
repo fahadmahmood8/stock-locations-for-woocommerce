@@ -182,7 +182,7 @@ if(!class_exists('SlwProductListing')) {
 					$location_qty = get_post_meta( $product_id, '_stock_at_' . $location->term_id, true );
 					
 					
-					$location_qty_edit = '<input data-product="'.$product_id.'" data-location="'.$location->term_id.'" type="text" value="'.$location_qty.'" name="location_qty['.$product_id.']['.$location->term_id.']" />';
+					$location_qty_edit = '<input class="location_qty_update" data-product="'.$product_id.'" data-location="'.$location->term_id.'" type="text" value="'.$location_qty.'" />';
 
 					if( $location_qty <= 0 && !$everything_stock_status_to_instock) {
 						echo '<span><mark class="outofstock">' . $location->name . '</mark> '.$location_qty_edit.'<i>(' . ($location_qty?$location_qty:0) . ')</i></span><br>';

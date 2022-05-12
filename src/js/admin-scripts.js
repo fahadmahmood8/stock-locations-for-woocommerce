@@ -426,9 +426,9 @@ function slw_gmap_initialize(input_id) {
 		var n = $(this).html().replace('(', '').replace(')', '');
 		$('table.table-view-list td.stock_at_locations span.clicked').removeClass('clicked');
 		$(this).parent().addClass('clicked');
-		$('table.table-view-list td.stock_at_locations span input[name^="location_qty"]').val(n);
+		$('table.table-view-list td.stock_at_locations span input.location_qty_update').val(n);
 	});
-	$('body').on('keydown', 'table.table-view-list td.stock_at_locations span input[name^="location_qty"]', function(e){	
+	$('body').on('keydown', 'table.table-view-list td.stock_at_locations span input.location_qty_update', function(e){	
 		if (e.which == 13) {
 			e.preventDefault();
 			$(this).trigger('blur');
@@ -436,7 +436,7 @@ function slw_gmap_initialize(input_id) {
 		}
 	
 	});
-	$('body').on('blur', 'table.table-view-list td.stock_at_locations span input[name^="location_qty"]', function(e){		
+	$('body').on('blur', 'table.table-view-list td.stock_at_locations span input.location_qty_update', function(e){		
 		
 		
 		$(this).focus();
