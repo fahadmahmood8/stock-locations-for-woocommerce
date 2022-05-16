@@ -80,7 +80,7 @@ if(!class_exists('SlwCart')) {
             // Save the stock locations to the cart meta
             $cart = WC()->cart->cart_contents;
             $cart_id = $_POST['cart_id'];
-            $stock_location = $_POST['stock_location'];
+            $stock_location = sanitize_slw_data($_POST['stock_location']);
             $cart_item = $cart[$cart_id];
             $cart_item['stock_location'] = $stock_location;
             WC()->cart->cart_contents[$cart_id] = $cart_item;
@@ -98,6 +98,7 @@ if(!class_exists('SlwCart')) {
         {
             foreach( $item as $cart_item_key => $cart_item ) {
                 if( isset( $cart_item['stock_location'] ) ) {
+
                     $item->add_meta_data( '_stock_location', $cart_item['stock_location'], true );
                 }
             }

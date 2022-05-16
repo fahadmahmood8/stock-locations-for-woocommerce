@@ -607,6 +607,7 @@ jQuery(document).ready(function($){
 	
 	function manage_my_category_columns($columns){		
 		$columns['slw_location_status'] = '<small>'.__('Enabled/Disabled', 'stock-locations-for-woocommerce').'</small>';
+		$columns['slw_location_auto_allocate'] = '<small>'.__('Auto Allocation', 'stock-locations-for-woocommerce').'</small>';
 		$columns['slw_location_priority'] = '<small title="'.__('Higher the number will have higher the priority.', 'stock-locations-for-woocommerce').'">'.__('Priority', 'stock-locations-for-woocommerce').'</small>';
 		$columns['slw_default_location'] = '<small title="'.__('Default for new products', 'stock-locations-for-woocommerce').'">'.__('Default Location', 'stock-locations-for-woocommerce').'</small>';
 	
@@ -619,6 +620,11 @@ jQuery(document).ready(function($){
 			$slw_location_status = get_term_meta($term_id, 'slw_location_status', true);
 			echo '<a data-id="'.$term_id.'" class="slw-location-status '.($slw_location_status?'checked':'').'"><i class="fas fa-check-square slw_location_status-enabled"></i><i class="fas fa-eye-slash slw_location_status-disabled"></i></a>';
 		}
+		if ($column_name == 'slw_location_auto_allocate') {
+			$slw_auto_allocate = get_term_meta($term_id, 'slw_auto_allocate', true);
+			echo '<a data-id="'.$term_id.'" class="slw-location-allocate '.($slw_auto_allocate?'checked':'').'"><i class="fas fa-check-square slw_location_allocate-enabled"></i><i class="fas fa-times-circle slw_location_allocate-disabled"></i></a>';
+		}		
+		
 		if ($column_name == 'slw_location_priority') {
 			$slw_location_priority = get_term_meta($term_id, 'slw_location_priority', true);
 			echo '<a title="'.__('Higher the number will have higher the priority.', 'stock-locations-for-woocommerce').'" data-id="'.$term_id.'" class="slw-location-priority">'.$slw_location_priority.'</a>';
@@ -703,4 +709,5 @@ jQuery(document).ready(function($){
 	
 	add_filter('woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock' );
 	
+
 	include_once('functions-api.php');

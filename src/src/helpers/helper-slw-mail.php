@@ -19,6 +19,7 @@ if ( !class_exists('SlwMailHelper') ) {
 
 		public static function stock_allocation_notification( $term, $item, $quantity )
 		{
+
 			if( empty($term) || empty($item) || empty($quantity) ) return;
 
 			// get location meta
@@ -26,7 +27,6 @@ if ( !class_exists('SlwMailHelper') ) {
 
 			// get plugin settings
 			$plugin_settings = get_option( 'slw_settings' );
-
 			// Send email notification to location
 			if( isset($plugin_settings['location_email_notifications']) && $plugin_settings['location_email_notifications'] == 'on' && isset($item_location_meta['slw_auto_allocate']) && $item_location_meta['slw_auto_allocate'] == '1' && isset($item_location_meta['slw_location_email']) && !empty($item_location_meta['slw_location_email']) && is_email($item_location_meta['slw_location_email']) ) {
 				$to = sanitize_text_field( $item_location_meta['slw_location_email'] );

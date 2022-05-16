@@ -121,7 +121,7 @@ if(!class_exists('SlwProductRest')) {
                     } else {
                         // We must only keep location IDs we wish to keep as valid locations
                         $stockLocationTermIds[] = $locationId;
-
+						
                         // Set locations stock level
                         update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
 						

@@ -23,6 +23,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 		public static function allocateLocationStock( $orderItemId, $locationStockMap, $allocationType )
 		{
+			
 			// Get line item
 			$lineItem = new \WC_Order_Item_Product($orderItemId);
 
@@ -31,13 +32,13 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			$mainProductId = SlwWpmlHelper::object_id( $mainProductId );
 
 			$mainProduct   = wc_get_product( $mainProductId );
+			
 			if( empty( $mainProduct ) ) return false;
 			
 
 
 			// Get item location terms
 			$itemStockLocationTerms = SlwStockAllocationHelper::getProductStockLocations( $mainProductId, false );
-
 
 			// Nothing to do, we should have gotten this far
 			// Checks should have happened prior
@@ -47,6 +48,9 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 			// Grab all input values
 			$totalQtyAllocated = 0;
+			
+			//wc_slw_logger('debug', $itemStockLocationTerms);
+
 
 			// Loop through location terms
 			$counter = 0;
@@ -68,27 +72,22 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				}
 
 				$postmeta_stock_at_term = $term->quantity;
-
+	
 				// Stock input is invalid
 				if (empty($item_stock_location_subtract_input_qty) || $item_stock_location_subtract_input_qty == 0) {
 					continue;
 				}
 
-				
-				
 				// Stock input above needed quantity
 				if ($item_stock_location_subtract_input_qty > $lineItem->get_quantity()) {
 					continue;
 				}
-				
-
 
 				// Total quantity assignment does not match required quantity
 				// Not all stock has been allocated to locations
 				if (array_sum($locationStockMap) !== $lineItem->get_quantity()) {
 					continue;
 				}
-
 				// Save input values to array
 				$totalQtyAllocated += $item_stock_location_subtract_input_qty;
 

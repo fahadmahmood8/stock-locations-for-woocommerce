@@ -176,7 +176,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			// Save the stock locations to the cart meta
 			$cart = WC()->cart->cart_contents;
 			$cart_id = $_POST['cart_id'];
-			$stock_location = $_POST['stock_location'];
+			$stock_location = sanitize_slw_data($_POST['stock_location']);
 			$cart_item = $cart[$cart_id];
 			$cart_item['stock_location'] = $stock_location;
 			WC()->cart->cart_contents[$cart_id] = $cart_item;
@@ -196,6 +196,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			
 			foreach( $item as $cart_item_key => $cart_item ) {
 				if( isset( $cart_item['stock_location'] ) ) {
+
 					$item->add_meta_data( '_stock_location', $cart_item['stock_location'], true );					
 				}
 			}
@@ -203,23 +204,37 @@ if( !class_exists('SlwFrontendCart') ) {
 		
 		public function create_order_line_item_meta_with_auto_location( $item, $cart_item_key_this, $values, $order )
 		{
-			//wc_slw_logger('create_order_line_item_meta_with_auto_location');
+		
 			$product_id = ($item->get_variation_id()?$item->get_variation_id():$item->get_product_id());
-			//wc_slw_logger('$product_id: '.$product_id);
-			$stock_locations = SlwStockAllocationHelper::getStockAllocation($product_id, $item->get_quantity());
-			//wc_slw_logger($stock_locations);
-			//wc_slw_logger('$stock_location->term_id: '.$stock_location->term_id);
+
+			$client_item_stock_location_id = (array_key_exists('stock_location', $values)?$values['stock_location']:0);
+			
+			$stock_locations = SlwStockAllocationHelper::getStockAllocation($product_id, $item->get_quantity(), 0, false, $client_item_stock_location_id);
+			
+
 			if(!empty($stock_locations)) {				
+				$used_locations = array();
 				foreach($stock_locations as $stock_location){					
-					if(property_exists($stock_location, 'allocated_quantity') && $stock_location->allocated_quantity>0){
-						$item->add_meta_data( '_stock_location', $stock_location->term_id, true );		
+					if(!$client_item_stock_location_id){
+						$client_item_stock_location_id = $stock_location->term_id;
+					}
+					if(property_exists($stock_location, 'allocated_quantity') && $stock_location->allocated_quantity>0){						
+						$used_locations[] = $stock_location->term_id;						
 					}else{
 						foreach( $item as $cart_item_key => $cart_item ) {
 							if( isset( $cart_item['stock_location'] ) && $cart_item['stock_location']==$stock_location->term_id ) {
-								$item->add_meta_data( '_stock_location', $stock_location->term_id, true );
+								$used_locations[] = $stock_location->term_id;
+								
+								
 							}
 						}
 					}
+				}
+				if(!empty($used_locations)){
+					$item->add_meta_data( '_stock_locations', $used_locations, true );		
+				}
+				if($client_item_stock_location_id){
+					$item->add_meta_data( '_stock_location', $client_item_stock_location_id, true );	
 				}
 			}
 	

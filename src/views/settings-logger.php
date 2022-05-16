@@ -9,6 +9,10 @@ use SLW\SRC\Helpers\SlwWpmlHelper;
 use SLW\SRC\Helpers\SlwProductHelper;
 use SLW\SRC\Classes\SlwLocationTaxonomy;
 use SLW\SRC\Helpers\SlwMailHelper;
+
+//$stockAllocation = SlwStockAllocationHelper::getStockAllocation(33, 4, 0, false, 31);
+
+
 ?>
 
 <div class="slw_logger mt-4">

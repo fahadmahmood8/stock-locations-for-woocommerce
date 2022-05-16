@@ -81,15 +81,33 @@ This plugin requires at least *WooCommerce 3.4*.
 
 == Frequently Asked Questions ==
 
+= Stock Locations | Stock Deductions | Settings and Results =
+
+**&#128073; 1. How auto order allocation work with multiple stock locations?
+[youtube http://www.youtube.com/watch?v=0UbAPmZ2Kco]
+
+**&#128073; 2. How location priority work with auto order stock allocation?
+[youtube http://www.youtube.com/watch?v=9kGVJZNNxRk]
+
+**&#128073; 3. What if all of my locations don't have the sufficient stock ordered?
+If order quantity is within the summation of all stock locations available stock quantity, it will be simply served. If not, auto allocation will not work so admin can decide if he want to deliver the order partially or wait for stock comes in.
+
+**&#128073; 4. How location email works?
+[youtube http://www.youtube.com/watch?v=zdCdckXEbNw]
+
+**&#128073; 5. Do you want to sell products from only one stock location?
+[youtube http://www.youtube.com/watch?v=rznc0WMbmh4]
+[youtube http://www.youtube.com/watch?v=7ZIv_d7prLA]
+
+**&#128073; 6. How to make location selection required on cart page?
+[youtube http://www.youtube.com/watch?v=64N7-b90r3E]
+
 = How to use Cron Job? =
 [youtube http://www.youtube.com/watch?v=si_DUe-8ncY&t=114s]
 
 = How to use REST API? =
 [youtube http://www.youtube.com/watch?v=si_DUe-8ncY]
 
-= Do you want to sell products from only one stock location? =
-[youtube http://www.youtube.com/watch?v=rznc0WMbmh4]
-[youtube http://www.youtube.com/watch?v=7ZIv_d7prLA]
 
 = How Google Map and Location Archives work in Premium Version? =
 [youtube http://www.youtube.com/watch?v=ZgmNWuKFyQI]
@@ -106,13 +124,8 @@ On settings page you can define a number. If location stock value will be less t
 
 [youtube http://www.youtube.com/watch?v=nWj5MTLcPjI]
 
-= How to make location selection required on cart page? =
 
-[youtube http://www.youtube.com/watch?v=64N7-b90r3E]
 
-= How location priority work with auto order stock allocation? =
-
-[youtube http://www.youtube.com/watch?v=9kGVJZNNxRk]
 
 == Screenshots ==
 
@@ -135,6 +148,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.9.2 =
+- Fix: Location based map page UI tweaks and location related email issue. [Thanks to Justyn Thomas][12/05/2022]
+
 = 1.9.1 =
 - Fix: Request-URI Too Long. [Thanks to @jarvistran and @beeloudglade][12/04/2022]
 

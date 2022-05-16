@@ -357,130 +357,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			return $stock_value;
 		}
 
-		/**
-		 * Updates product post meta '_stock_at_', '_stock' and '_stock_status'.
-		 *
-		 * @since 1.0.0
-		 * @return void
-		 */
-		public static function update_product_stock( $id, $product_stock_location_terms, $terms_total, $force_main_product_update=false )
-		{
-			$stock_ret = 0;
-			// WPML
-			$id           = SlwWpmlHelper::object_id( $id );
-			
-			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
-			if( ! $manage_stock ) {
-				return $stock_ret;
-			}
 
-			// Grab stock amount from all terms
-			$product_terms_stock = array();
-
-			// Grab input amounts
-			$input_amounts = array();
-
-			// Define counter
-			$counter = 0;
-			
-			// Loop through terms
-			foreach ( $product_stock_location_terms as $term ) {
-				
-				$product = wc_get_product($id);
-				
-				if($product->get_type()=='variable' && $product->get_parent_id()==0){ continue; }
-				
-
-				if( isset($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) ) {
-
-					// Initiate counter
-					$counter++;
-
-					// Save input amounts to array
-					
-					$input_amounts[] = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
-					
-
-					// Check if input is empty
-					if(strlen($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) === 0) {
-						// Show admin notice
-						SlwAdminNotice::displayError(__('An error occurred. Some field was empty.', 'stock-locations-for-woocommerce'));
-
-					} else {
-						
-						$stock_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id);
-						$price_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id);
-						
-
-
-						$stock_location_term_input = sanitize_text_field($_POST[$stock_input_id]);
-						$stock_location_price_term_input = sanitize_slw_data($_POST[$price_input_id]);
-						
-						// Get post meta
-						$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
-						
-
-
-						// Check if the $_POST value is the same as the postmeta, if not update the postmeta
-						if( $stock_location_term_input !== $postmeta_stock_at_term ) {
-
-							// Update the post meta
-							update_post_meta( $id, '_stock_at_' . $term->term_id, $stock_location_term_input );
-							
-
-						}
-						
-						$postmeta_stock_price_at_term = get_post_meta($id, '_stock_location_price_' . $term->term_id, true);
-						
-						
-						
-						if( $stock_location_price_term_input !== $postmeta_stock_price_at_term ) {
-							
-							update_post_meta( $id, '_stock_location_price_' . $term->term_id, $stock_location_price_term_input );
-							
-						}
-
-						// Update stock when reach the last term
-						
-						if($counter === $terms_total) {				
-							update_post_meta( $id, '_stock', array_sum($input_amounts) );
-							
-						}
-
-					}
-
-				}else{
-					
-				}
-				
-				$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);			
-				if($slw_location_status){
-					// Get post meta
-					$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
-	
-					// Pass terms stock to variable
-					if( $postmeta_stock_at_term ) {
-						$product_terms_stock[] = $postmeta_stock_at_term;
-					}
-				}
-				
-
-			}
-			
-			
-			
-			// Check if stock in terms exist
-			if( is_array( $product_terms_stock ) ) {
-				$product_terms_stock = array_sum($product_terms_stock);
-				// update stock status
-				if(!empty($product_terms_stock)){
-					$updated_wc_stock_status = SlwProductHelper::update_wc_stock_status( $id, $product_terms_stock, $force_main_product_update );//array_sum($input_amounts)
-				}
-			}
-			
-			return $product_terms_stock;
-
-		}
 
 		/**
 		 * Deletes inactive stock locations meta from product on Action Scheduler event
@@ -576,7 +453,136 @@ if(!class_exists('SlwStockLocationsTab')) {
 				}
 			}
 		}
+		
+		/**
+		 * Updates product post meta '_stock_at_', '_stock' and '_stock_status'.
+		 *
+		 * @since 1.0.0
+		 * @return void
+		 */
+		public static function update_product_stock( $id, $product_stock_location_terms, $terms_total, $force_main_product_update=false )
+		{
+			$stock_ret = 0;
+			// WPML
+			$id           = SlwWpmlHelper::object_id( $id );
+			
+			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
+			if( ! $manage_stock ) {
+				return $stock_ret;
+			}
+
+			// Grab stock amount from all terms
+			$product_terms_stock = array();
+
+			// Grab input amounts
+			$input_amounts = array();
+
+			// Define counter
+			$counter = 0;
+			
+			// Loop through terms
+			foreach ( $product_stock_location_terms as $term ) {
+				
+				$product = wc_get_product($id);
+				
+				if($product->get_type()=='variable' && $product->get_parent_id()==0){ continue; }
+				
+
+				if( isset($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) ) {
+
+					// Initiate counter
+					$counter++;
+
+					// Save input amounts to array
+					
+					$input_amounts[] = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
+					
+
+					// Check if input is empty
+					if(strlen($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) === 0) {
+						// Show admin notice
+						SlwAdminNotice::displayError(__('An error occurred. Some field was empty.', 'stock-locations-for-woocommerce'));
+
+					} else {
+						
+						$stock_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id);
+						$price_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id);
+						
+						
+
+						$stock_location_term_input = sanitize_text_field($_POST[$stock_input_id]);
+						$stock_location_price_term_input = sanitize_slw_data($_POST[$price_input_id]);
+						
+						
+						
+						// Get post meta
+						$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
+						
+
+
+						// Check if the $_POST value is the same as the postmeta, if not update the postmeta
+						if( $stock_location_term_input !== $postmeta_stock_at_term ) {
+
+							// Update the post meta
+							update_post_meta( $id, '_stock_at_' . $term->term_id, $stock_location_term_input );
+							
+
+						}
+						
+						$postmeta_stock_price_at_term = get_post_meta($id, '_stock_location_price_' . $term->term_id, true);
+						
+						
+						
+						if( $stock_location_price_term_input !== $postmeta_stock_price_at_term ) {
+							
+							update_post_meta( $id, '_stock_location_price_' . $term->term_id, $stock_location_price_term_input );
+							
+						}
+
+						// Update stock when reach the last term
+						
+						if($counter === $terms_total) {				
+							update_post_meta( $id, '_stock', array_sum($input_amounts) );
+							
+						}
+
+					}
+
+				}else{
+					
+				}
+				
+				$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);			
+				if($slw_location_status){
+					// Get post meta
+					$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
+	
+					// Pass terms stock to variable
+					if( $postmeta_stock_at_term ) {
+						$product_terms_stock[] = $postmeta_stock_at_term;
+					}
+				}
+				
+
+			}
+			
+			
+			
+			// Check if stock in terms exist
+			if( is_array( $product_terms_stock ) ) {
+				$product_terms_stock = array_sum($product_terms_stock);
+				// update stock status
+				if(!empty($product_terms_stock)){
+					$updated_wc_stock_status = SlwProductHelper::update_wc_stock_status( $id, $product_terms_stock, $force_main_product_update );//array_sum($input_amounts)
+				}
+			}
+			
+			return $product_terms_stock;
+
+		}		
 
 	}
+	
+	
 
 }

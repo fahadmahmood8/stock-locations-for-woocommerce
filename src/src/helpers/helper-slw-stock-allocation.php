@@ -26,107 +26,40 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 		 *
 		 * @return array
 		 */
-		public static function getStockAllocation( $productId, $qtyToAllocation=0, $ignoreLocationId = null, $sortedByPriority=false )
-		{
-			$response = array();
 
-			// Not stock managed
-			if (!self::isManagedStock($productId)) {
-				return $response;
-			}
-
-			// Keep track of what there is to allocate
-			$remainingQty = $qtyToAllocation;
-
-			// Get products stock locations
-			// Sorted by priority
-			$productStockLocations = self::sortLocationsByPriority(self::getProductStockLocations($productId));
-						
-			$productStockLocations = self::rearrangeByPriority($productStockLocations, $sortedByPriority);
-			
-
-			//exit;
-			// Remove ignored location from the array
-			if( !is_null($ignoreLocationId) && !empty($ignoreLocationId) ) {
-				//unset($productStockLocations[$ignoreLocationId]);
-				foreach($productStockLocations as $priority_number=>$productStockLocation_data){
-					if($productStockLocation_data->term_id==$ignoreLocationId){
-						unset($productStockLocations[$priority_number]);
-					}
-				}
-			}
-			
-			// Map stock to locations
-			foreach ($productStockLocations as $priority_number => $location) {
-				$idx = $location->term_id;
-				if (isset($location->slw_auto_allocate) && $location->slw_auto_allocate) {
-					// Not enough space
-					if ($location->quantity === 0 || $qtyToAllocation==0) {
-						continue;
-					}
-
-					// Add to allocation response
-					
-					$response[$priority_number] = $productStockLocations[$priority_number];
-					$response[$priority_number]->allocated_quantity = $remainingQty - (max(0, $remainingQty - $location->quantity));
-
-					// Subtract remaining to allocate
-					$remainingQty -= $response[$priority_number]->allocated_quantity;
-				}
-
-				// No need to keep going if nothing to allocate
-				if ($remainingQty <= 0) {
-					break;
-				}
-			}
-			if(empty($response)){
-				$response = $productStockLocations;
-			}
-
-			// Allocate remaining quantity to back order location if set
-			if ($remainingQty) {
-				$backorderLocation = self::getBackOrderLocation();
-				
-				foreach($productStockLocations as $priority_number=>$productStockLocation_data){
-	
-					if (
-							$backorderLocation !== false 
-						&& 
-							$productStockLocation_data->term_id==$backorderLocation->term_id
-						&& 
-							array_key_exists($priority_number, $response)
-						&&
-							is_object($response[$priority_number])
-						&& 
-							isset($response[$priority_number]->allocated_quantity)		
-					) {
-						
-						$response[$priority_number]->allocated_quantity += $remainingQty;
-						$remainingQty = 0;
-					}
-					
-				}
-			}
-			
-
-			
-
-			return $response;
-		}
 		
-		public static function rearrangeByPriority($response=array(), $priority=false){
+		public static function rearrangeByPriority($response=array(), $priority=false, $client_item_stock_location_id=0){
 		
 			$response_updated = array();
 			if(!empty($response)){
+				$replace_selected = '';
+				$r = 1;
 				foreach($response as $term_id=>$term_data){
+					
+					
 					
 					if($priority && isset($term_data->slw_location_priority) && !array_key_exists($term_data->slw_location_priority, $response_updated)){
 						$response_updated[$term_data->slw_location_priority] = $term_data;
+						if($client_item_stock_location_id && $client_item_stock_location_id==$term_id){
+							$replace_selected = $term_data->slw_location_priority;
+						}
 					}else{
-						$response_updated[] = $term_data;
+						$response_updated[$r] = $term_data;
+						if($client_item_stock_location_id && $client_item_stock_location_id==$term_id){
+							$replace_selected = $r;
+						}
+						$r++;
 					}
+					
 				}
-				if($priority){
+				
+				if($priority || $client_item_stock_location_id){
+
+					if($replace_selected!='' && array_key_exists($replace_selected, $response_updated)){
+						$response_updated[10000] = $response_updated[$replace_selected];
+						unset($response_updated[$replace_selected]);
+					}
+					
 					krsort($response_updated);
 				}
 			}
@@ -335,7 +268,101 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 
 			return $stock_location;
 		}
+		
+		public static function getStockAllocation( $productId, $qtyToAllocation=0, $ignoreLocationId = null, $sortedByPriority=false, $client_item_stock_location_id=0 )
+		{
+			$response = array();
+
+			// Not stock managed
+			if (!self::isManagedStock($productId)) {
+				return $response;
+			}
+
+			// Keep track of what there is to allocate
+			$remainingQty = $qtyToAllocation;
+
+			// Get products stock locations
+			// Sorted by priority
+			$productStockLocations = self::sortLocationsByPriority(self::getProductStockLocations($productId));
+			
+			$productStockLocations = self::rearrangeByPriority($productStockLocations, $sortedByPriority, $client_item_stock_location_id);
+
+			
+			//exit;
+			// Remove ignored location from the array
+			if( !is_null($ignoreLocationId) && !empty($ignoreLocationId) ) {
+				//unset($productStockLocations[$ignoreLocationId]);
+				foreach($productStockLocations as $priority_number=>$productStockLocation_data){
+					if($productStockLocation_data->term_id==$ignoreLocationId){
+						unset($productStockLocations[$priority_number]);
+					}
+				}
+			}
+			
+			
+			// Map stock to locations
+			foreach ($productStockLocations as $priority_number => $location) {
+				$idx = $location->term_id;
+				
+				
+				if (isset($location->slw_auto_allocate) && $location->slw_auto_allocate) {
+					
+					// Not enough space
+					if ($location->quantity === 0 || $qtyToAllocation==0) {
+						continue;
+					}
+
+					// Add to allocation response
+					
+					$response[$priority_number] = $productStockLocations[$priority_number];
+					$response[$priority_number]->allocated_quantity = $remainingQty - (max(0, $remainingQty - $location->quantity));
+
+					// Subtract remaining to allocate
+					$remainingQty -= $response[$priority_number]->allocated_quantity;
+				}
+				
+				// No need to keep going if nothing to allocate
+				if ($remainingQty <= 0) {
+					break;
+				}
+			}
+
+			if(empty($response)){
+				$response = $productStockLocations;
+			}
+
+			// Allocate remaining quantity to back order location if set
+			if ($remainingQty) {
+				$backorderLocation = self::getBackOrderLocation();
+				
+				foreach($productStockLocations as $priority_number=>$productStockLocation_data){
+	
+					if (
+							$backorderLocation !== false 
+						&& 
+							$productStockLocation_data->term_id==$backorderLocation->term_id
+						&& 
+							array_key_exists($priority_number, $response)
+						&&
+							is_object($response[$priority_number])
+						&& 
+							isset($response[$priority_number]->allocated_quantity)		
+					) {
+						
+						$response[$priority_number]->allocated_quantity += $remainingQty;
+						$remainingQty = 0;
+					}
+					
+				}
+			}
+			
+
+			
+
+			return $response;
+		}		
 
 	}
+
 	
 }

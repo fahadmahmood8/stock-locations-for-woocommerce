@@ -40,6 +40,9 @@ table thead tr #stock_at_locations {
 	margin-bottom: 13px;
 	display: block;
 }
+.slw-client-choosed-location.secondary-selection {
+	color: #003280;
+}
 .slw-import-export-addon-logo {
 	width: 80px;
 	height: 80px;
@@ -574,6 +577,23 @@ table.wp-list-table td.slw_location_status svg,
 table.wp-list-table td.slw_default_location svg{
 	font-size:18px;
 }
+td.slw_location_auto_allocate svg.slw_location_allocate-enabled {
+	font-size:18px;
+	color:#055160;	
+	display:none;
+}
+td.slw_location_auto_allocate svg.slw_location_allocate-disabled {
+	font-size:18px;
+	color:#CCC;	
+	display:none;
+}
+td.slw_location_auto_allocate a.checked svg.slw_location_allocate-enabled{
+	display:block;
+}
+td.slw_location_auto_allocate a:not(.checked) svg.slw_location_allocate-disabled{
+	display:block;
+}
+
 body.wc-variable-product #stock-locations-for-woocommerce_tab_stock_locations #stock-locations-for-woocommerce_tab_stock_locations_wrapper{
 	display:none !important;
 }
