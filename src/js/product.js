@@ -169,7 +169,7 @@
 			}
 
 			str = ((typeof str!='undefined')?str:'');
-			stock_quantity = ((typeof stock_quantity!='undefined')?stock_quantity:'');
+			stock_quantity = ((typeof stock_quantity!='undefined' && stock_quantity!='0')?stock_quantity:'');
 			if(include_number){
 				obj.html(stock_quantity+' '+str);
 			}else{
@@ -184,11 +184,33 @@
 		}
 		
 	}
-	
+	$('body').on('change', 'div.quantity input[name="quantity"]', function(){
+		
+		if($('select[name="slw_add_to_cart_item_stock_location"]:visible').length>0){
+			$('select[name="slw_add_to_cart_item_stock_location"]').trigger('change');
+		}
+		
+	});
 	$('select[name="slw_add_to_cart_item_stock_location"]').on('change', function(){
 		
 		
 		var qty_obj = $('select[name="slw_add_to_cart_item_stock_location"] option:selected');
+		
+		var location_qty = qty_obj.data('quantity');
+		
+		if($(this).val()==0 || location_qty<1){
+			if($('button[name="add-to-cart"]').length>0){ $('button[name="add-to-cart"]').prop('disabled', true); }			
+		}else{
+			if($('button[name="add-to-cart"]').length>0){ $('button[name="add-to-cart"]').prop('disabled', false); }
+		}
+		
+		if($('input[name="quantity"]').length>0){
+			var qty_now = $('input[name="quantity"]').val();
+			if(qty_now<=parseFloat(slw_frontend.stock_quantity_sum)){
+			}else{
+				$('input[name="quantity"]').val(slw_frontend.stock_quantity_sum);
+			}
+		}
 		
 		var price_dom = $('.woocommerce-variation-price .woocommerce-Price-amount.amount');
 		

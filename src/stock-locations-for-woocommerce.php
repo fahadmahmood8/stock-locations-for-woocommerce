@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.9.2';
+		public           $version  = '1.9.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -262,6 +262,7 @@ if(!class_exists('SlwMain')) {
 			$data['show_in_product_page'] = (array_key_exists('show_in_product_page', $this->plugin_settings)?$this->plugin_settings['show_in_product_page']:'no');
 			$data['stock_locations'] = 0;
 			$data['stock_quantity'] = array();
+			$data['stock_quantity_sum'] = 0;
 			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
 			$data['in_stock'] = __('In stock', 'stock-locations-for-woocommerce');
 			$data['backorder'] = __('Available on backorder', 'stock-locations-for-woocommerce');
@@ -349,8 +350,12 @@ if(!class_exists('SlwMain')) {
 						if(!empty($terms)){
 							$data['stock_quantity'][$variation_id][0] = 0;
 							foreach($terms as $term){		
+								
 								$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);			
 								$data['stock_quantity'][$variation_id][$term->term_id] = get_post_meta($variation_id, '_stock_at_'.$term->term_id, true);
+								
+								$data['stock_quantity_sum'] += $data['stock_quantity'][$variation_id][$term->term_id];
+								
 							}
 						}
 					}
@@ -360,6 +365,7 @@ if(!class_exists('SlwMain')) {
 						$data['stock_quantity'][$product_id][0] = 0;
 						foreach($terms as $term){					
 							$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);
+							$data['stock_quantity_sum'] += $data['stock_quantity'][$product_id][$term->term_id];
 						}
 					}					
 				}

@@ -86,9 +86,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 				// default behaviour
 				echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location display_'.$this->plugin_settings['show_in_product_page'].' remaining" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 				if( $default_location != 0 ) {
-					echo '<option data-price="" data-quantity="">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				} else {
-					echo '<option data-price="" data-quantity="" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
 				
 				
@@ -164,9 +164,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 				echo '<option data-price="" data-quantity="" value="'.$term_id.'" selected></option>';
 			}else{
 				if( $default_location != 0 ) {
-					echo '<option data-price="" data-quantity="" disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" value="0" disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				} else {
-					echo '<option data-price="" data-quantity="" disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" value="0" disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
 			}
 			echo '</select></div>';
