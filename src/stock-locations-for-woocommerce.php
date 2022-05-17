@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.9.3';
+		public           $version  = '1.9.4';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -354,7 +354,7 @@ if(!class_exists('SlwMain')) {
 								$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);			
 								$data['stock_quantity'][$variation_id][$term->term_id] = get_post_meta($variation_id, '_stock_at_'.$term->term_id, true);
 								
-								$data['stock_quantity_sum'] += $data['stock_quantity'][$variation_id][$term->term_id];
+								$data['stock_quantity_sum'] += ((float)$data['stock_quantity'][$variation_id][$term->term_id])*1;
 								
 							}
 						}
@@ -365,7 +365,7 @@ if(!class_exists('SlwMain')) {
 						$data['stock_quantity'][$product_id][0] = 0;
 						foreach($terms as $term){					
 							$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);
-							$data['stock_quantity_sum'] += $data['stock_quantity'][$product_id][$term->term_id];
+							$data['stock_quantity_sum'] += ((float)$data['stock_quantity'][$product_id][$term->term_id])*1;
 						}
 					}					
 				}
