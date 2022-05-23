@@ -152,6 +152,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.9.5 =
+- Fix: Stock in/out statuses on product page logic refined, auto allocation as priority number. [Thanks to Fady Ilias][19/05/2022]
+- New: There is a conflict with font awesome icons, on settings page ON/OFF option provided. [Thanks to Michal Paull][21/05/2022]
+
 = 1.9.4 =
 - Fix: Error 500 when upgrading to the latest version. Fatal error: Uncaught Error: Unsupported operand types: int + string. [Thanks to chalisoft & siriusnode][17/05/2022]
 

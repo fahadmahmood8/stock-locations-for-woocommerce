@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.9.4';
+		public           $version  = '1.9.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -278,7 +278,7 @@ if(!class_exists('SlwMain')) {
 			$data['nonce']   = wp_create_nonce( 'slw_nonce' );
 			
 
-			if($term_id){
+			if($term_id && isset($this->plugin_settings['extra_assets_settings']) && isset($this->plugin_settings['extra_assets_settings']['font_awesome']) && $this->plugin_settings['extra_assets_settings']['font_awesome'] == 'on'){
 				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('Ymdh') );				
 				wp_enqueue_script( 'font-awesome', SLW_PLUGIN_DIR_URL . 'js/fontawesome.min.js', array( 'jquery' ), date('Ymdh') );
 			}

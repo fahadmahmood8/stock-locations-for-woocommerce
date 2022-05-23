@@ -126,7 +126,15 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin'
 			);
 	
-	
+			add_settings_field(
+				'extra_assets_settings',
+				__('Libraries ', 'stock-locations-for-woocommerce').' <small>('.__('Optional ', 'stock-locations-for-woocommerce').')</small>',
+				array( $this, 'extra_assets_settings_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'extra_assets_settings')
+			);
+				
 			add_settings_field(
 				'general_display_settings',
 				__('Display stock location under cart items', 'stock-locations-for-woocommerce'),
@@ -310,7 +318,9 @@ if(!class_exists('SlwSettings')) {
 
 			// sanitize option
 			
-			
+			if ( isset( $input['extra_assets_settings'] ) ) {
+				$sanitary_values['extra_assets_settings'] = $input['extra_assets_settings'];
+			}			
 			if ( isset( $input['general_display_settings'] ) ) {
 				$sanitary_values['general_display_settings'] = $input['general_display_settings'];
 			}
@@ -405,6 +415,33 @@ if(!class_exists('SlwSettings')) {
 		 * @return void
 		 */
 		 
+		 
+		public function extra_assets_settings_callback()
+		{
+			
+			$arr = array('Font Awesome');
+			
+			
+			if(!empty($arr)){
+				foreach($arr as $type){
+					
+					$type = str_replace(' ', '_', strtolower($type));
+					$label = str_replace(array('_', '-'), ' ', $type);
+					$label = ucwords($label);
+
+					$this->checkbox_callback('extra_assets_settings',		array(
+										'placeholder'=>'', 
+										'screenshot'=>'',
+										'video'=>'',
+										'label'=>$label,
+										'id_suffix'=>$type,
+									));
+									
+				}
+			}
+		
+		}
+		
 		public function general_display_settings_callback()
 		{
 			

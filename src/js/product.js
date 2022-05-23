@@ -186,7 +186,7 @@
 	}
 	$('body').on('change', 'div.quantity input[name="quantity"]', function(){
 		
-		if($('select[name="slw_add_to_cart_item_stock_location"]:visible').length>0){
+		if($('select[name="slw_add_to_cart_item_stock_location"]').length>0){
 			$('select[name="slw_add_to_cart_item_stock_location"]').trigger('change');
 		}
 		
