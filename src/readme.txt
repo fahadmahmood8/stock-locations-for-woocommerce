@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.9.7 =
+- Fix: Location price units different than dollar. [Thanks to Niconectado][28/05/2022]
+
 = 1.9.6 =
 - Fix: Location related updates on cart page interrupting other locations selection. [Thanks to Justyn Thomas][23/05/2022]
 - New: Product page shortcode output improved using variation labels instead of separate attributes. [Thanks to Mik/mikmikmik][28/05/2022]

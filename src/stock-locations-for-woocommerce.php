@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '1.9.6';
+		public           $version  = '1.9.7';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -274,7 +274,7 @@ if(!class_exists('SlwMain')) {
 			
 			$data['slw_allow_geo'] = __('Allow current location', 'stock-locations-for-woocommerce');
 			$data['slw_allow_geo_tip'] = __('Allow current location to calculate the distance and sort by nearest', 'stock-locations-for-woocommerce');
-			$data['dummy_price'] = wc_price(111);
+			$data['dummy_price'] = wc_format_localized_price(111);
 			$data['nonce']   = wp_create_nonce( 'slw_nonce' );
 			
 

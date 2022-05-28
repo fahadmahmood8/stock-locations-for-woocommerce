@@ -128,6 +128,7 @@ if(!class_exists('SlwShortcodes')) {
 				$locations = wp_get_post_terms($product->get_id(), SlwLocationTaxonomy::$tax_singular_name, array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'='));
 				
 				if( !empty($product_variations) ) {
+					$variation_attr_arr = array();
 					foreach( $product_variations as $variation_id=>$product_variation ) {
 						
 						$product = wc_get_product( $variation_id );						
@@ -136,11 +137,10 @@ if(!class_exists('SlwShortcodes')) {
 						$variation_attr = implode('/', $attribute);
 						$variation_attr_str = implode('-', $attributes);
 						
-						$output .= '<div id="slw-'.$variation_id.'" data-id="'.$variation_id.'" class="slw-variations-listed slw-variation-'.$variation_attr_str.'-locations">';
-						$output .= '<label>'.$variation_attr.'</label>';
-						$output .= $this->output_product_locations_for_shortcode($product, $locations, $values);
-						$output .= '</div>';
+						$variation_attr_arr[$variation_attr] = '<div id="slw-'.$variation_id.'" data-id="'.$variation_id.'" class="slw-variations-listed slw-variation-'.$variation_attr_str.'-locations">'.'<label>'.$variation_attr.'</label>'.$this->output_product_locations_for_shortcode($product, $locations, $values).'</div>';
 					}					
+					ksort($variation_attr_arr);
+					echo implode('', $variation_attr_arr);
 				}
 
 				/*if( !empty($variations_products) ) {
