@@ -235,5 +235,9 @@
 	if($('select[name="slw_add_to_cart_item_stock_location"]').length>0){
 		$('select[name="slw_add_to_cart_item_stock_location"]').change();
 	}
+	
+	$('body').on('click', '.slw-variations-listed label', function(){
+		$(this).parent().find('ul').toggle();
+	});
 
 }(jQuery));

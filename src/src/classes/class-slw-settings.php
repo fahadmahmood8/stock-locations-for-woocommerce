@@ -693,11 +693,11 @@ if(!class_exists('SlwSettings')) {
 		{
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
-				<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
-				<option disabled <?php echo $selected; ?>><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>
-				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
+				<?php $selected = (isset($this->plugin_settings[$id]) ?'selected="selected"':''); ?>
+				<option <?php echo $selected; ?>><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>
+				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected="selected"' : ''; ?>
 				<option value="yes" <?php echo $selected; ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>
-				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected' : ''; ?>
+				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected="selected"' : ''; ?>
 				<option value="no" <?php echo $selected; ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
 			</select>
 			<?php

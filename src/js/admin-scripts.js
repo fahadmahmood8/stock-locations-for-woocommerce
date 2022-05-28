@@ -36,7 +36,7 @@ function slw_gmap_initialize(input_id) {
 		slwDisableVariableStockInput();
 		slwWcProductManageStock();
 		slwWcOrderItemStockPositiveNumbersOnly();
-		slwEnableShowLocationsProductPage();
+		//slwEnableShowLocationsProductPage();
 		slwAjaxSaveProductDefaultLocation();
 		slwAjaxRemoveProductDefaultLocation();
 		slwEnableLockDefaultLocation();

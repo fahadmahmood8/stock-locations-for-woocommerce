@@ -152,6 +152,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.9.6 =
+- Fix: Location related updates on cart page interrupting other locations selection. [Thanks to Justyn Thomas][23/05/2022]
+- New: Product page shortcode output improved using variation labels instead of separate attributes. [Thanks to Mik/mikmikmik][28/05/2022]
+
 = 1.9.5 =
 - Fix: Stock in/out statuses on product page logic refined, auto allocation as priority number. [Thanks to Fady Ilias][19/05/2022]
 - New: There is a conflict with font awesome icons, on settings page ON/OFF option provided. [Thanks to Michal Paull][21/05/2022]
