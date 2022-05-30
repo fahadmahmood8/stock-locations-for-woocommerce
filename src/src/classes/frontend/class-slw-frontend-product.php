@@ -71,7 +71,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 					$stock_location_name = $stock_locations[$default_location]['name'];
 					
 					if($product_stock_price_status){
-						$stock_location_name .= ' '.slw_woocommerce_format_localized_price($stock_price);
+						$stock_location_name .= ' '.wc_price($stock_price);
 					}
 					
 					$selected = ($stock_locations[$default_location]['quantity']>0?'selected="selected"':'');
@@ -117,7 +117,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 					$stock_location_name = $location['name'];
 					
 					if($product_stock_price_status){
-						$stock_location_name .= ' '.slw_woocommerce_format_localized_price($stock_price);
+						$stock_location_name .= ' '.wc_price($stock_price);
 					}
 
 

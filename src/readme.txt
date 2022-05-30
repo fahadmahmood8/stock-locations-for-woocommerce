@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 1.9.8 =
+- Fix: wp desk omnibus related currency symbol issue resolved. [Thanks to tomkolp][30/05/2022]
+
 = 1.9.7 =
 - Fix: Location price units different than dollar. [Thanks to Niconectado][28/05/2022]
 
