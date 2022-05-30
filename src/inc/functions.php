@@ -713,5 +713,5 @@ jQuery(document).ready(function($){
 		$symbol = get_woocommerce_currency_symbol();
 		return (substr($value, 0, 1)!=$symbol?$symbol:'').$value;
 	}
-	add_filter('woocommerce_format_localized_price', 'slw_woocommerce_format_localized_price');
+	//add_filter('woocommerce_format_localized_price', 'slw_woocommerce_format_localized_price');
 	include_once('functions-api.php');
