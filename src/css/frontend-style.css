@@ -41,6 +41,12 @@ a.slw-variable-btn{
 .woocommerce-variation-availability p.stock{
 	display:none;
 }
+.slw-variations-listed ul{
+	margin:0 0 4px 0;
+}
+.slw-variations-listed ul li{
+	list-style:circle inside;
+}
 .slw-variations-listed label{
 	cursor:pointer;
 	font-weight:bold;

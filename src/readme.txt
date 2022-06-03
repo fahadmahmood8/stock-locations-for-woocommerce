@@ -18,8 +18,8 @@ You can print the locations inside a product page on the frontend, with this sho
 
 = Product pages =
 
-`[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes" collapsed="no"]`
-`[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes" collapsed="yes"]`
+`[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes" collapsed="no" stock_location_status="enabled"]`
+`[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes" collapsed="yes" stock_location_status="all|disabled|enabled"]`
 `[slw_product_message is_available="yes" only_location_available="no" location="location-slug"]Your custom product message/HTML here[/slw_product_message]`
 
 = Cart page =
@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.0.1 =
+- New: Product page shortcodes improved and added a new attribute status with "enabled|disabled|all" options. [Thanks to Mik/mikmikmik][03/06/2022]
+
 = 2.0.0 =
 - New: Product page shortcodes improved and added two new attributes product_id and collapsed. [Thanks to Mik/mikmikmik][30/05/2022]
 

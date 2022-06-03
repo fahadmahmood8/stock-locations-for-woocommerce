@@ -47,7 +47,8 @@ if(!class_exists('SlwShortcodes')) {
 				'show_stock_status' => 'no',
 				'show_empty_stock'  => 'yes',
 				'collapsed'  => 'no',
-				'product_id' => get_the_ID()
+				'product_id' => get_the_ID(),
+				'stock_location_status' => 'enabled'
 			), $atts);
 			
 			if(  !is_product() ){ 
@@ -93,8 +94,21 @@ if(!class_exists('SlwShortcodes')) {
 				return $this->display_product_variations_locations($values);
 			}else{
 				if( !empty($product_obj) ) {
-					// Get locations from parent product
-					$locations = wp_get_post_terms($product_obj->get_id(), SlwLocationTaxonomy::$tax_singular_name, array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'='));
+					
+					$slw_location_status = array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=');
+					switch($values['stock_location_status']){
+						default:
+						case 'enabled':
+							
+						break;
+						case 'all':
+							$slw_location_status = array();
+						break;
+						case 'disabled':
+							$slw_location_status['meta_value'] = false;
+						break;						
+					}
+					$locations = wp_get_post_terms($product_obj->get_id(), SlwLocationTaxonomy::$tax_singular_name, $slw_location_status);
 					// Build output
 					$output .= '<div class="slw-product-locations">';
 					$output .= $this->output_product_locations_for_shortcode($product_obj, $locations, $values);
@@ -121,7 +135,8 @@ if(!class_exists('SlwShortcodes')) {
 				'show_stock_status' => 'no',
 				'show_empty_stock'  => 'yes',
 				'collapsed'  => 'no',
-				'product_id' => get_the_ID()
+				'product_id' => get_the_ID(),
+				'stock_location_status' => 'enabled'
 			), $atts);
 			
 			
@@ -179,7 +194,22 @@ if(!class_exists('SlwShortcodes')) {
 						$variations_products[] = wc_get_product( $variation['variation_id'] );
 					}
 					
-					$locations = wp_get_post_terms($product_obj->get_id(), SlwLocationTaxonomy::$tax_singular_name, array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'='));
+					$slw_location_status = array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=');
+					switch($values['stock_location_status']){
+						default:
+						case 'enabled':
+							
+						break;
+						case 'all':
+							$slw_location_status = array();
+						break;
+						case 'disabled':
+							$slw_location_status['meta_value'] = false;
+						break;						
+					}
+					
+					$locations = wp_get_post_terms($product_obj->get_id(), SlwLocationTaxonomy::$tax_singular_name, $slw_location_status);
+					
 					
 					if( !empty($product_variations) ) {
 						$variation_attr_arr = array();
