@@ -111,13 +111,12 @@ if( !class_exists('SlwFrontendProduct') ) {
 					}
 					
 					
-					
 					$stock_price = $location['price'];
 					
 					$stock_location_name = $location['name'];
 					
 					if($product_stock_price_status){
-						$stock_location_name .= ' '.wc_price($stock_price);
+						$stock_location_name .= ' '.get_woocommerce_currency_symbol().($stock_price);
 					}
 
 
