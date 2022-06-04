@@ -714,4 +714,23 @@ jQuery(document).ready(function($){
 		return (substr($value, 0, 1)!=$symbol?$symbol:'').$value;
 	}
 	//add_filter('woocommerce_format_localized_price', 'slw_woocommerce_format_localized_price');
+		
+	add_filter('woocommerce_get_availability_text', 'slw_change_stock_text', 10, 2 );
+	
+	function slw_change_stock_text ( $availability, $product) {
+		
+		if($product) {
+			$stock = $product->get_stock_quantity();
+			$_product = wc_get_product( $product );
+			if ( !$_product->is_in_stock() ) {
+				$availability = __(  'Out of stock, check the other locations for the stock availability.', 'woocommerce' );
+			} 
+			
+			if ( $_product->is_in_stock() ) {
+				$availability = __(  $stock . ' in stock.', 'woocommerce' );
+			}
+		}
+		return $availability;
+	}	
+	
 	include_once('functions-api.php');

@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.0.3 =
+- Fix: Availability fitler implemented woocommerce_get_availability_text. [Thanks to Niconectado][04/06/2022]
+
 = 2.0.2 =
 - Fix: Location price units different than dollar. [Thanks to Niconectado][03/06/2022]
 
