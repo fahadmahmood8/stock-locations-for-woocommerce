@@ -163,9 +163,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 				echo '<option data-price="" data-quantity="" value="'.$term_id.'" selected></option>';
 			}else{
 				if( $default_location != 0 ) {
-					echo '<option data-price="" data-quantity="" value="0" disabled>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				} else {
-					echo '<option data-price="" data-quantity="" value="0" disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					echo '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 				}
 			}
 			echo '</select></div>';

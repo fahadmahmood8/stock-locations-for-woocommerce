@@ -22,6 +22,7 @@ if(!class_exists('SlwProductListing')) {
 
 	class SlwProductListing
 	{
+		private $plugin_settings;
 		/**
 		 * Construct.
 		 *
@@ -29,9 +30,15 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function __construct()
 		{
-			add_filter('manage_edit-product_columns', array($this, 'remove_product_listing_column'), 10, 1);
-			add_action('restrict_manage_posts', array($this, 'filter_by_taxonomy_stock_location') , 10, 2);
-			add_action('manage_posts_custom_column', array($this, 'populate_stock_locations_column') );
+			$this->plugin_settings = get_option( 'slw_settings' );
+			$this->plugin_settings = (is_array($this->plugin_settings)?$this->plugin_settings:array());
+			$products_list = (isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['products_list']) && $this->plugin_settings['general_display_settings']['products_list'] == 'on' );
+			
+			if($products_list){			
+				add_filter('manage_edit-product_columns', array($this, 'remove_product_listing_column'), 10, 1);
+				add_action('manage_posts_custom_column', array($this, 'populate_stock_locations_column') );
+			}
+			add_action('restrict_manage_posts', array($this, 'filter_by_taxonomy_stock_location') , 10, 2);			
 			add_action('admin_head-post-new.php', array($this, 'addNewPreSelectLocations'));
 		}
 
@@ -43,10 +50,9 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function remove_product_listing_column($columns)
 		{
-
 			unset($columns['taxonomy-' . SlwLocationTaxonomy::get_Tax_Names('singular')]);
 
-			return array_slice( $columns, 0, 5, true )
+			$columns = array_slice( $columns, 0, 5, true )
 			+ array( 'stock_at_locations' => __( 'Stock at locations', 'stock-locations-for-woocommerce' ) )
 			+ array_slice( $columns, 5, NULL, true );
 
@@ -61,7 +67,7 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function filter_by_taxonomy_stock_location($post_type, $which)
 		{
-
+			
 			// Apply this only on a specific post type
 			if ( 'product' !== $post_type )
 				return;
@@ -102,6 +108,7 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function populate_stock_locations_column($column_name)
 		{
+
 			// Grab the correct column
 			if( $column_name  == 'stock_at_locations' ) {
 

@@ -35,7 +35,7 @@
 				},
 				success ( response ) {
 					if( response.success ) {
-						$('select#slw_item_stock_location_variable_product').empty();
+						$('select#slw_item_stock_location_variable_product').find('option[value!="0"]').remove();
 						$('select#slw_item_stock_location_variable_product').prop('required',true);
 						$.each(response.data.stock_locations, function(i) {
 							var obj = response.data.stock_locations[i];

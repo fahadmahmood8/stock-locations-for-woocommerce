@@ -206,6 +206,10 @@ if( !class_exists('SlwOrderItem') ) {
 		{
 			if( empty($order) ) return;
 			
+			$edit_order_page = (isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['edit_order_page']) && $this->plugin_settings['general_display_settings']['edit_order_page'] == 'on' );
+			
+			if(!$edit_order_page) return;
+			
 			// display the column name
 			echo '<th>' . __('Stock Locations', 'stock-locations-for-woocommerce') . '</th>';
 
@@ -244,6 +248,10 @@ if( !class_exists('SlwOrderItem') ) {
 		public function add_stock_location_inputs_wc_order( $product, $item, $item_id )
 		{
 			if( empty($item) || empty($product) || empty($item_id) ) return;
+			
+			$edit_order_page = (isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['edit_order_page']) && $this->plugin_settings['general_display_settings']['edit_order_page'] == 'on' );
+			
+			if(!$edit_order_page) return;
 
 			// Add the missing stock location column to item shipping and others
 			if( $item->get_type() == 'shipping' ) {

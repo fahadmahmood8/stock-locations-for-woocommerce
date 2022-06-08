@@ -715,7 +715,7 @@ jQuery(document).ready(function($){
 	}
 	//add_filter('woocommerce_format_localized_price', 'slw_woocommerce_format_localized_price');
 		
-	add_filter('woocommerce_get_availability_text', 'slw_change_stock_text', 10, 2 );
+	add_filter('woocommerce_get_availability_text', 'slw_change_stock_text', 9, 2 );
 	
 	function slw_change_stock_text ( $availability, $product) {
 		
@@ -723,7 +723,7 @@ jQuery(document).ready(function($){
 			$stock = $product->get_stock_quantity();
 			$_product = wc_get_product( $product );
 			if ( !$_product->is_in_stock() ) {
-				$availability = __(  'Out of stock, check the other locations for the stock availability.', 'woocommerce' );
+				$availability = __(  'Out of stock.', 'woocommerce' );
 			} 
 			
 			if ( $_product->is_in_stock() ) {

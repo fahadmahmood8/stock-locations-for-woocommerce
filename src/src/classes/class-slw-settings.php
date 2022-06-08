@@ -137,7 +137,7 @@ if(!class_exists('SlwSettings')) {
 				
 			add_settings_field(
 				'general_display_settings',
-				__('Display stock location under cart items', 'stock-locations-for-woocommerce'),
+				__('Display stock location under', 'stock-locations-for-woocommerce'),
 				array( $this, 'general_display_settings_callback' ),
 				'slw-setting-admin',
 				'slw_setting_setting_section',
@@ -445,7 +445,7 @@ if(!class_exists('SlwSettings')) {
 		public function general_display_settings_callback()
 		{
 			
-			$arr = array('cart-page', 'checkout-page', 'order-received-page', 'order-email');
+			$arr = array('cart-page', 'checkout-page', 'order-received-page', 'order-email', 'products-list', 'edit-order-page');
 			
 			
 			if(!empty($arr)){
