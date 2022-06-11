@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '2.0.4';
+		public           $version  = '2.0.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -245,7 +245,7 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_frontend()
 		{
-			global $post, $wpdb;
+			global $post, $wpdb, $wc_slw_pro;
 			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
@@ -254,6 +254,7 @@ if(!class_exists('SlwMain')) {
 			
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
 			$data['ajaxurl'] = admin_url( 'admin-ajax.php' );
+			$data['wc_slw_pro'] = $wc_slw_pro;
 			$data['is_cart'] = is_cart();
 			$data['is_checkout'] = is_checkout();
 			$data['is_product'] = is_product();
@@ -353,7 +354,8 @@ if(!class_exists('SlwMain')) {
 						if(!empty($terms)){
 							$data['stock_quantity'][$variation_id][0] = 0;
 							foreach($terms as $term){		
-								$wc_variation = wc_get_product($product_id);
+								$wc_variation = wc_get_product($variation_id);
+								
 								$data['stock_status'][$variation_id] = $wc_variation->get_availability();
 								
 								$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);			

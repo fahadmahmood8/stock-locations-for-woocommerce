@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.0.5 =
+- New: Stock locations with RadioBoxes, another option added in the dropdown. [Thanks to Tanel][10/06/2022]
+
 = 2.0.4 =
 - Fix: Select location empty index option enabled for variable product stock locations as well. [Thanks to chalisoft][06/06/2022]
 - New: Stock locations column can be turned off/on from the settings page. [Thanks to bbceg][06/06/2022]

@@ -721,6 +721,7 @@ jQuery(document).ready(function($){
 		
 		if($product) {
 			$stock = $product->get_stock_quantity();
+			
 			$_product = wc_get_product( $product );
 			if ( !$_product->is_in_stock() ) {
 				$availability = __(  'Out of stock.', 'woocommerce' );

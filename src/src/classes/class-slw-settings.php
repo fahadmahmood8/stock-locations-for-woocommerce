@@ -679,10 +679,15 @@ if(!class_exists('SlwSettings')) {
 				<option disabled <?php echo $selected; ?>><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>
 
 				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
-				<option value="yes_without" <?php echo $selected; ?>>1. <?php echo __('Without locations dropdown', 'stock-locations-for-woocommerce'); ?></option>
+				<option value="yes_without" <?php echo $selected; ?>>1. <?php echo __('Without locations Dropdown', 'stock-locations-for-woocommerce'); ?></option>
 
 				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
-				<option value="yes" <?php echo $selected; ?>>2. <?php echo __('With locations dropdown', 'stock-locations-for-woocommerce'); ?></option>                
+				<option value="yes" <?php echo $selected; ?>>2. <?php echo __('With locations Dropdown', 'stock-locations-for-woocommerce'); ?></option>
+                
+                <?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes_radio' ? 'selected' : ''; ?>
+				<option value="yes_radio" <?php echo $selected; ?>>3. <?php echo __('With locations RadioBoxes', 'stock-locations-for-woocommerce'); ?> (<?php echo __('Premium Feature', 'stock-locations-for-woocommerce'); ?>)</option>
+                
+                
 				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected' : ''; ?>
 				<option value="no" <?php echo $selected; ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
 

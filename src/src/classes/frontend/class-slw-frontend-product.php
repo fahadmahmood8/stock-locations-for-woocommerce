@@ -45,92 +45,171 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 *
 		 * @since 1.3.0
 		 */
-		public function simple_location_select()
-		{
-			global $product;
+		 
+		private function location_select_input($type='select', $product_id, $stock_locations=array()){
 			
-			if( empty( $product ) || $product->get_type() != 'simple' ) return;
+			$ret = '';
 			
-			global $slw_plugin_settings;
-			$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);			
+			global $slw_plugin_settings, $wc_slw_pro;
 			
-			
-			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
-			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id, $everything_stock_status_to_instock );
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
-			$product_stock_price_status = isset( $this->plugin_settings['product_stock_price_status'] ) && $this->plugin_settings['product_stock_price_status'] == 'on' ? true : false;
-
-			if( ! empty( $stock_locations ) ) {
-				// lock to default location if enabled			
-
+			
+			$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
+			
+			if(empty($stock_locations)){
 				
-				if( $lock_default_location && $default_location != 0 ) {
-					
+				$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id, $everything_stock_status_to_instock );
+			}
+			
+			
+			$product_stock_price_status = isset( $this->plugin_settings['product_stock_price_status'] ) && $this->plugin_settings['product_stock_price_status'] == 'on' ? true : false;			
+			$type = ($wc_slw_pro?$type:str_replace('radio', 'select', $type));
+			
+			
+			
+			switch($type){
+			
+				case 'select_simple_default':
+				
 					$stock_price = $stock_locations[$default_location]['price'];
 					$stock_location_name = $stock_locations[$default_location]['name'];
-					
+				
 					if($product_stock_price_status){
 						$stock_location_name .= ' '.wc_price($stock_price);
 					}
 					
 					$selected = ($stock_locations[$default_location]['quantity']>0?'selected="selected"':'');
-					
-					
-					echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location display_'.$this->plugin_settings['show_in_product_page'].' default" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled>';
-					echo '<option data-price="'.$stock_price.'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" '.$selected.'>'.$stock_location_name.'</option>';
-					echo '</select></div>';
-					return;
-				}
-
-				// default behaviour
-				echo '<div style="display:block; width:100%;"><select id="slw_item_stock_location_simple_product" class="slw_item_stock_location display_'.$this->plugin_settings['show_in_product_page'].' remaining" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
-				if( $default_location != 0 ) {
-					echo '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
-				} else {
-					echo '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
-				}
 				
+					$ret .= '<div class="slw_stock_location_selection">
+					
+					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$this->plugin_settings['show_in_product_page'].' default" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled><option data-price="'.$stock_price.'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" '.$selected.'>'.$stock_location_name.'</option></select>
+					
+					</div>';
+				break;
 				
-				$priority_used = 0;
-				foreach( $stock_locations as $id => $location ) {
+				case 'select_simple':
+				
+					$ret .= '<div class="slw_stock_location_selection">
 					
-					$selected = '';
+					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$this->plugin_settings['show_in_product_page'].' remaining" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
+					if( $default_location != 0 ) {
+						$ret .= '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					} else {
+						$ret .= '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+					}
 					
-					$slw_location_priority = get_term_meta($id, 'slw_location_priority', true);
 					
-					if($location['quantity']>0){
-						if( $default_location != 0 && $location['term_id'] == $default_location){
-							$selected = 'selected="selected"';
-						}else{
-							if($slw_location_priority>$priority_used){						
-								$priority_used = $slw_location_priority;
+					$priority_used = 0;
+					foreach( $stock_locations as $id => $location ) {
+						
+						$selected = '';
+						
+						$slw_location_priority = get_term_meta($id, 'slw_location_priority', true);
+						
+						if($location['quantity']>0){
+							if( $default_location != 0 && $location['term_id'] == $default_location){
 								$selected = 'selected="selected"';
-							}						
+							}else{
+								if($slw_location_priority>$priority_used){						
+									$priority_used = $slw_location_priority;
+									$selected = 'selected="selected"';
+								}						
+							}
+						}
+						
+						
+						$stock_price = $location['price'];
+						
+						$stock_location_name = $location['name'];
+						
+						if($product_stock_price_status){
+							$stock_location_name .= ' '.get_woocommerce_currency_symbol().($stock_price);
+						}
+	
+	
+						$disabled = '';
+						if( $location['quantity'] < 1 && $location['allow_backorder'] != 1 && !$everything_stock_status_to_instock) {
+							$disabled = 'disabled="disabled"';
+						}
+					
+						$ret .= '<option data-priority="'.$slw_location_priority.'" data-price="'.$stock_price.'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
+					
+					}
+					$ret .= '</select></div>';				
+				break;
+				
+				case 'radio_simple':
+				case 'radio_variable':
+					if($wc_slw_pro && function_exists('location_select_input_inner')){	
+						$ret = location_select_input_inner($type, $product_id, $stock_locations, $ret);			
+					}
+				break;			
+				
+				case 'select_variable':
+					
+					$term_id = (is_product()?false:get_queried_object_id());
+					
+					
+					
+					$ret .= '<div '.($term_id?'style="display:none !important; width:100%;"':'class="slw_stock_location_selection"').'>';
+					if( $lock_default_location && $default_location != 0 ) {
+						$ret .= '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location vls display_'.$this->plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required disabled>';
+					} else {
+						$ret .= '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location vls display_'.$this->plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required>';
+					}
+					if($term_id){
+						$ret .= '<option data-price="" data-quantity="" value="'.$term_id.'" selected></option>';
+					}else{
+						if( $default_location != 0 ) {
+							$ret .= '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+						} else {
+							$ret .= '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 						}
 					}
-					
-					
-					$stock_price = $location['price'];
-					
-					$stock_location_name = $location['name'];
-					
-					if($product_stock_price_status){
-						$stock_location_name .= ' '.get_woocommerce_currency_symbol().($stock_price);
-					}
+					$ret .= '</select></div>';
+							
+				break;
+							
+			}
+			
+			return $ret;
+		}
+		public function simple_location_select()
+		{
+			global $product, $slw_plugin_settings;
+			
+			if( empty( $product ) || $product->get_type() != 'simple' ) return;
+			
+			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
+			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
+			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
+			
+			
+			$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);				
+			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id, $everything_stock_status_to_instock );
 
-
-					$disabled = '';
-					if( $location['quantity'] < 1 && $location['allow_backorder'] != 1 && !$everything_stock_status_to_instock) {
-						$disabled = 'disabled="disabled"';
-					}
-					//if( $default_location != 0 && $location['term_id'] == $default_location ) {
-					//	echo '<option data-price="'.$stock_price.'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
-					//} else {
-						echo '<option data-priority="'.$slw_location_priority.'" data-price="'.$stock_price.'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
-					//}
+			if( ! empty( $stock_locations ) ) {
+				
+				$show_in_product_page = $this->plugin_settings['show_in_product_page'];
+				$location_select_input_type = 'select_simple';
+				switch($show_in_product_page){
+					case 'yes_radio':
+						$location_select_input_type = 'radio_simple';
+					break;
 				}
-				echo '</select></div>';
+
+				if( $lock_default_location && $default_location != 0 ) {					
+					
+					
+					$location_select_input = $this->location_select_input($location_select_input_type.'_default', $product_id, $stock_locations);
+					echo $location_select_input;
+					
+					return;
+				}
+				
+				$location_select_input = $this->location_select_input($location_select_input_type, $product_id, $stock_locations);
+				echo $location_select_input;
 			}
 		}
 
@@ -144,31 +223,19 @@ if( !class_exists('SlwFrontendProduct') ) {
 			global $product;
 			if( empty($product) ) return;
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
-
-			$term_id = (is_product()?false:get_queried_object_id());
-
-			$product               = wc_get_product( $product_id );
+			$product = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
-
-			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product->get_id(), '_slw_default_location', true ) : 0;
-			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
 			
-			echo '<div style="display:'.($term_id?'none !important':'block').'; width:100%;">';
-			if( $lock_default_location && $default_location != 0 ) {
-				echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location display_'.$this->plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required disabled>';
-			} else {
-				echo '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location display_'.$this->plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required>';
-			}
-			if($term_id){
-				echo '<option data-price="" data-quantity="" value="'.$term_id.'" selected></option>';
-			}else{
-				if( $default_location != 0 ) {
-					echo '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
-				} else {
-					echo '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
-				}
-			}
-			echo '</select></div>';
+			$show_in_product_page = $this->plugin_settings['show_in_product_page'];
+			$location_select_input_type = 'select_variable';
+			switch($show_in_product_page){
+				case 'yes_radio':
+					$location_select_input_type = 'radio_variable';
+				break;
+			}			
+			$location_select_input = $this->location_select_input($location_select_input_type, $product_id);
+			echo $location_select_input;
+			
 		}
 
 		/**
