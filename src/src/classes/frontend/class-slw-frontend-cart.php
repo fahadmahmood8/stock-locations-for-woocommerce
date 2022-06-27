@@ -88,8 +88,10 @@ if( !class_exists('SlwFrontendCart') ) {
 					$product_id = ($cart_item['variation_id']?$cart_item['variation_id']:$cart_item['product_id']);
 					
 					$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
-					if(array_key_exists($cart_item['stock_location'], $stock_locations)){
-						$stock_location = $stock_locations[$cart_item['stock_location']]['name'];
+					$stock_location_id = (is_array($cart_item['stock_location']) && array_key_exists($product_id, $cart_item['stock_location'])?$cart_item['stock_location'][$product_id]:0);
+					
+					if(array_key_exists($stock_location_id, $stock_locations)){
+						$stock_location = $stock_locations[$stock_location_id]['name'];
 					}
 					//$stock_location = '<p>'.$stock_location.(is_cart().' / '.is_checkout().' / '.is_admin().' / '.date('d M, Y H:i:s A')).'</p>';
 					if($stock_location){
@@ -116,6 +118,10 @@ if( !class_exists('SlwFrontendCart') ) {
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
 
+			if(array_key_exists('stock_location', $cart_item) && !is_array($cart_item['stock_location']) && $cart_item['stock_location']>0){
+				$cart_item['stock_location'] = (is_array($cart_item['stock_location'])?$cart_item['stock_location']:array($product_id=>$cart_item['stock_location']));
+			}
+
 			if( !empty($stock_locations) ) {
 				
 				if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
@@ -129,6 +135,7 @@ if( !class_exists('SlwFrontendCart') ) {
 						echo '</select>';
 						return;
 					}
+					
 					//pree($stock_locations);
 					// default behaviour
 					if( isset($cart_item['stock_location']) ) {
@@ -142,8 +149,12 @@ if( !class_exists('SlwFrontendCart') ) {
 					foreach( $stock_locations as $id => $location ) {
 						$selected = $disabled = '';
 						//pree($location['quantity'].' >= '.$cart_item['quantity'].' * '.$location['backorder_allowed']);
+						
 						if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < $cart_item['quantity'] && $location['backorder_allowed'] == 'yes') ) {
-							if( isset($cart_item['stock_location']) && $cart_item['stock_location'] == $location['term_id'] ) {
+							
+							if( 
+								
+								is_array($cart_item['stock_location']) && array_key_exists($product_id, $cart_item['stock_location']) && $location['term_id']==$cart_item['stock_location'][$product_id] ) {
 								$selected = 'selected="selected"';
 							}
 						} else {

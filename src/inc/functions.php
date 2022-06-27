@@ -715,13 +715,14 @@ jQuery(document).ready(function($){
 	}
 	//add_filter('woocommerce_format_localized_price', 'slw_woocommerce_format_localized_price');
 		
-	add_filter('woocommerce_get_availability_text', 'slw_change_stock_text', 9, 2 );
+	add_filter( 'woocommerce_get_availability_text', 'slw_change_stock_text', 9, 2 );
+	add_filter( 'woocommerce_get_availability', 'slw_filter_woocommerce_get_availability', 9, 2 ); 	
 	
 	function slw_change_stock_text ( $availability, $product) {
 		
 		if($product) {
 			$stock = $product->get_stock_quantity();
-			
+
 			$_product = wc_get_product( $product );
 			if ( !$_product->is_in_stock() ) {
 				$availability = __(  'Out of stock.', 'woocommerce' );
@@ -730,8 +731,31 @@ jQuery(document).ready(function($){
 			if ( $_product->is_in_stock() ) {
 				$availability = __(  $stock . ' in stock.', 'woocommerce' );
 			}
+			
+			//$_backorders = get_post_meta($_product->get_id(), '_backorders', true);			
+			//if($_backorders=='yes' && $stock>0 && 0){}
+			
+
 		}
 		return $availability;
 	}	
+	function slw_filter_woocommerce_get_availability( $array, $product ) { 
+		$array['availability'] = apply_filters('woocommerce_get_availability_text', $array['availability'], $product);
+		return $array; 
+	}; 
+			 
+	// add the filter 
+	
+	
+	if(!function_exists('slw_archive_qty_box')){
+		function slw_archive_qty_box ($slw_id=0) {
+			if(is_archive()){
+				return '<div class="slw-item-qty-wrapper">
+						<div class="slw-item-qty"><a class="decrease"><i class="fas fa-caret-left"></i></a><input type="text" name="qty" id="qty-'.$slw_id.'" value="0" /><a class="increase"><i class="fas fa-caret-right"></i></a></div>
+						</div>';
+			}
+		}
+		
+	}
 	
 	include_once('functions-api.php');

@@ -152,6 +152,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.0.6 =
+- New: Major changes regarding stock location and quantity check on archive pages and product page. [Thanks to Tanel][14/06/2022]
+- New: Major changes regarding archive pages so category pages can enable location selection under the product titles. [Thanks to Tanel][13/06/2022]
+
 = 2.0.5 =
 - New: Stock locations with RadioBoxes, another option added in the dropdown. [Thanks to Tanel][10/06/2022]
 

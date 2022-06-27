@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '2.0.5';
+		public           $version  = '2.0.6';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -245,7 +245,7 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_frontend()
 		{
-			global $post, $wpdb, $wc_slw_pro;
+			global $post, $wpdb, $wc_slw_pro, $woocommerce;
 			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
@@ -254,6 +254,7 @@ if(!class_exists('SlwMain')) {
 			
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
 			$data['ajaxurl'] = admin_url( 'admin-ajax.php' );
+			$data['cart_url'] = wc_get_cart_url();
 			$data['wc_slw_pro'] = $wc_slw_pro;
 			$data['is_cart'] = is_cart();
 			$data['is_checkout'] = is_checkout();
@@ -279,6 +280,28 @@ if(!class_exists('SlwMain')) {
 			$data['dummy_price'] = wc_format_localized_price(111);
 			$data['nonce']   = wp_create_nonce( 'slw_nonce' );
 			
+			$data['slw_archive_items_halt_msg'] = __('Sorry! You have already added the available stock quantity to your cart.', 'stock-locations-for-woocommerce');
+			$data['slw_archive_items_max_msg'] = __('Sorry! You can add only the available stock quantity to your cart.', 'stock-locations-for-woocommerce');
+			
+			$data['slw_cart_items'] = array();
+			if(is_object($woocommerce)){
+				$items = $woocommerce->cart->get_cart();
+				
+				if(!empty($items)){
+					$slw_cart_items = $data['slw_cart_items'];
+					foreach($items as $item => $values) {
+						$product_id =  $values['product_id'];
+						$variation_id =  $values['variation_id'];
+						$stock_location_id = array_key_exists('stock_location', $values)?$values['stock_location']:0;
+						$stock_location_id = (is_array($stock_location_id)?$stock_location_id[$product_id]:$stock_location_id);
+						$quantity = array_key_exists('quantity', $values)?$values['quantity']:0;
+						
+						$slw_cart_items[$product_id][$variation_id][$stock_location_id] = $quantity;
+					}
+					$data['slw_cart_items'] = $slw_cart_items;
+				}
+				
+			}
 
 			if($term_id && isset($this->plugin_settings['extra_assets_settings']) && isset($this->plugin_settings['extra_assets_settings']['font_awesome']) && $this->plugin_settings['extra_assets_settings']['font_awesome'] == 'on'){
 				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('Ymdh') );				
@@ -339,6 +362,7 @@ if(!class_exists('SlwMain')) {
 				$data['product_type'] = $wc_product->get_type();
 				$data['product_id'] = $product_id;
 				$data['stock_status'][$product_id] = $wc_product->get_availability();
+				$data['allow_backorder'][$product_id] = get_post_meta($product_id, '_backorders', true);
 				
 				if($data['product_type']=='variable'){
 				
@@ -357,7 +381,7 @@ if(!class_exists('SlwMain')) {
 								$wc_variation = wc_get_product($variation_id);
 								
 								$data['stock_status'][$variation_id] = $wc_variation->get_availability();
-								
+								$data['allow_backorder'][$variation_id] = get_post_meta($variation_id, '_backorders', true);
 								$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);			
 								$data['stock_quantity'][$variation_id][$term->term_id] = get_post_meta($variation_id, '_stock_at_'.$term->term_id, true);
 								

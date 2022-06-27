@@ -1,4 +1,4 @@
-<label class="switch" style="position: absolute;right: 30px;top: 11px;" title="<?php echo __('Click here to enable/disable', 'stock-locations-for-woocommerce'); ?>">
+<label class="switch" style="position: absolute;right: 30px;top: 26px;" title="<?php echo __('Click here to enable/disable', 'stock-locations-for-woocommerce'); ?>">
   <input <?php checked($location_status); ?> name="slw-location-status" id="slw-location-status" value="yes" data-id="<?php echo $location_id; ?>" type="checkbox" data-toggle="toggle" data-on="<?php echo __('Enabled', 'stock-locations-for-woocommerce'); ?>" data-off="<?php echo __('Disabled', 'stock-locations-for-woocommerce'); ?>" />
   <span class="slider round"></span>
 </label>

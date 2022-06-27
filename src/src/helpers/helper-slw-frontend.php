@@ -23,17 +23,20 @@ if ( !class_exists('SlwFrontendHelper') ) {
 
 			
 			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
+			
 			if( empty($stock_locations) ) return;
 
 			$product = wc_get_product( $product_id );
 			if( empty( $product ) ) return;// || $product->get_type() != 'simple'
-			
+
+			$product_price = trim(str_replace(get_woocommerce_currency_symbol(), '', strip_tags(wc_price($product->get_price()))));
+
 			$plugin_settings = get_option( 'slw_settings' );
 
 			// update stock and stock status first to not show wrong data to customers
 			$product_locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
 			
-			$product_wc_stock              = $product->get_stock_quantity();
+			$product_wc_stock = $product->get_stock_quantity();
 			
 
 			if( $product_wc_stock != $product_locations_total_stock ) {
@@ -53,11 +56,14 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			$stock_locations_to_display = array();
 			foreach( $stock_locations as $id => $location ) {
 				
+				$slw_backorder_location = (property_exists($location, 'slw_backorder_location')?$location->slw_backorder_location:false);
+				
+				if($location->quantity<=0 && !$slw_backorder_location){ continue; }
 				
 				$stock_locations_to_display[$id]['backorder_allowed'] = ($_backorder_status?'yes':'no');
 				$stock_locations_to_display[$id]['term_id']         = $location->term_id;
 				$stock_locations_to_display[$id]['quantity']        = slw_quantity_format($location->quantity);
-				$stock_locations_to_display[$id]['allow_backorder'] = (property_exists($location, 'slw_backorder_location')?$location->slw_backorder_location:false);
+				$stock_locations_to_display[$id]['allow_backorder'] = $slw_backorder_location;
 				$stock_locations_to_display[$id]['name']            = $location->name;
 				
 				
@@ -68,15 +74,15 @@ if ( !class_exists('SlwFrontendHelper') ) {
 					$product_stock_price = get_post_meta( $product_id, $_stock_location_price, true );
 					$product_stock_price = (float)$product_stock_price;
 					
-					$stock_locations_to_display[$id]['price']            = number_format($product_stock_price, 2);
+					$stock_locations_to_display[$id]['price']            = ($product_stock_price);
 					
-					$product_stock_price = (float)$product->get_price();
+					$product_stock_price = $product_price;
 					
 					$stock_locations_to_display[$id]['price'] = ($stock_locations_to_display[$id]['price']>0?$stock_locations_to_display[$id]['price']:$product_stock_price);
 					
 				}else{
-					$product_stock_price = (float)$product->get_price();
-					$stock_locations_to_display[$id]['price']            = number_format($product_stock_price, 2);
+					$product_stock_price = $product_price;
+					$stock_locations_to_display[$id]['price']            = ($product_stock_price);
 				}
 
 
