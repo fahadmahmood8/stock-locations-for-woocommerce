@@ -159,9 +159,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 					
 					$ret .= '<div '.($term_id?'style="display:none !important; width:100%;"':'class="slw_stock_location_selection"').'>';
 					if( $lock_default_location && $default_location != 0 ) {
-						$ret .= '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location vls display_'.$this->plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required disabled>';
+						$ret .= '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location vls display_'.$slw_plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required disabled>';
 					} else {
-						$ret .= '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location vls display_'.$this->plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required>';
+						$ret .= '<select id="slw_item_stock_location_variable_product" class="slw_item_stock_location vls display_'.$slw_plugin_settings['show_in_product_page'].'" name="slw_add_to_cart_item_stock_location" required>';
 					}
 					if($term_id){
 						$ret .= '<option data-price="" data-quantity="" value="'.$term_id.'" selected></option>';
@@ -187,8 +187,8 @@ if( !class_exists('SlwFrontendProduct') ) {
 			if( empty( $product ) || $product->get_type() != 'simple' ) return;
 			
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
-			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
-			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
+			$default_location      = isset( $slw_plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
+			$lock_default_location = isset( $slw_plugin_settings['lock_default_location_in_frontend'] ) && $slw_plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
 			
 			
 			$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);				
@@ -196,7 +196,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 
 			if( ! empty( $stock_locations ) ) {
 				
-				$show_in_product_page = $this->plugin_settings['show_in_product_page'];
+				$show_in_product_page = $slw_plugin_settings['show_in_product_page'];
 				$location_select_input_type = 'select_simple';
 				switch($show_in_product_page){
 					case 'yes_radio':
@@ -225,13 +225,13 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		public function variable_location_select()
 		{
-			global $product;
+			global $product, $slw_plugin_settings;
 			if( empty($product) ) return;
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
 			$product = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 			
-			$show_in_product_page = $this->plugin_settings['show_in_product_page'];
+			$show_in_product_page = $slw_plugin_settings['show_in_product_page'];
 			$location_select_input_type = 'select_variable';
 			switch($show_in_product_page){
 				case 'yes_radio':
@@ -250,6 +250,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		public function get_variation_locations()
 		{
+			global $slw_plugin_settings;
 			
 			if( isset( $_POST['variation_id'] ) && isset( $_POST['product_id'] ) && $_POST['action'] == 'get_variation_locations' ) {
 				
@@ -261,7 +262,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				$product_variation_id  = ($variation_id?$variation_id:$product_id);
 
 				$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
-				$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
+				$default_location      = isset( $slw_plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 				
 				
 				

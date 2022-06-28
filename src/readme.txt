@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.0.7 =
+- Fix: Fatal error: Uncaught Error: Using $this when not in object context. [Thanks to stalstadens/henriksstalstadens][28/06/2022]
+
 = 2.0.6 =
 - New: Major changes regarding stock location and quantity check on archive pages and product page. [Thanks to Tanel][14/06/2022]
 - New: Major changes regarding archive pages so category pages can enable location selection under the product titles. [Thanks to Tanel][13/06/2022]
