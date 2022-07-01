@@ -42,7 +42,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			if( $product_wc_stock != $product_locations_total_stock ) {
 				
 				
-				update_post_meta( $product_id, '_stock', $product_locations_total_stock );
+				slw_update_product_stock_status( $product_id, $product_locations_total_stock );
 				
 				SlwProductHelper::update_wc_stock_status( $product_id );
 				slw_notices(__('Stock value updated. Please refresh this page.', 'stock-locations-for-woocommerce'), true);

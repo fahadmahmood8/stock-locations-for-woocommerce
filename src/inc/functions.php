@@ -245,7 +245,7 @@ add_action( 'pmxi_saved_post', function( $id )
 	$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
 	
 	// update stock
-	update_post_meta( $id, '_stock', $locations_total_stock );
+	slw_update_product_stock_status( $id, $locations_total_stock );
 	
 	// update stock status
 	\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
@@ -266,7 +266,13 @@ if(!function_exists('slw_quantity_format')){
 if(!function_exists('wc_slw_admin_init')){
 	function wc_slw_admin_init($data){
 		//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
-
+		$slw_update_products = get_option('slw_update_products', array());
+		if(is_array($slw_update_products) && !empty($slw_update_products)){
+			foreach($slw_update_products as $product_id){
+				slw_update_products($product_id, false, 'update-stock');
+			}
+			update_option('slw_update_products', array());
+		}
 		
 		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
 			
@@ -376,8 +382,8 @@ jQuery(document).ready(function($){
 		}
 	}
 	if(!function_exists('slw_update_products')){
-		function slw_update_products($product_id=0, $cron=true, $action=''){
-			
+		function slw_update_products($product_id=0, $cron=true, $action='update-stock'){
+
 		
 			global $wpdb;
 
@@ -415,7 +421,7 @@ jQuery(document).ready(function($){
 			
 			$today_slw_cron_sniffed = '_slw_cron_sniffed_'.$timestamp;
 			
-			$q = "DELETE * FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'";		
+			$q = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'";		
 			if($cron){ pree($q); }
 			$wpdb->query($q);
 			
@@ -452,7 +458,7 @@ jQuery(document).ready(function($){
 			}
 			
 			$products = get_posts($args);
-
+			
 			if(!empty($products)){
 				if($cron){ echo '<ul>'; }
 				foreach($products as $product_post){
@@ -464,6 +470,7 @@ jQuery(document).ready(function($){
 						case 'update-stock':
 							
 							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true, true);
+
 							
 							update_post_meta($product_post->ID, $today_slw_cron_sniffed, $timestamp);
 							if($cron){ echo ' stock updated to '.$SlwStockLocationsTab.'.'; }
@@ -771,7 +778,7 @@ jQuery(document).ready(function($){
 			//foreach($parsed_data as $product_data){
 				$product_id = $product_data['id'];
 				if($product_id>0){
-					$location_ids = array($location_ids);
+					$location_ids = array();
 					if(array_key_exists('meta_data', $product_data)){
 						$meta_data = $product_data['meta_data'];
 						if(!empty($meta_data)){
@@ -790,12 +797,24 @@ jQuery(document).ready(function($){
 					}
 					if(!empty($location_ids)){
 						wp_set_object_terms($product_id, $location_ids, 'location');
-						slw_update_products($product_id, false, 'update-stock');
+						//slw_update_products($product_id, false, 'update-stock');
+						$slw_update_products = get_option('slw_update_products', array());
+						$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
+						$slw_update_products[] = $product_id;
+						update_option('slw_update_products', $slw_update_products);
+						
 					}
 				}
 			//}
 		//}
 		
+	}
+	
+	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
+		wc_slw_logger('debug', $product_id.' - '.$stock_qty);
+		if($product_id){
+			update_post_meta($product_id, '_stock', $stock_qty);
+		}
 	}
 
 	include_once('functions-api.php');

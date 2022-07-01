@@ -131,7 +131,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 				}
 				
-				// Show total stock if '_stock' post meta exists and '_manage_stock' is set to 'yes'
+
 				if( $product->managing_stock() ) {
 					echo '<div id="' . $this->tab_stock_locations . '_total"><u>' . __('Total Stock:', 'stock-locations-for-woocommerce') . ' <b>' . ($product->get_stock_quantity() + 0) . '</b></u></div>';
 					echo '<hr>';
@@ -193,7 +193,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 						// Get Variation Object
 						$variation_obj = wc_get_product($variation_id);
 
-						// Show total stock if '_stock' post meta exists and '_manage_stock' is set to 'yes'
+
 						if( $variation_obj->managing_stock() ) {
 							echo '<div id="' . $this->tab_stock_locations . '_total"><u>' . __('Total Stock:', 'stock-locations-for-woocommerce') . ' <b>' . ($variation_obj->get_stock_quantity() + 0) . '</b></u></div>';
 							echo '<hr>';
@@ -275,19 +275,19 @@ if(!class_exists('SlwStockLocationsTab')) {
 		{
 			$stock_value = 0;
 			
-			if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+			if ( !$force && defined( 'DOING_AJAX' ) && DOING_AJAX )
 				return $post_id;
 
-			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+			if ( !$force && defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 				return $post_id;
 
-			if ( ! current_user_can( 'edit_product', $post_id ) && !$force)
+			if ( !$force && ! current_user_can( 'edit_product', $post_id ))
 				return $post_id;
 			
 
 			// WPML
 			$post_id = SlwWpmlHelper::object_id( $post_id );
-
+			
 			// Get product object
 			$product = wc_get_product( $post_id );
 			
@@ -324,7 +324,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			if( $update ){
 
 				// If has terms
-				if( $product_stock_location_terms ) {
+				if( $terms_total>0 ) {
 					
 					$stock_value = self::update_product_stock($post_id, $product_stock_location_terms, $terms_total, $force);
 					
@@ -346,10 +346,13 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 						}
 						
-						update_post_meta($post_id, '_stock', $master_stock_value);
+						
 
+					}else{
+						$master_stock_value = $stock_value;
 					}
-					
+
+					slw_update_product_stock_status($post_id, $master_stock_value);
 					
 
 				}
@@ -455,7 +458,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		}
 		
 		/**
-		 * Updates product post meta '_stock_at_', '_stock' and '_stock_status'.
+
 		 *
 		 * @since 1.0.0
 		 * @return void
@@ -542,7 +545,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 						// Update stock when reach the last term
 						
 						if($counter === $terms_total) {				
-							update_post_meta( $id, '_stock', array_sum($input_amounts) );
+							slw_update_product_stock_status( $id, array_sum($input_amounts) );
 							
 						}
 

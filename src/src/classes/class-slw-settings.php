@@ -472,7 +472,7 @@ if(!class_exists('SlwSettings')) {
 		{
 			
 			$this->checkbox_callback('cart_location_selection_required',		array(
-								'placeholder'=>__('', 'stock-locations-for-woocommerce'), 
+								'placeholder'=>'', 
 								'screenshot'=>'',
 								'video'=>'https://www.youtube.com/embed/64N7-b90r3E',
 								'label'=>__('Make location selection in cart required.', 'stock-locations-for-woocommerce'),

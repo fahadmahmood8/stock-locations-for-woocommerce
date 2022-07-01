@@ -136,7 +136,7 @@ if( !class_exists('SlwFrontendCart') ) {
 						return;
 					}
 					
-					//pree($stock_locations);
+
 					// default behaviour
 					if( isset($cart_item['stock_location']) ) {
 						echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
@@ -148,7 +148,7 @@ if( !class_exists('SlwFrontendCart') ) {
 					
 					foreach( $stock_locations as $id => $location ) {
 						$selected = $disabled = '';
-						//pree($location['quantity'].' >= '.$cart_item['quantity'].' * '.$location['backorder_allowed']);
+
 						
 						if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < $cart_item['quantity'] && $location['backorder_allowed'] == 'yes') ) {
 							

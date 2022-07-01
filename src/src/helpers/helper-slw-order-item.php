@@ -49,7 +49,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			// Grab all input values
 			$totalQtyAllocated = 0;
 			
-			//wc_slw_logger('debug', $itemStockLocationTerms);
+
 
 
 			// Loop through location terms
@@ -144,7 +144,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 					$stock_qty = $mainProduct->get_stock_quantity() - $totalQtyAllocated;
 					// update stock
 					
-					update_post_meta( $mainProductId, '_stock', $stock_qty );
+					slw_update_product_stock_status( $mainProductId, $stock_qty );
 					
 					// update stock status
 					SlwProductHelper::update_wc_stock_status( $mainProductId, $stock_qty );

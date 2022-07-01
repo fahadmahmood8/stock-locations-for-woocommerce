@@ -135,8 +135,9 @@ if(!class_exists('SlwProductRest')) {
 
 			// Update product stock
 			if( $totalQuantity != 0 ) {
-				$product = wc_get_product($parentPostId);
-				wc_update_product_stock( $product, $totalQuantity, 'set', false );
+				//$product = wc_get_product($parentPostId);
+				//wc_update_product_stock( $product, $totalQuantity, 'set', false );
+				slw_update_product_stock_status( $parentPostId, $totalQuantity );
 			}
 			
 			
