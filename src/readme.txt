@@ -152,6 +152,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.0.8 =
+- Fix: Translation text-domain for Out of stock and in stock strings. [Thanks to stalstadens/henriksstalstadens][30/06/2022]
+- New: Import CSV will automatically turn ON stock locations where _stock_at_location-id column will be found as positive. [Thanks to Ole Straume Andersen][01/07/2022]
+
 = 2.0.7 =
 - Fix: Fatal error: Uncaught Error: Using $this when not in object context. [Thanks to stalstadens/henriksstalstadens][28/06/2022]
 

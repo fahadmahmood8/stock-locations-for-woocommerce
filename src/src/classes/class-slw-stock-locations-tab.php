@@ -488,7 +488,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				if($product->get_type()=='variable' && $product->get_parent_id()==0){ continue; }
 				
 
-				if( isset($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) ) {
+				if( !empty($_POST) && isset($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) ) {
 
 					// Initiate counter
 					$counter++;
@@ -553,10 +553,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 				}
 				
 				$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);			
+				
 				if($slw_location_status){
 					// Get post meta
 					$postmeta_stock_at_term = get_post_meta($id, '_stock_at_' . $term->term_id, true);
-	
+					
 					// Pass terms stock to variable
 					if( $postmeta_stock_at_term ) {
 						$product_terms_stock[] = $postmeta_stock_at_term;

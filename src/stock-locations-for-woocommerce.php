@@ -60,6 +60,7 @@ $slw_crons_valid_keys = array(
 	'action' => array('type'=>'string', 'options'=>'update-stock'),
 	'limit' => array('type'=>'int', 'options'=>'Default: 10'),
 	'reconsider' => array('type'=>'string', 'options'=>'second|minute|hour|day|month|year|once'),
+	'product_id' => array('type'=>'int', 'options'=>'Default: 0 <small>(When you need to update just one product.)</small>'),
 );
 $slw_widgets_arr = array(
 	'slw-map' => array(
@@ -93,7 +94,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '2.0.7';
+		public           $version  = '2.0.8';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
