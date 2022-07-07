@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.1.0 =
+- Fix:  Variations and add to cart not shown on product page for variable products #131  [Thanks to Github/keesheddes][07/07/2022]
+
 = 2.0.9 =
 - New: Import CSV will automatically turn ON stock locations where _stock_at_location-id column will be found as positive. [Thanks to Ole Straume Andersen][01/07/2022]
 

@@ -215,13 +215,13 @@ if(!class_exists('SlwShortcodes')) {
 						$variation_attr_arr = array();
 						foreach( $product_variations as $variation_id=>$product_variation ) {
 							
-							$product = wc_get_product( $variation_id );						
+							$variation_obj = wc_get_product( $variation_id );						
 							$attributes = $product_variation['attributes'];
 							$attribute = array_map('ucfirst', $attributes);
 							$variation_attr = implode('/', $attribute);
 							$variation_attr_str = implode('-', $attributes);
 							
-							$variation_attr_arr[$variation_attr] = '<div id="slw-'.$variation_id.'" data-id="'.$variation_id.'" class="slw-variations-listed slw-variation-'.$variation_attr_str.'-locations">'.'<label>'.$variation_attr.'</label>'.$this->output_product_locations_for_shortcode($product, $locations, $values).'</div>';
+							$variation_attr_arr[$variation_attr] = '<div id="slw-'.$variation_id.'" data-id="'.$variation_id.'" class="slw-variations-listed slw-variation-'.$variation_attr_str.'-locations">'.'<label>'.$variation_attr.'</label>'.$this->output_product_locations_for_shortcode($variation_obj, $locations, $values).'</div>';
 						}					
 						ksort($variation_attr_arr);
 						$output = implode('', $variation_attr_arr);
