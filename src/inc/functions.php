@@ -400,13 +400,13 @@ jQuery(document).ready(function($){
 					
 				break;
 				case 'second':
-					$timestamp = date('Ymdhis');
+					$timestamp = date('YmdHis');
 				break;
 				case 'minute':
-					$timestamp = date('Ymdhi');
+					$timestamp = date('YmdHi');
 				break;
 				case 'hour':
-					$timestamp = date('Ymdh');
+					$timestamp = date('YmdH');
 				break;
 				case 'day':
 					$timestamp = date('Ymd');
@@ -621,6 +621,7 @@ jQuery(document).ready(function($){
 	function manage_my_category_columns($columns){		
 		$columns['slw_location_status'] = '<small>'.__('Enabled/Disabled', 'stock-locations-for-woocommerce').'</small>';
 		$columns['slw_location_auto_allocate'] = '<small>'.__('Auto Allocation', 'stock-locations-for-woocommerce').'</small>';
+		$columns['slw_location_map_visibility'] = '<small>'.__('Map Visibility', 'stock-locations-for-woocommerce').'</small>';
 		$columns['slw_location_priority'] = '<small title="'.__('Higher the number will have higher the priority.', 'stock-locations-for-woocommerce').'">'.__('Priority', 'stock-locations-for-woocommerce').'</small>';
 		$columns['slw_default_location'] = '<small title="'.__('Default for new products', 'stock-locations-for-woocommerce').'">'.__('Default Location', 'stock-locations-for-woocommerce').'</small>';
 	
@@ -636,7 +637,12 @@ jQuery(document).ready(function($){
 		if ($column_name == 'slw_location_auto_allocate') {
 			$slw_auto_allocate = get_term_meta($term_id, 'slw_auto_allocate', true);
 			echo '<a data-id="'.$term_id.'" class="slw-location-allocate '.($slw_auto_allocate?'checked':'').'"><i class="fas fa-check-square slw_location_allocate-enabled"></i><i class="fas fa-times-circle slw_location_allocate-disabled"></i></a>';
-		}		
+		}	
+		if ($column_name == 'slw_location_map_visibility') {
+			$slw_map_status = get_term_meta($term_id, 'slw_map_status', true);
+
+			echo '<a data-id="'.$term_id.'" data-status="'.($slw_map_status?'':'yes').'" class="slw-map-status '.($slw_map_status?'checked':'').'"><i class="fas fa-map-marked slw_map_status-enabled"></i><i class="fas fa-map-marked slw_map_status-disabled"></i></a>';
+		}				
 		
 		if ($column_name == 'slw_location_priority') {
 			$slw_location_priority = get_term_meta($term_id, 'slw_location_priority', true);
@@ -742,7 +748,7 @@ jQuery(document).ready(function($){
 			} 
 			
 			if ( $_product->is_in_stock() ) {
-				$availability = __(  $stock . ' in stock.', 'stock-locations-for-woocommerce' );
+				$availability = $stock .' '. __(  'in stock.', 'stock-locations-for-woocommerce' );
 			}
 			
 			//$_backorders = get_post_meta($_product->get_id(), '_backorders', true);			

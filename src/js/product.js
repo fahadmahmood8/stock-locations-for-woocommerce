@@ -342,6 +342,11 @@
 		$(this).parent().find('ul').toggle();
 	});
 	
+	setTimeout(function(){
+		if($('.rtwpvs-disabled').length>0){
+			$('.rtwpvs-disabled').addClass('disabled').removeClass('rtwpvs-disabled');
+		}
+	}, 2000);
 	
 
 }(jQuery));

@@ -150,6 +150,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			$location_address = '';
 			$location_popup = '';
 			$location_timings = '';
+			$location_phone = '';
 			
 			$slw_lat = '';
 			$slw_lng = '';
@@ -168,6 +169,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				$location_address = get_term_meta($tag->term_id, 'slw_location_address', true);
 				$location_popup = get_term_meta($tag->term_id, 'slw_location_popup', true);
 				$location_timings = get_term_meta($tag->term_id, 'slw_location_timings', true);
+				$location_phone = get_term_meta($tag->term_id, 'slw_location_phone', true);
 				
 				$slw_lat = get_term_meta($tag->term_id, 'slw_lat', true);
 				$slw_lng = get_term_meta($tag->term_id, 'slw_lng', true);
@@ -194,6 +196,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				'location_address'				=> $location_address,
 				'location_popup'				=> $location_popup,
 				'location_timings'				=> $location_timings,
+				'location_phone'				=> $location_phone,
 				'slw_lat'						=> $slw_lat,
 				'slw_lng'						=> $slw_lng,
 				'location_id'					=> $location_id,
@@ -221,6 +224,9 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				}
 				if( isset($_POST['location_popup']) ) {
 					update_term_meta($term_id, 'slw_location_popup', wp_kses($_POST['location_popup'], 'post'));
+				}
+				if( isset($_POST['location_phone']) ) {
+					update_term_meta($term_id, 'slw_location_phone', sanitize_text_field($_POST['location_phone']));
 				}
 				if( isset($_POST['location_timings']) ) {
 					update_term_meta($term_id, 'slw_location_timings', sanitize_text_field($_POST['location_timings']));

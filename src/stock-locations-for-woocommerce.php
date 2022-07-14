@@ -94,7 +94,7 @@ if(!class_exists('SlwMain')) {
 	class SlwMain
 	{
 		// versions
-		public           $version  = '2.1.0';
+		public           $version  = '2.1.1';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others

@@ -312,12 +312,17 @@ function slw_gmap_initialize(input_id) {
 
 	});	
 	
-	$('input#slw-map-status').bind('click', function (e) {
+	
+	$('input#slw-map-status, a.slw-map-status').bind('click', function (e) {
+		var obj = $(this);
+		var is_checkbox = obj.is(':input[type="checkbox"]');
+		var is_status = (is_checkbox?($(this).is(':checked')?obj.val():''):obj.data('status'));
+		
 		var data = {
 
 			action: 'slw_map_status',
-			status: $(this).is(':checked')?$(this).val():'',
-			location_id: $(this).data('id'),
+			status: is_status,
+			location_id: obj.data('id'),
 			slw_nonce_field: slw_admin_scripts.nonce,
 		}
 
@@ -325,6 +330,17 @@ function slw_gmap_initialize(input_id) {
 		$.post(ajaxurl, data, function (response, code) {
 			$.unblockUI();
 			if (code == 'success') {
+				if(!is_checkbox){
+					obj.data('status', (is_status=='yes'?'':'yes'));
+					
+					if(is_status=='yes'){
+						obj.find('.slw_map_status-disabled').hide();
+						obj.find('.slw_map_status-enabled').show();
+					}else{
+						obj.find('.slw_map_status-disabled').show();
+						obj.find('.slw_map_status-enabled').hide();						
+					}
+				}
 			}
 
 		});

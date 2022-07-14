@@ -578,7 +578,8 @@ div.slw-settings-wrap .fa-map-marked,
 table.wp-list-table td.slw_location_status svg.slw_location_status-disabled{
 	color:#CCC;
 }
-table.wp-list-table td.slw_location_status a.slw-location-status{
+table.wp-list-table td.slw_location_status a.slw-location-status,
+table.wp-list-table td.slw_location_map_visibility a.slw-map-status{
 	cursor:pointer;
 }
 table.wp-list-table td.slw_location_status a.slw-location-status svg.slw_location_status-enabled,
@@ -593,20 +594,27 @@ table.wp-list-table td.slw_location_status svg,
 table.wp-list-table td.slw_default_location svg{
 	font-size:18px;
 }
-td.slw_location_auto_allocate svg.slw_location_allocate-enabled {
+td.slw_location_auto_allocate svg.slw_location_allocate-enabled,
+td.slw_location_map_visibility svg.slw_map_status-enabled {
 	font-size:18px;
 	color:#055160;	
 	display:none;
 }
-td.slw_location_auto_allocate svg.slw_location_allocate-disabled {
+td.slw_location_map_visibility svg.slw_map_status-enabled{
+	color:#600534;
+}
+td.slw_location_auto_allocate svg.slw_location_allocate-disabled,
+td.slw_location_map_visibility svg.slw_map_status-disabled {
 	font-size:18px;
 	color:#CCC;	
 	display:none;
 }
-td.slw_location_auto_allocate a.checked svg.slw_location_allocate-enabled{
+td.slw_location_auto_allocate a.checked svg.slw_location_allocate-enabled,
+td.slw_location_map_visibility a.checked svg.slw_map_status-enabled{
 	display:block;
 }
-td.slw_location_auto_allocate a:not(.checked) svg.slw_location_allocate-disabled{
+td.slw_location_auto_allocate a:not(.checked) svg.slw_location_allocate-disabled,
+td.slw_location_map_visibility a:not(.checked) svg.slw_map_status-disabled{
 	display:block;
 }
 
@@ -646,4 +654,7 @@ table.table-view-list td.stock_at_locations span.clicked i{
 	display:none;
 }
 .slw-premium-block{
+}
+body.taxonomy-location th.manage-column.column-slug{
+	width:100px;
 }
