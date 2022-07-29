@@ -445,7 +445,7 @@ if(!class_exists('SlwSettings')) {
 		public function general_display_settings_callback()
 		{
 			
-			$arr = array('cart-page', 'checkout-page', 'order-received-page', 'order-email', 'products-list', 'edit-order-page');
+			$arr = array('cart-page', 'checkout-page', 'order-received-page', 'order-email', 'products-list', 'edit-order-page', 'category-pages-frontend');
 			
 			
 			if(!empty($arr)){

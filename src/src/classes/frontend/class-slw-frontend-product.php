@@ -16,8 +16,7 @@ if ( !defined( 'WPINC' ) ) {
 
 if( !class_exists('SlwFrontendProduct') ) {
 
-	class SlwFrontendProduct
-	{
+	class SlwFrontendProduct{
 		/**
 		 * Construct.
 		 *
@@ -47,7 +46,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		 
 		public static function location_select_input($type='select', $product_id=0, $stock_locations=array(), $html=''){
-			
+			//return $html;
 			$ret = '';
 
 			global $slw_plugin_settings, $wc_slw_pro;

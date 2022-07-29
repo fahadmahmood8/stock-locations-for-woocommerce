@@ -88,11 +88,19 @@ if( !class_exists('SlwFrontendCart') ) {
 					$product_id = ($cart_item['variation_id']?$cart_item['variation_id']:$cart_item['product_id']);
 					
 					$stock_locations = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
-					$stock_location_id = (is_array($cart_item['stock_location']) && array_key_exists($product_id, $cart_item['stock_location'])?$cart_item['stock_location'][$product_id]:0);
+					if(array_key_exists('stock_location', $cart_item)){
+						if(is_array($cart_item['stock_location'])){
+							$stock_location_id = (array_key_exists($product_id, $cart_item['stock_location'])?$cart_item['stock_location'][$product_id]:0);
+						}else{
+							$stock_location_id = $cart_item['stock_location'];	
+						}
+					}
+
 					
-					if(array_key_exists($stock_location_id, $stock_locations)){
+					if(is_array($stock_locations) && array_key_exists($stock_location_id, $stock_locations)){
 						$stock_location = $stock_locations[$stock_location_id]['name'];
 					}
+
 					//$stock_location = '<p>'.$stock_location.(is_cart().' / '.is_checkout().' / '.is_admin().' / '.date('d M, Y H:i:s A')).'</p>';
 					if($stock_location){
 						$cart_item_data[] = array(

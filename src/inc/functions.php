@@ -26,18 +26,18 @@ function pree($data){
   }
 }
 if(!function_exists('slw_notices')){
-function slw_notices($data, $echo = false){
-	$ret = '<div class="slw-notice">';
-	$ret .= $data;
-	$ret .= '</div>';  
+	function slw_notices($data, $echo = false){
+		$ret = '<div class="slw-notice">';
+		$ret .= $data;
+		$ret .= '</div>';  
+		
+		if($echo){
+			echo $ret;
+		}else{
+			return $ret;
+		}
 	
-	if($echo){
-		echo $ret;
-	}else{
-		return $ret;
 	}
-
-  }
 }
 if(!function_exists('sanitize_slw_data')){
 	function sanitize_slw_data( $input ) {
@@ -656,8 +656,10 @@ jQuery(document).ready(function($){
 	add_filter ('manage_location_custom_column', 'manage_category_custom_fields', 10,3);
 
     function slw_woocommerce_product_is_in_stock($instock_status=false, $product_id=0, $string=false) {
+
+		global $product, $slw_plugin_settings, $wpdb;
 		
-		global $product, $slw_plugin_settings;
+		
 		
 		$product = ($product_id?wc_get_product($product_id):$product);
 		
@@ -665,11 +667,13 @@ jQuery(document).ready(function($){
 		
 		switch($type){
 			case 'variable':
-				$variations = $product->get_children();
+				//$variations = $product->get_children();
+				$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+				
 				if(!empty($variations)){
 						$variations_stock_status = array();
-						foreach($variations as $variation_id){
-							
+						foreach($variations as $variation_obj){
+							$variation_id = $variation_obj->variation_id;
 							$product_variation = wc_get_product($variation_id);
 							
 							$instock_statuses = (
@@ -819,6 +823,7 @@ jQuery(document).ready(function($){
 	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
 		wc_slw_logger('debug', $product_id.' - '.$stock_qty);
 		if($product_id){
+			//pree($product_id.' '.$stock_qty);
 			update_post_meta($product_id, '_stock', $stock_qty);
 		}
 	}

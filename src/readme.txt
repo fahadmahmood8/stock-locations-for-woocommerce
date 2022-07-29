@@ -154,6 +154,7 @@ On settings page you can define a number. If location stock value will be less t
 == Changelog ==
 = 2.1.1 =
 - New: Compatibility ensured for another Wordpress plugin "Variation Swatches for WooCommerce".  [Thanks to Andrew Gortchacow][13/07/2022]
+- Fix: Stock values update on shifting between simple and variable products on edit product page.  [Thanks to Stefan Murawski und Helene Umiker][20/07/2022]
 
 = 2.1.0 =
 - Fix:  Variations and add to cart not shown on product page for variable products #131  [Thanks to Github/keesheddes][07/07/2022]

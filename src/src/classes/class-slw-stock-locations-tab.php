@@ -125,12 +125,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 				// Loop throw terms
 				foreach($product_stock_location_terms as $term) {
 					
-					
 					$postmeta[] = $this->create_stock_location_input($product_id, $term);
-					
 
 				}
-				
 
 				if( $product->managing_stock() ) {
 					echo '<div id="' . $this->tab_stock_locations . '_total"><u>' . __('Total Stock:', 'stock-locations-for-woocommerce') . ' <b>' . ($product->get_stock_quantity() + 0) . '</b></u></div>';
@@ -139,12 +136,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 				// Convert $postmeta array values from string to int
 
-				$postmeta_int = array();
-				for( $i = 0; $i < count($postmeta); $i++ ) {
-					$postmeta_int[] = intval($postmeta[$i][0]);
-				}
 				// Check if the total stock matches the sum of the locations stock, if not show warning message
-				if( $product->get_stock_quantity() != array_sum($postmeta_int) ) {
+
+				if( $product->get_stock_quantity() != array_sum($postmeta) ) {
 					echo '<div id="' . $this->tab_stock_locations . '_alert" style="display:none;">' . __('The total stock does not match the sum of the locations stock. Please update this product to fix it or use', 'stock-locations-for-woocommerce') .' <a href="'.admin_url('admin.php?page=slw-settings&tab=crons').'" target="_blank">'.__('cron jobs.', 'stock-locations-for-woocommerce').'</a>.</div>';
 				}
 
@@ -223,6 +217,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		{
 			$id = SlwWpmlHelper::object_id( $id );
 			
+			
 			$_stock_at = get_post_meta($id, '_stock_at_' . $term->term_id, true);
 			$_stock_location_price = get_post_meta($id, '_stock_location_price_' . $term->term_id, true);
 
@@ -253,10 +248,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 			
 			$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);
 			
-			$postmeta = array(0=>0);
-			if($slw_location_status){
-			// Save postmeta to variable
-				$postmeta[0] = $_stock_at;
+			if(is_array($_stock_at)){
+			}else{
+				$postmeta = $_stock_at;
 			}
 			
 			
@@ -327,7 +321,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				if( $terms_total>0 ) {
 					
 					$stock_value = self::update_product_stock($post_id, $product_stock_location_terms, $terms_total, $force);
-					
+
 
 					
 
@@ -490,26 +484,24 @@ if(!class_exists('SlwStockLocationsTab')) {
 				
 				if($product->get_type()=='variable' && $product->get_parent_id()==0){ continue; }
 				
-
-				if( !empty($_POST) && isset($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) ) {
+				$stock_input_id = '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id;
+				$price_input_id = '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id;
+				
+				if( !empty($_POST) && isset($_POST[$stock_input_id]) ) {
 
 					// Initiate counter
 					$counter++;
-
-					// Save input amounts to array
 					
-					$input_amounts[] = sanitize_text_field($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]);
+					// Save input amounts to array					
+					$input_amounts[] = sanitize_text_field($_POST[$stock_input_id]);
 					
 
 					// Check if input is empty
-					if(strlen($_POST['_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id]) === 0) {
+					if(strlen($_POST[$stock_input_id]) === 0) {
 						// Show admin notice
 						SlwAdminNotice::displayError(__('An error occurred. Some field was empty.', 'stock-locations-for-woocommerce'));
 
 					} else {
-						
-						$stock_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id);
-						$price_input_id = ('_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id);
 						
 						
 
@@ -543,17 +535,21 @@ if(!class_exists('SlwStockLocationsTab')) {
 						}
 
 						// Update stock when reach the last term
-						
-						if($counter === $terms_total) {				
-							slw_update_product_stock_status( $id, array_sum($input_amounts) );
+
+						if($counter === $terms_total) {			
+							
+							$stock_ret = array_sum($input_amounts);pree($stock_ret);
+							slw_update_product_stock_status( $id, $stock_ret );
 							
 						}
 
 					}
+					continue;
 
 				}else{
 					
 				}
+				
 				
 				$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);			
 				
@@ -569,19 +565,22 @@ if(!class_exists('SlwStockLocationsTab')) {
 				
 
 			}
+			if($stock_ret){				
+				return $stock_ret;
+			}else{
 			
-			
-			
-			// Check if stock in terms exist
-			if( is_array( $product_terms_stock ) ) {
-				$product_terms_stock = array_sum($product_terms_stock);
-				// update stock status
-				if(!empty($product_terms_stock)){
-					$updated_wc_stock_status = SlwProductHelper::update_wc_stock_status( $id, $product_terms_stock, $force_main_product_update );//array_sum($input_amounts)
+				// Check if stock in terms exist
+				if( is_array( $product_terms_stock ) ) {
+					$product_terms_stock = array_sum($product_terms_stock);
+					// update stock status
+					if(!empty($product_terms_stock)){
+						$updated_wc_stock_status = SlwProductHelper::update_wc_stock_status( $id, $product_terms_stock, $force_main_product_update );//array_sum($input_amounts)
+					}
 				}
+				
+				return $product_terms_stock;
+				
 			}
-			
-			return $product_terms_stock;
 
 		}		
 

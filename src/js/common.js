@@ -159,4 +159,7 @@ jQuery(document).ready(function($){
 			obj.find('select[name^="slw_add_to_cart_item_stock_location"] option:selected').change();
 		}
 	}
+	
+	
+
 });

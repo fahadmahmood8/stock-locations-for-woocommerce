@@ -68,7 +68,7 @@ $slw_widgets_arr = array(
 		'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
 		'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
 		'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px"]'),					
+		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" zoom="13" search-field-placeholder=""]'),					
 		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
 		
 	),
@@ -77,7 +77,7 @@ $slw_widgets_arr = array(
 		'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
 		'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
 		'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
-		'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);'),					
+		'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);<br /><br /><strong>Shortcodes:</strong><br />[slw-archive-meta meta_key="location_address"]'),					
 		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
 		
 	)
@@ -91,8 +91,7 @@ require_once(realpath(SLW_PLUGIN_DIR . '/inc/functions.php'));
 
 if(!class_exists('SlwMain')) {
 
-	class SlwMain
-	{
+	class SlwMain{
 		// versions
 		public           $version  = '2.1.1';
 		public           $import_export_addon_version = '1.1.1';
@@ -105,8 +104,8 @@ if(!class_exists('SlwMain')) {
 		 * Class Constructor.
 		 * @since 1.0.0
 		 */
-		public function __construct()
-		{
+		public function __construct(){
+			
 			define( 'SLW_PLUGIN_VERSION', $this->version );
 
 			$this->init();
@@ -295,6 +294,7 @@ if(!class_exists('SlwMain')) {
 						$variation_id =  $values['variation_id'];
 						$stock_location_id = array_key_exists('stock_location', $values)?$values['stock_location']:0;
 						$stock_location_id = (is_array($stock_location_id)?$stock_location_id[$product_id]:$stock_location_id);
+
 						$quantity = array_key_exists('quantity', $values)?$values['quantity']:0;
 						
 						$slw_cart_items[$product_id][$variation_id][$stock_location_id] = $quantity;
@@ -423,9 +423,9 @@ if(!class_exists('SlwMain')) {
  *
  * @since 1.0.0
  */
+ 
 add_action( 'plugins_loaded', 'initiate_slw_plugin' );
-function initiate_slw_plugin()
-{
+function initiate_slw_plugin(){
 
 	// check if WooCommerce is active
 	if ( ! class_exists( 'woocommerce' ) ) {
