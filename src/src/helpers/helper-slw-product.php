@@ -18,16 +18,27 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 
 		public static function update_wc_stock_status( $product_id, $stock_qty = null, $force_main_product_update=false )
 		{
-			$product_id = SlwWpmlHelper::object_id( $product_id );
-			$product    = wc_get_product( $product_id );
+			global $wpdb;
+			
+			if(is_numeric($product_id)){
+				$product_id = SlwWpmlHelper::object_id( $product_id );
+				$product    = wc_get_product( $product_id );
+			}
+			if(is_object($product_id)){
+				$product    = $product_id;
+				$product_id = $product->get_id();
+			}
 			if( empty($product) ) return;
 
 			// check if we are dealing with a variable product
 			$variations_stock = 0;
 			if( $product->get_type() == 'variable' ) {
-				$variation_ids = $product->get_children();
+				//$variation_ids = $product->get_children();
+				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+				
 				if( ! empty( $variation_ids ) ) {
-					foreach( $variation_ids as $variation_id ) {
+					foreach( $variation_ids as $variation_obj ) {
+						$variation_id = $variation_obj->variation_id;
 						$variation_stock_total = SlwProductHelper::get_product_locations_stock_total( $variation_id );
 						$variations_stock     += $variation_stock_total;
 						self::update_wc_stock_status( $variation_id, $variation_stock_total );
@@ -36,21 +47,22 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			}elseif( $product->get_type() == 'simple' ) {
 				
 			}
-
+			
 			// product stock
 			if( empty( $stock_qty ) ) {
 				$stock_qty = SlwProductHelper::get_product_locations_stock_total( $product_id );
 			}
-
+			
 			// sum product stock with variations stock, if any
 			if( $variations_stock > 0 ) {
 				$stock_qty += $variations_stock;
 			}
-
+			
 			// backorder disabled
 			if(!$product->backorders_allowed()){//( ! $product->is_on_backorder() ) { //20/01/2022 // https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/121
 				if( $stock_qty > 0 ) {
 					update_post_meta( $product_id, '_stock_status', 'instock' );
+					
 					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 					// remove the link in outofstock taxonomy for the current product
 					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
@@ -65,6 +77,7 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 
 			// backorder enabled
 			} else {
+				
 				$current_stock_status = get_post_meta( $product_id, '_stock_status', true );
 
 				if( $stock_qty > 0 ) { //&& $current_stock_status != 'instock'
@@ -119,17 +132,27 @@ add_action( 'slw_product_wc_stock_status', function( $locations_stock, $id, $for
 	global $slw_plugin_settings;
 	$force_main_product_stock_status_to_instock = (!$force_main_product_stock_status_to_instock?array_key_exists('force_main_product_stock_status_to_instock', $slw_plugin_settings):$force_main_product_stock_status_to_instock);
 
+	if(is_numeric($id)){
+		$product = wc_get_product( $id );
+	}
+	if(is_object($id)){
+		$product = $id;
+		$id = $product->get_id();
+	}
 	
+
 	
 	
 	if( ! empty( $id ) && $force_main_product_stock_status_to_instock) {
-		$product = wc_get_product( $id );
+		
 		if( empty( $product ) ) return;
 	
 		$parent_id = $product->get_parent_id();
 		
 		
 		if( $parent_id == 0 ) {
+			
+			
 			
 			if(!$locations_stock){
 				$locations_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );

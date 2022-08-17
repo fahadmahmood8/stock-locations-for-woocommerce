@@ -128,7 +128,7 @@ if(!class_exists('SlwShortcodes')) {
 		 */
 		public function display_product_variations_locations( $atts=array() )
 		{
-			global $woocommerce, $product, $post;
+			global $woocommerce, $product, $post, $wpdb;
 			
 			$values = shortcode_atts(array(
 				'show_qty'          => 'yes',
@@ -185,9 +185,11 @@ if(!class_exists('SlwShortcodes')) {
 				$variations_products = array();
 
 				if( $product_obj->is_type( 'variable' )) {
-					$product_variations_ids = $product_obj->get_children();
+					//$product_variations_ids = $product_obj->get_children();
+					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
 					$product_variations = array();
-					foreach( $product_variations_ids as $variation_id ) {
+					foreach( $product_variations_ids as $variation_obj ) {
+						$variation_id = $variation_obj->variation_id;
 						$product_variations[$variation_id] = $product_obj->get_available_variation( $variation_id );
 					}
 					foreach ($product_variations as $variation) { 

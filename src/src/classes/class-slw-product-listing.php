@@ -108,7 +108,7 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function populate_stock_locations_column($column_name)
 		{
-
+			global $wpdb;
 			// Grab the correct column
 			if( $column_name  == 'stock_at_locations' ) {
 
@@ -120,9 +120,11 @@ if(!class_exists('SlwProductListing')) {
 					// Check for variations
 					$variations_products = array();
 					if( !empty($product) && $product->is_type( 'variable' ) ) {
-						$product_variations_ids = $product->get_children();
+						$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+						//$product_variations_ids = $product->get_children();
 						$product_variations = array();
-						foreach( $product_variations_ids as $variation_id ) {
+						foreach( $product_variations_ids as $variation_obj ) {
+							$variation_id = $variation_obj->variation_id;
 							$product_variations[] = $product->get_available_variation( $variation_id );
 						}
 						foreach ($product_variations as $variation) { 

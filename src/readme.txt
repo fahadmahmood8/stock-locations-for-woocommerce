@@ -152,8 +152,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.1.3 =
+- Fix: Refresh page message on the product page for the stock update. [Thanks to Chalisoft][17/08/2022]
+
 = 2.1.2 =
-- New: Archives related shortcode added and zoom attributed for map shortcode. [Thanks to Zeeshan Sadiq][29/07/2022]
+- New: Archives related shortcode added and zoom attributed for map shortcode. [Thanks to Zeeshan Sadiq & Mika Pietrus][29/07/2022]
 
 = 2.1.1 =
 - New: Compatibility ensured for another Wordpress plugin "Variation Swatches for WooCommerce".  [Thanks to Andrew Gortchacow][13/07/2022]

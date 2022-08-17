@@ -458,7 +458,7 @@ jQuery(document).ready(function($){
 			}
 			
 			$products = get_posts($args);
-			
+			//pree($args);pree($products);exit;
 			if(!empty($products)){
 				if($cron){ echo '<ul>'; }
 				foreach($products as $product_post){
@@ -468,9 +468,8 @@ jQuery(document).ready(function($){
 					
 					switch($action){
 						case 'update-stock':
-							
+							//pree($product_post);
 							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true, true);
-
 							
 							update_post_meta($product_post->ID, $today_slw_cron_sniffed, $timestamp);
 							if($cron){ echo ' stock updated to '.$SlwStockLocationsTab.'.'; }
@@ -822,8 +821,8 @@ jQuery(document).ready(function($){
 	
 	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
 		wc_slw_logger('debug', $product_id.' - '.$stock_qty);
-		if($product_id){
-			//pree($product_id.' '.$stock_qty);
+		if(is_numeric($product_id)){
+			$stock_qty = (int)$stock_qty;
 			update_post_meta($product_id, '_stock', $stock_qty);
 		}
 	}

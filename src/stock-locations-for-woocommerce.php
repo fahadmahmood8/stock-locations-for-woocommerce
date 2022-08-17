@@ -68,7 +68,7 @@ $slw_widgets_arr = array(
 		'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
 		'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
 		'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" zoom="13" search-field-placeholder=""]'),					
+		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" zoom="13" search-field-placeholder="" shop-button-text="Shop This Location" directions-button-text="Directions"]'),					
 		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
 		
 	),
@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.1.2';
+		public           $version  = '2.1.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -367,15 +367,16 @@ if(!class_exists('SlwMain')) {
 				
 				if($data['product_type']=='variable'){
 				
-					
-					$product_variations_ids = $wc_product->get_children();
+					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					//$product_variations_ids = $wc_product->get_children();
 					$product_variations = array();
 					
 					//pre($product_variations_ids);	
 					//pre($terms);
 					$locations = array();
 					
-					foreach( $product_variations_ids as $variation_id ) {
+					foreach( $product_variations_ids as $variation_obj ) {
+						$variation_id = $variation_obj->variation_id;
 						if(!empty($terms)){
 							$data['stock_quantity'][$variation_id][0] = 0;
 							foreach($terms as $term){		
