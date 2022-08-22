@@ -820,7 +820,18 @@ jQuery(document).ready(function($){
 	}
 	
 	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
-		wc_slw_logger('debug', $product_id.' - '.$stock_qty);
+		
+		//slw_location_status
+		$debug_backtrace = debug_backtrace();
+			
+		$function = $debug_backtrace[0]['function'];
+		$function .= ' / '.$debug_backtrace[1]['function'];
+		$function .= ' / '.$debug_backtrace[2]['function'];
+		$function .= ' / '.$debug_backtrace[3]['function'];
+		$function .= ' / '.$debug_backtrace[4]['function'];		
+		
+		//wc_slw_logger('debug', $product_id.'='.$stock_qty.' - '.$function);
+		
 		if(is_numeric($product_id)){
 			$stock_qty = (int)$stock_qty;
 			update_post_meta($product_id, '_stock', $stock_qty);

@@ -108,16 +108,22 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 				do_action( 'woocommerce_product_set_stock_status', $product_id, $status, $product );
 			}
 		}
-		public static function get_product_locations_stock_total( $product_id )
-		{
-
+		public static function get_product_locations_stock_total( $product, $stock_locations=array() ){
+			
+			
+			
+			$product_id = (is_object($product)?$product->get_id():$product);
+			
 			if( empty( $product_id ) ) return;
 
-			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
+			$stock_locations = (empty($stock_locations)?SlwStockAllocationHelper::getProductStockLocations( $product ):$stock_locations);
+			
 			if( empty( $stock_locations ) ) return;
+			
+			
 
-			$product_locations_total_stock = 0;
-			foreach( $stock_locations as $id => $location ) {
+			$product_locations_total_stock = 0; 
+			foreach( $stock_locations as $id => $location ){
 				$product_locations_total_stock += intval( $location->quantity );
 			}
 

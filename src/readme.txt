@@ -152,6 +152,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.1.4 =
+- Fix: The total stock does not match the sum of the locations stock conditioned with the location enabled/disabled status. [Thanks to Jesus Gonzalez][19/08/2022]
+- New: Action hooks added for map page locations list, before and after shop this location button. [Thanks to Roy Wright][20/08/2022]
+- Fix: Variable Product: out of stock and quantity is 0 when accessing the product page. [Thanks to chalisoft][22/08/2022]
+
 = 2.1.3 =
 - Fix: Refresh page message on the product page for the stock update. [Thanks to Chalisoft][17/08/2022]
 

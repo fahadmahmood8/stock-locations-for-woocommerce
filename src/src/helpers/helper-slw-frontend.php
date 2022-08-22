@@ -34,7 +34,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			$plugin_settings = get_option( 'slw_settings' );
 
 			// update stock and stock status first to not show wrong data to customers
-			$product_locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
+			$product_locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product, $stock_locations, $product );
 			
 			$product_wc_stock = $product->get_stock_quantity();
 			

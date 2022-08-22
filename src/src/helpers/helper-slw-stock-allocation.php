@@ -103,8 +103,14 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 		 *
 		 * @return false|\WP_Error|\WP_Term[]
 		 */
-		public static function getProductStockLocations( $productId, $needMetaData = true, $filterByLocation = null )
+		public static function getProductStockLocations( $product, $needMetaData = true, $filterByLocation = null )
 		{
+			global $wpdb;
+			
+			$productId = (is_object($product)?$product->get_id():$product);
+			
+			
+			
 			// Get correct top level product
 			// The one the stock locations are actually allocated to
 			$product_id = SlwWpmlHelper::object_id( $productId );
@@ -115,39 +121,79 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			if( ! empty($product) && is_callable( array( $product, 'get_parent_id' ) ) ) {
 				$parentProduct = wc_get_product( $product->get_parent_id() );
 			}
+			
+			$product_type = (is_object($product)?$product->get_type():'');
 
 			$returnLocations = array();
 
 			// Get locations and stock
 			$locations = wp_get_post_terms( ( ( isset($parentProduct) && !empty($parentProduct) ) ? $parentProduct->get_id() : $product->get_id() ), SlwLocationTaxonomy::$tax_singular_name, array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=') );
+		
+		
 
 			if( empty($locations) || ! is_array($locations) ) return $returnLocations;
+			
+			$product_variations_ids = array();
+			
+			switch($product_type){
+				case 'variable':
+					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+				break;	
+			}
 
 			foreach ($locations as $idx => $location) {
 				// Only return the filter location
 				if ($filterByLocation != null && ($filterByLocation != $location->term_id && $filterByLocation != $location->slug)) {
 					continue;
 				}
-
-				if ($product->get_manage_stock() === true) {
-					$locations[$idx]->quantity = $product->get_meta('_stock_at_' . $location->term_id, true);
-				} elseif($product->get_manage_stock() === 'parent') {
-					$locations[$idx]->quantity = $parentProduct->get_meta('_stock_at_' . $location->term_id, true);
-				} else {
+				
+				
+					
+						
+				if(!empty($product_variations_ids)){
+					//pree($product_variations_ids);
 					$locations[$idx]->quantity = 0;
+					foreach($product_variations_ids as $product_variation){
+						$product_variation_id = $product_variation->variation_id;
+						$variation    = wc_get_product( $product_variation_id );
+						
+						if ($variation->get_manage_stock() === true) {
+							$locations[$idx]->quantity += $variation->get_meta('_stock_at_' . $location->term_id, true);
+						}
+		
+						if ($needMetaData) {
+							$returnLocations[$location->term_id] = (object)array_merge((array)$locations[$idx], self::getLocationMeta($location->term_id));
+						} else {
+							$returnLocations[$location->term_id] = $locations[$idx];
+						}	
+					}
+				}else{
+					
+					if ($product->get_manage_stock() === true) {
+						$locations[$idx]->quantity = $product->get_meta('_stock_at_' . $location->term_id, true);
+					} elseif($product->get_manage_stock() === 'parent') {
+						$locations[$idx]->quantity = $parentProduct->get_meta('_stock_at_' . $location->term_id, true);
+					} else {
+						$locations[$idx]->quantity = 0;
+					}
+	
+					if ($needMetaData) {
+						$returnLocations[$location->term_id] = (object)array_merge((array)$locations[$idx], self::getLocationMeta($location->term_id));
+					} else {
+						$returnLocations[$location->term_id] = $locations[$idx];
+					}				
+						
 				}
 
-				if ($needMetaData) {
-					$returnLocations[$location->term_id] = (object)array_merge((array)$locations[$idx], self::getLocationMeta($location->term_id));
-				} else {
-					$returnLocations[$location->term_id] = $locations[$idx];
-				}
+				
 			}
 
 			// Return a single record
 			if ($filterByLocation != null && ($filterByLocation > 0 || strlen($filterByLocation))) {
 				return reset($returnLocations);
 			}
+			
+			//pree($returnLocations);exit;
 
 			// Locations
 			return $returnLocations;

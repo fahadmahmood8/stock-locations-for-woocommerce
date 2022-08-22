@@ -252,7 +252,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);
 			
 			if(is_array($_stock_at)){
-			}else{
+			}elseif($slw_location_status){
 				$postmeta = $_stock_at;
 			}
 			
@@ -335,7 +335,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					//pree($post_id);pree($product_stock_location_terms);pree($terms_total);pree($force);exit;
 					$stock_value = self::update_product_stock($product, $product_stock_location_terms, $terms_total, $force);
 
-					//pree($stock_value);exit;
+					
 					
 
 					// Check if product has variations
@@ -358,7 +358,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					}else{
 						$master_stock_value = $stock_value;
 					}
-
+					
 					slw_update_product_stock_status($post_id, $master_stock_value);
 					
 
@@ -508,12 +508,14 @@ if(!class_exists('SlwStockLocationsTab')) {
 					
 					$stock_input_id = '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id;
 					$price_input_id = '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id;
+					$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);
 					
-					if( !empty($_POST) && isset($_POST[$stock_input_id]) ) {
+					if( !empty($_POST) && isset($_POST[$stock_input_id])) {
 	
 						// Initiate counter
 						$counter++;
 						
+						if(!$slw_location_status){ continue; }
 						// Save input amounts to array					
 						$input_amounts[] = sanitize_text_field($_POST[$stock_input_id]);
 						
@@ -557,10 +559,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 							}
 	
 							// Update stock when reach the last term
-	
-							if($counter === $terms_total) {			
-								
-								$stock_ret = array_sum($input_amounts);pree($stock_ret);
+
+							if($counter === $terms_total) {											
+								$stock_ret = array_sum($input_amounts);
 								slw_update_product_stock_status( $id, $stock_ret );
 								
 							}
@@ -588,7 +589,6 @@ if(!class_exists('SlwStockLocationsTab')) {
 	
 				}
 			}
-			
 			if($stock_ret){				
 				return $stock_ret;
 			}else{
