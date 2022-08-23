@@ -36,8 +36,8 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 				//$variation_ids = $product->get_children();
 				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
 				
-				if( ! empty( $variation_ids ) ) {
-					foreach( $variation_ids as $variation_obj ) {
+				if( ! empty( $product_variations_ids ) ) {
+					foreach( $product_variations_ids as $variation_obj ) {
 						$variation_id = $variation_obj->variation_id;
 						$variation_stock_total = SlwProductHelper::get_product_locations_stock_total( $variation_id );
 						$variations_stock     += $variation_stock_total;

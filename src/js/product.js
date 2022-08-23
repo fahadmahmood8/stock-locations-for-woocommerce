@@ -280,12 +280,13 @@
 				break;
 			}
 			
+			
 			var everything_stock_status_to_instock = (typeof slw_frontend.everything_stock_status_to_instock!='undefined' && slw_frontend.everything_stock_status_to_instock=='on');
 			
 			
 		
 			if(typeof availability_obj=='object'){
-				str = (availability_obj.availability.replace(slw_frontend.stock_quantity_sum, stock_quantity));
+				str = (availability_obj.availability.replace(slw_frontend.stock_quantity_sum, stock_quantity));				
 				obj.removeAttr('class').addClass(availability_obj.class+' stock').html(str);
 			}
 			var cart_qty = 0;
