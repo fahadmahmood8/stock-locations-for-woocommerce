@@ -89,9 +89,9 @@ if ( !class_exists('SlwFrontendHelper') ) {
 
 				if( $location->quantity <= 0 && !$everything_stock_status_to_instock) {
 					if( $stock_locations_to_display[$id]['allow_backorder'] == 1 ) {
-						$stock_locations_to_display[$id]['name'] .= ' (' . __('On backorder', 'stock-locations-for-woocommerce') . ')';
+						$stock_locations_to_display[$id]['name'] .= ' (' . __('On backorder', 'woocommerce') . ')';
 					} else {
-						$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'stock-locations-for-woocommerce') . ')';
+						$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'woocommerce') . ')';
 					}
 				} else {
 					
@@ -99,7 +99,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 						$stock_locations_to_display[$id]['name'] .= sprintf(
 							' (%s %s)',
 							$location->quantity,
-							__( 'In stock', 'stock-locations-for-woocommerce' )
+							__( 'In stock', 'woocommerce' )
 						);
 					}
 				}

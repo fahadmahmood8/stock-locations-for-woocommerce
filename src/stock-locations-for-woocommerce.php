@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.1.5';
+		public           $version  = '2.1.6';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -266,9 +266,9 @@ if(!class_exists('SlwMain')) {
 			$data['stock_quantity'] = array();
 			$data['stock_status'] = array();
 			$data['stock_quantity_sum'] = 0;
-			$data['out_of_stock'] = __('Out of stock', 'stock-locations-for-woocommerce');
-			$data['in_stock'] = __('In stock', 'stock-locations-for-woocommerce');
-			$data['backorder'] = __('Available on backorder', 'stock-locations-for-woocommerce');
+			$data['out_of_stock'] = __('Out of stock', 'woocommerce');
+			$data['in_stock'] = __('In stock', 'woocommerce');
+			$data['backorder'] = __('Available on backorder', 'woocommerce');
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
 			$data['slw_term_url'] = ($term_id?get_term_link($term_id):'');
 			$data['slw_term_id'] = $term_id;

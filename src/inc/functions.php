@@ -747,15 +747,19 @@ jQuery(document).ready(function($){
 
 			$_product = wc_get_product( $product );
 			if ( !$_product->is_in_stock() ) {
-				$availability = __(  'Out of stock.', 'stock-locations-for-woocommerce' );
+				$availability = __(  'Out of stock', 'woocommerce' );
 			} 
-			
-			if ( $_product->is_in_stock() ) {
-				$availability = $stock .' '. __(  'in stock.', 'stock-locations-for-woocommerce' );
+				
+			if ( $_product->is_in_stock() && $stock>0) {
+				$availability = $stock .' '. __(  'in stock', 'woocommerce' );
+			}else{
+				
+				$_backorders = get_post_meta($_product->get_id(), '_backorders', true);			
+	
+				if($_backorders=='yes'){
+					$availability = __(  'On backorder', 'woocommerce' );
+				}
 			}
-			
-			//$_backorders = get_post_meta($_product->get_id(), '_backorders', true);			
-			//if($_backorders=='yes' && $stock>0 && 0){}
 			
 
 		}
