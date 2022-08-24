@@ -472,6 +472,7 @@ jQuery(document).ready(function($){
 							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true, true);
 							
 							update_post_meta($product_post->ID, $today_slw_cron_sniffed, $timestamp);
+							update_post_meta($product_post->ID, '_manage_stock', 'yes');
 							if($cron){ echo ' stock updated to '.$SlwStockLocationsTab.'.'; }
 						break;
 
@@ -790,6 +791,7 @@ jQuery(document).ready(function($){
 		//if(!empty($parsed_data)){
 			//foreach($parsed_data as $product_data){
 				$product_id = $product_data['id'];
+				
 				if($product_id>0){
 					$location_ids = array();
 					if(array_key_exists('meta_data', $product_data)){
@@ -802,13 +804,20 @@ jQuery(document).ready(function($){
 										$location_id = str_replace('_stock_at_', '', $meta_key);
 										if(!in_array($location_id, $location_ids)){
 											$location_ids[] = (int)$location_id;
+											update_post_meta( $product_id, '_stock_at_' . $location_id, $meta_val );											
 										}
+									}
+									if(substr($meta_key, 0, strlen('_stock_location_price_'))=='_stock_location_price_' && $meta_val>0){
+										$location_id = str_replace('_stock_location_price_', '', $meta_key);
+										update_post_meta( $product_id, '_stock_location_price_' . $location_id, $meta_val );										
 									}
 								}
 							}
 						}
 					}
+					
 					if(!empty($location_ids)){
+						update_post_meta($product_id, '_manage_stock', 'yes');
 						wp_set_object_terms($product_id, $location_ids, 'location');
 						//slw_update_products($product_id, false, 'update-stock');
 						$slw_update_products = get_option('slw_update_products', array());
@@ -817,6 +826,7 @@ jQuery(document).ready(function($){
 						update_option('slw_update_products', $slw_update_products);
 						
 					}
+					
 				}
 			//}
 		//}
@@ -840,6 +850,7 @@ jQuery(document).ready(function($){
 			$stock_qty = (int)$stock_qty;
 			update_post_meta($product_id, '_stock', $stock_qty);
 		}
+		
 	}
 
 	include_once('functions-api.php');

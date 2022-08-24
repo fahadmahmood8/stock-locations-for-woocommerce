@@ -359,11 +359,13 @@ if(!class_exists('SlwStockLocationsTab')) {
 						$master_stock_value = $stock_value;
 					}
 					
+					
 					slw_update_product_stock_status($post_id, $master_stock_value);
 					
 
 				}
 			}
+			
 			return $stock_value;
 		}
 
@@ -562,6 +564,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 							if($counter === $terms_total) {											
 								$stock_ret = array_sum($input_amounts);
+								if($stock_ret>0){
+									update_post_meta($id, '_stock_status', 'instock');
+								}else{
+									update_post_meta($id, '_stock_status', 'outofstock');
+								}								
 								slw_update_product_stock_status( $id, $stock_ret );
 								
 							}

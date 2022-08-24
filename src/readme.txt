@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.1.7 =
+- Fix: _manage_stock value to "yes" on import CSV. [Thanks to Ole Straume Andersen][24/08/2022]
+
 = 2.1.6 =
 - Fix: Translatable strings are updated. [Thanks to Ole Straume Andersen][23/08/2022]
 
