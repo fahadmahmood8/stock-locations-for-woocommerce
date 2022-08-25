@@ -288,7 +288,6 @@ if( !class_exists('SlwFrontendProduct') ) {
 		function add_to_cart_location_validation( $cart_item_data=array(), $product_id=0, $variation_id=0 ) {
 			
 			$stock_location_selected = WC()->session->get('stock_location_selected');
-			wc_slw_logger('debug', $cart_item_data);wc_slw_logger('debug', $product_id);wc_slw_logger('debug', $variation_id);wc_slw_logger('debug', $stock_location_selected);
 			
 			
 			if($stock_location_selected){

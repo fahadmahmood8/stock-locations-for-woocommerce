@@ -82,8 +82,9 @@ jQuery(document).ready(function($){
 		}else{		
 			$.blockUI({message:''});
 			$.post($(this).prop('href'), {}, function(){ 
+				$.unblockUI();
 				//document.location.href = slw_frontend.cart_url; 
-				document.location.reload();
+				//document.location.reload();
 			}); 			
 		}
 	});

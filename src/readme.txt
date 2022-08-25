@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.1.9 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/133 [Thanks to Daniel/d2roth][25/08/2022]
+
 = 2.1.8 =
 - New: Different location per cart item selection as "No" will give two more options as remove the item or continue shopping. [Thanks to Conrad Goodenough][25/08/2022]
 
