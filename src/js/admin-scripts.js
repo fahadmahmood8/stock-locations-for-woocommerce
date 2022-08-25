@@ -111,7 +111,14 @@ function slw_gmap_initialize(input_id) {
 			}
 		});
 	}
-
+	$('#different_location_per_cart_item').on('change', function(){
+		if($(this).val()=='no'){
+			$('.different_location_per_cart_item_no').show();
+		}else{
+			$('.different_location_per_cart_item_no').hide();
+		}
+	});
+	
 	function slwEnableShowLocationsProductPage()
 	{
 		// initial
@@ -492,6 +499,12 @@ function slw_gmap_initialize(input_id) {
 		}
 		
 	});
+	
+	setTimeout(function(){
+		if($('#different_location_per_cart_item').length>0){
+			$('#different_location_per_cart_item').trigger('change');
+		}
+	}, 1000);
 	
 
 }(jQuery));

@@ -173,6 +173,15 @@ if(!class_exists('SlwSettings')) {
 			);
 			
 			add_settings_field(
+				'different_location_per_cart_item_no',
+				__('What if a product is not available from the selected location/store?', 'stock-locations-for-woocommerce'),
+				array( $this, 'different_location_per_cart_item_no_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'different_location_per_cart_item_no slw_premium_feature')
+			);
+			
+			add_settings_field(
 				'show_in_product_page',
 				__('Stock management on product page', 'stock-locations-for-woocommerce'),
 				array( $this, 'show_in_product_page_callback' ),
@@ -332,6 +341,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['different_location_per_cart_item'] ) ) {
 				$sanitary_values['different_location_per_cart_item'] = $input['different_location_per_cart_item'];
+			}
+			if ( isset( $input['different_location_per_cart_item_no'] ) ) {
+				$sanitary_values['different_location_per_cart_item_no'] = $input['different_location_per_cart_item_no'];
 			}
 			if ( isset( $input['show_in_product_page'] ) ) {
 				$sanitary_values['show_in_product_page'] = $input['show_in_product_page'];
@@ -568,8 +580,25 @@ if(!class_exists('SlwSettings')) {
 		 */
 		public function different_location_per_cart_item_callback()
 		{
-			$this->select_yes_no_callback('different_location_per_cart_item');
+			$id = 'different_location_per_cart_item';
+			?> 
+			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
+				<option value="yes" <?php selected($this->plugin_settings[$id] == 'yes'); ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>
+				<option value="no"  <?php selected($this->plugin_settings[$id] == 'no'); ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?> (<?php echo __('Premium Feature', 'stock-locations-for-woocommerce'); ?>)</option>
+			</select>
+			<?php
 		}
+		
+		public function different_location_per_cart_item_no_callback()
+		{
+			$id = 'different_location_per_cart_item_no';
+			?> 
+			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
+				<option value="continue" <?php selected($this->plugin_settings[$id] == 'continue'); ?>><?php echo __('Continue without any location selection', 'stock-locations-for-woocommerce'); ?></option>
+				<option value="remove"  <?php selected($this->plugin_settings[$id] == 'remove'); ?>><?php echo __('Remove the product item from the cart', 'stock-locations-for-woocommerce'); ?></option>
+			</select>
+			<?php
+		}		
 
 		/**
 		 * Different location per cart item dropdown callback.
@@ -698,12 +727,9 @@ if(!class_exists('SlwSettings')) {
 		{
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
-				<?php $selected = (isset($this->plugin_settings[$id]) ?'selected="selected"':''); ?>
-				<option <?php echo $selected; ?>><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>
-				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected="selected"' : ''; ?>
-				<option value="yes" <?php echo $selected; ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>
-				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected="selected"' : ''; ?>
-				<option value="no" <?php echo $selected; ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
+				<option <?php selected($this->plugin_settings[$id] == ''); ?> value=""><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>				
+				<option value="yes" <?php selected($this->plugin_settings[$id] == 'yes'); ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>				
+				<option value="no" <?php selected($this->plugin_settings[$id] == 'no'); ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
 			</select>
 			<?php
 		}

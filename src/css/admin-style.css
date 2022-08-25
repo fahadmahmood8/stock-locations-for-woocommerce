@@ -658,3 +658,10 @@ table.table-view-list td.stock_at_locations span.clicked i{
 body.taxonomy-location th.manage-column.column-slug{
 	width:100px;
 }
+.slw_premium_feature:after{
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	content: "\f005";
+	color: #eaad1e9c;	
+	font-size:22px;
+}

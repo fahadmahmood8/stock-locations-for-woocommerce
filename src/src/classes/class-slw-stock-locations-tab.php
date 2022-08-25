@@ -401,7 +401,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			$posts = $query->get_posts();
 
 			// iterate over posts
-			foreach ( $posts as $post ) {
+			foreach ( $posts as $post ) { if(!is_object($post)){ continue; }
 				$post_id = $post->ID;
 
 				// get post location terms

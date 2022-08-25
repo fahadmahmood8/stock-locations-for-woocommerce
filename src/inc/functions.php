@@ -18,6 +18,8 @@ function pree($data){
 	$function .= ' / '.$debug_backtrace[3]['function'];
 	$function .= ' / '.$debug_backtrace[4]['function'];
 	
+	//if(function_exists('wc_slw_logger')){ wc_slw_logger('debug', $function); }
+	
 	echo '<pre>';
 	//print_r($function);
 	print_r($data);
@@ -461,7 +463,7 @@ jQuery(document).ready(function($){
 			//pree($args);pree($products);exit;
 			if(!empty($products)){
 				if($cron){ echo '<ul>'; }
-				foreach($products as $product_post){
+				foreach($products as $product_post){ if(!is_object($product_post)){ continue; }
 	
 					//$product_post = get_post($res_obj->ID);
 					if($cron){ echo '<li>ID: '.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>'; }
@@ -854,3 +856,4 @@ jQuery(document).ready(function($){
 	}
 
 	include_once('functions-api.php');
+	include_once('filter-hooks.php');

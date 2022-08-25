@@ -160,6 +160,8 @@ jQuery(document).ready(function($){
 		}
 	}
 	
-	
+	$('body').on('click', '.slw-dismiss-notice', function(){
+		$(this).closest('.woocommerce-info').fadeOut().delay(3000).remove();
+	});
 
 });

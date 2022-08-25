@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.1.8 =
+- New: Different location per cart item selection as "No" will give two more options as remove the item or continue shopping. [Thanks to Conrad Goodenough][25/08/2022]
+
 = 2.1.7 =
 - Fix: _manage_stock value to "yes" on import CSV. [Thanks to Ole Straume Andersen][24/08/2022]
 

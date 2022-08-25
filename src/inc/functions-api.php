@@ -55,7 +55,7 @@
 								}else{
 									$products = get_posts( array('post_type'=>'product') );								
 									if(!empty($products)){
-										foreach($products as $product){
+										foreach($products as $product){ if(!is_object($product)){ continue; }
 											$response[$product->ID] = wc_get_product($product->ID);
 										}
 									}

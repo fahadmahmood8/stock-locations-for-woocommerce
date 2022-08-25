@@ -123,3 +123,20 @@
 		color:#000;
 		padding:0;
 	}
+	div.stock_location_selected_warning {
+		border: 2px solid rgba(0,0,0,0.2);
+		border-radius: 6px;
+		padding: 20px;
+		line-height: 24px;
+		margin: 10px 0 40px;
+		background-color: #ff00001c;
+		color: #000;
+	}
+	.slw-notice-msg{
+		
+	}
+	.slw-notice-msg a{
+		cursor:pointer;		
+		float:right;
+	}
+	

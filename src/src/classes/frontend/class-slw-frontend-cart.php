@@ -125,6 +125,12 @@ if( !class_exists('SlwFrontendCart') ) {
 			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
+			$stock_location_selected = WC()->session->get('stock_location_selected');
+			
+			$different_location_per_cart_item = (isset($this->plugin_settings['different_location_per_cart_item'])?$this->plugin_settings['different_location_per_cart_item']:'');
+			$different_location_per_cart_item_no = (isset($this->plugin_settings['different_location_per_cart_item_no'])?$this->plugin_settings['different_location_per_cart_item_no']:'');
+			
+			
 
 			if(array_key_exists('stock_location', $cart_item) && !is_array($cart_item['stock_location']) && $cart_item['stock_location']>0){
 				$cart_item['stock_location'] = (is_array($cart_item['stock_location'])?$cart_item['stock_location']:array($product_id=>$cart_item['stock_location']));
@@ -134,44 +140,81 @@ if( !class_exists('SlwFrontendCart') ) {
 				
 				if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
 					
-					echo '<label class="slw_cart_item_stock_location_label">'.__('Nearest Location', 'stock-locations-for-woocommerce').':</label>';
-					
-					// lock to default location if enabled
-					if( $lock_default_location && $default_location != 0 ) {
-						echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
-						echo '<option data-price="" data-quantity="" class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$default_location.'" selected="selected" disabled="disabled">'.$stock_locations[$default_location]['name'].'</option>';
-						echo '</select>';
-						return;
-					}
-					
-
-					// default behaviour
-					if( isset($cart_item['stock_location']) ) {
-						echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
-						echo '<option>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
-					} else {
-						echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
-						echo '<option selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
-					}
-					
+					$stock_locations_arr = array();
 					foreach( $stock_locations as $id => $location ) {
-						$selected = $disabled = '';
-
-						
-						if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < $cart_item['quantity'] && $location['backorder_allowed'] == 'yes') ) {
-							
-							if( 
-								
-								is_array($cart_item['stock_location']) && array_key_exists($product_id, $cart_item['stock_location']) && $location['term_id']==$cart_item['stock_location'][$product_id] ) {
-								$selected = 'selected="selected"';
-							}
-						} else {
-							$disabled = 'disabled="disabled"';
-						}
-						echo '<option data-price="" data-quantity="" class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location['term_id'].'" '.$selected.' '.$disabled.'>'.$location['name'].'</option>';
+						$stock_locations_arr[] = $location['term_id'];
 					}
+					
+					if(!in_array($stock_location_selected, $stock_locations_arr) && $different_location_per_cart_item=='no' && $different_location_per_cart_item_no == 'continue'){
+						$product_name = ($cart_item['data']->get_data()['name']);
+						
+						$slw_notice_msg = apply_filters('slw_notice_msg', sprintf( __('This product item is not available on the selected store location. %s', 'stock-locations-for-woocommerce'), '<a class="button alt slw-dismiss-notice">'.__('Dismiss', 'stock-locations-for-woocommerce').'</a>'), $product_id, $product_name, $stock_location_selected, $stock_locations_arr);
+													
+						wc_print_notice( '<span class="slw-notice-msg">'.$slw_notice_msg.'</span>', 'notice' );
+						
+					}
+					
+					if( 
+							isset($this->plugin_settings['different_location_per_cart_item']) 
+						&& 
+							(
+									$this->plugin_settings['different_location_per_cart_item'] == 'yes' 
+								
+								||
+								
+									(
+											$this->plugin_settings['different_location_per_cart_item'] == 'no' 
+										&&
+											(
+													in_array($stock_location_selected, $stock_locations_arr)
+												//||
+													//$different_location_per_cart_item_no == 'continue'
+											)
+											
+									)
+							)
+					) {
+					
+						echo '<label class="slw_cart_item_stock_location_label">'.__('Nearest Location', 'stock-locations-for-woocommerce').':</label>';
+						
+						// lock to default location if enabled
+						if( $lock_default_location && $default_location != 0 ) {
+							echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required disabled>';
+							echo '<option data-price="" data-quantity="" class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$default_location.'" selected="selected" disabled="disabled">'.$stock_locations[$default_location]['name'].'</option>';
+							echo '</select>';
+							return;
+						}
+						
 	
-					echo '</select>';
+						// default behaviour
+						if( isset($cart_item['stock_location']) ) {
+							echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
+							echo '<option>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+						} else {
+							echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
+							echo '<option selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+						}
+						
+						foreach( $stock_locations as $id => $location ) {
+							$selected = $disabled = '';
+	
+							
+							if( ($location['quantity'] > 0 && $location['quantity'] >= $cart_item['quantity']) || ($location['quantity'] < $cart_item['quantity'] && $location['backorder_allowed'] == 'yes') ) {
+								
+								if( 
+									
+									is_array($cart_item['stock_location']) && array_key_exists($product_id, $cart_item['stock_location']) && $location['term_id']==$cart_item['stock_location'][$product_id] ) {
+									$selected = 'selected="selected"';
+								}
+							} else {
+								$disabled = 'disabled="disabled"';
+							}
+							echo '<option data-price="" data-quantity="" class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location['term_id'].'" '.$selected.' '.$disabled.'>'.$location['name'].'</option>';
+						}
+		
+						echo '</select>';
+						
+					}
 					
 				}else{
 					

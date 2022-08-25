@@ -52,14 +52,14 @@
 		if(price && (typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on')){
 			var price_html = '<bdi><span class="woocommerce-Price-currencySymbol">'+slw_frontend.currency_symbol+'</span>'+price+'</bdi>';
 	
-			if(price_dom.length>0){
+			if(price_dom.length>0){				
 				price_dom.html(price_html);
 			}else{
 				var price_doms = $('.product-type-simple .summary .price .woocommerce-Price-amount.amount');
 				if(price_doms.length>0){
 					$.each(price_doms, function(i, v){
-						if(!obj.parent().is('del')){
-							obj.html(price_html);
+						if(!$(this).parent().is('del')){							
+							$(this).html(price_html);
 						}
 					});
 				}
