@@ -152,11 +152,15 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.2.0 =
+- New: js/archive.js added to separate the JavaScript functions for archive pages. [Thanks to bbceg][26/08/2022]
+- New: Map page, search field will filter the list items according to the diameter-in-kilometers, a numeric value, provided in the shortcode. [Thanks to bbceg][27/08/2022]
+
 = 2.1.9 =
 - Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/133 [Thanks to Daniel/d2roth][25/08/2022]
 
 = 2.1.8 =
-- New: Different location per cart item selection as "No" will give two more options as remove the item or continue shopping. [Thanks to Conrad Goodenough][25/08/2022]
+- New: Different location per cart item selection as "No" will give two more options as remove the item or continue shopping. [Thanks to bbceg][25/08/2022]
 
 = 2.1.7 =
 - Fix: _manage_stock value to "yes" on import CSV. [Thanks to Ole Straume Andersen][24/08/2022]

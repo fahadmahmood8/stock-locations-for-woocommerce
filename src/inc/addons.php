@@ -70,13 +70,22 @@
 			}
 			
 ?>
+
+<?php if(!empty($scripts)){
+?>
 <script type="text/javascript" language="javascript">
 	jQuery(document).ready(function($){
-		<?php if(!empty($scripts)){ foreach($scripts as $selector=>$html){ ?>
+<?php					
+	foreach($scripts as $selector=>$html){ ?>
 		$('<?php echo $selector; ?>').append('<?php echo $html; ?>');
-		<?php } } ?>
+<?php 
+	} 
+?>
 	});
-</script>
+</script>		
+<?php		
+	} 
+?>
 <style type="text/css">
 	a.ab-promotion {
 		display: inline-block;

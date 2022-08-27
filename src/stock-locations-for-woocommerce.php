@@ -68,7 +68,7 @@ $slw_widgets_arr = array(
 		'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
 		'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
 		'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" zoom="13" search-field-placeholder="" shop-button-text="Shop This Location" directions-button-text="Directions" shop-location-link="default|shop|previous"]', 'add_action("before_slw_shop_button", function($location_data){ }, 1);', 'add_action("after_slw_shop_button", function($location_data){ }, 1);'),					
+		'shortcode' => array('[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" diameter-in-kilometers="100" zoom="13" search-field-placeholder="" shop-button-text="Shop This Location" directions-button-text="Directions" shop-location-link="default|shop|previous"]', 'add_action("before_slw_shop_button", function($location_data){ }, 1);', 'add_action("after_slw_shop_button", function($location_data){ }, 1);'),					
 		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
 		
 	),
@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.1.9';
+		public           $version  = '2.2.0';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -323,6 +323,18 @@ if(!class_exists('SlwMain')) {
 				'slw_frontend',
 				$data
 			);
+			
+			if( is_archive() ) {
+				if(get_option('slw-archives-status')=='yes'){
+					wp_enqueue_script(
+						'slw-archive-scripts',
+						SLW_PLUGIN_DIR_URL . 'js/archive.js',
+						array('jquery-blockui'),
+						time(),
+						true
+					);	
+				}
+			}
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
 				wp_enqueue_script(
