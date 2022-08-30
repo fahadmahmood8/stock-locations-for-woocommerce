@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.2.1 =
+- New: Google map will filter the location items on bounds_changed event. [Thanks to bbceg][30/08/2022]
+
 = 2.2.0 =
 - New: js/archive.js added to separate the JavaScript functions for archive pages. [Thanks to bbceg][26/08/2022]
 - New: Map page, search field will filter the list items according to the diameter-in-kilometers, a numeric value, provided in the shortcode. [Thanks to bbceg][27/08/2022]
