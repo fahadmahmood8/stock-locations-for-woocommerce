@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.2.2 =
+- New: Google map will focus on the nearest location automatically if allowed access location. [Thanks to bbceg][30/08/2022]
+
 = 2.2.1 =
 - New: Google map will filter the location items on bounds_changed event. [Thanks to bbceg][30/08/2022]
 
