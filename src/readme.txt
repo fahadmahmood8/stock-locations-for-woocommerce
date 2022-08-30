@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.2.3 =
+- New: Google map related action and filter hooks are updated on settings page under widgets tab. [30/08/2022]
+
 = 2.2.2 =
 - New: Google map will focus on the nearest location automatically if allowed access location. [Thanks to bbceg][30/08/2022]
 

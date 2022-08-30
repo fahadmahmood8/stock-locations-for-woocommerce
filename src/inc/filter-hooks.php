@@ -15,3 +15,20 @@
 		return $html;
 		
 	}	
+	
+	add_filter('slw-map-location-label', 'slw_map_location_label_callback', 10, 3);
+	
+	function slw_map_location_label_callback($str='', $name='', $location_id=0){
+
+		return $str;
+		
+	}		
+	
+	add_filter('slw-map-location-name', 'slw_map_location_name_callback', 10, 3);
+	
+	function slw_map_location_name_callback($str='', $label='', $location_id=0){
+
+		return $str;
+		
+	}			
+	
