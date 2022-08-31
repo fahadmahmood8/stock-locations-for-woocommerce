@@ -475,6 +475,7 @@ jQuery(document).ready(function($){
 							
 							update_post_meta($product_post->ID, $today_slw_cron_sniffed, $timestamp);
 							update_post_meta($product_post->ID, '_manage_stock', 'yes');
+							
 							if($cron){ echo ' stock updated to '.$SlwStockLocationsTab.'.'; }
 						break;
 
@@ -851,6 +852,9 @@ jQuery(document).ready(function($){
 		if(is_numeric($product_id)){
 			$stock_qty = (int)$stock_qty;
 			update_post_meta($product_id, '_stock', $stock_qty);
+			
+			if($stock_qty>0)
+			update_post_meta($product_id, '_stock_status', 'instock');
 		}
 		
 	}
