@@ -68,7 +68,7 @@ $slw_widgets_arr = array(
 		'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
 		'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
 		'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-		'shortcode' => array('<strong>Shortcode:</strong><br />[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" diameter-in-kilometers="100" zoom="13" search-field-placeholder="" shop-button-text="Shop This Location" directions-button-text="Directions" shop-location-link="default|shop|previous"]<br /><br />', '<strong>Hooks:</strong><br />add_action("before_slw_shop_button", function($location_data){ }, 11, 1);', 'add_action("after_slw_shop_button", function($location_data){ }, 11, 1);', 'add_filter("slw-map-location-label", function($label, $name, $location_id){ }, 11, 3);', 'add_filter("slw-map-location-name", function($name, $label, $location_id){ }, 11, 3);', 'add_action("slw-map-before-search-box", function($placeholder){ }, 11, 1);', 'add_action("slw-map-after-search-box", function($placeholder){ }, 11, 1);',),					
+		'shortcode' => array('<strong>Shortcode:</strong><br />[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" diameter-range="100" distance-unit="km" zoom="13" search-field-placeholder="" shop-button-text="Shop This Location" directions-button-text="Directions" shop-location-link="default|shop|previous"]<br /><br />', '<strong>Hooks:</strong><br />add_action("before_slw_shop_button", function($location_data){ }, 11, 1);', 'add_action("after_slw_shop_button", function($location_data){ }, 11, 1);', 'add_filter("slw-map-location-label", function($label, $name, $location_id){ }, 11, 3);', 'add_filter("slw-map-location-name", function($name, $label, $location_id){ }, 11, 3);', 'add_action("slw-map-before-search-box", function($placeholder){ }, 11, 1);', 'add_action("slw-map-after-search-box", function($placeholder){ }, 11, 1);',),					
 		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
 		
 	),
@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.2.3';
+		public           $version  = '2.2.4';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others

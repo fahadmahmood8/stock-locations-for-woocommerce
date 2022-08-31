@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.2.4 =
+- New: Google map shortcoded improved with two new attributes as distance-range="100" and distance-unit="km/mi". [Thanks to bbceg][31/08/2022]
+
 = 2.2.3 =
 - New: Google map related action and filter hooks are updated on settings page under widgets tab. [30/08/2022]
 
