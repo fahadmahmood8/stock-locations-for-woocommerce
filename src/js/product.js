@@ -199,7 +199,9 @@
 		}
 		slw_add_to_cart_item_stock_status_update();
 	}
-	
+	if(slw_frontend.is_product==true && slw_frontend.show_in_product_page=='no'){
+		slw_add_to_cart_item_stock_status_update();
+	}
 	function slw_add_to_cart_item_stock_status_update(){
 		
 		var obj = $('p.stock').eq(0);
@@ -227,6 +229,9 @@
 		
 		var location_id = (qty_obj.length>0?qty_obj.val():0);
 		
+		if(!location_id && slw_frontend.different_location_per_cart_item=='no'){
+			location_id = slw_frontend.stock_location_selected;
+		}
 
 		if(obj.length>0){	
 			var qty = qty_obj.data('quantity');
@@ -301,6 +306,7 @@
 			if(slw_frontend.different_location_per_cart_item=='no'){
 				if($('input[name="quantity"]').length>0){
 					var available_qty = (stock_quantity-cart_qty);
+					available_qty = (available_qty>0?available_qty:1);
 					$('input[name="quantity"]').prop('max', available_qty);
 				}
 			}

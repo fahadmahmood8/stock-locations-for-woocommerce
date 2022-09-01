@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.2.6 =
+- Fix: Stock max qty. allowed on product page synchronized with the selected location from the archive page(s). [Thanks to bbceg][01/09/2022]
+
 = 2.2.5 =
 - Fix: Stock status instock/outofstock/onbackorder to instock when stock is positive. [Thanks to Mario Kremser][31/08/2022]
 
