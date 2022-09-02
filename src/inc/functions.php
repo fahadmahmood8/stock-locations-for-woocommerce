@@ -793,7 +793,7 @@ jQuery(document).ready(function($){
 	function slw_woocommerce_product_import_before_import($product_data=array()){
 		//if(!empty($parsed_data)){
 			//foreach($parsed_data as $product_data){
-				$product_id = $product_data['id'];
+				$product_id = (is_array($product_data) && array_key_exists('id', $product_data)?$product_data['id']:0);
 				
 				if($product_id>0){
 					$location_ids = array();
@@ -858,6 +858,25 @@ jQuery(document).ready(function($){
 		}
 		
 	}
+	function slw_override_stock_quantity( $quantity, $product ) {
+
+		  if ( class_exists('SLW\SRC\Helpers\SlwStockAllocationHelper') ) {
+	 
+			   $selected_stock_location_id = WC()->session->get('stock_location_selected');
+			   
+			   if($selected_stock_location_id>0){
+	
+				   $stock_location = \SLW\SRC\Helpers\SlwStockAllocationHelper::getProductStockLocations($product->get_id(), false, $selected_stock_location_id);
+		
+				   $quantity = $stock_location->quantity;
+				   
+			   }
+		  }
+			
+		  return $quantity;
+	}
+	
+	add_filter( 'woocommerce_product_get_stock_quantity', 'slw_override_stock_quantity', 10, 2 );
 
 	include_once('functions-api.php');
 	include_once('filter-hooks.php');

@@ -45,7 +45,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				slw_update_product_stock_status( $product_id, $product_locations_total_stock );
 				
 				SlwProductHelper::update_wc_stock_status( $product_id );
-				slw_notices(__('Stock value updated. Please refresh this page.', 'stock-locations-for-woocommerce'), true);
+				//slw_notices(__('Stock value updated. Please refresh this page.', 'stock-locations-for-woocommerce'), true);
 				
 				// refresh page
 				//echo("<meta http-equiv='refresh' content='1'>");
