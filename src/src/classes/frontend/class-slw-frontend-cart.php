@@ -125,7 +125,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
-			$stock_location_selected = WC()->session->get('stock_location_selected');
+			$stock_location_selected = ((isset(WC()->session) && WC()->session->has_session())?WC()->session->get('stock_location_selected'):0);
 			
 			$different_location_per_cart_item = (isset($this->plugin_settings['different_location_per_cart_item'])?$this->plugin_settings['different_location_per_cart_item']:'');
 			$different_location_per_cart_item_no = (isset($this->plugin_settings['different_location_per_cart_item_no'])?$this->plugin_settings['different_location_per_cart_item_no']:'');

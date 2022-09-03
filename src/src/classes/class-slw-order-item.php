@@ -794,7 +794,11 @@ if( !class_exists('SlwOrderItem') ) {
 			// Build simple location term to stock quantity allocation array
 			$simpleLocationAllocations = array();
 			foreach ($stockAllocation as $allocation) {
-				$simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
+				if(property_exists($allocation, 'allocated_quantity')){
+					$simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
+				}else{
+					//$simpleLocationAllocations[$allocation->term_id] = $allocation->quantity;
+				}
 			}
 			
 		

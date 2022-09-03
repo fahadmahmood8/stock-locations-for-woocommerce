@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.2.8 =
+- Fix: Return stock qty. as per stock_location_selected session value with the default priority 10.  [Thanks to Jeroen de Kok][02/09/2022]
+
 = 2.2.7 =
 - New: Return stock qty. as per stock_location_selected session value with the default priority 10.  [Thanks to bbceg][02/09/2022]
 
