@@ -860,7 +860,7 @@ jQuery(document).ready(function($){
 	}
 	function slw_override_stock_quantity( $quantity, $product ) {
 
-		  if ( class_exists('SLW\SRC\Helpers\SlwStockAllocationHelper') ) {
+		  if ( class_exists('SLW\SRC\Helpers\SlwStockAllocationHelper')  && !is_admin()) {
 	 
 			   $selected_stock_location_id = WC()->session->get('stock_location_selected');
 			   
