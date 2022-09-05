@@ -220,7 +220,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		{
 			$id = SlwWpmlHelper::object_id( $id );
 			
-			
+			$postmeta = 0;
 			$_stock_at = get_post_meta($id, '_stock_at_' . $term->term_id, true);
 			$_stock_location_price = get_post_meta($id, '_stock_location_price_' . $term->term_id, true);
 
