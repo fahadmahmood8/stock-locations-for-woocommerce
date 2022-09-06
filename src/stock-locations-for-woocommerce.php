@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.2.9';
+		public           $version  = '2.3.0';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -273,7 +273,7 @@ if(!class_exists('SlwMain')) {
 			$data['slw_term_url'] = ($term_id?get_term_link($term_id):'');
 			$data['slw_term_id'] = $term_id;
 			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
-			$data['stock_location_selected'] = ((isset(WC()->session) && WC()->session->has_session())?WC()->session->get('stock_location_selected'):0);
+			$data['stock_location_selected'] = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
 			
 			$data['slw_allow_geo'] = __('Allow current location', 'stock-locations-for-woocommerce');
 			$data['slw_allow_geo_tip'] = __('Allow current location to calculate the distance and sort by nearest', 'stock-locations-for-woocommerce');
@@ -374,6 +374,7 @@ if(!class_exists('SlwMain')) {
 				
 				$data['product_type'] = $wc_product->get_type();
 				$data['product_id'] = $product_id;
+				$data['product_price'] = $wc_product->get_price(); 
 				$data['stock_status'][$product_id] = $wc_product->get_availability();
 				$data['allow_backorder'][$product_id] = get_post_meta($product_id, '_backorders', true);
 				

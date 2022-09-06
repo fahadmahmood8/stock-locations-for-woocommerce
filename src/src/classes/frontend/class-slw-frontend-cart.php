@@ -119,13 +119,14 @@ if( !class_exists('SlwFrontendCart') ) {
 			
 			if( empty($cart_item) ) return;
 			
+			global $woocommerce;
 			
 			$product_id            = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
 			$product_id            = SlwWpmlHelper::object_id( $product_id );
 			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
-			$stock_location_selected = ((isset(WC()->session) && WC()->session->has_session())?WC()->session->get('stock_location_selected'):0);
+			$stock_location_selected = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
 			
 			$different_location_per_cart_item = (isset($this->plugin_settings['different_location_per_cart_item'])?$this->plugin_settings['different_location_per_cart_item']:'');
 			$different_location_per_cart_item_no = (isset($this->plugin_settings['different_location_per_cart_item_no'])?$this->plugin_settings['different_location_per_cart_item_no']:'');

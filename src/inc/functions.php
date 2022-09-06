@@ -861,9 +861,10 @@ jQuery(document).ready(function($){
 	function slw_override_stock_quantity( $quantity, $product ) {
 			
 			if(is_admin()){ return $quantity; }
-
+			
+			global $woocommerce;
  
-		   $selected_stock_location_id = ((isset(WC()->session) && WC()->session->has_session())?WC()->session->get('stock_location_selected'):0);
+		   $selected_stock_location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
 		   
 		   if($selected_stock_location_id>0){
 

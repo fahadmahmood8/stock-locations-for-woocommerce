@@ -48,8 +48,15 @@
 		var price_dom = $('.woocommerce-variation-price .woocommerce-Price-amount.amount');
 		
 		var price = qty_obj.data('price');
+		var price_str = (price+'');
+
+		var price_int = (price_str?price_str.replace(',','.'):0);
+		price_int = parseFloat(price_int);
+		price_int = (price_int>0?price_int:slw_frontend.product_price);
+		price = parseFloat(price_int?(price_int+'').replace(',','.'):0).toFixed(2);
 		
-		if(price && (typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on')){
+		
+		if(price_int && (typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on')){
 			var price_html = '<bdi><span class="woocommerce-Price-currencySymbol">'+slw_frontend.currency_symbol+'</span>'+price+'</bdi>';
 	
 			if(price_dom.length>0){				
@@ -289,7 +296,7 @@
 			var everything_stock_status_to_instock = (typeof slw_frontend.everything_stock_status_to_instock!='undefined' && slw_frontend.everything_stock_status_to_instock=='on');
 			
 			
-		
+			stock_quantity = (typeof stock_quantity=='undefined'?0:stock_quantity);
 			if(typeof availability_obj=='object'){
 				str = (availability_obj.availability.replace(slw_frontend.stock_quantity_sum, stock_quantity));				
 				obj.removeAttr('class').addClass(availability_obj.class+' stock').html(str);
