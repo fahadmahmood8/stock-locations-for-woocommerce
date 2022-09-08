@@ -137,7 +137,7 @@ if( !class_exists('SlwBarcodesTab') ) {
 					if( isset($_POST[$this->tab_barcodes . '_' . $barcode['name']]) ) {
 
 						// Update post meta
-						update_post_meta( $post_id, '_' . $barcode['name'] , sanitize_text_field($_POST[$this->tab_barcodes . '_' . $barcode['name']]) );
+						update_post_meta( $post_id, '_' . $barcode['name'] , sanitize_slw_data($_POST[$this->tab_barcodes . '_' . $barcode['name']]) );
 
 					}
 

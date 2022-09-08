@@ -519,7 +519,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 						
 						if(!$slw_location_status){ continue; }
 						// Save input amounts to array					
-						$input_amounts[] = sanitize_text_field($_POST[$stock_input_id]);
+						$input_amounts[] = sanitize_slw_data($_POST[$stock_input_id]);
 						
 	
 						// Check if input is empty
@@ -531,7 +531,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 							
 							
 	
-							$stock_location_term_input = sanitize_text_field($_POST[$stock_input_id]);
+							$stock_location_term_input = sanitize_slw_data($_POST[$stock_input_id]);
 							$stock_location_price_term_input = sanitize_slw_data($_POST[$price_input_id]);
 							
 							

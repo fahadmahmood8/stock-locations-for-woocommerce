@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.3.1 =
+- Fix: Product page stock_location param for cart line_items.  [Thanks to Tanel][08/09/2022]
+
 = 2.3.0 =
 - Fix: WooCommerce session and get_cart using wp_loaded action hook.  [Thanks to bbceg][06/09/2022]
 

@@ -115,28 +115,34 @@
 							
 							var wrapper = $('div.slw_stock_location_selection');
 							
-							$.each(response.data.stock_locations, function(i) {
-								var obj = response.data.stock_locations[i];
-								if( obj.quantity < 1 && obj.allow_backorder != 1 ) {
-									
-								} else {
-									let selected = false;
-									if( obj.term_id == response.data.default_location && obj.quantity>0) {
-										selected = true;
+							if(wrapper.length>0){
+								
+								wrapper.html('');
+							
+								$.each(response.data.stock_locations, function(i) {
+									var obj = response.data.stock_locations[i];
+									if( obj.quantity < 1 && obj.allow_backorder != 1 ) {
+										
+									} else {
+										let selected = false;
+										if( obj.term_id == response.data.default_location && obj.quantity>0) {
+											selected = true;
+										}
+										
+										
+										//new Option( obj.name, obj.term_id, selected, selected )
+										var product_stock_location_name = obj.name;
+										if(typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on'){								
+											//product_stock_location_name += ' '+slw_frontend.currency_symbol+''+obj.price;
+										}
+										var option_str = '<label for="slw-location-'+obj.term_id+'"><input name="slw_add_to_cart_item_stock_location" id="slw-location-'+obj.term_id+'" type="radio" class="'+(obj.quantity>0?'has-stock':'')+'" data-backorder="'+obj.backorder_allowed+'" data-price="'+obj.price+'" data-quantity="'+obj.quantity+'" value="'+obj.term_id+'" '+(selected?'selected="selected"':'')+' />'+product_stock_location_name+'</label>';
+										wrapper.append(option_str);
+										
+										stock_quantity_sum += parseInt(obj.quantity);
 									}
-									
-									
-									//new Option( obj.name, obj.term_id, selected, selected )
-									var product_stock_location_name = obj.name;
-									if(typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on'){								
-										//product_stock_location_name += ' '+slw_frontend.currency_symbol+''+obj.price;
-									}
-									var option_str = '<label for="slw-location-'+obj.term_id+'"><input name="slw_add_to_cart_item_stock_location" id="slw-location-'+obj.term_id+'" type="radio" class="'+(obj.quantity>0?'has-stock':'')+'" data-backorder="'+obj.backorder_allowed+'" data-price="'+obj.price+'" data-quantity="'+obj.quantity+'" value="'+obj.term_id+'" '+(selected?'selected="selected"':'')+' />'+product_stock_location_name+'</label>';
-									wrapper.append(option_str);
-									
-									stock_quantity_sum += parseInt(obj.quantity);
-								}
-							});
+								});
+								
+							}
 							
 						}else{
 						

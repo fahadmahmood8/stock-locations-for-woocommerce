@@ -257,9 +257,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 			if( isset( $_POST['variation_id'] ) && isset( $_POST['product_id'] ) && $_POST['action'] == 'get_variation_locations' ) {
 				
 				
-				$variation_id          = sanitize_text_field( $_POST['variation_id'] );
+				$variation_id          = sanitize_slw_data( $_POST['variation_id'] );
 				$variation_id          = SlwWpmlHelper::object_id( $variation_id );
-				$product_id            = sanitize_text_field( $_POST['product_id'] );
+				$product_id            = sanitize_slw_data( $_POST['product_id'] );
 				$product_id            = SlwWpmlHelper::object_id( $product_id );
 				$product_variation_id  = ($variation_id?$variation_id:$product_id);
 
@@ -296,8 +296,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 				$cart_item_data['stock_location'] = $stock_location_selected;
 			}
 			if( isset( $_POST['slw_add_to_cart_item_stock_location'] ) ) {
-				$cart_item_data['stock_location'] = sanitize_text_field( $_POST['slw_add_to_cart_item_stock_location'] );
+				$cart_item_data['stock_location'] = sanitize_slw_data( $_POST['slw_add_to_cart_item_stock_location'] );
 			}
+			
 			return $cart_item_data;
 		}
 
