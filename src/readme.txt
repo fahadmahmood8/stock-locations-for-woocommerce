@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.3.2 =
+- Fix: array_key_exists() related issue on the cart page for qty. section.  [Thanks to Elliot Fib][15/09/2022]
+
 = 2.3.1 =
 - Fix: Product page stock_location param for cart line_items.  [Thanks to Tanel][08/09/2022]
 

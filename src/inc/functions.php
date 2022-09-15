@@ -257,6 +257,7 @@ add_action( 'pmxi_saved_post', function( $id )
 if(!function_exists('slw_quantity_format')){
 	function slw_quantity_format($data){
 		$plugin_settings = get_option( 'slw_settings' );
+		$plugin_settings = (is_array($plugin_settings)?$plugin_settings:array());
 		$max_number = ((array_key_exists('show_with_postfix', $plugin_settings) && is_numeric($plugin_settings['show_with_postfix']) && $plugin_settings['show_with_postfix']>1)?$plugin_settings['show_with_postfix']:0);
 		
 		if($max_number){
