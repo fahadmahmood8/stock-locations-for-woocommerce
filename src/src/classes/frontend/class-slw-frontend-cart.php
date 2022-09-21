@@ -204,7 +204,7 @@ if( !class_exists('SlwFrontendCart') ) {
 								
 								if( 
 									
-									is_array($cart_item['stock_location']) && array_key_exists($product_id, $cart_item['stock_location']) && $location['term_id']==$cart_item['stock_location'][$product_id] ) {
+									isset( $cart_item['stock_location'] ) && is_array($cart_item['stock_location']) && array_key_exists($product_id, $cart_item['stock_location']) && $location['term_id']==$cart_item['stock_location'][$product_id] ) {
 									$selected = 'selected="selected"';
 								}
 							} else {
