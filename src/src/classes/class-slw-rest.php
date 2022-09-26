@@ -110,22 +110,12 @@ if(!class_exists('SlwProductRest')) {
 			if (sizeof($values)) {
                 foreach ($values as $location) {
                     $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwLocationTaxonomy::$tax_singular_name)->term_id;
-                    $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
+                    
 					
-
-
-                    // It is possible to provide a null quantity to delete product from location
-                    if (is_null($quantity)) {
-                        // Delete post meta
-                        delete_post_meta($postId, '_stock_at_' . $locationId);
-                    } else {
-                        // We must only keep location IDs we wish to keep as valid locations
+					if (isset($location['quantity'])){
+						$quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
                         $stockLocationTermIds[] = $locationId;
-						
-                        // Set locations stock level
                         update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
-						
-
                         $totalQuantity += $quantity;
                     }
                 }

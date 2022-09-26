@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.3.3 =
+- New: Import products will work with just SKU as well and you may skip the columns if don't to update the stock for a location.  [Thanks to Ole Straume Andersen][27/09/2022]
+
 = 2.3.2 =
 - Fix: array_key_exists() related issue on the cart page for qty. section.  [Thanks to Elliot Fib][15/09/2022]
 

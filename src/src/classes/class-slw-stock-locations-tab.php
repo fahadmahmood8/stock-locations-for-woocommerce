@@ -542,7 +542,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 	
 	
 							// Check if the $_POST value is the same as the postmeta, if not update the postmeta
-							if( $stock_location_term_input !== $postmeta_stock_at_term ) {
+							if( $stock_location_term_input !== $postmeta_stock_at_term && $stock_location_term_input!='' && $stock_location_term_input>=0) {
 	
 								// Update the post meta
 								update_post_meta( $id, '_stock_at_' . $term->term_id, $stock_location_term_input );

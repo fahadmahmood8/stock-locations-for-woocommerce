@@ -46,12 +46,13 @@ if(!class_exists('SlwShortcodes')) {
 				'show_qty'          => 'yes',
 				'show_stock_status' => 'no',
 				'show_empty_stock'  => 'yes',
+				'separator'  => '-',
 				'collapsed'  => 'no',
 				'product_id' => get_the_ID(),
 				'stock_location_status' => 'enabled'
 			), $atts);
 			
-			if(  !is_product() ){ 
+			if(!is_product()){ 
 				if(is_numeric($values['product_id'])){
 					$check_post_type = get_post($values['product_id']);
 					if(is_object($check_post_type) && $check_post_type->post_type=='product'){
@@ -135,6 +136,7 @@ if(!class_exists('SlwShortcodes')) {
 				'show_stock_status' => 'no',
 				'show_empty_stock'  => 'yes',
 				'collapsed'  => 'no',
+				'separator'  => '-',
 				'product_id' => get_the_ID(),
 				'stock_location_status' => 'enabled'
 			), $atts);
@@ -245,7 +247,7 @@ if(!class_exists('SlwShortcodes')) {
 		 */
 		private function output_product_locations_for_shortcode( $product, $locations, $values )
 		{
-			
+			$separator = $values['separator'];
 			
 			if( !empty($locations) ) {
 
@@ -266,7 +268,7 @@ if(!class_exists('SlwShortcodes')) {
 					if( $values['show_qty'] == 'yes' ) {
 						$location_stock = $product->get_meta('_stock_at_'.$location->term_id);
 						if( !empty($location_stock) ) {
-							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' - <span class="slw-product-location-qty slw-product-location-qty__number">'.apply_filters( 'slw_shortcode_product_location_stock', $location_stock, $location ).'</span></li>';
+							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' '.$separator.' <span class="slw-product-location-qty slw-product-location-qty__number">'.apply_filters( 'slw_shortcode_product_location_stock', $location_stock, $location ).'</span></li>';
 						} else {
 							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-qty slw-product-location-qty__notavailable">'.__('Not available', 'stock-locations-for-woocommerce').'</span></li>';
 						}

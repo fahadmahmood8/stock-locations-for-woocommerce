@@ -96,7 +96,7 @@ if(!function_exists('wc_slw_logger')){
 
 				
 				
-				if(is_array($data) && !empty($data)){
+				if((is_array($data) || is_object($data)) && !empty($data)){
 					$slw_logger[] = $data;
 					$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
 					update_option('slw_logger', $slw_logger);
@@ -792,9 +792,15 @@ jQuery(document).ready(function($){
 	add_action( 'woocommerce_product_import_before_import', 'slw_woocommerce_product_import_before_import', 11, 1 );
 	
 	function slw_woocommerce_product_import_before_import($product_data=array()){
+		//wc_slw_pree($product_data);exit;
 		//if(!empty($parsed_data)){
 			//foreach($parsed_data as $product_data){
 				$product_id = (is_array($product_data) && array_key_exists('id', $product_data)?$product_data['id']:0);
+				$sku = (is_array($product_data) && array_key_exists('sku', $product_data)?$product_data['sku']:'');
+
+				if(!$product_id && $sku){
+					$product_id = wc_get_product_id_by_sku($sku);	
+				}
 				
 				if($product_id>0){
 					$location_ids = array();
@@ -804,9 +810,16 @@ jQuery(document).ready(function($){
 							foreach($meta_data as $meta_iter){
 								if(is_array($meta_iter)){
 									list($meta_key, $meta_val) = array_values($meta_iter);
-									if(substr($meta_key, 0, strlen('_stock_at_'))=='_stock_at_' && $meta_val>0){
+									
+									//wc_slw_logger('debug', $sku.' - '.$product_id.' - ~ - '.$meta_val);	
+									
+									if(substr($meta_key, 0, strlen('_stock_at_'))=='_stock_at_' && $meta_val!='' && $meta_val>=0){
+										
 										$location_id = str_replace('_stock_at_', '', $meta_key);
-										if(!in_array($location_id, $location_ids)){
+										
+										//wc_slw_logger('debug', $sku.' - '.$product_id.' - '.$location_id.' - '.$meta_val);	
+										
+										if($location_id && !in_array($location_id, $location_ids)){
 											$location_ids[] = (int)$location_id;
 											update_post_meta( $product_id, '_stock_at_' . $location_id, $meta_val );											
 										}
@@ -821,8 +834,36 @@ jQuery(document).ready(function($){
 					}
 					
 					if(!empty($location_ids)){
+						global $wpdb;
+						$parent_query = "SELECT post_parent FROM $wpdb->posts WHERE ID='$product_id' AND post_type='product_variation'";
+						$parent_product = $wpdb->get_row($parent_query);
+						//wc_slw_logger('debug', $parent_product);
+						$product_parent_id = $product_id;
+						if(is_object($parent_product) && !empty($parent_product)){
+							if($parent_product->post_parent>0){
+								$product_parent_id = $parent_product->post_parent;
+							}
+						}
+						
+						//wc_slw_logger('debug', $product_id);	
+						//wc_slw_logger('debug', $product_parent_id.' * '.$product_id.' - '.$wpdb->prefix.' A<br />'.$parent_query);
+						//wc_slw_logger('debug', $product_id.' A');
+						//wc_slw_logger('debug', $location_ids);
+						
+						
 						update_post_meta($product_id, '_manage_stock', 'yes');
-						wp_set_object_terms($product_id, $location_ids, 'location');
+						$locations = wp_get_object_terms($product_parent_id, 'location');
+						//wc_slw_logger('debug', $locations);
+						if(!empty($locations)){
+							foreach($locations as $location_obj){
+								if(!in_array($location_obj->term_id, $location_ids)){
+									$location_ids[] = $location_obj->term_id;
+								}
+							}
+						}
+						//wc_slw_logger('debug', $product_id.' B');
+						//wc_slw_logger('debug', $location_ids);
+						wp_set_object_terms($product_parent_id, $location_ids, 'location');
 						//slw_update_products($product_id, false, 'update-stock');
 						$slw_update_products = get_option('slw_update_products', array());
 						$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
