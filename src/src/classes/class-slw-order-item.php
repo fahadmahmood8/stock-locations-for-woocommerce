@@ -26,6 +26,7 @@ if( !class_exists('SlwOrderItem') ) {
 		private $show_in_cart;
 		private $wc_manage_stock;
 		private $wc_hold_stock_minutes;
+		private $different_location_per_cart_item;
 
 		/**
 		 * Construct.
@@ -49,6 +50,7 @@ if( !class_exists('SlwOrderItem') ) {
 				$this->show_in_cart = $this->plugin_settings['show_in_cart'];
 			}
 
+			$this->different_location_per_cart_item = !(isset($this->plugin_settings['different_location_per_cart_item']) && $this->plugin_settings['different_location_per_cart_item'] == 'no');
 			// check if we can include location data in formatted item meta			
 			
 			add_filter( 'woocommerce_order_item_get_formatted_meta_data', array($this, 'include_location_data_in_formatted_item_meta'), 99, 2 );
@@ -769,7 +771,24 @@ if( !class_exists('SlwOrderItem') ) {
 				
 			// Get product stock allocation locations if customer haven't select a location
 			//if( is_null($userStockLocation) ) { //16/05/2022
-				$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, 0, false, $userLocationChoiceId);
+				//$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, 0, false, $userLocationChoiceId);
+				
+				
+				if ($this->different_location_per_cart_item) { //28/09/2022 - bbceg
+					$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, 0, false, $userLocationChoiceId);
+				}
+				else {
+					$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
+					//error_log("Same location per cart item. Item Quantity: $itemQuantity, UserLocationChoice ID: $userLocationChoiceId, User stock location quantity = " . $userStockLocation[$userLocationChoiceId]->quantity);
+					
+					if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
+						$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
+					}
+					else {
+						//Not enough stock error? (Though shouldn't have reached this point)
+						error_log("Not enough stock for product (ID: $productId) at stock location (ID: $userLocationChoiceId)");
+					}
+				}
 			//}
 	
 			

@@ -28,7 +28,9 @@
 	
 	if(!function_exists('wc_os_addons_init')){
 		function wc_os_addons_init(){
+			global $wc_slw_pro;
 			
+			if($wc_slw_pro){ return; }
 			
 			$scripts = array();
 			

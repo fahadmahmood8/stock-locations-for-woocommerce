@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.3.4 =
+- Fix: Auto allocate relate improvements and fatal error due to int += string for stock value.  [Thanks to bbceg & Ole Straume Andersen][29/09/2022]
+
 = 2.3.3 =
 - New: Import products will work with just SKU as well and you may skip the columns if don't to update the stock for a location.  [Thanks to Ole Straume Andersen][27/09/2022]
 

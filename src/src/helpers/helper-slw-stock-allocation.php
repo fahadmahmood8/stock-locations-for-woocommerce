@@ -158,7 +158,9 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 						$variation    = wc_get_product( $product_variation_id );
 						
 						if ($variation->get_manage_stock() === true) {
-							$locations[$idx]->quantity += $variation->get_meta('_stock_at_' . $location->term_id, true);
+							$_stock_at_location = (int)$variation->get_meta('_stock_at_' . $location->term_id, true);
+							$_stock_at_location = (is_numeric($_stock_at_location)?$_stock_at_location:0);
+							$locations[$idx]->quantity += $_stock_at_location;
 						}
 		
 						if ($needMetaData) {

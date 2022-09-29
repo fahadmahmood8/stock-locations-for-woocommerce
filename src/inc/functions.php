@@ -270,11 +270,21 @@ if(!function_exists('wc_slw_admin_init')){
 	function wc_slw_admin_init($data){
 		//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
 		$slw_update_products = get_option('slw_update_products', array());
+		$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 		if(is_array($slw_update_products) && !empty($slw_update_products)){
-			foreach($slw_update_products as $product_id){
+			$item_count = 0;
+			foreach($slw_update_products as $product_id){ 
+			
+				if($item_count>=50){ continue; }
+			
+				$item_count++;
 				slw_update_products($product_id, false, 'update-stock');
+				
+				if (($key = array_search($product_id, $slw_update_products)) !== false) {
+					unset($slw_update_products[$key]);
+				}
 			}
-			update_option('slw_update_products', array());
+			update_option('slw_update_products', $slw_update_products);
 		}
 		
 		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
@@ -284,7 +294,7 @@ if(!function_exists('wc_slw_admin_init')){
 			if(is_object($order) && $order->post_type=='product'){
 				if(isset($_GET['get_keys'])){
 					
-					//slw_update_products();
+
 					
 					pre(get_post_meta($order->ID));
 					
@@ -424,8 +434,9 @@ jQuery(document).ready(function($){
 			
 			$today_slw_cron_sniffed = '_slw_cron_sniffed_'.$timestamp;
 			
-			$q = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'";		
+			$q = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'".($product_id?" AND post_id='$product_id'":'');		
 			if($cron){ pree($q); }
+			//wc_slw_logger($q);
 			$wpdb->query($q);
 			
 			$args = array(
@@ -864,7 +875,7 @@ jQuery(document).ready(function($){
 						//wc_slw_logger('debug', $product_id.' B');
 						//wc_slw_logger('debug', $location_ids);
 						wp_set_object_terms($product_parent_id, $location_ids, 'location');
-						//slw_update_products($product_id, false, 'update-stock');
+
 						$slw_update_products = get_option('slw_update_products', array());
 						$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 						$slw_update_products[] = $product_id;
