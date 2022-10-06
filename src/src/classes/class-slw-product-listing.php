@@ -119,7 +119,7 @@ if(!class_exists('SlwProductListing')) {
 
 					// Check for variations
 					$variations_products = array();
-					if( !empty($product) && $product->is_type( 'variable' ) ) {
+					if($product_id && !empty($product) && $product->is_type( 'variable' ) ) {
 						$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
 						//$product_variations_ids = $product->get_children();
 						$product_variations = array();

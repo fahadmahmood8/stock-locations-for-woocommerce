@@ -86,7 +86,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			if( empty($product) ) return;
 
 			// if product is variable
-			if( $product->is_type('variable') ) {
+			if( $product_id && $product->is_type('variable') ) {
 				// Get product variations
 				//$product_variations_ids = $product->get_children();
 				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
@@ -299,7 +299,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			$product_variations = array();
 			
 			// If product is type variable
-			if( is_a( $product, 'WC_Product' ) ){
+			if( $product_id && is_a( $product, 'WC_Product' ) ){
 				if($product->is_type('variable')) {
 					// Get product variations
 					//$product_variations_ids = $product->get_children();

@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.3.5 =
+- Fix: Duplicate queries due to product_id=0.  [Thanks to coronastar1][06/10/2022]
+
 = 2.3.4 =
 - Fix: Auto allocate relate improvements and fatal error due to int += string for stock value.  [Thanks to bbceg & Ole Straume Andersen][29/09/2022]
 

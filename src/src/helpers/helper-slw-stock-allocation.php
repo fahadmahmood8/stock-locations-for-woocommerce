@@ -135,10 +135,13 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			
 			$product_variations_ids = array();
 			
-			switch($product_type){
-				case 'variable':
-					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
-				break;	
+			if($product_id){
+				switch($product_type){
+					case 'variable':
+						
+						$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					break;	
+				}
 			}
 
 			foreach ($locations as $idx => $location) {
@@ -154,7 +157,10 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 					//pree($product_variations_ids);
 					$locations[$idx]->quantity = 0;
 					foreach($product_variations_ids as $product_variation){
-						$product_variation_id = $product_variation->variation_id;
+						$product_variation_id = $product_variation->variation_id;						
+					
+						if(!is_numeric($product_variation_id)){ continue; }
+						
 						$variation    = wc_get_product( $product_variation_id );
 						
 						if ($variation->get_manage_stock() === true) {

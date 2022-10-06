@@ -32,7 +32,7 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 
 			// check if we are dealing with a variable product
 			$variations_stock = 0;
-			if( $product->get_type() == 'variable' ) {
+			if($product_id && $product->get_type() == 'variable' ) {
 				//$variation_ids = $product->get_children();
 				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
 				

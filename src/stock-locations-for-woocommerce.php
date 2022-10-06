@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.3.4';
+		public           $version  = '2.3.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -378,7 +378,7 @@ if(!class_exists('SlwMain')) {
 				$data['stock_status'][$product_id] = $wc_product->get_availability();
 				$data['allow_backorder'][$product_id] = get_post_meta($product_id, '_backorders', true);
 				
-				if($data['product_type']=='variable'){
+				if($data['product_type']=='variable' && $product_id>0){
 				
 					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
 					//$product_variations_ids = $wc_product->get_children();

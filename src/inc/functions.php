@@ -683,30 +683,32 @@ jQuery(document).ready(function($){
 		switch($type){
 			case 'variable':
 				//$variations = $product->get_children();
-				$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+				if($product_id>0){
+					$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					
+					if(!empty($variations)){
+							$variations_stock_status = array();
+							foreach($variations as $variation_obj){
+								$variation_id = $variation_obj->variation_id;
+								$product_variation = wc_get_product($variation_id);
+								
+								$instock_statuses = (
+										(
 				
-				if(!empty($variations)){
-						$variations_stock_status = array();
-						foreach($variations as $variation_obj){
-							$variation_id = $variation_obj->variation_id;
-							$product_variation = wc_get_product($variation_id);
-							
-							$instock_statuses = (
-									(
-			
-											($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity()>0 || $product_variation->get_backorders()!='no'))
-										||
+												($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity()>0 || $product_variation->get_backorders()!='no'))
+											||
+											
+												(!$product_variation->get_manage_stock() && $product_variation->get_stock_status()!='outofstock')			
+										)
 										
-											(!$product_variation->get_manage_stock() && $product_variation->get_stock_status()!='outofstock')			
-									)
-									
-							);
-							$variations_stock_status[$variation_id] = $instock_statuses;
-							
-							
-						}
-
-						$instock_status = (array_sum($variations_stock_status)>0);
+								);
+								$variations_stock_status[$variation_id] = $instock_statuses;
+								
+								
+							}
+	
+							$instock_status = (array_sum($variations_stock_status)>0);
+					}
 				}
 			
 			break;
