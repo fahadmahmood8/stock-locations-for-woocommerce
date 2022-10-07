@@ -289,6 +289,8 @@ if(!class_exists('SlwShortcodes')) {
 				$output = __('No locations found for this product!', 'stock-locations-for-woocommerce');
 			}
 			
+			$output = apply_filters( 'slw_output_product_locations_for_shortcode', $product, $locations, $values, $output );
+			
 			return $output;
 
 		}
