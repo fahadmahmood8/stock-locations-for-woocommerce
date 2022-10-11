@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.3.7 =
+- New: Filter hook refined as apply_filters( 'slw_output_product_locations_for_shortcode', $product, $locations, $values, $output ).  [Thanks to Ole Straume Andersen][12/10/2022]
+
 = 2.3.6 =
 - New: Filter hook added as apply_filters( 'slw_output_product_locations_for_shortcode', $product, $locations, $values, $output ).  [Thanks to privatecollection][07/10/2022]
 
