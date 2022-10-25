@@ -269,6 +269,8 @@ if(!function_exists('slw_quantity_format')){
 if(!function_exists('wc_slw_admin_init')){
 	function wc_slw_admin_init($data){
 		//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
+		
+		
 		$slw_update_products = get_option('slw_update_products', array());
 		$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 		if(is_array($slw_update_products) && !empty($slw_update_products)){
@@ -400,12 +402,57 @@ jQuery(document).ready(function($){
 		
 			global $wpdb;
 
-			$limit = (isset($_GET['limit'])?sanitize_slw_data($_GET['limit']):0);
+
+
+
+			$limited = (isset($_GET['limit'])?sanitize_slw_data($_GET['limit']):0);
 			$reconsider = (isset($_GET['reconsider'])?sanitize_slw_data($_GET['reconsider']):'');
-			$limit = (is_numeric($limit) && $limit>0?$limit:10);
+			$limit = (is_numeric($limited) && $limited>0?$limited:10);
 			$action = (isset($_GET['action'])?sanitize_slw_data($_GET['action']):sanitize_slw_data($action));
 			$product_id = (isset($_GET['product_id'])?sanitize_slw_data($_GET['product_id']):sanitize_slw_data($product_id));
+				
+			$slw_default_locations = slw_get_locations('location', array('key'=>'slw_default_location', 'value'=>1, 'compare'=>'='), true);	
+			//pree($terms);
 			
+			if(!empty($slw_default_locations )){
+				$location_ids = array();
+				foreach($slw_default_locations as $slw_default_location){
+					$location_ids[] = $slw_default_location->term_id;
+				}
+				$slw_default_locations_query = "
+													SELECT 
+															p.ID 
+													FROM 
+														`".$wpdb->posts."` p, 
+														`".$wpdb->postmeta."` pm 
+													WHERE 
+															pm.post_id=p.ID 
+														AND 
+															p.post_type='product' 
+														AND 
+															p.post_date>=date_sub(now(),interval 1 hour) 
+														AND 
+															p.post_modified>=date_sub(now(),interval 1 hour) 
+													GROUP BY 
+															p.ID
+												";
+				$limiting = (is_numeric($limited) && $limited>0?$limited:false);												
+				if($limiting){
+					$slw_default_locations_query .= ' LIMIT '.$limiting;
+				}
+				//pree($slw_default_locations_query);										
+				//pree($location_ids);exit;
+				$slw_default_locations_products = $wpdb->get_results($slw_default_locations_query);								
+				//pree($slw_default_locations_products);exit;
+				if(!empty($slw_default_locations_products)){					
+					foreach($slw_default_locations_products as $slw_default_locations_product){
+						wp_set_object_terms($slw_default_locations_product->ID, $location_ids, 'location');
+						//pree($slw_default_locations_product->ID);
+					}
+					//exit;
+				}
+
+			}
 			
 			$timestamp = 'once';
 			switch($reconsider){

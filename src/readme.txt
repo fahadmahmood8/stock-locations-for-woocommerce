@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.3.9 =
+- New: Default location will be set for the recently modified/new products.  [Thanks to PHILIPP GOLOB][25/10/2022]
+
 = 2.3.8 =
 - Fix: Fixes undefined index when adding a product to your cart from an archive page #136.  [Thanks to @d2roth][13/10/2022]
 
