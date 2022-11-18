@@ -410,9 +410,11 @@ jQuery(document).ready(function($){
 			$limit = (is_numeric($limited) && $limited>0?$limited:10);
 			$action = (isset($_GET['action'])?sanitize_slw_data($_GET['action']):sanitize_slw_data($action));
 			$product_id = (isset($_GET['product_id'])?sanitize_slw_data($_GET['product_id']):sanitize_slw_data($product_id));
-				
+			$product_ids = 	array();
 			$slw_default_locations = slw_get_locations('location', array('key'=>'slw_default_location', 'value'=>1, 'compare'=>'='), true);	
-			//pree($terms);
+			//pree($wpdb->last_query);
+			//pree($slw_default_locations);
+			//pree($terms);exit;
 			
 			if(!empty($slw_default_locations )){
 				$location_ids = array();
@@ -447,6 +449,7 @@ jQuery(document).ready(function($){
 				if(!empty($slw_default_locations_products)){					
 					foreach($slw_default_locations_products as $slw_default_locations_product){
 						wp_set_object_terms($slw_default_locations_product->ID, $location_ids, 'location');
+						$product_ids[] = $slw_default_locations_product->ID;
 						//pree($slw_default_locations_product->ID);
 					}
 					//exit;
@@ -512,21 +515,31 @@ jQuery(document).ready(function($){
 					),
 				),
 			);
-			if($product_id){
-				$args['include'] = array($product_id);
+			if($product_id || (is_array($product_ids) && !empty($product_ids))){
+
+				if($product_id){
+					$args['include'] = array($product_id);
+				}elseif(is_array($product_ids) && !empty($product_ids)){
+					$args['include'] = $product_ids;
+				}
+
 				unset($args['meta_query']);
 				unset($args['date_query']);
 			}
 			
 			$products = get_posts($args);
-			//pree($args);pree($products);exit;
+			//pree($wpdb->last_query);exit;
+			//pree($action);exit;
+			//pree($args);
+			//pree($products);
+			//exit;
 			if(!empty($products)){
 				if($cron){ echo '<ul>'; }
 				foreach($products as $product_post){ if(!is_object($product_post)){ continue; }
 	
 					//$product_post = get_post($res_obj->ID);
 					if($cron){ echo '<li>ID: '.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>'; }
-					
+					//pree($action);exit;
 					switch($action){
 						case 'update-stock':
 							//pree($product_post);

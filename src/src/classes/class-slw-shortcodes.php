@@ -275,9 +275,9 @@ if(!class_exists('SlwShortcodes')) {
 					} elseif( $values['show_qty'] == 'no' && $values['show_stock_status'] == 'yes' ) {
 						$location_stock = $product->get_meta('_stock_at_'.$location->term_id);
 						if( !empty($location_stock) && $location_stock >= 1 ) {
-							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__instock">'.__('In stock', 'woocommerce').'</span></li>';
+							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__instock">('.apply_filters( 'slw_shortcode_product_location_instock_text',__('In stock', 'woocommerce'), $location).')</span></li>';
 						} else {
-							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__outofstock">'.__('Out of stock', 'woocommerce').'</span></li>';
+							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__outofstock">('.apply_filters( 'slw_shortcode_product_location_outofstock_text', __('Out of stock', 'woocommerce'), $location).')</span></li>';
 						}
 					} else {
 						$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).'</li>';

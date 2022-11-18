@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.0 =
+- Improvement: Default location will be set for the recently modified/new products.  [Thanks to PHILIPP GOLOB][19/11/2022]
+
 = 2.3.9 =
 - New: Default location will be set for the recently modified/new products.  [Thanks to PHILIPP GOLOB][25/10/2022]
 
