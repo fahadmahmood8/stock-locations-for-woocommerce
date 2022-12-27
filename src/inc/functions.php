@@ -241,11 +241,13 @@ if(!function_exists('slw_clear_debug_log')){
 		wp_die();
 	}
 }
+
 add_action( 'pmxi_saved_post', function( $id )
 {
+	$import_id = ( isset( $_GET['id'] ) ? $_GET['id'] : ( isset( $_GET['import_id'] ) ? $_GET['import_id'] : 'new' ) );
 	// get locations total stock
 	$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
-	
+
 	// update stock
 	slw_update_product_stock_status( $id, $locations_total_stock );
 	

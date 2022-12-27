@@ -136,7 +136,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					echo '<div id="' . $this->tab_stock_locations . '_total"><u>' . __('Total Stock:', 'stock-locations-for-woocommerce') . ' <b>' . ($product->get_stock_quantity() + 0) . '</b></u></div>';
 					echo '<hr>';
 				}
-
+				//pree($product->get_stock_quantity());pree($postmeta);
 				// Convert $postmeta array values from string to int
 
 				// Check if the total stock matches the sum of the locations stock, if not show warning message
@@ -316,7 +316,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					
 				}
 			}
-
+			
 			// Product location terms
 			$product_stock_location_terms = wp_get_post_terms($post_id, SlwLocationTaxonomy::get_tax_Names('singular'));
 			
@@ -326,7 +326,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			} else{
 				$terms_total = count($product_stock_location_terms);
 			}
-
+			
 			// On product update
 			if( $update ){
 
@@ -348,18 +348,21 @@ if(!class_exists('SlwStockLocationsTab')) {
 							
 							$stock_value = self::update_product_stock($item_id, $product_stock_location_terms, $terms_total, $force);
 							
-							
-							$master_stock_value += $stock_value;
+							if($stock_value>0){
+								$master_stock_value += $stock_value;
+							}
 
 						}
 						
 						
 
 					}else{
-						$master_stock_value = $stock_value;
+						if($stock_value>0){
+							$master_stock_value = $stock_value;
+						}
 					}
 					
-					
+					//pree($master_stock_value);exit;
 					slw_update_product_stock_status($post_id, $master_stock_value);
 					
 
@@ -519,7 +522,14 @@ if(!class_exists('SlwStockLocationsTab')) {
 						
 						if(!$slw_location_status){ continue; }
 						// Save input amounts to array					
-						$input_amounts[] = sanitize_slw_data($_POST[$stock_input_id]);
+						
+						$input_amount = sanitize_slw_data($_POST[$stock_input_id]);
+						
+						if($input_amount>0){
+							$input_amounts[] = $input_amount;
+						}else{
+							continue;
+						}
 						
 	
 						// Check if input is empty

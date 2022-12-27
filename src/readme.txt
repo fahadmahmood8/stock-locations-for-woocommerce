@@ -152,6 +152,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+
+= 2.4.1 =
+- Fix: Products get put from out of stock to backorder automatically.  [Thanks to Ole Straume Andersen][23/11/2022]
+- Fix: Total Stock was wrong when stock locations has negative value. [Thanks to michaelw90][27/12/2022]
+
 = 2.4.0 =
 - Improvement: Default location will be set for the recently modified/new products.  [Thanks to PHILIPP GOLOB][19/11/2022]
 

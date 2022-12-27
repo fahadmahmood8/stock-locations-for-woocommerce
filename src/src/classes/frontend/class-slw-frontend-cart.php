@@ -128,15 +128,18 @@ if( !class_exists('SlwFrontendCart') ) {
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
 			$stock_location_selected = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
 			
+			
 			$different_location_per_cart_item = (isset($this->plugin_settings['different_location_per_cart_item'])?$this->plugin_settings['different_location_per_cart_item']:'');
 			$different_location_per_cart_item_no = (isset($this->plugin_settings['different_location_per_cart_item_no'])?$this->plugin_settings['different_location_per_cart_item_no']:'');
 			
 			
 
 			if(array_key_exists('stock_location', $cart_item) && !is_array($cart_item['stock_location']) && $cart_item['stock_location']>0){
+				$stock_location_selected = ($stock_location_selected?$stock_location_selected:$cart_item['stock_location']);
 				$cart_item['stock_location'] = (is_array($cart_item['stock_location'])?$cart_item['stock_location']:array($product_id=>$cart_item['stock_location']));
 			}
-
+			
+			
 			if( !empty($stock_locations) ) {
 				
 				if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
@@ -146,7 +149,7 @@ if( !class_exists('SlwFrontendCart') ) {
 						$stock_locations_arr[] = $location['term_id'];
 					}
 					
-					if(!in_array($stock_location_selected, $stock_locations_arr) && $different_location_per_cart_item=='no' && $different_location_per_cart_item_no == 'continue'){
+					if($stock_location_selected && !in_array($stock_location_selected, $stock_locations_arr) && $different_location_per_cart_item=='no' && $different_location_per_cart_item_no == 'continue'){
 						$product_name = ($cart_item['data']->get_data()['name']);
 						
 						$slw_notice_msg = apply_filters('slw_notice_msg', sprintf( __('This product item is not available on the selected store location. %s', 'stock-locations-for-woocommerce'), '<a class="button alt slw-dismiss-notice">'.__('Dismiss', 'stock-locations-for-woocommerce').'</a>'), $product_id, $product_name, $stock_location_selected, $stock_locations_arr);
@@ -156,27 +159,33 @@ if( !class_exists('SlwFrontendCart') ) {
 					}
 					
 					if( 
-							isset($this->plugin_settings['different_location_per_cart_item']) 
-						&& 
 							(
-									$this->plugin_settings['different_location_per_cart_item'] == 'yes' 
-								
-								||
-								
-									(
-											$this->plugin_settings['different_location_per_cart_item'] == 'no' 
-										&&
-											(
-													in_array($stock_location_selected, $stock_locations_arr)
-												//||
-													//$different_location_per_cart_item_no == 'continue'
-											)
-											
-									)
+								isset($this->plugin_settings['different_location_per_cart_item']) 
+							&& 
+								(
+										$this->plugin_settings['different_location_per_cart_item'] == 'yes' 
+									
+									||
+									
+										(
+												$this->plugin_settings['different_location_per_cart_item'] == 'no' 
+											&&
+												(
+														in_array($stock_location_selected, $stock_locations_arr)
+													//||
+														//$different_location_per_cart_item_no == 'continue'
+												)
+												
+										)
+								)
 							)
+						
+						||
+						
+							!$stock_location_selected
 					) {
 					
-						echo '<label class="slw_cart_item_stock_location_label">'.__('Nearest Location', 'stock-locations-for-woocommerce').':</label>';
+						echo '<label class="slw_cart_item_stock_location_label">'.__('Location', 'stock-locations-for-woocommerce').':</label>';
 						
 						// lock to default location if enabled
 						if( $lock_default_location && $default_location != 0 ) {
