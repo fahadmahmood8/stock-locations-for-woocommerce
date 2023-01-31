@@ -133,7 +133,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 		
 			// Manual allocation doesn't need to be restricted to the order stock reduced meta
 			if( $allocationType == 'auto' ) {
-				$wc_order_stock_reduced = get_post_meta( $order_id, '_order_stock_reduced', true ); // prevents reducing stock twice for the product
+				$wc_order_stock_reduced = get_post_meta( $order_id, '_slw_order_stock_reduced', true ); // prevents reducing stock twice for the product
 			} else {
 				$wc_order_stock_reduced = false;
 			}
