@@ -19,6 +19,7 @@ if ( !class_exists('SlwMailHelper') ) {
 
 		public static function stock_allocation_notification( $term, $item, $quantity )
 		{
+
 			if( empty($term) || empty($item) || empty($quantity) ) return;
 
 			// get location meta
@@ -26,10 +27,9 @@ if ( !class_exists('SlwMailHelper') ) {
 
 			// get plugin settings
 			$plugin_settings = get_option( 'slw_settings' );
-
 			// Send email notification to location
 			if( isset($plugin_settings['location_email_notifications']) && $plugin_settings['location_email_notifications'] == 'on' && isset($item_location_meta['slw_auto_allocate']) && $item_location_meta['slw_auto_allocate'] == '1' && isset($item_location_meta['slw_location_email']) && !empty($item_location_meta['slw_location_email']) && is_email($item_location_meta['slw_location_email']) ) {
-				$to = sanitize_text_field( $item_location_meta['slw_location_email'] );
+				$to = sanitize_slw_data( $item_location_meta['slw_location_email'] );
 				$subject = __('Stock allocated in', 'stock-locations-for-woocommerce') . ' ' . $term->name;
 				$message = sprintf(__('This is an automatically generated notification informing that the quantity of <strong>%1$d</strong> was allocated for the item <strong>%2$s</strong> with the ID <strong>%3$d</strong>.', 'stock-locations-for-woocommerce'), $quantity, $item->get_name(), $item->get_id());
 				$body = apply_filters( 'slw_stock_allocation_notification_message', $message, $term, $quantity, $item );

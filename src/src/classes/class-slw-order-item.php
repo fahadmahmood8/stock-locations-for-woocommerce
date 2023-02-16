@@ -26,6 +26,7 @@ if( !class_exists('SlwOrderItem') ) {
 		private $show_in_cart;
 		private $wc_manage_stock;
 		private $wc_hold_stock_minutes;
+		private $different_location_per_cart_item;
 
 		/**
 		 * Construct.
@@ -49,6 +50,7 @@ if( !class_exists('SlwOrderItem') ) {
 				$this->show_in_cart = $this->plugin_settings['show_in_cart'];
 			}
 
+			$this->different_location_per_cart_item = !(isset($this->plugin_settings['different_location_per_cart_item']) && $this->plugin_settings['different_location_per_cart_item'] == 'no');
 			// check if we can include location data in formatted item meta			
 			
 			add_filter( 'woocommerce_order_item_get_formatted_meta_data', array($this, 'include_location_data_in_formatted_item_meta'), 99, 2 );
@@ -65,8 +67,8 @@ if( !class_exists('SlwOrderItem') ) {
 			}
 
 			
-			//pree($this->plugin_settings);exit;
-			//pree($this->wc_manage_stock);exit;
+
+
 			if( $this->wc_manage_stock === 'yes') {
 				add_action( 'woocommerce_reduce_order_stock', array( $this, 'reduce_order_items_locations_stock' ), 10, 1 );
 				add_action( 'woocommerce_restore_order_stock', array( $this, 'restore_order_items_locations_stock' ), 10, 1 );
@@ -106,7 +108,7 @@ if( !class_exists('SlwOrderItem') ) {
 			
 			if( empty($order) || ! is_object($order) ) return;
 			
-			//wc_slw_logger($order->get_order_number().' >  '.$status.' > '.$order->get_status());
+
 			if( 
 					(isset($this->plugin_settings['wc_restore_stock_on_cancelled']) && $order->get_status()=='cancelled')
 				||
@@ -115,9 +117,9 @@ if( !class_exists('SlwOrderItem') ) {
 					(isset($this->plugin_settings['wc_restore_stock_on_pending']) && $order->get_status()=='pending')
 			){
 				//delete_post_meta($order->get_id(), '_slw_order_stock_reduced');
-				//wc_slw_logger('RESTORING');
+
 				$this->restore_order_items_locations_stock( $order );
-				//wc_slw_logger('RESTORED');
+
 			}			
 			
 			
@@ -130,12 +132,13 @@ if( !class_exists('SlwOrderItem') ) {
 
 			//$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_order_stock_reduced', true );
 			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
+		
+			
 
-			//wc_slw_logger('$wc_order_stock_reduced: '.$wc_order_stock_reduced.' for '.$order->get_id);
 			
 			if( $wc_order_stock_reduced ) return;
 			
-			//wc_slw_logger('COUNT line_items: '.count($order->get_items( 'line_item' )));
+			
 			
 			
 			if(count($order->get_items( 'line_item' ))>0){
@@ -175,7 +178,8 @@ if( !class_exists('SlwOrderItem') ) {
 	
 					// update product main stock
 					
-					update_post_meta( $product_id, '_stock', $locations_total_stock );
+					slw_update_product_stock_status( $product_id, $locations_total_stock );
+					
 	
 					// update stock status
 					SlwProductHelper::update_wc_stock_status( $product_id );
@@ -203,6 +207,10 @@ if( !class_exists('SlwOrderItem') ) {
 		public function add_stock_location_column_wc_order( $order )
 		{
 			if( empty($order) ) return;
+			
+			$edit_order_page = (isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['edit_order_page']) && $this->plugin_settings['general_display_settings']['edit_order_page'] == 'on' );
+			
+			if(!$edit_order_page) return;
 			
 			// display the column name
 			echo '<th>' . __('Stock Locations', 'stock-locations-for-woocommerce') . '</th>';
@@ -242,6 +250,10 @@ if( !class_exists('SlwOrderItem') ) {
 		public function add_stock_location_inputs_wc_order( $product, $item, $item_id )
 		{
 			if( empty($item) || empty($product) || empty($item_id) ) return;
+			
+			$edit_order_page = (isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['edit_order_page']) && $this->plugin_settings['general_display_settings']['edit_order_page'] == 'on' );
+			
+			if(!$edit_order_page) return;
 
 			// Add the missing stock location column to item shipping and others
 			if( $item->get_type() == 'shipping' ) {
@@ -268,7 +280,7 @@ if( !class_exists('SlwOrderItem') ) {
 
 					// If parent doesn't have terms show message
 					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
-						echo '<td width="15%">';
+						echo '<td width="15%" title="variation">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
 					} else {
@@ -286,7 +298,7 @@ if( !class_exists('SlwOrderItem') ) {
 
 					// If product doesn't have terms show message
 					if(!$product_stock_location_terms && !SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock([], $item)) {
-						echo '<td width="15%">';
+						echo '<td width="15%" title="simple">';
 						echo '<div display="block">' . __('To be able to manage the stock for this product, please add it to a <b>Stock location</b>!', 'stock-locations-for-woocommerce') . '</div>';
 						echo '</td>';
 					} else {
@@ -345,7 +357,8 @@ if( !class_exists('SlwOrderItem') ) {
 
 						// Get the item meta
 						$itemmeta_stock_update_at_term = wc_get_order_item_meta($item_id, '_item_stock_updated_at_' . $term->term_id, true);
-
+						
+				
 						// If the order item has the stock locations updated, show the quantity already subtracted
 						if( wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) === 'yes' ) {
 							$args_1['custom_attributes'] = array('readonly' => 'readonly');
@@ -388,10 +401,15 @@ if( !class_exists('SlwOrderItem') ) {
 						// Show location choosed by client in cart
 						//if( !empty($this->show_in_cart) && $this->show_in_cart == 'yes' ) {
 							$client_item_stock_location_id = $item->get_meta('_stock_location');
-							if($client_item_stock_location_id){
-								$stock_location = SlwStockAllocationHelper::get_product_stock_location( $id, $client_item_stock_location_id );
-								if( $term->term_id == $client_item_stock_location_id ) {
-									echo '<span class="slw-client-choosed-location">✔ <strong>'.__('Client selected: ', 'stock-locations-for-woocommerce').'</strong><u>'.$stock_location[$client_item_stock_location_id]->name.'</u></span>';
+							$client_item_stock_location_ids = $item->get_meta('_stock_locations');
+							$client_item_stock_location_ids = (is_array($client_item_stock_location_ids)?$client_item_stock_location_ids:array($client_item_stock_location_id));
+
+							if(!empty($client_item_stock_location_ids)){
+								$stock_location = SlwStockAllocationHelper::get_product_stock_location( $id, $term->term_id );
+								if( in_array($term->term_id, $client_item_stock_location_ids) ) {
+									echo '<span class="slw-client-choosed-location '.($client_item_stock_location_id==$term->term_id?'primary-selection':'secondary-selection').'">'.($client_item_stock_location_id==$term->term_id?'✔ <strong>'.__('Client selected: ', 'stock-locations-for-woocommerce').'</strong>':'').'<u>'.$stock_location[$term->term_id]->name.'</u></span>';
+								}else{
+									
 								}
 							}
 						//}
@@ -432,7 +450,7 @@ if( !class_exists('SlwOrderItem') ) {
 				$order_id = $order;
 				$order    = wc_get_order( $order_id );
 			}
-			//pree($order->get_items());exit;
+			
 			// Loop through order items
 			foreach ( $order->get_items() as $item => $item_data ) {
 				// Product ID
@@ -469,11 +487,8 @@ if( !class_exists('SlwOrderItem') ) {
 					}else{
 						
 					}
-					
-
-					
 				}
-				
+	
 
 				// No location stock data for line
 				if (empty($simpleLocationAllocations)) {
@@ -548,100 +563,7 @@ if( !class_exists('SlwOrderItem') ) {
 			return $arr;
 		}
 
-		/**
-		 * New orders allocate stock to items if required
-		 *
-		 * @param $item_id
-		 * @param $item
-		 * @param $order_id
-		 */
-		public function newOrderItemAllocateStock( $item_id, $item, $order_id )
-		{
-			
-			
-			// add exception to third party plugins
-			$disallow = apply_filters( 'slw_disallow_third_party_allocate_order_item_stock', true );
-			if( is_admin() && $disallow ) {
-				return;
-			}
 
-			// This is not the correct product
-			if( !($item instanceof \WC_Order_Item_Product) ) {
-				return;
-			}
-
-			// Get product ID
-			$productId  = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
-			$productId  = SlwWpmlHelper::object_id( $productId );
-			
-			// Get item quantity
-			$itemQuantity = $item->get_quantity();
-			
-			// Check if customer selected a location
-			$userLocationChoiceId = null;
-			$userStockLocation = null;
-
-			$userLocationChoiceId = $item->get_meta('_stock_location');
-
-			if( !empty($userLocationChoiceId) ) {
-
-				$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
-
-
-				if( !empty($userStockLocation) ) {
-					// get location meta
-					$location_meta = SlwStockAllocationHelper::getLocationMeta($userLocationChoiceId);
-					// check if location has auto allocation enabled
-					if( isset($location_meta['slw_auto_allocate']) && $location_meta['slw_auto_allocate'] == 1 ) {
-						
-						
-						
-						if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
-							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
-						} else {
-							$itemQuantity = $itemQuantity - $userStockLocation[$userLocationChoiceId]->quantity;
-							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $userStockLocation[$userLocationChoiceId]->quantity;
-						}
-					} else {
-						return; // user selected location doesn't have auto allocation enabled so finish here and let the admin choose from the order
-					}
-				}
-			}
-
-			// Get product stock allocation locations if customer haven't select a location
-			if( is_null($userStockLocation) ) {
-				$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity);
-			}
-
-			// define stock allocation
-			if( !is_null($userStockLocation) ) {
-				// if user selected a location and has auto allocation enabled
-				$stockAllocation = $userStockLocation;
-			} elseif( is_null($userStockLocation) && isset($stockAllocation) && is_array($stockAllocation) ) {
-				// if user haven't selected a location define by available locations for this product
-				$stockAllocation = $stockAllocation;
-			} else {
-				// finish here if we don't have stock allocation set
-				return;
-			}
-			
-			// If WC manage stock is enabled
-			if ( $this->wc_manage_stock == 'yes' && !empty($this->wc_hold_stock_minutes) ) {
-				// Allocations exist, disable WC hold stock
-				add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
-			}
-
-			// Build simple location term to stock quantity allocation array
-			$simpleLocationAllocations = array();
-			foreach ($stockAllocation as $allocation) {
-				$simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
-			}
-			
-			
-			// Allocate order item stock to locations
-			SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'auto' );
-
-		}
 		
 		/**
 		 * Adds stock location data to item formatted meta.
@@ -651,7 +573,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function include_location_data_in_formatted_item_meta( $formatted_meta, $item )
 		{
-			//pree($formatted_meta);
+
 			$order_id = $item->get_order_id();
 			$_slw_ts = get_post_meta($order_id, '_slw_ts', true);
 			$receipt_in_progress = get_post_meta($order_id, '_slw_ep', true);
@@ -680,7 +602,7 @@ if( !class_exists('SlwOrderItem') ) {
 			
 			);
 			
-			//wc_slw_logger(($receipt_in_progress?'EMAIL':'ORDER').' / '.date('H:i:s A').' / '.($proceed?'GREEN':'RED').' / '.($_slw_ts.' != '.$ts.' / ').is_object($item).' / '.is_array($item));
+
 			
 			
 			//TESTED FOR THE FOLLOWING PAGE
@@ -690,9 +612,9 @@ if( !class_exists('SlwOrderItem') ) {
 			if( !empty($item) && $proceed) {
 				
 				$item_location_data = (is_object($item)?$item->get_meta('_slw_data'):array());
-				//pree($item_location_data);
+
 				if( !empty($item_location_data) ) {
-					//pree($item_location_data);
+
 					
 					foreach( $item_location_data as $location_id => $data ) {
 						$value = $data['location_name'].' (-'.$data['quantity_subtracted'].')';
@@ -703,11 +625,11 @@ if( !class_exists('SlwOrderItem') ) {
 							'display_value'	=> '<p>'.$value.'</p>'
 						);
 					}
-					//wc_slw_logger('$item_location_data: '.count($item_location_data).' / '.$value);
+
 				}else{
-					//pree($item);
+
 					$location_id = (is_object($item)?$item->get_meta('_stock_location'):0);
-					//wc_slw_logger($location_id);
+
 					
 					if(is_numeric($location_id) && $location_id>0){
 						
@@ -721,7 +643,7 @@ if( !class_exists('SlwOrderItem') ) {
 							$value = $stock_location->name;
 							
 						}
-						//wc_slw_logger('$stock_location: '.count($stock_location).' / '.$value);
+
 						if($value){
 							$formatted_meta[] = (object) array(
 								'key' 			=> 'stock_location_' . $location_id,
@@ -784,7 +706,125 @@ if( !class_exists('SlwOrderItem') ) {
 		 * @return void
 		 */
 		 
+		/**
+		 * New orders allocate stock to items if required
+		 *
+		 * @param $item_id
+		 * @param $item
+		 * @param $order_id
+		 */
+		public function newOrderItemAllocateStock( $item_id, $item, $order_id )
+		{
+
+			
+			// add exception to third party plugins
+			$disallow = apply_filters( 'slw_disallow_third_party_allocate_order_item_stock', true );
+			if( is_admin() && $disallow ) {
+				return;
+			}
+
+			// This is not the correct product
+			if( !($item instanceof \WC_Order_Item_Product) ) {
+				return;
+			}
+
+			// Get product ID
+			$productId  = $item->get_variation_id() != 0 ? $item->get_variation_id() : $item->get_product_id();
+			$productId  = SlwWpmlHelper::object_id( $productId );
+			
+			// Get item quantity
+			$itemQuantity = $item->get_quantity();
+			
+			// Check if customer selected a location
+			$userLocationChoiceId = null;
+			$userStockLocation = null;
+
+			$userLocationChoiceId = $item->get_meta('_stock_location');
+
+
+			if( !empty($userLocationChoiceId) && false) { //16/05/2022
+
+				$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
+
+
+				if( !empty($userStockLocation) ) {
+					// get location meta
+					$location_meta = SlwStockAllocationHelper::getLocationMeta($userLocationChoiceId);
+					// check if location has auto allocation enabled
+					if( isset($location_meta['slw_auto_allocate']) && $location_meta['slw_auto_allocate'] == 1 ) {
+						
+						
+						
+						if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
+							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
+						} else {
+							$itemQuantity = $itemQuantity - $userStockLocation[$userLocationChoiceId]->quantity;
+							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $userStockLocation[$userLocationChoiceId]->quantity;
+						}
+					} else {
+						return; // user selected location doesn't have auto allocation enabled so finish here and let the admin choose from the order
+					}
+				}
+			}
+
+			
+				
+			// Get product stock allocation locations if customer haven't select a location
+			//if( is_null($userStockLocation) ) { //16/05/2022
+				//$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, 0, false, $userLocationChoiceId);
+				
+				
+				if ($this->different_location_per_cart_item) { //28/09/2022 - bbceg
+					$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, 0, false, $userLocationChoiceId);
+				}
+				else {
+					$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
+					//error_log("Same location per cart item. Item Quantity: $itemQuantity, UserLocationChoice ID: $userLocationChoiceId, User stock location quantity = " . $userStockLocation[$userLocationChoiceId]->quantity);
+					
+					if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
+						$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
+					}
+					else {
+						//Not enough stock error? (Though shouldn't have reached this point)
+						error_log("Not enough stock for product (ID: $productId) at stock location (ID: $userLocationChoiceId)");
+					}
+				}
+			//}
+	
+			
+			// define stock allocation
+			if( !is_null($userStockLocation) ) {
+				// if user selected a location and has auto allocation enabled
+				$stockAllocation = $userStockLocation;
+			} elseif( is_null($userStockLocation) && isset($stockAllocation) && is_array($stockAllocation) ) {
+				// if user haven't selected a location define by available locations for this product
+				$stockAllocation = $stockAllocation;
+			} else {
+				// finish here if we don't have stock allocation set
+				return;
+			}
+			
+			// If WC manage stock is enabled
+			if ( $this->wc_manage_stock == 'yes' && !empty($this->wc_hold_stock_minutes) ) {
+				// Allocations exist, disable WC hold stock
+				add_filter( 'woocommerce_hold_stock_for_checkout', '__return_false' );
+			}
+			
+			// Build simple location term to stock quantity allocation array
+			$simpleLocationAllocations = array();
+			foreach ($stockAllocation as $allocation) {
+				if(property_exists($allocation, 'allocated_quantity')){
+					$simpleLocationAllocations[$allocation->term_id] = $allocation->allocated_quantity;
+				}else{
+					//$simpleLocationAllocations[$allocation->term_id] = $allocation->quantity;
+				}
+			}
+			
 		
+			// Allocate order item stock to locations
+			SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'auto' );
+
+		}		
 		
 
 	}

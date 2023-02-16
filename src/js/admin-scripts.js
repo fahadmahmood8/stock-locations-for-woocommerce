@@ -24,10 +24,8 @@ function slw_gmap_initialize(input_id) {
 		if($('form#addtag input#tag-name').length>0){
 			//input_id = 'tag-name';
 		}
-		if(input_id){
+		if(input_id && slw_admin_scripts.slw_gkey!=''){
 			slw_gmap_initialize(input_id);
-			
-			
 		}
 		
 		
@@ -38,7 +36,7 @@ function slw_gmap_initialize(input_id) {
 		slwDisableVariableStockInput();
 		slwWcProductManageStock();
 		slwWcOrderItemStockPositiveNumbersOnly();
-		slwEnableShowLocationsProductPage();
+		//slwEnableShowLocationsProductPage();
 		slwAjaxSaveProductDefaultLocation();
 		slwAjaxRemoveProductDefaultLocation();
 		slwEnableLockDefaultLocation();
@@ -113,25 +111,32 @@ function slw_gmap_initialize(input_id) {
 			}
 		});
 	}
-
+	$('#different_location_per_cart_item').on('change', function(){
+		if($(this).val()=='no'){
+			$('.different_location_per_cart_item_no').show();
+		}else{
+			$('.different_location_per_cart_item_no').hide();
+		}
+	});
+	
 	function slwEnableShowLocationsProductPage()
 	{
 		// initial
 		if( $('#show_in_cart').val() != 'yes' ) {
 			$('#different_location_per_cart_item').prop('disabled', true);
-			//$('#show_in_product_page').prop('disabled', true);
+
 		} else {
 			$('#different_location_per_cart_item').prop('disabled', false);
-			//$('#show_in_product_page').prop('disabled', false);
+
 		}
 		// on change
 		$('#show_in_cart').on('change', function() {
 			if( $(this).val() == 'yes' ) {
 				$('#different_location_per_cart_item').prop('disabled', false);
-				//$('#show_in_product_page').prop('disabled', false);
+
 			} else {
 				$('#different_location_per_cart_item').prop('disabled', true);
-				//$('#show_in_product_page').prop('disabled', true);
+
 			}
 		});
 	}
@@ -284,11 +289,21 @@ function slw_gmap_initialize(input_id) {
 
 	});
 	
-	$('input#slw-location-status').bind('click', function (e) {
+	$('#slw-location-status, a.slw-location-status').bind('click', function (e) {
+		
+		
+		var status_val = '';
+		
+		if($(this).is('input[type="checkbox"]')){
+			status_val = ($(this).is(':checked')?$(this).val():'');
+		}else{
+			status_val = $(this).hasClass('checked')?'':'yes';
+			$(this).toggleClass('checked');
+		}
+		
 		var data = {
-
 			action: 'slw_location_status',
-			status: $(this).is(':checked')?$(this).val():'',
+			status: status_val,
 			location_id: $(this).data('id'),
 			slw_nonce_field: slw_admin_scripts.nonce,
 		}
@@ -304,12 +319,17 @@ function slw_gmap_initialize(input_id) {
 
 	});	
 	
-	$('input#slw-map-status').bind('click', function (e) {
+	
+	$('input#slw-map-status, a.slw-map-status').bind('click', function (e) {
+		var obj = $(this);
+		var is_checkbox = obj.is(':input[type="checkbox"]');
+		var is_status = (is_checkbox?($(this).is(':checked')?obj.val():''):obj.data('status'));
+		
 		var data = {
 
 			action: 'slw_map_status',
-			status: $(this).is(':checked')?$(this).val():'',
-			location_id: $(this).data('id'),
+			status: is_status,
+			location_id: obj.data('id'),
 			slw_nonce_field: slw_admin_scripts.nonce,
 		}
 
@@ -317,6 +337,17 @@ function slw_gmap_initialize(input_id) {
 		$.post(ajaxurl, data, function (response, code) {
 			$.unblockUI();
 			if (code == 'success') {
+				if(!is_checkbox){
+					obj.data('status', (is_status=='yes'?'':'yes'));
+					
+					if(is_status=='yes'){
+						obj.find('.slw_map_status-disabled').hide();
+						obj.find('.slw_map_status-enabled').show();
+					}else{
+						obj.find('.slw_map_status-disabled').show();
+						obj.find('.slw_map_status-enabled').hide();						
+					}
+				}
 			}
 
 		});
@@ -380,8 +411,8 @@ function slw_gmap_initialize(input_id) {
 			});
 		}
 	});
-	if($('div.slw_widgets').length>0){
-		$('div.slw_widgets ul li[data-type="screenshot"] a').magnificPopup({
+	if($('.slw_need_popup').length>0){
+		$('.slw_need_popup ul li[data-type="screenshot"] a, .slw_need_popup a[data-type="screenshot"]').magnificPopup({
 		  type: 'image',
 		  gallery: {
 			// options for gallery
@@ -413,6 +444,67 @@ function slw_gmap_initialize(input_id) {
 	$('body').on('click', 'li[data-type="shortcode"] > svg', function(){
 		$(this).parent().toggleClass('collapsed');
 	});
+	
+	$('body').on('click', 'table.table-view-list td.stock_at_locations span i', function(){
+		var n = $(this).html().replace('(', '').replace(')', '');
+		$('table.table-view-list td.stock_at_locations span.clicked').removeClass('clicked');
+		$(this).parent().addClass('clicked');
+		$('table.table-view-list td.stock_at_locations span input.location_qty_update').val(n);
+	});
+	$('body').on('keydown', 'table.table-view-list td.stock_at_locations span input.location_qty_update', function(e){	
+		if (e.which == 13) {
+			e.preventDefault();
+			$(this).trigger('blur');
+			return false;
+		}
+	
+	});
+	$('body').on('blur', 'table.table-view-list td.stock_at_locations span input.location_qty_update', function(e){		
+		
+		
+		$(this).focus();
+		$.blockUI({message:slw_admin_scripts.wc_slw_pro?'':slw_admin_scripts.wc_slw_premium_feature, blockMsgClass: 'slw-premium-block',});
+		var n = ($(this).val())*1;
+		var obj = $(this).parents().closest('tr').find('td[data-colname="Stock"]');
+
+		$(this).parent().removeClass('clicked');		
+		$(this).parent().find('i').html('('+n+')');		
+		if(slw_admin_scripts.wc_slw_pro){
+		
+				var data = {
+					'action': 'slw_product_list_qty_update',
+					'quantity': n,
+					'product_id': $(this).data('product'),				
+					'location_id': $(this).data('location'),
+					'slw_nonce_field': slw_admin_scripts.nonce
+				};
+
+				$.post(slw_admin_scripts.ajaxurl, data, function(response) {
+					
+					obj.html('');
+					
+					$.unblockUI();
+					
+					
+					
+				});
+				
+				$(this).parent().find('mark').prop('class', (n>0?'instock':'outofstock'));
+	
+			
+		}else{
+			setTimeout(function(){
+				$.unblockUI();
+			}, 30000);
+		}
+		
+	});
+	
+	setTimeout(function(){
+		if($('#different_location_per_cart_item').length>0){
+			$('#different_location_per_cart_item').trigger('change');
+		}
+	}, 1000);
 	
 
 }(jQuery));

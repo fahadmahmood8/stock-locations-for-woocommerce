@@ -22,6 +22,7 @@ if(!class_exists('SlwProductListing')) {
 
 	class SlwProductListing
 	{
+		private $plugin_settings;
 		/**
 		 * Construct.
 		 *
@@ -29,9 +30,15 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function __construct()
 		{
-			add_filter('manage_edit-product_columns', array($this, 'remove_product_listing_column'), 10, 1);
-			add_action('restrict_manage_posts', array($this, 'filter_by_taxonomy_stock_location') , 10, 2);
-			add_action('manage_posts_custom_column', array($this, 'populate_stock_locations_column') );
+			$this->plugin_settings = get_option( 'slw_settings' );
+			$this->plugin_settings = (is_array($this->plugin_settings)?$this->plugin_settings:array());
+			$products_list = (isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['products_list']) && $this->plugin_settings['general_display_settings']['products_list'] == 'on' );
+			
+			if($products_list){			
+				add_filter('manage_edit-product_columns', array($this, 'remove_product_listing_column'), 10, 1);
+				add_action('manage_posts_custom_column', array($this, 'populate_stock_locations_column') );
+			}
+			add_action('restrict_manage_posts', array($this, 'filter_by_taxonomy_stock_location') , 10, 2);			
 			add_action('admin_head-post-new.php', array($this, 'addNewPreSelectLocations'));
 		}
 
@@ -43,10 +50,9 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function remove_product_listing_column($columns)
 		{
-
 			unset($columns['taxonomy-' . SlwLocationTaxonomy::get_Tax_Names('singular')]);
 
-			return array_slice( $columns, 0, 5, true )
+			$columns = array_slice( $columns, 0, 5, true )
 			+ array( 'stock_at_locations' => __( 'Stock at locations', 'stock-locations-for-woocommerce' ) )
 			+ array_slice( $columns, 5, NULL, true );
 
@@ -61,7 +67,7 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function filter_by_taxonomy_stock_location($post_type, $which)
 		{
-
+			
 			// Apply this only on a specific post type
 			if ( 'product' !== $post_type )
 				return;
@@ -102,6 +108,7 @@ if(!class_exists('SlwProductListing')) {
 		 */
 		public function populate_stock_locations_column($column_name)
 		{
+			global $wpdb;
 			// Grab the correct column
 			if( $column_name  == 'stock_at_locations' ) {
 
@@ -112,10 +119,12 @@ if(!class_exists('SlwProductListing')) {
 
 					// Check for variations
 					$variations_products = array();
-					if( !empty($product) && $product->is_type( 'variable' ) ) {
-						$product_variations_ids = $product->get_children();
+					if($product_id && !empty($product) && $product->is_type( 'variable' ) ) {
+						$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+						//$product_variations_ids = $product->get_children();
 						$product_variations = array();
-						foreach( $product_variations_ids as $variation_id ) {
+						foreach( $product_variations_ids as $variation_obj ) {
+							$variation_id = $variation_obj->variation_id;
 							$product_variations[] = $product->get_available_variation( $variation_id );
 						}
 						foreach ($product_variations as $variation) { 
@@ -124,7 +133,7 @@ if(!class_exists('SlwProductListing')) {
 					}
 
 					// Get locations from parent product
-					$locations = wp_get_post_terms( $product->get_id(), SlwLocationTaxonomy::get_Tax_Names('singular') );
+					$locations = wp_get_post_terms( $product->get_id(), SlwLocationTaxonomy::get_Tax_Names('singular'), array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=') );
 					if( empty($locations) ) return;
 
 					// Print data
@@ -132,8 +141,8 @@ if(!class_exists('SlwProductListing')) {
 						echo '<label>#'.$product->get_id().' &#8628;</label><br>';
 						$this->output_product_locations_for_column($product->get_id(), $locations);
 					} elseif( $product->is_type( 'variable' ) ) {
-						echo '<label>#'.$product->get_id().' &#8628;</label><br>';
-						$this->output_product_locations_for_column($product->get_id(), $locations);
+						//echo '<label>#'.$product->get_id().' &#8628;</label><br>';
+						//$this->output_product_locations_for_column($product->get_id(), $locations);
 						if( !empty($variations_products) ) {
 							foreach( $variations_products as $variation_product ) {
 								$attributes = $variation_product->get_variation_attributes();
@@ -172,15 +181,22 @@ if(!class_exists('SlwProductListing')) {
 				$product_id = SlwWpmlHelper::object_id( $product_id );
 			}
 
+
 			if( !empty($locations) ) {
+				global $slw_plugin_settings;
+				$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
+			
 				foreach($locations as $location) {
 					// If out of stock
 					$location_qty = get_post_meta( $product_id, '_stock_at_' . $location->term_id, true );
-					//pree($location_qty);exit;
-					if( $location_qty <= 0 ) {
-						echo '<span style="margin-left: 10px;"><mark class="outofstock">' . $location->name . '</mark> (' . $location_qty . ')</span><br>';
+					
+					
+					$location_qty_edit = '<input class="location_qty_update" data-product="'.$product_id.'" data-location="'.$location->term_id.'" type="text" value="'.$location_qty.'" />';
+
+					if( $location_qty <= 0 && !$everything_stock_status_to_instock) {
+						echo '<span><mark class="outofstock">' . $location->name . '</mark> '.$location_qty_edit.'<i>(' . ($location_qty?$location_qty:0) . ')</i></span><br>';
 					} else { // If in stock
-						echo '<span style="margin-left: 10px;"><mark class="instock">' . $location->name . '</mark> (' . $location_qty . ')</span><br>';
+						echo '<span><mark class="instock">' . $location->name . '</mark> '.$location_qty_edit.'<i>(' . ($location_qty?$location_qty:0) . ')</i></span><br>';
 					}
 				}
 			}
@@ -202,7 +218,7 @@ if(!class_exists('SlwProductListing')) {
 			$locations = array();
 
 			// Get Terms
-			$terms = slw_get_locations($tax_singular_name);
+			$terms = slw_get_locations();
 
 			foreach ($terms as $term) {
 				$slw_default_location = get_term_meta($term->term_id, 'slw_default_location', true);

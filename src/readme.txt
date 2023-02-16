@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 5.9
+Tested up to: 6.1
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -18,8 +18,8 @@ You can print the locations inside a product page on the frontend, with this sho
 
 = Product pages =
 
-`[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
-`[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes"]`
+`[slw_product_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes" collapsed="no" stock_location_status="enabled"]`
+`[slw_product_variations_locations show_qty="yes" show_stock_status="no" show_empty_stock="yes" collapsed="yes" stock_location_status="all|disabled|enabled"]`
 `[slw_product_message is_available="yes" only_location_available="no" location="location-slug"]Your custom product message/HTML here[/slw_product_message]`
 
 = Cart page =
@@ -81,6 +81,38 @@ This plugin requires at least *WooCommerce 3.4*.
 
 == Frequently Asked Questions ==
 
+= Stock Locations | Stock Deductions | Settings and Results =
+
+**&#128073; 1. How auto order allocation work with multiple stock locations?**
+[youtube http://www.youtube.com/watch?v=0UbAPmZ2Kco]
+
+**&#128073; 2. How location priority work with auto order stock allocation?**
+[youtube http://www.youtube.com/watch?v=9kGVJZNNxRk]
+
+**&#128073; 3. What if all of my locations don't have the sufficient stock ordered?**
+If order quantity is within the summation of all stock locations available stock quantity, it will be simply served. If not, auto allocation will not work so admin can decide if he want to deliver the order partially or wait for stock comes in.
+[youtube http://www.youtube.com/watch?v=4NXYr24OKFg]
+
+**&#128073; 4. How location email works?**
+[youtube http://www.youtube.com/watch?v=zdCdckXEbNw]
+
+**&#128073; 5. Do you want to sell products from only one stock location?**
+[youtube http://www.youtube.com/watch?v=rznc0WMbmh4]
+[youtube http://www.youtube.com/watch?v=7ZIv_d7prLA]
+
+**&#128073; 6. How to make location selection required on cart page?**
+[youtube http://www.youtube.com/watch?v=64N7-b90r3E]
+
+**&#128073; 7. How does it manage the maximum qty. to order according to the stock in a location?**
+[youtube http://www.youtube.com/watch?v=gmU3cnk0LjY]
+
+= How to use Cron Job? =
+[youtube http://www.youtube.com/watch?v=si_DUe-8ncY&t=114s]
+
+= How to use REST API? =
+[youtube http://www.youtube.com/watch?v=si_DUe-8ncY]
+
+
 = How Google Map and Location Archives work in Premium Version? =
 [youtube http://www.youtube.com/watch?v=ZgmNWuKFyQI]
 
@@ -96,13 +128,8 @@ On settings page you can define a number. If location stock value will be less t
 
 [youtube http://www.youtube.com/watch?v=nWj5MTLcPjI]
 
-= How to make location selection required on cart page? =
 
-[youtube http://www.youtube.com/watch?v=64N7-b90r3E]
 
-= How location priority work with auto order stock allocation? =
-
-[youtube http://www.youtube.com/watch?v=9kGVJZNNxRk]
 
 == Screenshots ==
 
@@ -125,6 +152,213 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.2 =
+- Fix: Variable products stock value update to the parent product too.  [Thanks to Stefan Murawski][16/12/2023]
+
+= 2.4.1 =
+- Fix: Products get put from out of stock to backorder automatically.  [Thanks to Ole Straume Andersen][23/11/2022]
+- Fix: Total Stock was wrong when stock locations has negative value. [Thanks to michaelw90][27/12/2022]
+
+= 2.4.0 =
+- Improvement: Default location will be set for the recently modified/new products.  [Thanks to PHILIPP GOLOB][19/11/2022]
+
+= 2.3.9 =
+- New: Default location will be set for the recently modified/new products.  [Thanks to PHILIPP GOLOB][25/10/2022]
+
+= 2.3.8 =
+- Fix: Fixes undefined index when adding a product to your cart from an archive page #136.  [Thanks to @d2roth][13/10/2022]
+
+= 2.3.7 =
+- New: Filter hook refined as apply_filters( 'slw_output_product_locations_for_shortcode', $product, $locations, $values, $output ).  [Thanks to Ole Straume Andersen][12/10/2022]
+
+= 2.3.6 =
+- New: Filter hook added as apply_filters( 'slw_output_product_locations_for_shortcode', $product, $locations, $values, $output ).  [Thanks to privatecollection][07/10/2022]
+
+= 2.3.5 =
+- Fix: Duplicate queries due to product_id=0.  [Thanks to coronastar1][06/10/2022]
+
+= 2.3.4 =
+- Fix: Auto allocate relate improvements and fatal error due to int += string for stock value.  [Thanks to bbceg & Ole Straume Andersen][29/09/2022]
+
+= 2.3.3 =
+- New: Import products will work with just SKU as well and you may skip the columns if don't to update the stock for a location.  [Thanks to Ole Straume Andersen][27/09/2022]
+
+= 2.3.2 =
+- Fix: array_key_exists() related issue on the cart page for qty. section.  [Thanks to Elliot Fib][15/09/2022]
+
+= 2.3.1 =
+- Fix: Product page stock_location param for cart line_items.  [Thanks to Tanel][08/09/2022]
+
+= 2.3.0 =
+- Fix: WooCommerce session and get_cart using wp_loaded action hook.  [Thanks to bbceg][06/09/2022]
+
+= 2.2.9 =
+- Fix: Undefined variable $postmeta in class-slw-stock-locations-tab.php.  [Thanks to Tanel][05/09/2022]
+
+= 2.2.8 =
+- Fix: Return stock qty. as per stock_location_selected session value with the default priority 10.  [Thanks to Jeroen de Kok][02/09/2022]
+
+= 2.2.7 =
+- New: Return stock qty. as per stock_location_selected session value with the default priority 10.  [Thanks to bbceg][02/09/2022]
+
+= 2.2.6 =
+- Fix: Stock max qty. allowed on product page synchronized with the selected location from the archive page(s). [Thanks to bbceg][01/09/2022]
+
+= 2.2.5 =
+- Fix: Stock status instock/outofstock/onbackorder to instock when stock is positive. [Thanks to Mario Kremser][31/08/2022]
+
+= 2.2.4 =
+- New: Google map shortcoded improved with two new attributes as diameter-range="100" and distance-unit="km/mi". [Thanks to bbceg][31/08/2022]
+
+= 2.2.3 =
+- New: Google map related action and filter hooks are updated on settings page under widgets tab. [30/08/2022]
+
+= 2.2.2 =
+- New: Google map will focus on the nearest location automatically if allowed access location. [Thanks to bbceg][30/08/2022]
+
+= 2.2.1 =
+- New: Google map will filter the location items on bounds_changed event. [Thanks to bbceg][30/08/2022]
+
+= 2.2.0 =
+- New: js/archive.js added to separate the JavaScript functions for archive pages. [Thanks to bbceg][26/08/2022]
+- New: Map page, search field will filter the list items according to the diameter-in-kilometers, a numeric value, provided in the shortcode. [Thanks to bbceg][27/08/2022]
+
+= 2.1.9 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/133 [Thanks to Daniel/d2roth][25/08/2022]
+
+= 2.1.8 =
+- New: Different location per cart item selection as "No" will give two more options as remove the item or continue shopping. [Thanks to bbceg][25/08/2022]
+
+= 2.1.7 =
+- Fix: _manage_stock value to "yes" on import CSV. [Thanks to Ole Straume Andersen][24/08/2022]
+
+= 2.1.6 =
+- Fix: Translatable strings are updated. [Thanks to Ole Straume Andersen][23/08/2022]
+
+= 2.1.5 =
+- Fix: Variable Product: out of stock and quantity is 0 when accessing the product page. [Thanks to chalisoft][23/08/2022]
+
+= 2.1.4 =
+- Fix: The total stock does not match the sum of the locations stock conditioned with the location enabled/disabled status. [Thanks to Jesus Gonzalez][19/08/2022]
+- New: Action hooks added for map page locations list, before and after shop this location button. [Thanks to Roy Wright][20/08/2022]
+
+= 2.1.3 =
+- Fix: Refresh page message on the product page for the stock update. [Thanks to Chalisoft][17/08/2022]
+
+= 2.1.2 =
+- New: Archives related shortcode added and zoom attributed for map shortcode. [Thanks to Zeeshan Sadiq & Mika Pietrus][29/07/2022]
+
+= 2.1.1 =
+- New: Compatibility ensured for another Wordpress plugin "Variation Swatches for WooCommerce".  [Thanks to Andrew Gortchacow][13/07/2022]
+- Fix: Stock values update on shifting between simple and variable products on edit product page.  [Thanks to Stefan Murawski und Helene Umiker][20/07/2022]
+
+= 2.1.0 =
+- Fix:  Variations and add to cart not shown on product page for variable products #131  [Thanks to Github/keesheddes][07/07/2022]
+
+= 2.0.9 =
+- New: Import CSV will automatically turn ON stock locations where _stock_at_location-id column will be found as positive. [Thanks to Ole Straume Andersen][01/07/2022]
+
+= 2.0.8 =
+- Fix: Translation text-domain for Out of stock and in stock strings. [Thanks to stalstadens/henriksstalstadens][30/06/2022]
+
+
+= 2.0.7 =
+- Fix: Fatal error: Uncaught Error: Using $this when not in object context. [Thanks to stalstadens/henriksstalstadens][28/06/2022]
+
+= 2.0.6 =
+- New: Major changes regarding stock location and quantity check on archive pages and product page. [Thanks to Tanel][14/06/2022]
+- New: Major changes regarding archive pages so category pages can enable location selection under the product titles. [Thanks to Tanel][13/06/2022]
+
+= 2.0.5 =
+- New: Stock locations with RadioBoxes, another option added in the dropdown. [Thanks to Tanel][10/06/2022]
+
+= 2.0.4 =
+- Fix: Select location empty index option enabled for variable product stock locations as well. [Thanks to chalisoft][06/06/2022]
+- New: Stock locations column can be turned off/on from the settings page. [Thanks to bbceg][06/06/2022]
+
+= 2.0.3 =
+- Fix: Availability fitler implemented woocommerce_get_availability_text. [Thanks to Niconectado][04/06/2022]
+
+= 2.0.2 =
+- Fix: Location price units different than dollar. [Thanks to Niconectado][03/06/2022]
+
+= 2.0.1 =
+- New: Product page shortcodes improved and added a new attribute status with "enabled|disabled|all" options. [Thanks to Mik/mikmikmik][03/06/2022]
+
+= 2.0.0 =
+- New: Product page shortcodes improved and added two new attributes product_id and collapsed. [Thanks to Mik/mikmikmik][30/05/2022]
+
+= 1.9.9 =
+- Fix: wp desk omnibus related currency symbol issue resolved. [Thanks to tomkolp][30/05/2022]
+
+= 1.9.8 =
+- Fix: wp desk omnibus related currency symbol issue resolved. [Thanks to tomkolp][30/05/2022]
+
+= 1.9.7 =
+- Fix: Location price units different than dollar. [Thanks to Niconectado][28/05/2022]
+
+= 1.9.6 =
+- Fix: Location related updates on cart page interrupting other locations selection. [Thanks to Justyn Thomas][23/05/2022]
+- New: Product page shortcode output improved using variation labels instead of separate attributes. [Thanks to Mik/mikmikmik][28/05/2022]
+
+= 1.9.5 =
+- Fix: Stock in/out statuses on product page logic refined, auto allocation as priority number. [Thanks to Fady Ilias][19/05/2022]
+- New: There is a conflict with font awesome icons, on settings page ON/OFF option provided. [Thanks to Michal Paull][21/05/2022]
+
+= 1.9.4 =
+- Fix: Error 500 when upgrading to the latest version. Fatal error: Uncaught Error: Unsupported operand types: int + string. [Thanks to chalisoft & siriusnode][17/05/2022]
+
+= 1.9.3 =
+- Fix: Product page related improvements for stock location qty. value in the dropdown. [Thanks to Tanel][16/05/2022]
+
+= 1.9.2 =
+- Fix: Location based map page UI tweaks and location related email issue. [Thanks to Justyn Thomas][12/05/2022]
+- Fix: Stock deduction from multiple stock locations if auto allocation is ON. [Thanks to fdeww & jwink123][15/05/2022]
+
+= 1.9.1 =
+- Fix: Request-URI Too Long. [Thanks to @jarvistran and @beeloudglade][12/04/2022]
+
+= 1.9.0 =
+- New: Geo Location related improvements. [Thanks to Justyn Thomas][30/04/2022]
+- Fix: Location based archive page, default location selection tested. [Thanks to Justyn Thomas][07/05/2022]
+
+= 1.8.9 =
+- New: Map page related improvements. [Thanks to Justyn Thomas][29/04/2022]
+
+= 1.8.8 =
+- New: Compatibility for "PowerPack Pro for Elementor" added. [Thanks to Fady Ilias][27/04/2022]
+
+= 1.8.7 =
+- Fix: Priority based locaiton selection when default location as zero stock on product page, improved. [Thanks to Mario Kremser][26/04/2022]
+- New: Everything stock status to instock option added for product page. [Thanks to Darren Lew][26/04/2022]
+
+= 1.8.6 =
+- New features are in progress. [Thanks to Roland Steinmasdl][08/04/2022]
+- New: Stock location Enabled/Disabled column added on stock locations list. [Thanks to Andrew Gortchacow][21/04/2022]
+- New: Stock quantity can be updated from the products list as well. [Thanks to Andrew Gortchacow][23/04/2022]
+
+= 1.8.5 =
+- Fix: Removed the extra/empty stock location qty. brackets on products list page in admin panel. [Thanks to Fady Ilias][20/04/2022]
+
+= 1.8.4 =
+- Fix: API will accept the zero qty. as well for the stock. [Thanks to kastiell93][25/03/2022]
+- Fix: https://www.youtube.com/embed/HIo9X5M8A5U [Thanks to Daniel Sieff][08/04/2022]
+
+= 1.8.3 =
+- New: Stock locations tab, enable/disable feature added. [Thanks to Paul Eagles][24/03/2022]
+
+= 1.8.2 =
+- Fix: The total stock does not match the sum of the locations stock. [Thanks to Jere Seppä][24/03/2022]
+
+= 1.8.1 =
+- New: Sell products from only one stock location. [Thanks to Paul][23/03/2022]
+
+= 1.8.0 =
+- Fix: Cron job query updated for the products with recently changed timestamp. [Thanks to Riley Pollard][22/03/2022]
+
+= 1.7.9 =
+- Fix: Product page, backorder status will contribute in stock status and product availability for sale. [Thanks to Mario Kremser][22/03/2022]
+
 = 1.7.8 =
 - Fix: https://wordpress.org/support/topic/error-after-activating-the-plugin-6 [Thanks to johnmunez1][05/03/2022]
 - Fix: Product page, elementor, backorder status, in stock status, out of stock status transitions ensured. [Thanks to Mario Kremser][21/03/2022]

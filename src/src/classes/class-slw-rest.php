@@ -67,7 +67,7 @@ if(!class_exists('SlwProductRest')) {
 			$parentPostId = ($object_type === 'product_variation') ? wp_get_post_parent_id($product_id) : $product_id;
 
 			// Get terms
-			foreach (wp_get_post_terms($parentPostId, SlwLocationTaxonomy::$tax_singular_name) as $term) {
+			foreach (wp_get_post_terms($parentPostId, SlwLocationTaxonomy::$tax_singular_name, array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=')) as $term) {
 				$terms[] = array(
 					'id'        => $term->term_id,
 					'name'      => $term->name,
@@ -110,22 +110,12 @@ if(!class_exists('SlwProductRest')) {
 			if (sizeof($values)) {
                 foreach ($values as $location) {
                     $locationId = (isset($location['id'])) ? absint($location['id']) : get_term_by('slug', $location['slug'], SlwLocationTaxonomy::$tax_singular_name)->term_id;
-                    $quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
+                    
 					
-					//pree($quantity);
-
-                    // It is possible to provide a null quantity to delete product from location
-                    if (is_null($quantity)) {
-                        // Delete post meta
-                        delete_post_meta($postId, '_stock_at_' . $locationId);
-                    } else {
-                        // We must only keep location IDs we wish to keep as valid locations
+					if (isset($location['quantity'])){
+						$quantity = (isset($location['quantity'])) ? $location['quantity'] : 0;
                         $stockLocationTermIds[] = $locationId;
-
-                        // Set locations stock level
                         update_post_meta($postId, '_stock_at_' . $locationId, $quantity);
-						
-
                         $totalQuantity += $quantity;
                     }
                 }
@@ -135,8 +125,9 @@ if(!class_exists('SlwProductRest')) {
 
 			// Update product stock
 			if( $totalQuantity != 0 ) {
-				$product = wc_get_product($parentPostId);
-				wc_update_product_stock( $product, $totalQuantity, 'set', false );
+				//$product = wc_get_product($parentPostId);
+				//wc_update_product_stock( $product, $totalQuantity, 'set', false );
+				slw_update_product_stock_status( $parentPostId, $totalQuantity );
 			}
 			
 			

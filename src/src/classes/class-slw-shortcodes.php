@@ -38,41 +38,86 @@ if(!class_exists('SlwShortcodes')) {
 		 * @since 1.1.1
 		 * @return string
 		 */
-		public function display_product_locations( $atts )
+		public function display_product_locations( $atts=array() )
 		{
 			global $woocommerce, $product, $post;
 
-			if( ! is_product() ) return;
-
-			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
-
-			$product_id = SlwWpmlHelper::object_id( $product->get_id() );
-			$product    = wc_get_product( $product_id );
-			if( empty($product) ) return;
-
-			// Default values
 			$values = shortcode_atts(array(
 				'show_qty'          => 'yes',
 				'show_stock_status' => 'no',
-				'show_empty_stock'  => 'yes'
+				'show_empty_stock'  => 'yes',
+				'separator'  => '-',
+				'collapsed'  => 'no',
+				'product_id' => get_the_ID(),
+				'stock_location_status' => 'enabled'
 			), $atts);
+			
+			if(!is_product()){ 
+				if(is_numeric($values['product_id'])){
+					$check_post_type = get_post($values['product_id']);
+					if(is_object($check_post_type) && $check_post_type->post_type=='product'){
+						
+					}else{
+						return;
+					}
+				}else{
+					return;
+				}
+				
+			}
 
+			if( is_object( $product)){
+				$product_obj = $product;
+				if($product_obj->is_type('variation')){
+					$product_obj = wc_get_product($product_obj->get_parent_id());
+				}
+			}else{
+				
+				$product_obj = wc_get_product($values['product_id']);
+			}
+			
+			$output = '';
+
+			$product_id = SlwWpmlHelper::object_id( $product_obj->get_id() );
+			$product_obj    = wc_get_product( $product_id );
+			
+			if( empty($product_obj) ) return;
+
+			// Default values
+			
+			
 			if( !$values ) {
 				return;
 			}
 
-			$output = '';
 
-			if( !empty($product) ) {
-				// Get locations from parent product
-				$locations = wp_get_post_terms($product->get_id(), SlwLocationTaxonomy::$tax_singular_name);
-				// Build output
-				$output .= '<div class="slw-product-locations">';
-				$output .= $this->output_product_locations_for_shortcode($product, $locations, $values);
-				$output .= '</div>';
+			if( $product_obj->is_type( 'variable' ) || $product_obj->is_type('variation')) {
+				return $this->display_product_variations_locations($values);
+			}else{
+				if( !empty($product_obj) ) {
+					
+					$slw_location_status = array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=');
+					switch($values['stock_location_status']){
+						default:
+						case 'enabled':
+							
+						break;
+						case 'all':
+							$slw_location_status = array();
+						break;
+						case 'disabled':
+							$slw_location_status['meta_value'] = false;
+						break;						
+					}
+					$locations = wp_get_post_terms($product_obj->get_id(), SlwLocationTaxonomy::$tax_singular_name, $slw_location_status);
+					// Build output
+					$output .= '<div class="slw-product-locations">';
+					$output .= $this->output_product_locations_for_shortcode($product_obj, $locations, $values);
+					$output .= '</div>';
+				}
+	
+				return $output;
 			}
-
-			return $output;
 			
 		}
 
@@ -82,62 +127,111 @@ if(!class_exists('SlwShortcodes')) {
 		 * @since 1.1.2
 		 * @return string
 		 */
-		public function display_product_variations_locations( $atts )
+		public function display_product_variations_locations( $atts=array() )
 		{
-			global $woocommerce, $product, $post;
-
-			if( ! is_product() ) return;
-
-			if( ! is_object( $product)) $product = wc_get_product( get_the_ID() );
-
-			$product_id = SlwWpmlHelper::object_id( $product->get_id() );
-			$product    = wc_get_product( $product_id );
-			if( empty($product) ) return;
-
-			// Default values
+			global $woocommerce, $product, $post, $wpdb;
+			
 			$values = shortcode_atts(array(
 				'show_qty'          => 'yes',
 				'show_stock_status' => 'no',
-				'show_empty_stock'  => 'yes'
+				'show_empty_stock'  => 'yes',
+				'collapsed'  => 'no',
+				'separator'  => '-',
+				'product_id' => get_the_ID(),
+				'stock_location_status' => 'enabled'
 			), $atts);
+			
+			
+			
+			if(  !is_product() ){ 
+				if(is_numeric($values['product_id'])){
+					$check_post_type = get_post($values['product_id']);
+					if(is_object($check_post_type) && $check_post_type->post_type=='product'){
+						
+					}else{
+						return;
+					}
+				}else{
+					return;
+				}
+				
+			}
+			
+			
+			if( is_object( $product)){
+				$product_obj = $product;
+				if($product_obj->is_type('variation')){
+					$product_obj = wc_get_product($product_obj->get_parent_id());
+				}
+			}else{
+				
+				$product_obj = wc_get_product($values['product_id']);
+			}
 
+			$product_id = SlwWpmlHelper::object_id( $product_obj->get_id() );
+			$product_obj    = wc_get_product( $product_id );
+			
+			if( empty($product_obj) ) return;
+
+			// Default values
+			
+			
 			if( !$values ) {
 				return;
 			}
 
 			$output = '';
 
-			if( !empty($product) ) {
+			if( !empty($product_obj) ) {
 				// Check for variations
 				$variations_products = array();
-				if( $product->is_type( 'variable' ) ) {
-					$product_variations_ids = $product->get_children();
+
+				if($product_id && $product_obj->is_type( 'variable' )) {
+					//$product_variations_ids = $product_obj->get_children();
+					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
 					$product_variations = array();
-					foreach( $product_variations_ids as $variation_id ) {
-						$product_variations[] = $product->get_available_variation( $variation_id );
+					foreach( $product_variations_ids as $variation_obj ) {
+						$variation_id = $variation_obj->variation_id;
+						$product_variations[$variation_id] = $product_obj->get_available_variation( $variation_id );
 					}
 					foreach ($product_variations as $variation) { 
 						$variations_products[] = wc_get_product( $variation['variation_id'] );
 					}
-				}
-
-				// Get locations from parent product
-				$locations = wp_get_post_terms($product->get_id(), SlwLocationTaxonomy::$tax_singular_name);
-
-				if( !empty($variations_products) ) {
-
-					foreach( $variations_products as $variation_product ) {
-						
-						foreach( $variation_product->get_variation_attributes() as $attribute ) {
-							if($attribute){
-								$output .= '<div class="slw-variation-'.$attribute.'-locations">';
-								$output .= '<label>'.ucfirst($attribute).'</label>';
-								$output .= $this->output_product_locations_for_shortcode($variation_product, $locations, $values);
-								$output .= '</div>';
-							}
-						}
-						
+					
+					$slw_location_status = array('meta_key'=>'slw_location_status', 'meta_value'=>true, 'meta_compare'=>'=');
+					switch($values['stock_location_status']){
+						default:
+						case 'enabled':
+							
+						break;
+						case 'all':
+							$slw_location_status = array();
+						break;
+						case 'disabled':
+							$slw_location_status['meta_value'] = false;
+						break;						
 					}
+					
+					$locations = wp_get_post_terms($product_obj->get_id(), SlwLocationTaxonomy::$tax_singular_name, $slw_location_status);
+					
+					
+					if( !empty($product_variations) ) {
+						$variation_attr_arr = array();
+						foreach( $product_variations as $variation_id=>$product_variation ) {
+							
+							$variation_obj = wc_get_product( $variation_id );						
+							$attributes = $product_variation['attributes'];
+							$attribute = array_map('ucfirst', $attributes);
+							$variation_attr = implode('/', $attribute);
+							$variation_attr_str = implode('-', $attributes);
+							
+							$variation_attr_arr[$variation_attr] = '<div id="slw-'.$variation_id.'" data-id="'.$variation_id.'" class="slw-variations-listed slw-variation-'.$variation_attr_str.'-locations">'.'<label>'.$variation_attr.'</label>'.$this->output_product_locations_for_shortcode($variation_obj, $locations, $values).'</div>';
+						}					
+						ksort($variation_attr_arr);
+						$output = implode('', $variation_attr_arr);
+					}
+				}else{
+					$output = $this->display_product_locations($values);
 				}
 			}
 
@@ -153,6 +247,8 @@ if(!class_exists('SlwShortcodes')) {
 		 */
 		private function output_product_locations_for_shortcode( $product, $locations, $values )
 		{
+			$separator = $values['separator'];
+			
 			if( !empty($locations) ) {
 
 				// Don't show locations with empty stock
@@ -164,23 +260,24 @@ if(!class_exists('SlwShortcodes')) {
 
 				// hook to filter product locations
 				$locations = apply_filters( 'slw_shortcode_product_locations', $locations, $product );
-
+				
 				// Process the other 3 parameters
-				$output = '<ul class="slw-product-locations-list">';
+				$output = '<ul class="slw-product-locations-list" '.($values['collapsed']=='yes'?'style="display:none;"':'').'>';
+				
 				foreach( $locations as $location ) {
 					if( $values['show_qty'] == 'yes' ) {
 						$location_stock = $product->get_meta('_stock_at_'.$location->term_id);
 						if( !empty($location_stock) ) {
-							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-qty slw-product-location-qty__number">'.apply_filters( 'slw_shortcode_product_location_stock', $location_stock, $location ).'</span></li>';
+							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' '.$separator.' <span class="slw-product-location-qty slw-product-location-qty__number">'.apply_filters( 'slw_shortcode_product_location_stock', $location_stock, $location ).'</span></li>';
 						} else {
 							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-qty slw-product-location-qty__notavailable">'.__('Not available', 'stock-locations-for-woocommerce').'</span></li>';
 						}
 					} elseif( $values['show_qty'] == 'no' && $values['show_stock_status'] == 'yes' ) {
 						$location_stock = $product->get_meta('_stock_at_'.$location->term_id);
 						if( !empty($location_stock) && $location_stock >= 1 ) {
-							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__instock">'.__('In stock', 'stock-locations-for-woocommerce').'</span></li>';
+							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__instock">('.apply_filters( 'slw_shortcode_product_location_instock_text',__('In stock', 'woocommerce'), $location).')</span></li>';
 						} else {
-							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__outofstock">'.__('Out of stock', 'stock-locations-for-woocommerce').'</span></li>';
+							$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).' <span class="slw-product-location-status slw-product-location-status__outofstock">('.apply_filters( 'slw_shortcode_product_location_outofstock_text', __('Out of stock', 'woocommerce'), $location).')</span></li>';
 						}
 					} else {
 						$output .= '<li class="slw-product-location">'.apply_filters( 'slw_shortcode_product_location_name', $location->name, $location ).'</li>';
@@ -191,6 +288,8 @@ if(!class_exists('SlwShortcodes')) {
 			} else {
 				$output = __('No locations found for this product!', 'stock-locations-for-woocommerce');
 			}
+			
+			$output = apply_filters( 'slw_output_product_locations_for_shortcode', $product, $locations, $values, $output );
 
 			return $output;
 

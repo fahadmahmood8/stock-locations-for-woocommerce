@@ -150,6 +150,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			$location_address = '';
 			$location_popup = '';
 			$location_timings = '';
+			$location_phone = '';
 			
 			$slw_lat = '';
 			$slw_lng = '';
@@ -168,6 +169,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				$location_address = get_term_meta($tag->term_id, 'slw_location_address', true);
 				$location_popup = get_term_meta($tag->term_id, 'slw_location_popup', true);
 				$location_timings = get_term_meta($tag->term_id, 'slw_location_timings', true);
+				$location_phone = get_term_meta($tag->term_id, 'slw_location_phone', true);
 				
 				$slw_lat = get_term_meta($tag->term_id, 'slw_lat', true);
 				$slw_lng = get_term_meta($tag->term_id, 'slw_lng', true);
@@ -194,6 +196,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 				'location_address'				=> $location_address,
 				'location_popup'				=> $location_popup,
 				'location_timings'				=> $location_timings,
+				'location_phone'				=> $location_phone,
 				'slw_lat'						=> $slw_lat,
 				'slw_lng'						=> $slw_lng,
 				'location_id'					=> $location_id,
@@ -209,20 +212,31 @@ if(!class_exists('SlwLocationTaxonomy')) {
 		 */
 		public function formSave( $term_id ) {
 			if ($_POST && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate']) && isset($_POST['auto_order_allocate_priority'])) {
-				update_term_meta($term_id, 'slw_default_location', sanitize_text_field($_POST['default_location']));
-				update_term_meta($term_id, 'slw_backorder_location', sanitize_text_field($_POST['primary_location']));
-				update_term_meta($term_id, 'slw_auto_allocate', sanitize_text_field($_POST['auto_order_allocate']));
-				update_term_meta($term_id, 'slw_location_priority', sanitize_text_field($_POST['auto_order_allocate_priority']));
+				update_term_meta($term_id, 'slw_default_location', sanitize_slw_data($_POST['default_location']));
+				update_term_meta($term_id, 'slw_backorder_location', sanitize_slw_data($_POST['primary_location']));
+				update_term_meta($term_id, 'slw_auto_allocate', sanitize_slw_data($_POST['auto_order_allocate']));
+				update_term_meta($term_id, 'slw_location_priority', sanitize_slw_data($_POST['auto_order_allocate_priority']));
 				if( isset($_POST['location_email']) ) {
-					update_term_meta($term_id, 'slw_location_email', sanitize_text_field($_POST['location_email']));
+					update_term_meta($term_id, 'slw_location_email', sanitize_slw_data($_POST['location_email']));
 				}
-				update_term_meta($term_id, 'slw_location_address', sanitize_text_field($_POST['location_address']));
-				update_term_meta($term_id, 'slw_location_popup', wp_kses($_POST['location_popup'], 'post'));
-				
-				update_term_meta($term_id, 'slw_location_timings', sanitize_text_field($_POST['location_timings']));
-				
-				update_term_meta($term_id, 'slw_lat', sanitize_text_field($_POST['slw-lat']));
-				update_term_meta($term_id, 'slw_lng', sanitize_text_field($_POST['slw-lng']));
+				if( isset($_POST['location_address']) ) {
+					update_term_meta($term_id, 'slw_location_address', sanitize_slw_data($_POST['location_address']));
+				}
+				if( isset($_POST['location_popup']) ) {
+					update_term_meta($term_id, 'slw_location_popup', wp_kses($_POST['location_popup'], 'post'));
+				}
+				if( isset($_POST['location_phone']) ) {
+					update_term_meta($term_id, 'slw_location_phone', sanitize_slw_data($_POST['location_phone']));
+				}
+				if( isset($_POST['location_timings']) ) {
+					update_term_meta($term_id, 'slw_location_timings', sanitize_slw_data($_POST['location_timings']));
+				}
+				if( isset($_POST['slw-lat']) ) {
+					update_term_meta($term_id, 'slw_lat', sanitize_slw_data($_POST['slw-lat']));
+				}
+				if( isset($_POST['slw-lng']) ) {
+					update_term_meta($term_id, 'slw_lng', sanitize_slw_data($_POST['slw-lng']));
+				}
 			}
 
             wp_cache_delete(self::$location_cache_key, SLW_PLUGIN_BASENAME);
@@ -292,8 +306,8 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			check_ajax_referer( 'slw_nonce', 'nonce' );
 
 			if( isset( $_POST['product_id'] ) && isset( $_POST['term_id'] ) ) {
-				$product_id = sanitize_text_field( $_POST['product_id'] );
-				$term_id    = sanitize_text_field( $_POST['term_id'] );
+				$product_id = sanitize_slw_data( $_POST['product_id'] );
+				$term_id    = sanitize_slw_data( $_POST['term_id'] );
 
 				// save product default location
 				$response   = update_post_meta( $product_id, '_slw_default_location', $term_id );
@@ -311,7 +325,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			check_ajax_referer( 'slw_nonce', 'nonce' );
 
 			if( isset( $_POST['product_id'] ) ) {
-				$product_id = sanitize_text_field( $_POST['product_id'] );
+				$product_id = sanitize_slw_data( $_POST['product_id'] );
 
 				// remove product default location
 				$response   = delete_post_meta( $product_id, '_slw_default_location' );

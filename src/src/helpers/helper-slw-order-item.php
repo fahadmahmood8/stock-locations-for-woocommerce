@@ -23,22 +23,23 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 		public static function allocateLocationStock( $orderItemId, $locationStockMap, $allocationType )
 		{
+			
 			// Get line item
 			$lineItem = new \WC_Order_Item_Product($orderItemId);
 
 			// Get item product
 			$mainProductId = $lineItem->get_variation_id() != 0 ? $lineItem->get_variation_id() : $lineItem->get_product_id();
 			$mainProductId = SlwWpmlHelper::object_id( $mainProductId );
-			//pree($lineItem->get_product_id());
+
 			$mainProduct   = wc_get_product( $mainProductId );
+			
 			if( empty( $mainProduct ) ) return false;
 			
-			//pree($locationStockMap);exit;
+
 
 			// Get item location terms
 			$itemStockLocationTerms = SlwStockAllocationHelper::getProductStockLocations( $mainProductId, false );
 
-			//pree($itemStockLocationTerms);exit;
 			// Nothing to do, we should have gotten this far
 			// Checks should have happened prior
 			if (empty($itemStockLocationTerms)) {
@@ -47,6 +48,9 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 			// Grab all input values
 			$totalQtyAllocated = 0;
+			
+
+
 
 			// Loop through location terms
 			$counter = 0;
@@ -60,7 +64,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				$counter++;
 				
 				
-				//pree($term);
+
 				// Get stock data
 				$item_stock_location_subtract_input_qty = $locationStockMap[$term->term_id];
 				if(is_object($item_stock_location_subtract_input_qty) && isset($item_stock_location_subtract_input_qty->quantity)){
@@ -68,27 +72,22 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				}
 
 				$postmeta_stock_at_term = $term->quantity;
-
+	
 				// Stock input is invalid
 				if (empty($item_stock_location_subtract_input_qty) || $item_stock_location_subtract_input_qty == 0) {
 					continue;
 				}
-				//pree($orderItemId.' / ('.$item_stock_location_subtract_input_qty.' > '.$lineItem->get_quantity().')');
-				
-				
+
 				// Stock input above needed quantity
 				if ($item_stock_location_subtract_input_qty > $lineItem->get_quantity()) {
 					continue;
 				}
-				
-				//pree($orderItemId.' / Stock input above needed quantity');
 
 				// Total quantity assignment does not match required quantity
 				// Not all stock has been allocated to locations
 				if (array_sum($locationStockMap) !== $lineItem->get_quantity()) {
 					continue;
 				}
-
 				// Save input values to array
 				$totalQtyAllocated += $item_stock_location_subtract_input_qty;
 
@@ -145,7 +144,8 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 					$stock_qty = $mainProduct->get_stock_quantity() - $totalQtyAllocated;
 					// update stock
 					
-					update_post_meta( $mainProductId, '_stock', $stock_qty );
+					slw_update_product_stock_status( $mainProductId, $stock_qty );
+					
 					// update stock status
 					SlwProductHelper::update_wc_stock_status( $mainProductId, $stock_qty );
 

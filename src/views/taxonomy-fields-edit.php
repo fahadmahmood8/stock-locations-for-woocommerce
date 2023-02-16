@@ -1,4 +1,4 @@
-<label class="switch" style="position: absolute;right: 30px;top: 11px;" title="<?php echo __('Click here to enable/disable', 'stock-locations-for-woocommerce'); ?>">
+<label class="switch" style="position: absolute;right: 30px;top: 26px;" title="<?php echo __('Click here to enable/disable', 'stock-locations-for-woocommerce'); ?>">
   <input <?php checked($location_status); ?> name="slw-location-status" id="slw-location-status" value="yes" data-id="<?php echo $location_id; ?>" type="checkbox" data-toggle="toggle" data-on="<?php echo __('Enabled', 'stock-locations-for-woocommerce'); ?>" data-off="<?php echo __('Disabled', 'stock-locations-for-woocommerce'); ?>" />
   <span class="slider round"></span>
 </label>
@@ -82,7 +82,7 @@
 			<th scope="row"><a href="https://www.youtube.com/embed/ZgmNWuKFyQI" target="_blank"><i class="fab fa-youtube"></i></a><label><?php echo __('Location Map Popup', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-map-marker-alt"></i></th>
 			<td><?php wp_editor( $location_popup, 'location_popup', array('editor_class'=>'location_popup') ); ?>
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
-                <small><b><?php echo __('Placeholders', 'stock-locations-for-woocommerce'); ?>:</b> LOCATION_ADDRESS, LOCATION_URL</small>
+                <small><b><?php echo __('Placeholders', 'stock-locations-for-woocommerce'); ?>:</b> LOCATION_NAME, LOCATION_ADDRESS, LOCATION_PHONE, LOCATION_TIMING, LOCATION_URL</small>
                 <div class="slw-sample-codes"><a title="<?php echo __('Click here to view the sample HTML for popup', 'stock-locations-for-woocommerce'); ?>"><i class="fas fa-code"></i></a><div class="slw-sample-code">&lt;div class=&quot;underlined&quot;&gt;LOCATION_ADDRESS&lt;/div&gt;<br>
   &lt;strong class=&quot;red&quot;&gt;(999) 999-9999&lt;/strong&gt;
 &lt;h6&gt;Estimated Order Time:&lt;/h6&gt;<br>
@@ -105,6 +105,14 @@
                 </p>
 			</td>
 		</tr>
+        <tr class="form-field term-name-wrap">
+			<th scope="row"><label><?php echo __('Phone Number', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-phone"></i></th>
+			<td>
+				<input name="location_phone" type="text" value="<?php echo $location_phone; ?>" size="40" /> 
+				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
+                </p>
+			</td>
+		</tr>        
         <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Opening Timings', 'stock-locations-for-woocommerce'); ?></label> <i class="far fa-clock"></i></th>
 			<td>

@@ -9,6 +9,10 @@ use SLW\SRC\Helpers\SlwWpmlHelper;
 use SLW\SRC\Helpers\SlwProductHelper;
 use SLW\SRC\Classes\SlwLocationTaxonomy;
 use SLW\SRC\Helpers\SlwMailHelper;
+
+//$stockAllocation = SlwStockAllocationHelper::getStockAllocation(33, 4, 0, false, 31);
+
+
 ?>
 
 <div class="slw_logger mt-4">
@@ -18,7 +22,7 @@ use SLW\SRC\Helpers\SlwMailHelper;
 			$obj = new SlwOrderItem;
 			wc_slw_logger_extended($obj);
 		}else{
-			//pree('NO EXTENSION');
+
 			//wc_slw_logger_extended();
 		}
 		
@@ -34,7 +38,7 @@ use SLW\SRC\Helpers\SlwMailHelper;
                     
             <ul class="slw_debug_log">
                 <?php
-				//pree($slw_logger);
+
                 foreach($slw_logger as $log){
                     ?>
                     <li>

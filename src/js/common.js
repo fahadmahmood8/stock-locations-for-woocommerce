@@ -1,5 +1,6 @@
 // JavaScript Document
 jQuery(document).ready(function($){
+	
 	$('select[id^="slw-product-"]').on('change', function(){
 		var v = $(this).val();
 		if(v!=''){
@@ -7,5 +8,10 @@ jQuery(document).ready(function($){
 		}else{
 			$(this).parent().find('.slw-variable-btn').css({'visibility':'hidden','display':'none'});
 		}
-	});	
+	});		
+		
+	$('body').on('click', '.slw-dismiss-notice', function(){
+		$(this).closest('.woocommerce-info').fadeOut().delay(3000).remove();
+	});
+
 });
