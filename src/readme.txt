@@ -152,6 +152,13 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.3 =
+- Fix: Stock value manual update with the integer zero inclusive ensured.  [Thanks to Stefan Murawski][16/02/2023]
+- Fix: Fix reduce stock automatic. https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/141 [Thanks to arwinvdv][16/02/2023]
+- Fix: Adds condition to location_id setting #142 https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/142/ [Thanks to Liopia][01/03/2023]
+
+= 2.4.2 =
+- Fix: Variable products stock value update to the parent product too.  [Thanks to Stefan Murawski][16/02/2023]
 
 = 2.4.1 =
 - Fix: Products get put from out of stock to backorder automatically.  [Thanks to Ole Straume Andersen][23/11/2022]

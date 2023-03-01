@@ -241,8 +241,8 @@
 		
 		
 		var location_id = (qty_obj.length>0?qty_obj.val():0);
-		
-		if(!location_id && slw_frontend.different_location_per_cart_item=='no'){
+				
+		if(!location_id && slw_frontend.different_location_per_cart_item=='no' && slw_frontend.stock_location_selected !== null){
 			location_id = slw_frontend.stock_location_selected;
 		}
 

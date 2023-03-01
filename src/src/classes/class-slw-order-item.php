@@ -130,7 +130,7 @@ if( !class_exists('SlwOrderItem') ) {
 			
 			if( empty($order) || ! is_object($order) ) return;
 
-			//$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_order_stock_reduced', true );
+
 			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
 		
 			

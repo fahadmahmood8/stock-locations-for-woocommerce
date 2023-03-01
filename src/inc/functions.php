@@ -551,6 +551,43 @@ jQuery(document).ready(function($){
 							update_post_meta($product_post->ID, '_manage_stock', 'yes');
 							
 							if($cron){ echo ' stock updated to '.$SlwStockLocationsTab.'.'; }
+							
+							/*Start - Fix added by Stefan Murawski - 15/02/2023*/
+
+							if($cron){
+								$qry = $wpdb->prepare("
+													SELECT
+															p.ID, sum(pm.meta_value) as total
+													FROM
+														`".$wpdb->posts."` p
+													LEFT JOIN
+														`".$wpdb->postmeta."` pm
+													ON
+														p.ID=pm.post_id
+													WHERE
+														  p.post_type='product_variation'
+													AND
+														  p.post_parent='%d'
+														AND
+															pm.meta_key LIKE %s
+													GROUP BY
+															p.ID
+												",
+												$product_post->ID,
+												'_stock_at_%'
+												);
+							
+								$abf = $wpdb->get_results($qry);
+								if(!empty($abf)){
+									foreach($abf as $subProd) {
+										update_post_meta($subProd->ID, '_stock', $subProd->total);
+										echo " Product Variant ".$subProd->ID." updated."; 
+									}
+								}
+							}
+							
+							/*End - Fix added by Stefan Murawski - 15/02/2023*/
+
 						break;
 
 					}	
