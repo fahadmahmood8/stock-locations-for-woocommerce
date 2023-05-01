@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,13 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.4 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/138 [Thanks to d2roth][01/03/2023]
+- New: placement of the location selection on products page other than the standard place. [Thanks to Morten Hansen][13/03/2023]
+- Fix: Make location selection in cart required option has been improved. [Thanks to Julien Villalard][18/04/2023]
+- Fix: Allow backorders implemented with stock_quantity_sum for max order value input field. [Thanks to Ole Straume Andersen][19/04/2023]
+- New: Assign Location with API. [Thanks to gturcalp][21/04/2023]
+
 = 2.4.3 =
 - Fix: Stock value manual update with the integer zero inclusive ensured.  [Thanks to Stefan Murawski][16/02/2023]
 - Fix: Fix reduce stock automatic. https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/141 [Thanks to arwinvdv][16/02/2023]

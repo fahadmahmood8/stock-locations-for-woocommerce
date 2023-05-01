@@ -781,7 +781,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
 					//error_log("Same location per cart item. Item Quantity: $itemQuantity, UserLocationChoice ID: $userLocationChoiceId, User stock location quantity = " . $userStockLocation[$userLocationChoiceId]->quantity);
 					
-					if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
+					if( isset($userStockLocation[$userLocationChoiceId]) && $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
 						$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
 					}
 					else {

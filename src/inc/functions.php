@@ -630,9 +630,9 @@ jQuery(document).ready(function($){
 			$args['meta_query']['relation'] = 'AND';
 			$args['meta_query'][] = $additional_meta_query;
 		}
-
+		//pree($taxonomy);pree($args);
 		$terms = get_terms($taxonomy, $args);
-		
+		//pre($terms);
 		return $terms;
 	}
 
@@ -868,7 +868,7 @@ jQuery(document).ready(function($){
 			} 
 				
 			if ( $_product->is_in_stock() && $stock>0) {
-				$availability = $stock .' '. __(  'in stock', 'woocommerce' );
+				$availability = $stock .' '. strtolower(__(  'In stock', 'woocommerce' ));
 			}else{
 				
 				$_backorders = get_post_meta($_product->get_id(), '_backorders', true);			

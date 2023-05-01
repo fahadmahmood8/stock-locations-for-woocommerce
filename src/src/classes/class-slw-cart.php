@@ -54,7 +54,7 @@ if(!class_exists('SlwCart')) {
             
             if( !empty($stock_locations = SlwStockAllocationHelper::getProductStockLocations($product_id, true, null)) ) {
                 echo '<select class="slw_cart_item_stock_location" style="display:block;" required>';
-                echo '<option disabled selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+                echo '<option disabled selected value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
                 foreach( $stock_locations as $id => $location ) {
                     if( $location->quantity > 0 && $location->quantity >= $cart_item['quantity'] ) {
                         echo '<option class="cart_item_stock_location_'.$cart_item_key.'" data-cart_id="'.$cart_item_key.'" value="'.$location->term_id.'">'.$location->name.'</option>';

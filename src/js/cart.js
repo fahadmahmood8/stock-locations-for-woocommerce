@@ -42,13 +42,13 @@
 	function slw_cart_validate() {
 		var inputsWithValues = 0;
 		var myInputs = $(".slw_cart_item_stock_location_selection");
-	
-		myInputs.each(function(e) {
-			if ($(this).val()) {
+		
+		myInputs.each(function(e) {			
+			var v = $.trim($(this).val());
+			if (v!='' && v!=0) {
 				inputsWithValues += 1;
 			}
 		});
-	
 		if (inputsWithValues != myInputs.length) {
 			$('.checkout-button').addClass('slw_checkout_disable');
 		} else {

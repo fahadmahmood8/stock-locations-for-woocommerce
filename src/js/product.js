@@ -14,7 +14,7 @@
 		}
 		var product_item_id = (variation_id?variation_id:product_id);
 		var backorders_allowed = slw_frontend.allow_backorder[product_item_id];
-		
+		//console.log(backorders_allowed);
 		var cart_qty = (
 						(	
 								typeof slw_frontend.slw_cart_items[product_id]!='undefined'
@@ -40,7 +40,7 @@
 		if($('input[name="quantity"]').length>0){
 			var qty_now = $('input[name="quantity"]').val();
 			if(qty_now<=parseFloat(slw_frontend.stock_quantity_sum)){
-			}else{
+			}else if(slw_frontend.stock_quantity_sum>0 && backorders_allowed!='yes'){
 				$('input[name="quantity"]').val(slw_frontend.stock_quantity_sum);
 			}
 		}

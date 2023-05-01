@@ -199,10 +199,10 @@ if( !class_exists('SlwFrontendCart') ) {
 						// default behaviour
 						if( isset($cart_item['stock_location']) ) {
 							echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
-							echo '<option>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+							echo '<option value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 						} else {
 							echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
-							echo '<option selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+							echo '<option selected value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 						}
 						
 						foreach( $stock_locations as $id => $location ) {

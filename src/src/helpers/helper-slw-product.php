@@ -100,7 +100,7 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			// Check if status string is in array
 			$approved_status_string = array('instock', 'outofstock', 'onbackorder');
 			if ( ! in_array( $status, $approved_status_string ) ) return;
-
+			$product_id = (int) $product_id;
 			$product = wc_get_product( $product_id );
 			if ( $product->is_type( 'variation' ) ) {
 				do_action( 'woocommerce_variation_set_stock_status', $product_id, $status, $product );
