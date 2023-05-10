@@ -1032,7 +1032,39 @@ jQuery(document).ready(function($){
 		  return $quantity;
 	}
 	
-	add_filter( 'woocommerce_product_get_stock_quantity', 'slw_override_stock_quantity', 10, 2 );
+	//add_filter( 'woocommerce_product_get_stock_quantity', 'slw_override_stock_quantity', 10, 2 );
+		
+	function slw_woocommerce_cart_item_name_callback( $product_name, $cart_item, $cart_item_key ){
+		
+		return $product_name;
+	}
+	
+	//add_filter( 'woocommerce_cart_item_name', 'slw_woocommerce_cart_item_name_callback', 10, 3 );
+	
+	
+	function slw_woocommerce_get_item_data($item_data, $cart_item ){
 
+		if(!empty($item_data)){
+			$stock_location = (array_key_exists('stock_location', $cart_item)?$cart_item['stock_location']:0);
+			if($stock_location>0){
+				$stock_location_notice = get_term_meta($stock_location, 'slw_location_notice', true);				
+				if($stock_location_notice!=''){
+					foreach($item_data as $index=>$item){
+						switch($item['name']){
+							case 'Location':
+								$item_data[$index]['display'] .= '<div class="store-notice">'.$stock_location_notice.'</div>';
+							break;
+						}
+					}
+				}
+			}
+		}
+		return $item_data;
+	}
+	
+	add_filter( 'woocommerce_get_item_data', 'slw_woocommerce_get_item_data', PHP_INT_MAX, 2 );	
+	
+	
+	
 	include_once('functions-api.php');
 	include_once('filter-hooks.php');

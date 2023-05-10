@@ -152,6 +152,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.5 =
+- New: Product page, stock location qty. based notice added with the filter hook option. [Thanks to Cristian][09/05/2023]
+- New: Product page, cart page, checkout page, store location based notice to show. [Thanks to Mircea Popa][10/05/2023]
+
 = 2.4.4 =
 - Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/138 [Thanks to d2roth][01/03/2023]
 - New: placement of the location selection on products page other than the standard place. [Thanks to Morten Hansen][13/03/2023]

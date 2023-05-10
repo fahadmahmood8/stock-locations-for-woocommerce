@@ -93,7 +93,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.4.4';
+		public           $version  = '2.4.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -250,6 +250,7 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
 			
+			
 			$term_id = (is_archive()?get_queried_object_id():0);
 			
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
@@ -274,6 +275,22 @@ if(!class_exists('SlwMain')) {
 			$data['slw_term_id'] = $term_id;
 			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
 			$data['stock_location_selected'] = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+			
+			$stock_locations = array();
+			$stock_locations_obj = slw_get_locations('location', array(), false);
+			
+			if( ! empty( $stock_locations_obj ) ) {
+				foreach( $stock_locations_obj as $location ) {
+					$location_notice = get_term_meta($location->term_id, 'slw_location_notice', true);
+					$location_priority = get_term_meta($location->term_id, 'slw_location_priority', true);
+					$stock_locations[$location->term_id] = array('id'=>$location->term_id, 'name'=>$location->name, 'priority'=>$location_priority, 'notice'=>$location_notice);
+				}
+			}
+			
+			
+			$data['stock_locations_data'] = $stock_locations;
+			$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', 'STOCK_QTY available at LOCATION_NAME');
+			
 			
 			$data['slw_allow_geo'] = __('Allow current location', 'stock-locations-for-woocommerce');
 			$data['slw_allow_geo_tip'] = __('Allow current location to calculate the distance and sort by nearest', 'stock-locations-for-woocommerce');
@@ -300,9 +317,14 @@ if(!class_exists('SlwMain')) {
 						$slw_cart_items[$product_id][$variation_id][$stock_location_id] = $quantity;
 					}
 					$data['slw_cart_items'] = $slw_cart_items;
+					
+					
 				}
 				
 			}
+			
+			
+
 
 			if($term_id && isset($this->plugin_settings['extra_assets_settings']) && isset($this->plugin_settings['extra_assets_settings']['font_awesome']) && $this->plugin_settings['extra_assets_settings']['font_awesome'] == 'on'){
 				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('Ymdh') );				
