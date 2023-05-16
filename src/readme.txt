@@ -152,6 +152,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.6 =
+- New: Product price decimal value can be controlled with the filter hook available. [Thanks to Cristian][10/05/2023]
+- Fix: Function update_cart_stock_locations() updated. [Thanks to michaelw90][11/05/2023]
+- New: Location selection popup widget option added under widgets section/tab. [Thanks to Sage Stephens | Little Brand Box][16/05/2023]
+
 = 2.4.5 =
 - New: Product page, stock location qty. based notice added with the filter hook option. [Thanks to Cristian][09/05/2023]
 - New: Product page, cart page, checkout page, store location based notice to show. [Thanks to Mircea Popa][10/05/2023]

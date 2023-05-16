@@ -139,4 +139,28 @@
 		cursor:pointer;		
 		float:right;
 	}
-	
+	.slw-location-selection-popup {
+		background-color: #900;
+		float: left;
+		margin: 0 auto;
+		width: 100%;
+	}
+	.slw-location-selection-popup ul{
+		margin:0;
+		padding:0;
+	}	
+	.slw-location-selection-popup ul li{
+		list-style:none;
+		float:left;
+		width:100%;				
+	}		
+	.slw-location-selection-popup ul li a{
+		display:block;
+		text-align:center;
+		padding:10px 0;
+		font-size:18px;
+		color:#fff;
+	}
+	.slw-location-selection-popup ul li a:hover{
+		color:#FF0;
+	}

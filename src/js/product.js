@@ -50,10 +50,11 @@
 		var price = qty_obj.data('price');
 		var price_str = (price+'');
 
+		var decimal_val = parseInt(slw_frontend.product_price_decimals);
 		var price_int = (price_str?price_str.replace(',','.'):0);
 		price_int = parseFloat(price_int);
 		price_int = (price_int>0?price_int:slw_frontend.product_price);
-		price = parseFloat(price_int?(price_int+'').replace(',','.'):0).toFixed(2);
+		price = parseFloat(price_int?(price_int+'').replace(',','.'):0).toFixed(decimal_val);
 		
 		
 		if(price_int && (typeof slw_frontend.product_stock_price_status!='undefined' && slw_frontend.product_stock_price_status=='on')){
