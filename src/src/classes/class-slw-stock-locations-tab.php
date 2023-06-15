@@ -525,7 +525,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 						
 						$input_amount = sanitize_slw_data($_POST[$stock_input_id]);
 						
-						if($input_amount>0){
+						if($input_amount>=0){
 							$input_amounts[] = $input_amount;
 						}else{
 							continue;
@@ -533,7 +533,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 						
 	
 						// Check if input is empty
-						if(strlen($_POST[$stock_input_id]) === 0) {
+						if(strlen($_POST[$stock_input_id]) === '') {
 							// Show admin notice
 							SlwAdminNotice::displayError(__('An error occurred. Some field was empty.', 'stock-locations-for-woocommerce'));
 	

@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -120,7 +120,7 @@ If order quantity is within the summation of all stock locations available stock
 
 Turn ON "Enable default location in frontend selection" from WooCommerce > Stock Locations for WC. This option will allow you to select default location for a product on Product Edit page. Now turn ON "Lock frontend location to default" and it will lock frontend location which is selected as default.
 
-= I found a bug, where i can report it? =
+= I found a bug, where I can report it? =
 I prefer you to use the Github issues. You can submit a new one here [GitHub](https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/new)
 
 = How to show location stock quantity with a postfix e.g. 20+? =
@@ -152,8 +152,34 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.7 =
+- Fix: Product page stock quantity with a postfix related issue. [Thanks to Lisa Fadden][25/05/2023]
+- New: Location selection popup widget option refined with the boolean type filter hook. [Thanks to Sage Stephens | Little Brand Box][17/05/2023]
+- Fix: Product page price decimals related hook revised. [Thanks to Cristian][25/05/2023]
+
+= 2.4.6 =
+- New: Product price decimal value can be controlled with the filter hook available. [Thanks to Cristian][10/05/2023]
+- Fix: Function update_cart_stock_locations() updated. [Thanks to michaelw90][11/05/2023]
+- New: Location selection popup widget option added under widgets section/tab. [Thanks to Sage Stephens | Little Brand Box][16/05/2023]
+
+= 2.4.5 =
+- New: Product page, stock location qty. based notice added with the filter hook option. [Thanks to Cristian][09/05/2023]
+- New: Product page, cart page, checkout page, store location based notice to show. [Thanks to Mircea Popa][10/05/2023]
+
+= 2.4.4 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/138 [Thanks to d2roth][01/03/2023]
+- New: placement of the location selection on products page other than the standard place. [Thanks to Morten Hansen][13/03/2023]
+- Fix: Make location selection in cart required option has been improved. [Thanks to Julien Villalard][18/04/2023]
+- Fix: Allow backorders implemented with stock_quantity_sum for max order value input field. [Thanks to Ole Straume Andersen][19/04/2023]
+- New: Assign Location with API. [Thanks to gturcalp][21/04/2023]
+
+= 2.4.3 =
+- Fix: Stock value manual update with the integer zero inclusive ensured.  [Thanks to Stefan Murawski][16/02/2023]
+- Fix: Fix reduce stock automatic. https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/141 [Thanks to arwinvdv][16/02/2023]
+- Fix: Adds condition to location_id setting #142 https://github.com/fahadmahmood8/stock-locations-for-woocommerce/pull/142/ [Thanks to Liopia][01/03/2023]
+
 = 2.4.2 =
-- Fix: Variable products stock value update to the parent product too.  [Thanks to Stefan Murawski][16/12/2023]
+- Fix: Variable products stock value update to the parent product too.  [Thanks to Stefan Murawski][16/02/2023]
 
 = 2.4.1 =
 - Fix: Products get put from out of stock to backorder automatically.  [Thanks to Ole Straume Andersen][23/11/2022]

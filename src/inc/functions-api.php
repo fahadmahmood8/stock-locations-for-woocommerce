@@ -70,7 +70,15 @@
 					case 'set':
 						switch($data['item']){
 							case 'location':
-							
+								if($data['product_id'] && $data['location_id']){
+									$product_locations = wp_get_object_terms($data['product_id'],  'location' );
+									$paux = array(intval($data['location_id']));
+									foreach($product_locations as $termVal) {
+										if ($termVal -> term_id != $paux[0]) $paux[] = $termVal -> term_id;
+									}
+									$response['response'] = wp_set_object_terms($data['product_id'], $paux, 'location');
+								}
+								
 							break;
 							case 'stock':
 								if($data['product_id'] && $data['location_id'] && $data['stock_value']>=0){

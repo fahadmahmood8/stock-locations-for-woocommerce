@@ -14,4 +14,11 @@ jQuery(document).ready(function($){
 		$(this).closest('.woocommerce-info').fadeOut().delay(3000).remove();
 	});
 
+	
+	setTimeout(function(){
+		if(slw_frontend.slw_location_selection_popup!=''){
+			$.blockUI({message:slw_frontend.slw_location_selection_popup});
+		}
+	}, 2000);
+	
 });

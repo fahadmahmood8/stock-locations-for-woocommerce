@@ -199,10 +199,10 @@ if( !class_exists('SlwFrontendCart') ) {
 						// default behaviour
 						if( isset($cart_item['stock_location']) ) {
 							echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
-							echo '<option>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+							echo '<option value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 						} else {
 							echo '<select class="slw_item_stock_location slw_cart_item_stock_location_selection" style="display:block;" required>';
-							echo '<option selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+							echo '<option selected value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
 						}
 						
 						foreach( $stock_locations as $id => $location ) {
@@ -238,8 +238,8 @@ if( !class_exists('SlwFrontendCart') ) {
 		 *
 		 * @since 1.2.0
 		 */
-		public function update_cart_stock_locations()
-		{
+		
+		public function update_cart_stock_locations(){
 			// Do a nonce check
 			if( ! isset($_POST['cart_id']) || ! isset( $_POST['security'] ) || ! wp_verify_nonce( $_POST['security'], 'woocommerce-cart' ) ) {
 				wp_send_json( array( 'nonce_fail' => 1 ) );
@@ -251,7 +251,12 @@ if( !class_exists('SlwFrontendCart') ) {
 			$stock_location = sanitize_slw_data($_POST['stock_location']);
 			$cart_item = $cart[$cart_id];
 			$cart_item['stock_location'] = $stock_location;
-			WC()->cart->cart_contents[$cart_id] = $cart_item;
+		
+				// START CHANGE HERE
+			$cart[$cart_id] = $cart_item;
+			WC()->cart->set_cart_contents($cart);
+				// END CHANGE HERE
+		
 			WC()->cart->set_session();
 			wp_send_json( array( 'success' => 1 ) );
 			exit;

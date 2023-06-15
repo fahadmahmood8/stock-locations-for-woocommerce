@@ -130,7 +130,7 @@ if( !class_exists('SlwOrderItem') ) {
 			
 			if( empty($order) || ! is_object($order) ) return;
 
-			//$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_order_stock_reduced', true );
+
 			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
 		
 			
@@ -781,7 +781,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
 					//error_log("Same location per cart item. Item Quantity: $itemQuantity, UserLocationChoice ID: $userLocationChoiceId, User stock location quantity = " . $userStockLocation[$userLocationChoiceId]->quantity);
 					
-					if( $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
+					if( isset($userStockLocation[$userLocationChoiceId]) && $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
 						$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
 					}
 					else {

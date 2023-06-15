@@ -721,6 +721,13 @@ if(!class_exists('SlwSettings')) {
 				<option value="no" <?php echo $selected; ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
 
 			</select>
+<?php
+			$id = $id.'_pos';
+?>            
+            <select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
+            	<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
+				<option disabled <?php echo $selected; ?>><?php echo __('Select Position', 'stock-locations-for-woocommerce'); ?></option>
+            </select>
 			<?php
 		}		 
 		public function select_yes_no_callback( $id )

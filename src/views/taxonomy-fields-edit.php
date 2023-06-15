@@ -120,6 +120,15 @@
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
 			</td>
-		</tr>        
+		</tr>   
+        
+        <tr class="form-field term-name-wrap">
+			<th scope="row"><label><?php echo __('Product Page Notice', 'stock-locations-for-woocommerce'); ?></label> <i class="far fa-clock"></i></th>
+			<td>
+				<input name="location_notice" type="text" value="<?php echo $location_notice; ?>" size="40" /> 
+				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
+                </p>
+			</td>
+		</tr>                
 	</tbody>
 </table>

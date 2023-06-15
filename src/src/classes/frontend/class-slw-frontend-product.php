@@ -137,7 +137,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 								$disabled = 'disabled="disabled"';
 							}
 						
-							$ret .= '<option data-priority="'.$slw_location_priority.'" data-price="'.$stock_price.'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
+							$ret .= '<option data-priority="'.$slw_location_priority.'" data-price="'.$stock_price.'" data-quantity-formatted="'.$location['quantity-formatted'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
 						
 						}
 					}

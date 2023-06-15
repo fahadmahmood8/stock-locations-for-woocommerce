@@ -80,6 +80,18 @@ $slw_widgets_arr = array(
 		'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);<br /><br /><strong>Shortcodes:</strong><br />[slw-archive-meta meta_key="location_address"]'),					
 		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
 		
+	),
+	'slw-location-selection' => array(
+		'type' => __('Premium', 'stock-locations-for-woocommerce'),
+		'input' => array('name'=>'slw-location-selection', 'type'=>'toggle', 'caption'=>''),
+		'title' => __('Stock Locations Selection (Popup)', 'stock-locations-for-woocommerce'),
+		'description' => __('This widget will implement a popup with the location names to land on specific location archives.', 'stock-locations-for-woocommerce'),
+		'shortcode' => array(
+		
+				'add_filter("<strong>slw_location_selection_popup_content</strong>", "<strong>yourtheme_location_selection_popup_content_callback</strong>", 10, 2);',
+				'add_filter("<strong>slw_location_selection_popup_display</strong>", "<strong>yourtheme_location_selection_popup_display_callback</strong>", 10, 2);'),
+		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png'),
+		
 	)
 );
 
@@ -93,7 +105,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.4.2';
+		public           $version  = '2.4.7';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -250,9 +262,16 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
 			
-			$term_id = (is_archive()?get_queried_object_id():0);
+			
+			$term_id = (int)(is_archive()?get_queried_object_id():0);
+			$term_id = is_numeric($term_id)?$term_id:0;
+			
 			
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
+			$data['slw_location_selection'] = get_option('slw-location-selection', 'no');
+			$data['slw_location_selection_popup'] = (apply_filters('slw_location_selection_popup_display', is_front_page(), is_shop()) && function_exists('slw_location_selection_popup') && (get_option('slw-location-selection', 'no')=='yes')?slw_location_selection_popup():'');
+			$data['is_home_page'] = (is_home()?'yes':'no');
+			$data['is_front_page'] = (is_front_page()?'yes':'no');
 			$data['ajaxurl'] = admin_url( 'admin-ajax.php' );
 			$data['cart_url'] = wc_get_cart_url();
 			$data['wc_slw_pro'] = $wc_slw_pro;
@@ -274,6 +293,24 @@ if(!class_exists('SlwMain')) {
 			$data['slw_term_id'] = $term_id;
 			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
 			$data['stock_location_selected'] = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+			
+			$stock_locations = array();
+			$stock_locations_obj = slw_get_locations('location', array(), false);
+			
+			if( ! empty( $stock_locations_obj ) ) {
+				foreach( $stock_locations_obj as $location ) {
+					$location_notice = get_term_meta($location->term_id, 'slw_location_notice', true);
+					$location_priority = get_term_meta($location->term_id, 'slw_location_priority', true);
+					$stock_locations[$location->term_id] = array('id'=>$location->term_id, 'name'=>$location->name, 'priority'=>$location_priority, 'notice'=>$location_notice);
+				}
+			}
+			
+			
+			$data['stock_locations_data'] = $stock_locations;
+			$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', 'STOCK_QTY available at LOCATION_NAME');
+			
+			
+			
 			
 			$data['slw_allow_geo'] = __('Allow current location', 'stock-locations-for-woocommerce');
 			$data['slw_allow_geo_tip'] = __('Allow current location to calculate the distance and sort by nearest', 'stock-locations-for-woocommerce');
@@ -300,9 +337,14 @@ if(!class_exists('SlwMain')) {
 						$slw_cart_items[$product_id][$variation_id][$stock_location_id] = $quantity;
 					}
 					$data['slw_cart_items'] = $slw_cart_items;
+					
+					
 				}
 				
 			}
+			
+			
+
 
 			if($term_id && isset($this->plugin_settings['extra_assets_settings']) && isset($this->plugin_settings['extra_assets_settings']['font_awesome']) && $this->plugin_settings['extra_assets_settings']['font_awesome'] == 'on'){
 				wp_enqueue_style( 'font-awesome', SLW_PLUGIN_DIR_URL . 'css/fontawesome.min.css', array(), date('Ymdh') );				
@@ -371,12 +413,15 @@ if(!class_exists('SlwMain')) {
 						$data['stock_locations'] = $meta_obj->total_locations;
 					}
 				}
-				
+				$product_price = trim(str_replace(get_woocommerce_currency_symbol(), '', strip_tags(wc_price($wc_product->get_price()))));
 				$data['product_type'] = $wc_product->get_type();
 				$data['product_id'] = $product_id;
+				$data['product_price_format'] = trim(str_replace(array(get_woocommerce_currency_symbol(), $product_price), array('_CURRENCY_SYMBOL', '_PRODUCT_PRICE'), strip_tags(wc_price($wc_product->get_price()))));
+				$data['product_price_raw'] = $product_price; 
 				$data['product_price'] = $wc_product->get_price(); 
 				$data['stock_status'][$product_id] = $wc_product->get_availability();
 				$data['allow_backorder'][$product_id] = get_post_meta($product_id, '_backorders', true);
+				$data['product_price_decimals'] = apply_filters('slw_product_price_decimals', 2, $product_price);
 				
 				if($data['product_type']=='variable' && $product_id>0){
 				
@@ -417,7 +462,7 @@ if(!class_exists('SlwMain')) {
 						$data['stock_quantity'][$product_id][0] = $data['stock_quantity_sum'];
 					}					
 				}
-				
+				wp_enqueue_script( 'slw-frontend-product-underscore', SLW_PLUGIN_DIR_URL . 'js/underscore-min.js', array( 'jquery' ), time(), true );
 				wp_enqueue_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), time(), true );
 				wp_localize_script(
 					'slw-frontend-product-scripts',
