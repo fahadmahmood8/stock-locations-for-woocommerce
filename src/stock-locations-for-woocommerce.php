@@ -26,9 +26,9 @@ if ( !defined( 'WPINC' ) ) {
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr;
+global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format;
 
-
+$slw_wc_stock_format = get_option('woocommerce_stock_format');
 $slw_gkey = get_option('slw-google-api-key');
 $slw_plugin_settings = get_option( 'slw_settings' );
 $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array();
@@ -105,7 +105,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.4.7';
+		public           $version  = '2.4.8';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others

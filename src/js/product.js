@@ -320,7 +320,7 @@
 			
 			stock_quantity = (typeof stock_quantity=='undefined'?0:stock_quantity);
 			if(typeof availability_obj=='object'){
-				str = (availability_obj.availability.replace(slw_frontend.stock_quantity_sum, stock_quantity));				
+				str = (availability_obj.availability.replace(slw_frontend.stock_quantity_sum, stock_quantity));	
 				obj.removeAttr('class').addClass(availability_obj.class+' stock').html(str);
 			}
 			var cart_qty = 0;

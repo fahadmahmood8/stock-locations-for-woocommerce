@@ -105,6 +105,8 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 		 */
 		public static function getProductStockLocations( $product, $needMetaData = true, $filterByLocation = null )
 		{
+			//return array();
+			
 			global $wpdb;
 			
 			$productId = (is_object($product)?$product->get_id():$product);
@@ -202,7 +204,7 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			}
 			
 			//pree($returnLocations);exit;
-
+			
 			// Locations
 			return $returnLocations;
 		}

@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.8 =
+- Fix: Product page stock filter hook related function updated. [Thanks to Morten Hansen][19/06/2023]
+
 = 2.4.7 =
 - Fix: Product page stock quantity with a postfix related issue. [Thanks to Lisa Fadden][25/05/2023]
 - New: Location selection popup widget option refined with the boolean type filter hook. [Thanks to Sage Stephens | Little Brand Box][17/05/2023]

@@ -854,10 +854,12 @@ jQuery(document).ready(function($){
 	}
 	//add_filter('woocommerce_format_localized_price', 'slw_woocommerce_format_localized_price');
 		
-	add_filter( 'woocommerce_get_availability_text', 'slw_change_stock_text', 9, 2 );
+	add_filter( 'woocommerce_get_availability_text', 'slw_change_stock_text', 9, 2 ); //
 	add_filter( 'woocommerce_get_availability', 'slw_filter_woocommerce_get_availability', 9, 2 ); 	
 	
 	function slw_change_stock_text ( $availability, $product) {
+		
+		global $slw_wc_stock_format;
 		
 		if($product) {
 			$stock = $product->get_stock_quantity();
@@ -868,7 +870,20 @@ jQuery(document).ready(function($){
 			} 
 				
 			if ( $_product->is_in_stock() && $stock>0) {
-				$availability = $stock .' '. strtolower(__(  'In stock', 'woocommerce' ));
+				switch($slw_wc_stock_format){
+					default:
+						$availability = $stock .' '. strtolower(__(  'In stock', 'woocommerce' ));
+					break;
+					case 'low_amount':
+						$_low_stock_amount = get_post_meta($product->get_id(), '_low_stock_amount', true);										
+						if($_low_stock_amount && $stock<=$_low_stock_amount){
+							$availability = $stock .' '. strtolower(__(  'In stock', 'woocommerce' ));
+						}
+					break;
+					case 'no_amount':
+						
+					break;
+				}
 			}else{
 				
 				$_backorders = get_post_meta($_product->get_id(), '_backorders', true);			
@@ -880,6 +895,8 @@ jQuery(document).ready(function($){
 			
 
 		}
+		
+		
 		return $availability;
 	}	
 	function slw_filter_woocommerce_get_availability( $array, $product ) { 
