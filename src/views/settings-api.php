@@ -2,19 +2,18 @@
 <?php global $wc_slw_pro, $wc_slw_premium_copy, $slw_api_valid_keys; ?>
 
 <div class="slw_api_crons mt-4">
-        <?php
-
-			
-?>
+       
 <div class="alert alert-info" role="alert">
   <?php echo __('This section is for advanced level users. Please do not try with inadequate knowledge.', 'stock-locations-for-woocommerce'); ?> <a class="btn btn-sm btn-danger" href="<?php echo $wc_slw_premium_copy; ?>?help" target="_blank"><?php echo __('Contact Developer', 'stock-locations-for-woocommerce'); ?></a></div>
   
 
 
 <label class="switch" style="float:right;">
-  <input <?php checked(get_option('slw_api_status')==true); ?> name="slw-api-status" id="slw-api-status" value="yes" type="checkbox" data-toggle="toggle" data-on="<?php echo __('Enabled', 'stock-locations-for-woocommerce'); ?>" data-off="<?php echo __('Disabled', 'stock-locations-for-woocommerce'); ?>" />
+  <input <?php checked(get_option('slw_api_status')==true); ?> name="slw-api-status" id="slw-api-status" value="yes" type="checkbox" data-on="<?php echo __('Enabled', 'stock-locations-for-woocommerce'); ?>" data-off="<?php echo __('Disabled', 'stock-locations-for-woocommerce'); ?>" />
   <span class="slider round"></span>
 </label>
+
+
 <?php			
 
 	if(!empty($slw_api_valid_keys)){
@@ -39,4 +38,13 @@
 	}
 
 ?>
+<br />
+<br />
+
+<ul>
+	<li>
+    	add_filter('slw_stock_allocation_notification_message', 'yourtheme_stock_allocation_notification_message_callback', 10, 4);
+    </li>
+    
+</ul>
 </div>		

@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.4.9 =
+- New: slw_stock_allocation_notification_message filter hook added. [Thanks to Carlos][21/07/2023]
+
 = 2.4.8 =
 - Fix: Product page stock filter hook related function updated. [Thanks to Morten Hansen][19/06/2023]
 
