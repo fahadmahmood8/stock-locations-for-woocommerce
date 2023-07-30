@@ -390,32 +390,33 @@
 	function slw_update_product_location_msg(vpid){
 		
 			$('div.stock-msg').remove();		
-			var qty_obj = slw_frontend.stock_quantity[vpid];
+			var qty_obj = (slw_frontend.stock_quantity.length>0?slw_frontend.stock_quantity[vpid]:[]);
 			var qty_highest = 0;
 			var qty_highest_id = 0;
 			var sorted_locations = _.sortBy(slw_frontend.stock_locations_data, 'priority').reverse();
 			
-			$.each(sorted_locations, function(j, k){
-				
-				
-				var id = k.id;
-
-				var v = qty_obj[id];
-			
-			
-				if(typeof v!='undefined' && v!='' && v>0 && qty_highest==0){
+			if(qty_obj.length>0){
+				$.each(sorted_locations, function(j, k){
 					
-					qty_highest = v;
-					qty_highest_id = id;
-					//console.log(vpid+' - '+qty_highest_id+' = '+qty_highest+' - '+k.priority);
+					
+					var id = k.id;
+	
+					var v = qty_obj[id];
 				
-				}
 				
-			
-
-			
-			});
-			
+					if(typeof v!='undefined' && v!='' && v>0 && qty_highest==0){
+						
+						qty_highest = v;
+						qty_highest_id = id;
+						//console.log(vpid+' - '+qty_highest_id+' = '+qty_highest+' - '+k.priority);
+					
+					}
+					
+				
+	
+				
+				});
+			}
 			
 			
 			
