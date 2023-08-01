@@ -16,9 +16,29 @@ jQuery(document).ready(function($){
 
 	
 	setTimeout(function(){
-		if(slw_frontend.slw_location_selection_popup!=''){
+		if(slw_frontend.slw_location_selection_popup!='' && typeof slw_frontend.stock_location_selected==null){
 			$.blockUI({message:slw_frontend.slw_location_selection_popup});
+			$('.blockUI:before').hide();
+			
 		}
 	}, 2000);
+	
+	$('body').on('click', 'div.slw-location-selection-popup ul li a', function(event){
+		
+		event.preventDefault();
+		
+		var location_id = $(this).parent().data('id');
+		var location_url = $(this).attr('href');
+		var data = {
+				'action': 'slw_update_stock_location_session',
+				'location_id': location_id,
+				'slw_nonce_field': slw_frontend.nonce
+		};
+		$.post(slw_frontend.ajaxurl, data, function(response) {
+			//document.location.href = location_url;
+			document.location.reload();
+		});
+		
+	});
 	
 });

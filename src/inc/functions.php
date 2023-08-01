@@ -380,7 +380,7 @@ jQuery(document).ready(function($){
 							$ret .= '<input type="'.$val['type'].'" name="'.$val['name'].'" id="'.$val['name'].'" value="'.$db_val.'" />';
 						break;
 						case 'toggle':
-							$ret .= '<label data-val="'.$db_val.'" class="switch" style="float:none; clear:both;"><input '.checked($db_val=='yes', true, false).' name="'.$val['name'].'" id="'.$val['name'].'" value="yes" type="checkbox" data-toggle="toggle" data-on="'.__('Enabled', 'stock-locations-for-woocommerce').'" data-off="'.__('Disabled', 'stock-locations-for-woocommerce').'" /><span class="slider round"></span></label>';
+							$ret .= '<label data-val="'.$db_val.'" class="switch" style="float:none; clear:both;"><input '.checked($db_val=='yes', true, false).' name="'.$val['name'].'" id="'.$val['name'].'" value="yes" type="checkbox" data-on="'.__('Enabled', 'stock-locations-for-woocommerce').'" data-off="'.__('Disabled', 'stock-locations-for-woocommerce').'" /><span class="slider round"></span></label>';
 						break;
 					}
 				break;

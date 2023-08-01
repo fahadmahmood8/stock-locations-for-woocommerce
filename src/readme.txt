@@ -152,8 +152,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.5.1 =
+- Fix: BlockUI related issue when selecting the location on the shop page. [Thanks to Narinder Kumar / Dfavo][01/08/2023]
+
 = 2.5.0 =
-- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/145. [Thanks to  Nguyễn Minh Khôi][30/07/2023]
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/145. [Thanks to Nguyễn Minh Khôi][30/07/2023]
 
 = 2.4.9 =
 - New: slw_stock_allocation_notification_message filter hook added. [Thanks to Carlos][21/07/2023]

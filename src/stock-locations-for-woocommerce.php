@@ -90,7 +90,7 @@ $slw_widgets_arr = array(
 		
 				'add_filter("<strong>slw_location_selection_popup_content</strong>", "<strong>yourtheme_location_selection_popup_content_callback</strong>", 10, 2);',
 				'add_filter("<strong>slw_location_selection_popup_display</strong>", "<strong>yourtheme_location_selection_popup_display_callback</strong>", 10, 2);'),
-		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png'),
+		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png', 'https://ps.w.org/stock-locations-for-woocommerce/assets/screenshot-17.png'),
 		
 	)
 );
@@ -105,7 +105,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.5.0';
+		public           $version  = '2.5.1';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others

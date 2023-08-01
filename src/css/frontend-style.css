@@ -164,3 +164,6 @@
 	.slw-location-selection-popup ul li a:hover{
 		color:#FF0;
 	}
+	div.blockUI:before {
+	  display: none;
+	}
