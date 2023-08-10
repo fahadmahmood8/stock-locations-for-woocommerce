@@ -95,9 +95,11 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				update_post_meta( $mainProductId, '_stock_at_' . $term->term_id, $postmeta_stock_at_term - $item_stock_location_subtract_input_qty );
 
 				// Add the note
-				$lineItem->get_order()->add_order_note(
-					sprintf(__('The stock in the location %1$s was updated in -%2$d for the product %3$s', 'stock-locations-for-woocommerce'), $term->name, $item_stock_location_subtract_input_qty, $mainProduct->get_name())
+				if(method_exists($lineItem->get_order(), 'add_order_note')){
+					$lineItem->get_order()->add_order_note(
+						sprintf(__('The stock in the location %1$s was updated in -%2$d for the product %3$s', 'stock-locations-for-woocommerce'), $term->name, $item_stock_location_subtract_input_qty, $mainProduct->get_name())
 				);
+				}
 				
 				
 

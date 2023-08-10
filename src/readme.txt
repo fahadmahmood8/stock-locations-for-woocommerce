@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.5.2 =
+- Fix: CRITICAL Uncaught Error: Call to undefined method Automattic\WooCommerce\Admin\Overrides\OrderRefund::add_order_note(). [Thanks to Morten Hansen][10/08/2023]
+
 = 2.5.1 =
 - Fix: BlockUI related issue when selecting the location on the shop page. [Thanks to Narinder Kumar / Dfavo][01/08/2023]
 
