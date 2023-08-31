@@ -105,7 +105,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.5.2';
+		public           $version  = '2.5.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -322,7 +322,7 @@ if(!class_exists('SlwMain')) {
 			
 			$data['slw_cart_items'] = array();
 			if(is_object($woocommerce)){
-				$items = $woocommerce->cart->get_cart();
+				$items = (isset($woocommerce->cart) && method_exists($woocommerce->cart, 'get_cart')?$woocommerce->cart->get_cart():array());
 				
 				if(!empty($items)){
 					$slw_cart_items = $data['slw_cart_items'];
