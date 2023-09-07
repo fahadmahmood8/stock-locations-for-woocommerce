@@ -423,40 +423,44 @@ jQuery(document).ready(function($){
 				foreach($slw_default_locations as $slw_default_location){
 					$location_ids[] = $slw_default_location->term_id;
 				}
-				$slw_default_locations_query = "
-													SELECT 
-															p.ID 
-													FROM 
-														`".$wpdb->posts."` p, 
-														`".$wpdb->postmeta."` pm 
-													WHERE 
-															pm.post_id=p.ID 
-														AND 
-															p.post_type='product' 
-														AND 
-															p.post_date>=date_sub(now(),interval 1 hour) 
-														AND 
-															p.post_modified>=date_sub(now(),interval 1 hour) 
-													GROUP BY 
-															p.ID
-												";
-				$limiting = (is_numeric($limited) && $limited>0?$limited:false);												
-				if($limiting){
-					$slw_default_locations_query .= ' LIMIT '.$limiting;
-				}
-				//pree($slw_default_locations_query);										
-				//pree($location_ids);exit;
-				$slw_default_locations_products = $wpdb->get_results($slw_default_locations_query);								
-				//pree($slw_default_locations_products);exit;
-				if(!empty($slw_default_locations_products)){					
-					foreach($slw_default_locations_products as $slw_default_locations_product){
-						wp_set_object_terms($slw_default_locations_product->ID, $location_ids, 'location');
-						$product_ids[] = $slw_default_locations_product->ID;
-						//pree($slw_default_locations_product->ID);
-					}
-					//exit;
-				}
+				
 
+			}
+			
+			$slw_default_locations_query = "
+												SELECT 
+														p.ID 
+												FROM 
+													`".$wpdb->posts."` p, 
+													`".$wpdb->postmeta."` pm 
+												WHERE 
+														pm.post_id=p.ID 
+													AND 
+														p.post_type='product' 
+													AND 
+														p.post_date>=date_sub(now(),interval 1 hour) 
+													AND 
+														p.post_modified>=date_sub(now(),interval 1 hour) 
+												GROUP BY 
+														p.ID
+											";
+			$limiting = (is_numeric($limited) && $limited>0?$limited:false);												
+			if($limiting){
+				$slw_default_locations_query .= ' LIMIT '.$limiting;
+			}
+			//pree($slw_default_locations_query);										
+			//pree($location_ids);exit;
+			$slw_default_locations_products = $wpdb->get_results($slw_default_locations_query);								
+			//pree($slw_default_locations_products);exit;
+			if(!empty($slw_default_locations_products)){					
+				foreach($slw_default_locations_products as $slw_default_locations_product){
+					if(!empty($location_ids)){
+						wp_set_object_terms($slw_default_locations_product->ID, $location_ids, 'location');
+					}
+					$product_ids[] = $slw_default_locations_product->ID;
+					//pree($slw_default_locations_product->ID);
+				}
+				//exit;
 			}
 			
 			$timestamp = 'once';

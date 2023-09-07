@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 6.2
+Tested up to: 6.3
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.5.4 =
+- Fix: Cron job script improved and default location required dependency removed. [Thanks to Andrew / Waterhouse][07/09/2023]
+
 = 2.5.3 =
 - Fix: CRITICAL Uncaught Error: Call to a member function get_cart() on null in. [Thanks to @faheemseedat][31/08/2023]
 
