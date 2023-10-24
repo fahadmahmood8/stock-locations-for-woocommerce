@@ -274,6 +274,7 @@ if(!function_exists('wc_slw_admin_init')){
 		
 		
 		$slw_update_products = get_option('slw_update_products', array());
+		//pree($slw_update_products);exit;
 		$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 		if(is_array($slw_update_products) && !empty($slw_update_products)){
 			$item_count = 0;
@@ -284,11 +285,12 @@ if(!function_exists('wc_slw_admin_init')){
 				$item_count++;
 				slw_update_products($product_id, false, 'update-stock');
 				
-				if (($key = array_search($product_id, $slw_update_products)) !== false) {
+				/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
 					unset($slw_update_products[$key]);
-				}
+				}*/
 			}
-			update_option('slw_update_products', $slw_update_products);
+			//pree($slw_update_products);
+			//update_option('slw_update_products', $slw_update_products);
 		}
 		
 		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
@@ -380,7 +382,7 @@ jQuery(document).ready(function($){
 							$ret .= '<input type="'.$val['type'].'" name="'.$val['name'].'" id="'.$val['name'].'" value="'.$db_val.'" />';
 						break;
 						case 'toggle':
-							$ret .= '<label data-val="'.$db_val.'" class="switch" style="float:none; clear:both;"><input '.checked($db_val=='yes', true, false).' name="'.$val['name'].'" id="'.$val['name'].'" value="yes" type="checkbox" data-toggle="toggle" data-on="'.__('Enabled', 'stock-locations-for-woocommerce').'" data-off="'.__('Disabled', 'stock-locations-for-woocommerce').'" /><span class="slider round"></span></label>';
+							$ret .= '<label data-val="'.$db_val.'" class="switch" style="float:none; clear:both;"><input '.checked($db_val=='yes', true, false).' name="'.$val['name'].'" id="'.$val['name'].'" value="yes" type="checkbox" data-on="'.__('Enabled', 'stock-locations-for-woocommerce').'" data-off="'.__('Disabled', 'stock-locations-for-woocommerce').'" /><span class="slider round"></span></label>';
 						break;
 					}
 				break;
@@ -423,40 +425,45 @@ jQuery(document).ready(function($){
 				foreach($slw_default_locations as $slw_default_location){
 					$location_ids[] = $slw_default_location->term_id;
 				}
-				$slw_default_locations_query = "
-													SELECT 
-															p.ID 
-													FROM 
-														`".$wpdb->posts."` p, 
-														`".$wpdb->postmeta."` pm 
-													WHERE 
-															pm.post_id=p.ID 
-														AND 
-															p.post_type='product' 
-														AND 
-															p.post_date>=date_sub(now(),interval 1 hour) 
-														AND 
-															p.post_modified>=date_sub(now(),interval 1 hour) 
-													GROUP BY 
-															p.ID
-												";
-				$limiting = (is_numeric($limited) && $limited>0?$limited:false);												
-				if($limiting){
-					$slw_default_locations_query .= ' LIMIT '.$limiting;
-				}
-				//pree($slw_default_locations_query);										
-				//pree($location_ids);exit;
-				$slw_default_locations_products = $wpdb->get_results($slw_default_locations_query);								
-				//pree($slw_default_locations_products);exit;
-				if(!empty($slw_default_locations_products)){					
-					foreach($slw_default_locations_products as $slw_default_locations_product){
-						wp_set_object_terms($slw_default_locations_product->ID, $location_ids, 'location');
-						$product_ids[] = $slw_default_locations_product->ID;
-						//pree($slw_default_locations_product->ID);
-					}
-					//exit;
-				}
+				
 
+			}
+			
+			$slw_default_locations_query = "
+												SELECT 
+														p.ID 
+												FROM 
+													`".$wpdb->posts."` p, 
+													`".$wpdb->postmeta."` pm 
+												WHERE 
+														pm.post_id=p.ID 
+													AND 
+														p.post_type='product' 
+													AND 
+														p.post_date>=date_sub(now(),interval 1 hour) 
+													AND 
+														p.post_modified>=date_sub(now(),interval 1 hour) 
+												GROUP BY 
+														p.ID
+											";
+			$limiting = (is_numeric($limited) && $limited>0?$limited:false);												
+			if($limiting){
+				$slw_default_locations_query .= ' LIMIT '.$limiting;
+			}
+			//pree($slw_default_locations_query);										
+			//pree($location_ids);exit;
+			$slw_default_locations_products = $wpdb->get_results($slw_default_locations_query);								
+			//pree($slw_default_locations_products);exit;
+			if(!empty($slw_default_locations_products)){					
+				foreach($slw_default_locations_products as $slw_default_locations_product){
+					if(!empty($location_ids)){
+						wp_set_object_terms($slw_default_locations_product->ID, $location_ids, 'location');
+						
+					}
+					$product_ids[] = $slw_default_locations_product->ID;
+					//pree($slw_default_locations_product->ID);
+				}
+				//exit;
 			}
 			
 			$timestamp = 'once';
@@ -993,6 +1000,7 @@ jQuery(document).ready(function($){
 						//wc_slw_logger('debug', $product_id.' B');
 						//wc_slw_logger('debug', $location_ids);
 						wp_set_object_terms($product_parent_id, $location_ids, 'location');
+						
 
 						$slw_update_products = get_option('slw_update_products', array());
 						$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());

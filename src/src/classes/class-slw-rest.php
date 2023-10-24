@@ -134,6 +134,7 @@ if(!class_exists('SlwProductRest')) {
 
 			// Set terms
 			wp_set_object_terms($parentPostId, (sizeof($values)) ? $stockLocationTermIds : null, SlwLocationTaxonomy::$tax_singular_name);
+			
 		}
 
 	}

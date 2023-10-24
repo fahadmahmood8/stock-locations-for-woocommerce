@@ -90,7 +90,7 @@ $slw_widgets_arr = array(
 		
 				'add_filter("<strong>slw_location_selection_popup_content</strong>", "<strong>yourtheme_location_selection_popup_content_callback</strong>", 10, 2);',
 				'add_filter("<strong>slw_location_selection_popup_display</strong>", "<strong>yourtheme_location_selection_popup_display_callback</strong>", 10, 2);'),
-		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png'),
+		'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png', 'https://ps.w.org/stock-locations-for-woocommerce/assets/screenshot-17.png'),
 		
 	)
 );
@@ -105,7 +105,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.4.8';
+		public           $version  = '2.5.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -322,7 +322,7 @@ if(!class_exists('SlwMain')) {
 			
 			$data['slw_cart_items'] = array();
 			if(is_object($woocommerce)){
-				$items = $woocommerce->cart->get_cart();
+				$items = (isset($woocommerce->cart) && method_exists($woocommerce->cart, 'get_cart')?$woocommerce->cart->get_cart():array());
 				
 				if(!empty($items)){
 					$slw_cart_items = $data['slw_cart_items'];

@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 6.2
+Tested up to: 6.3
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,28 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.5.5 =
+- Fix: CSV import related queries updated for the WooCommerce products stock status. [Thanks to Ole Straume Andersen][24/10/2023]
+- New: Predefined cron job arrangements introduced for the better user experience. [Thanks to @logicinn][24/10/2023]
+
+= 2.5.4 =
+- Fix: Cron job script improved and default location required dependency removed. [Thanks to Andrew / Waterhouse][07/09/2023]
+
+= 2.5.3 =
+- Fix: CRITICAL Uncaught Error: Call to a member function get_cart() on null in. [Thanks to @faheemseedat][31/08/2023]
+
+= 2.5.2 =
+- Fix: CRITICAL Uncaught Error: Call to undefined method Automattic\WooCommerce\Admin\Overrides\OrderRefund::add_order_note(). [Thanks to Morten Hansen][10/08/2023]
+
+= 2.5.1 =
+- Fix: BlockUI related issue when selecting the location on the shop page. [Thanks to Narinder Kumar / Dfavo][01/08/2023]
+
+= 2.5.0 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/145. [Thanks to Nguyễn Minh Khôi][30/07/2023]
+
+= 2.4.9 =
+- New: slw_stock_allocation_notification_message filter hook added. [Thanks to Carlos][21/07/2023]
+
 = 2.4.8 =
 - Fix: Product page stock filter hook related function updated. [Thanks to Morten Hansen][19/06/2023]
 
