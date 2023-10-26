@@ -91,7 +91,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				
 				case 'select_simple':
 				
-					$ret .= '<div class="slw_stock_location_selection ss">
+					$ret .= '<div class="slw_stock_location_selection ss '.$slw_plugin_settings['show_in_product_page'].'">
 					
 					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$slw_plugin_settings['show_in_product_page'].' remaining" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 					if( $default_location != 0 ) {

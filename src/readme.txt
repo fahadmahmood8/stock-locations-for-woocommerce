@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.5.6 =
+- Fix: Product page, location selection dropdown wrapper CSS classes managed accordingly.. [Thanks to Cristian][26/10/2023]
+
 = 2.5.5 =
 - Fix: CSV import related queries updated for the WooCommerce products stock status. [Thanks to Ole Straume Andersen][24/10/2023]
 - New: Predefined cron job arrangements introduced for the better user experience. [Thanks to @logicinn][24/10/2023]

@@ -57,6 +57,9 @@
 		margin: 0 0 10px 0;
 		min-height: 40px;
 	}
+	.slw_stock_location_selection.yes_without {
+		min-height:unset;
+	}
 	.slw_stock_location_selection.can-be-hidden{
 
 	}

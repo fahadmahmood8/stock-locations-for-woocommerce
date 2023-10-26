@@ -390,12 +390,16 @@
 	function slw_update_product_location_msg(vpid){
 		
 			$('div.stock-msg').remove();		
-			var qty_obj = (slw_frontend.stock_quantity.length>0?slw_frontend.stock_quantity[vpid]:[]);
+			
+			var qty_obj = (typeof slw_frontend.stock_quantity[vpid]=='object'?slw_frontend.stock_quantity[vpid]:[]);
+			
+			//console.log(qty_obj.length);
+			
 			var qty_highest = 0;
 			var qty_highest_id = 0;
 			var sorted_locations = _.sortBy(slw_frontend.stock_locations_data, 'priority').reverse();
 			
-			if(qty_obj.length>0){
+			if(typeof qty_obj=='object'){
 				$.each(sorted_locations, function(j, k){
 					
 					
@@ -419,7 +423,7 @@
 			}
 			
 			
-			
+			//console.log(qty_highest_id);
 			if(qty_highest_id>0){
 				var preferred_loc_obj = slw_frontend.stock_locations_data[qty_highest_id];
 				var stock_msg = slw_frontend.stock_locations_product_page_notice;
@@ -437,29 +441,34 @@
 		
 	}
 	
-	if(slw_frontend.is_product){ 
-	
-		$('body').on('change', 'input[name="'+(slw_frontend.product_type=="variable"?"variation_id":"product_id")+'"]', function(){
-			if($(this).val()!=''){
-				
-				slw_update_product_location_msg($(this).val());
-				
-			}
-		});
+	setTimeout(function(){
 		
-		setTimeout(function(){
-			if($('select.slw_item_stock_location').length>0){
-				$('select.slw_item_stock_location').trigger('change');
-				
-				switch(slw_frontend.product_type){
-					case 'simple':
-						slw_update_product_location_msg(slw_frontend.product_id);
-					break;
+		if(slw_frontend.is_product){ 
+		
+			$('body').on('change', 'input[name="'+(slw_frontend.product_type=="variable"?"variation_id":"product_id")+'"]', function(){
+				if($(this).val()!=''){
+					
+					slw_update_product_location_msg($(this).val());
+					
 				}
-			}
-		}, 2000);
-		
-		
-	}
+			});
+			
+			setTimeout(function(){
+				if($('select.slw_item_stock_location').length>0){
+					$('select.slw_item_stock_location').trigger('change');
+					
+					switch(slw_frontend.product_type){
+						case 'simple':
+							slw_update_product_location_msg(slw_frontend.product_id);
+							
+						break;
+					}
+				}
+			}, 500);
+			
+			
+		}
+	
+	}, 1500);
 
 }(jQuery));
