@@ -23,7 +23,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 		public static function allocateLocationStock( $orderItemId, $locationStockMap, $allocationType )
 		{
-			
+			//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes');
 			// Get line item
 			$lineItem = new \WC_Order_Item_Product($orderItemId);
 
