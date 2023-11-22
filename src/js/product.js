@@ -32,10 +32,10 @@
 
 		if(halt){
 			if(backorders_allowed=='no'){
-				if($('button[name="add-to-cart"]').length>0){ $('button[name="add-to-cart"]').prop('disabled', true); }			
+				if($('button[name="add-to-cart"], button.single_add_to_cart_button').length>0){ $('button[name="add-to-cart"], button.single_add_to_cart_button').prop('disabled', true); }			
 			}
 		}else{
-			if($('button[name="add-to-cart"]').length>0){ $('button[name="add-to-cart"]').prop('disabled', false); }
+			if($('button[name="add-to-cart"], button.single_add_to_cart_button').length>0){ $('button[name="add-to-cart"], button.single_add_to_cart_button').prop('disabled', false); }
 		}
 		
 		if($('input[name="quantity"]').length>0){

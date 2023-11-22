@@ -170,3 +170,6 @@
 	div.blockUI:before {
 	  display: none;
 	}
+	select.slw_item_stock_location option[data-quantity="0"][data-backorder="no"] {
+		color: #ccc;
+	}

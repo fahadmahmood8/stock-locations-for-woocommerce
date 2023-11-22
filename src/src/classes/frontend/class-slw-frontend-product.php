@@ -262,7 +262,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				$product_id            = sanitize_slw_data( $_POST['product_id'] );
 				$product_id            = SlwWpmlHelper::object_id( $product_id );
 				$product_variation_id  = ($variation_id?$variation_id:$product_id);
-
+				
 				$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 				$default_location      = isset( $slw_plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 				

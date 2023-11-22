@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.5.8 =
+- Fix: Location dropdown showing wrong on backorder for the variable products when actually they are not allowed for backorder. [Thanks to ŠARŪNAS RIBAKOVAS][22/11/2023]
+
 = 2.5.7 =
 - Fix: Checked the default stock value assignment from map page to cart page for the selected product with the add to cart button trigger. [Thanks to Roy Wright][04/11/2023]
 
