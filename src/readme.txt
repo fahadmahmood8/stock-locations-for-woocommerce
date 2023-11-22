@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.5.9 =
+- New: Developers API updated with the price option as the item parameter. [Thanks to Tushar Tajane][22/11/2023]
+
 = 2.5.8 =
 - Fix: Location dropdown showing wrong on backorder for the variable products when actually they are not allowed for backorder. [Thanks to ŠARŪNAS RIBAKOVAS][22/11/2023]
 

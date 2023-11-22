@@ -27,7 +27,7 @@
 <?php		
 		foreach($slw_api_valid_keys as $param=>$param_data){
 ?>
-<tr>
+<tr title="<?php echo $param_data['tooltip']; ?>">
 	<td><?php echo $param; ?></td><td><?php echo $param_data['type']; ?></td><td><?php echo $param_data['options']; ?></td>
 </tr>    
 <?php			

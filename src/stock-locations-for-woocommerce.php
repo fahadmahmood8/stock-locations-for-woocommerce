@@ -47,13 +47,13 @@ $wc_slw_pro_file = realpath(SLW_PLUGIN_DIR . '/pro/functions.php');
 $wc_slw_pro = file_exists($wc_slw_pro_file);
 
 $slw_api_valid_keys = array(			
-	'id' => array('type'=>'int', 'options'=>''),
-	'stock_value' => array('type'=>'int', 'options'=>''),
+	'id' => array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is a location, so ID is location_id and when item is product so ID is considered as a product_id.', 'stock-locations-for-woocommerce')),
+	'value' => array('type'=>'int', 'options'=>''),
 	'action' => array('type'=>'string', 'options'=>'get|set'),
-	'item' => array('type'=>'string', 'options'=>'location|product|stock'),
+	'item' => array('type'=>'string', 'options'=>'location|product|stock|price', 'tooltip'=>__('When item is other than location and product so product_id or location_id would be required as a parameter, ID parameter will not be adequate.', 'stock-locations-for-woocommerce')),
 	'format' => array('type'=>'string', 'options'=>'json|default'),
-	'product_id'=>array('type'=>'int', 'options'=>''),
-	'location_id'=>array('type'=>'int', 'options'=>''),
+	'product_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than product.', 'stock-locations-for-woocommerce')),
+	'location_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than location.', 'stock-locations-for-woocommerce')),
 );
 
 $slw_crons_valid_keys = array(				
@@ -105,7 +105,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.5.8';
+		public           $version  = '2.5.9';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
