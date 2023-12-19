@@ -177,7 +177,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
 	
 					// update product main stock
-					
+					wc_slw_logger('debug', '$product_id: '.$product_id.', $locations_total_stock: '.$locations_total_stock);
 					slw_update_product_stock_status( $product_id, $locations_total_stock );
 					
 	

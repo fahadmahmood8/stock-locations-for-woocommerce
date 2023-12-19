@@ -45,6 +45,9 @@
 	<li>
     	add_filter('slw_stock_allocation_notification_message', 'yourtheme_stock_allocation_notification_message_callback', 10, 4);
     </li>
+    <li>
+    	add_filter('allow_stock_allocation_notification', 'yourtheme_allow_stock_allocation_notification_callback', 10, 4);
+    </li>
     
 </ul>
 </div>		

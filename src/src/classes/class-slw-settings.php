@@ -326,6 +326,8 @@ if(!class_exists('SlwSettings')) {
 			$sanitary_values = array();
 
 			// sanitize option
+			$input = sanitize_slw_data($input);
+			//pree($input);exit;
 			
 			if ( isset( $input['extra_assets_settings'] ) ) {
 				$sanitary_values['extra_assets_settings'] = $input['extra_assets_settings'];
@@ -349,7 +351,7 @@ if(!class_exists('SlwSettings')) {
 				$sanitary_values['show_in_product_page'] = $input['show_in_product_page'];
 			}
 			if ( isset( $input['show_with_postfix'] ) ) {
-				$sanitary_values['show_with_postfix'] = $input['show_with_postfix'];
+				$sanitary_values['show_with_postfix'] = (int)$input['show_with_postfix'];
 			}			
 			if ( isset( $input['default_location_in_frontend_selection'] ) ) {
 				$sanitary_values['default_location_in_frontend_selection'] = $input['default_location_in_frontend_selection'];

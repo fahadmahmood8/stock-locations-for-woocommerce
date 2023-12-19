@@ -152,6 +152,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.0 =
+- Fix: Sanitization ensured. [Thanks to patchstack.com / Mika][19/12/2023]
+- New: Filter hook added allow_stock_allocation_notification. [Thanks to github.com / Chingologram][19/12/2023]
+
 = 2.5.9 =
 - New: Developers API updated with the price option as the item parameter. [Thanks to Tushar Tajane][22/11/2023]
 

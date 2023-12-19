@@ -62,3 +62,13 @@
 		}			
 	}
 	
+	add_filter('allow_stock_allocation_notification', 'allow_stock_allocation_notification_callback', 9, 4);
+	
+	if(!function_exists('allow_stock_allocation_notification_callback')){
+		function allow_stock_allocation_notification_callback($term, $item, $quantity, $output = true){
+			return (boolean)$output;			
+		}			
+	}
+	
+	
+	

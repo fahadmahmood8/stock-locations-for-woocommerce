@@ -101,8 +101,9 @@ if(!class_exists('SlwProductRest')) {
 
 			// Get parent post ID
 			// This is either the current product or its parent_id
+			
 			$parentPostId = ($object_type === 'product_variation') ? $post->get_parent_id() : $postId;
-
+			wc_slw_logger('debug', '$postId: '.$postId.', $parentPostId: '.$parentPostId);
 			$stockLocationTermIds = array();
 
 			$totalQuantity = 0;
@@ -127,6 +128,7 @@ if(!class_exists('SlwProductRest')) {
 			if( $totalQuantity != 0 ) {
 				//$product = wc_get_product($parentPostId);
 				//wc_update_product_stock( $product, $totalQuantity, 'set', false );
+				
 				slw_update_product_stock_status( $parentPostId, $totalQuantity );
 			}
 			

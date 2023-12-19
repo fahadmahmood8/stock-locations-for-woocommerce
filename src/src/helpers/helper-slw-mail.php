@@ -21,6 +21,10 @@ if ( !class_exists('SlwMailHelper') ) {
 		{
 			//wc_slw_logger('debug', 'stock_allocation_notification: '.'Yes');
 			if( empty($term) || empty($item) || empty($quantity) ) return;
+			
+			if (!apply_filters('allow_stock_allocation_notification', $term, $item, $quantity, true)) {
+				return;
+			}
 
 			// get location meta
 			$item_location_meta = SlwStockAllocationHelper::getLocationMeta( $term->term_id );
