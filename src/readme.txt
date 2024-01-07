@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.1 =
+- New: Stock location enable/disable tooltip help for stock value update with the input field. [Thanks to dennebar][07/01/2024]
+
 = 2.6.0 =
 - Fix: Sanitization ensured. [Thanks to patchstack.com / Mika][19/12/2023]
 - New: Filter hook added allow_stock_allocation_notification. [Thanks to github.com / Chingologram][19/12/2023]

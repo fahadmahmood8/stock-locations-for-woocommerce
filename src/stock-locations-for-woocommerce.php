@@ -199,8 +199,16 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );			
 			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), time(), true );
 			
+			$slw_location_statuses = array();
 			
-			
+			$terms = slw_get_locations('location', array(), false);
+			if( ! empty( $terms ) ) {
+				foreach( $terms as $location ) {
+					$slw_location_status = get_term_meta($location->term_id, 'slw_location_status', true);
+					$slw_location_statuses[$location->term_id] = ($slw_location_status=='1'?'yes':'no');
+					
+				}
+			}
 			
 			
 			$data = array(
@@ -210,7 +218,10 @@ if(!class_exists('SlwMain')) {
 				'slw_gkey' => $slw_gkey,
 				'stock_locations' => false,
 				'wc_slw_pro' => $wc_slw_pro,
-				'wc_slw_premium_feature' => __('This is a premium feature!', 'stock-locations-for-woocommerce')
+				'wc_slw_premium_feature' => __('This is a premium feature!', 'stock-locations-for-woocommerce'),
+				'wc_slw_product_id' => (is_object($post)?$post->ID:0),
+				'wc_slw_location_status' => $slw_location_statuses,
+				'wc_slw_location_disabled_msg' => __('Enable this location from edit location page to save the stock value.', 'stock-locations-for-woocommerce'),
 			);
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
 			

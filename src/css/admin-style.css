@@ -672,3 +672,7 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 } 
+.slw-location-disabled input.wc_input_stock {
+	background-color: #ddd;
+	text-decoration: line-through;
+}
