@@ -489,8 +489,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 			}
 			
 			
-			$manage_stock = get_post_meta($id, '_manage_stock', true) === 'yes';
-			if( ! $manage_stock ) {
+			
+			if( !get_post_meta($id, '_manage_stock', true) ) { // 21/01/2024 @mrmelson
 				return $stock_ret;
 			}
 

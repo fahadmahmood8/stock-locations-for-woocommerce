@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.2 =
+- Fix: Quantity always 0 - https://wordpress.org/support/topic/quantity-always-0/. [Thanks to mrmelson][21/01/2024]
+
 = 2.6.1 =
 - New: Stock location enable/disable tooltip help for stock value update with the input field. [Thanks to dennebar][07/01/2024]
 
