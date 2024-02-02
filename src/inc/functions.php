@@ -274,6 +274,7 @@ if(!function_exists('wc_slw_admin_init')){
 		
 		
 		$slw_update_products = get_option('slw_update_products', array());
+		//pree($slw_update_products);exit;
 		$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 		if(is_array($slw_update_products) && !empty($slw_update_products)){
 			$item_count = 0;
@@ -284,11 +285,12 @@ if(!function_exists('wc_slw_admin_init')){
 				$item_count++;
 				slw_update_products($product_id, false, 'update-stock');
 				
-				if (($key = array_search($product_id, $slw_update_products)) !== false) {
+				/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
 					unset($slw_update_products[$key]);
-				}
+				}*/
 			}
-			update_option('slw_update_products', $slw_update_products);
+			//pree($slw_update_products);
+			//update_option('slw_update_products', $slw_update_products);
 		}
 		
 		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
@@ -456,6 +458,7 @@ jQuery(document).ready(function($){
 				foreach($slw_default_locations_products as $slw_default_locations_product){
 					if(!empty($location_ids)){
 						wp_set_object_terms($slw_default_locations_product->ID, $location_ids, 'location');
+						
 					}
 					$product_ids[] = $slw_default_locations_product->ID;
 					//pree($slw_default_locations_product->ID);
@@ -997,6 +1000,7 @@ jQuery(document).ready(function($){
 						//wc_slw_logger('debug', $product_id.' B');
 						//wc_slw_logger('debug', $location_ids);
 						wp_set_object_terms($product_parent_id, $location_ids, 'location');
+						
 
 						$slw_update_products = get_option('slw_update_products', array());
 						$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());

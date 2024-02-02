@@ -177,7 +177,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$locations_total_stock = SlwProductHelper::get_product_locations_stock_total( $product_id );
 	
 					// update product main stock
-					
+					wc_slw_logger('debug', '$product_id: '.$product_id.', $locations_total_stock: '.$locations_total_stock);
 					slw_update_product_stock_status( $product_id, $locations_total_stock );
 					
 	
@@ -439,6 +439,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function reduce_order_items_locations_stock( $order ){ 
 			
+			//wc_slw_logger('debug', 'reduce_order_items_locations_stock: '.'Yes');
 			
 			global $current_screen;
 			$is_shop_order = (is_object($current_screen) && isset($current_screen->post_type) && $current_screen->post_type=='shop_order');
@@ -715,7 +716,7 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function newOrderItemAllocateStock( $item_id, $item, $order_id )
 		{
-
+			//wc_slw_logger('debug', 'newOrderItemAllocateStock: '.'Yes #'.$order_id);
 			
 			// add exception to third party plugins
 			$disallow = apply_filters( 'slw_disallow_third_party_allocate_order_item_stock', true );

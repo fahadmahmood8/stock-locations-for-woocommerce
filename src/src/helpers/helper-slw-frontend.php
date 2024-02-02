@@ -21,7 +21,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 		public static function get_all_product_stock_locations_for_selection( $product_id, $everything_stock_status_to_instock=false )
 		{
 
-			
+			//pree($product_id);
 			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
 			
 			if( empty($stock_locations) ) return;
@@ -52,6 +52,9 @@ if ( !class_exists('SlwFrontendHelper') ) {
 			}
 			$_backorders = get_post_meta($product_id, '_backorders', true);
 			$_backorder_status = ($_backorders!='no');
+			
+			//pree($_backorders);
+			//pree($_backorder_status);
 				
 			$stock_locations_to_display = array();
 			foreach( $stock_locations as $id => $location ) {
@@ -62,7 +65,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				
 				$stock_locations_to_display[$id]['backorder_allowed'] = ($_backorder_status?'yes':'no');
 				$stock_locations_to_display[$id]['term_id']         = $location->term_id;
-				$stock_locations_to_display[$id]['quantity']        = $location->quantity;
+				$stock_locations_to_display[$id]['quantity']        = (int)$location->quantity;
 				$stock_locations_to_display[$id]['quantity-formatted'] = slw_quantity_format($location->quantity);
 				$stock_locations_to_display[$id]['allow_backorder'] = $slw_backorder_location;
 				$stock_locations_to_display[$id]['name']            = $location->name;
@@ -87,9 +90,13 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				}
 
 
-
+				//pree($location->quantity .'<=0 && '.!$everything_stock_status_to_instock);
+				
 				if( $location->quantity <= 0 && !$everything_stock_status_to_instock) {
-					if( $stock_locations_to_display[$id]['allow_backorder'] == 1 ) {
+					
+					//pree('$id='.$id.', allow_backorder = '.$stock_locations_to_display[$id]['allow_backorder']);
+					
+					if( $stock_locations_to_display[$id]['allow_backorder'] == 1 && $stock_locations_to_display[$id]['backorder_allowed']=='yes') {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('On backorder', 'woocommerce') . ')';
 					} else {
 						$stock_locations_to_display[$id]['name'] .= ' (' . __('Out of stock', 'woocommerce') . ')';

@@ -91,7 +91,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				
 				case 'select_simple':
 				
-					$ret .= '<div class="slw_stock_location_selection ss">
+					$ret .= '<div class="slw_stock_location_selection ss '.$slw_plugin_settings['show_in_product_page'].'">
 					
 					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$slw_plugin_settings['show_in_product_page'].' remaining" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 					if( $default_location != 0 ) {
@@ -262,7 +262,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				$product_id            = sanitize_slw_data( $_POST['product_id'] );
 				$product_id            = SlwWpmlHelper::object_id( $product_id );
 				$product_variation_id  = ($variation_id?$variation_id:$product_id);
-
+				
 				$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 				$default_location      = isset( $slw_plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 				

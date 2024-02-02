@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf
 Tags: woocommerce, stock, stock locations, simple, variable, products, product
 Requires at least: 4.9
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,36 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.3 =
+- Fix: Empty quantity to zero with typecasting for the variations on the variable product page. [Thanks to Philippos][24/01/2024]
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/151 [Thanks to Chingologram][03/02/2024]
+
+= 2.6.2 =
+- Fix: Quantity always 0 - https://wordpress.org/support/topic/quantity-always-0/. [Thanks to mrmelson][21/01/2024]
+
+= 2.6.1 =
+- New: Stock location enable/disable tooltip help for stock value update with the input field. [Thanks to dennebar][07/01/2024]
+
+= 2.6.0 =
+- Fix: Sanitization ensured. [Thanks to patchstack.com / Mika][19/12/2023]
+- New: Filter hook added allow_stock_allocation_notification. [Thanks to github.com / Chingologram][19/12/2023]
+
+= 2.5.9 =
+- New: Developers API updated with the price option as the item parameter. [Thanks to Tushar Tajane][22/11/2023]
+
+= 2.5.8 =
+- Fix: Location dropdown showing wrong on backorder for the variable products when actually they are not allowed for backorder. [Thanks to ŠARŪNAS RIBAKOVAS][22/11/2023]
+
+= 2.5.7 =
+- Fix: Checked the default stock value assignment from map page to cart page for the selected product with the add to cart button trigger. [Thanks to Roy Wright][04/11/2023]
+
+= 2.5.6 =
+- Fix: Product page, location selection dropdown wrapper CSS classes managed accordingly. [Thanks to Cristian][26/10/2023]
+
+= 2.5.5 =
+- Fix: CSV import related queries updated for the WooCommerce products stock status. [Thanks to Ole Straume Andersen][24/10/2023]
+- New: Predefined cron job arrangements introduced for the better user experience. [Thanks to @logicinn][24/10/2023]
+
 = 2.5.4 =
 - Fix: Cron job script improved and default location required dependency removed. [Thanks to Andrew / Waterhouse][07/09/2023]
 

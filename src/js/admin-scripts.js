@@ -504,7 +504,26 @@ function slw_gmap_initialize(input_id) {
 		if($('#different_location_per_cart_item').length>0){
 			$('#different_location_per_cart_item').trigger('change');
 		}
-	}, 1000);
+		if($('#stock-locations-for-woocommerce_tab_stock_locations_wrapper').length){
+			
+			var product_id = slw_admin_scripts.wc_slw_product_id;
+			//console.log(product_id);
+			if(product_id){
+				$.each(slw_admin_scripts.wc_slw_location_status, function(i,v){
+					
+					var obj_str = '_stock-locations-for-woocommerce'+product_id+'_stock_location_'+i+'_field';
+
+					if($('p.'+obj_str).length>0){
+						if(v!='yes'){
+							$('p.'+obj_str).addClass('slw-location-disabled').attr('title', slw_admin_scripts.wc_slw_location_disabled_msg);
+						}
+					}
+					
+				});
+			}
+		}
+		
+	}, 3000);
 	
 
 }(jQuery));

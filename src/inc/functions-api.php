@@ -61,6 +61,9 @@
 									}
 								}
 							break;
+							case 'price':
+								$response['price'] = get_post_meta($data['product_id'], '_price', true);
+							break;
 						}
 						
 					break;
@@ -81,12 +84,18 @@
 								
 							break;
 							case 'stock':
-								if($data['product_id'] && $data['location_id'] && $data['stock_value']>=0){
-									$response['response'] = update_post_meta($data['product_id'], '_stock_at_' . $data['location_id'], $data['stock_value']);
+								if($data['product_id'] && $data['location_id'] && $data['value']>=0){
+									$response['response'] = update_post_meta($data['product_id'], '_stock_at_' . $data['location_id'], $data['value']);
 								}
 							break;
 							case 'product':
 								
+							break;
+							case 'price':
+								if($data['product_id'] && (isset($data['value']) && is_numeric($data['value']) && $data['value']>=0)){
+									update_post_meta($data['product_id'], '_regular_price', $data['value']);
+									$response['response'] = update_post_meta($data['product_id'], '_price', $data['value']);
+								}
 							break;
 						}
 					break;

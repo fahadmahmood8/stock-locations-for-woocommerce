@@ -57,6 +57,9 @@
 		margin: 0 0 10px 0;
 		min-height: 40px;
 	}
+	.slw_stock_location_selection.yes_without {
+		min-height:unset;
+	}
 	.slw_stock_location_selection.can-be-hidden{
 
 	}
@@ -166,4 +169,7 @@
 	}
 	div.blockUI:before {
 	  display: none;
+	}
+	select.slw_item_stock_location option[data-quantity="0"][data-backorder="no"] {
+		color: #ccc;
 	}

@@ -26,7 +26,7 @@ if ( !defined( 'WPINC' ) ) {
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format;
+global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name;
 
 $slw_wc_stock_format = get_option('woocommerce_stock_format');
 $slw_gkey = get_option('slw-google-api-key');
@@ -35,6 +35,10 @@ $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array
 $wc_slw_data = get_plugin_data(__FILE__);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
 define( 'SLW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+$wp_theme_installed = wp_get_theme();
+$slw_theme_name = esc_html( $wp_theme_installed->get_stylesheet());
+
 
 $addons_file = realpath(SLW_PLUGIN_DIR . '/inc/addons.php');
 if(file_exists($addons_file)){
@@ -47,13 +51,13 @@ $wc_slw_pro_file = realpath(SLW_PLUGIN_DIR . '/pro/functions.php');
 $wc_slw_pro = file_exists($wc_slw_pro_file);
 
 $slw_api_valid_keys = array(			
-	'id' => array('type'=>'int', 'options'=>''),
-	'stock_value' => array('type'=>'int', 'options'=>''),
+	'id' => array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is a location, so ID is location_id and when item is product so ID is considered as a product_id.', 'stock-locations-for-woocommerce')),
+	'value' => array('type'=>'int', 'options'=>''),
 	'action' => array('type'=>'string', 'options'=>'get|set'),
-	'item' => array('type'=>'string', 'options'=>'location|product|stock'),
+	'item' => array('type'=>'string', 'options'=>'location|product|stock|price', 'tooltip'=>__('When item is other than location and product so product_id or location_id would be required as a parameter, ID parameter will not be adequate.', 'stock-locations-for-woocommerce')),
 	'format' => array('type'=>'string', 'options'=>'json|default'),
-	'product_id'=>array('type'=>'int', 'options'=>''),
-	'location_id'=>array('type'=>'int', 'options'=>''),
+	'product_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than product.', 'stock-locations-for-woocommerce')),
+	'location_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than location.', 'stock-locations-for-woocommerce')),
 );
 
 $slw_crons_valid_keys = array(				
@@ -105,7 +109,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.5.4';
+		public           $version  = '2.6.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -199,8 +203,16 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );			
 			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), time(), true );
 			
+			$slw_location_statuses = array();
 			
-			
+			$terms = slw_get_locations('location', array(), false);
+			if( ! empty( $terms ) ) {
+				foreach( $terms as $location ) {
+					$slw_location_status = get_term_meta($location->term_id, 'slw_location_status', true);
+					$slw_location_statuses[$location->term_id] = ($slw_location_status=='1'?'yes':'no');
+					
+				}
+			}
 			
 			
 			$data = array(
@@ -210,7 +222,10 @@ if(!class_exists('SlwMain')) {
 				'slw_gkey' => $slw_gkey,
 				'stock_locations' => false,
 				'wc_slw_pro' => $wc_slw_pro,
-				'wc_slw_premium_feature' => __('This is a premium feature!', 'stock-locations-for-woocommerce')
+				'wc_slw_premium_feature' => __('This is a premium feature!', 'stock-locations-for-woocommerce'),
+				'wc_slw_product_id' => (is_object($post)?$post->ID:0),
+				'wc_slw_location_status' => $slw_location_statuses,
+				'wc_slw_location_disabled_msg' => __('Enable this location from edit location page to save the stock value.', 'stock-locations-for-woocommerce'),
 			);
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
 			
