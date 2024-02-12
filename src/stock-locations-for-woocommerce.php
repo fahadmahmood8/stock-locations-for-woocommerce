@@ -109,7 +109,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.6.3';
+		public           $version  = '2.6.4';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -322,7 +322,8 @@ if(!class_exists('SlwMain')) {
 			
 			
 			$data['stock_locations_data'] = $stock_locations;
-			$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', 'STOCK_QTY available at LOCATION_NAME');
+			//$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', 'STOCK_QTY available at LOCATION_NAME'); //12/02/2024
+			$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', sprintf(__('%s available at %s', 'stock-locations-for-woocommerce'), 'STOCK_QTY', 'LOCATION_NAME'));
 			
 			
 			

@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.4 =
+- Fix: Make STOCK_QTY available at LOCATION_NAME string translatable. [Thanks to @michaelw90][12/02/2024]
+
 = 2.6.3 =
 - Fix: Empty quantity to zero with typecasting for the variations on the variable product page. [Thanks to Philippos][24/01/2024]
 - Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/151 [Thanks to Chingologram][03/02/2024]
