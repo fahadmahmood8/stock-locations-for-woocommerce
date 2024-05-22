@@ -26,7 +26,7 @@ if ( !defined( 'WPINC' ) ) {
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id;
+global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name;
 
 $slw_wc_stock_format = get_option('woocommerce_stock_format');
 $slw_gkey = get_option('slw-google-api-key');
@@ -35,9 +35,6 @@ $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array
 $wc_slw_data = get_plugin_data(__FILE__);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
 define( 'SLW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-
-//$slw_order_id = ((is_admin() && isset($_GET['page']) && $_GET['page']=='wc-orders' && isset($_GET['action']) && $_GET['action']=='edit' && isset($_GET['id']) && is_numeric($_GET['id']))?$_GET['id']:0);
-
 
 $wp_theme_installed = wp_get_theme();
 $slw_theme_name = esc_html( $wp_theme_installed->get_stylesheet());
@@ -112,7 +109,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.6.5';
+		public           $version  = '2.6.4';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -283,8 +280,7 @@ if(!class_exists('SlwMain')) {
 			
 			$term_id = (int)(is_archive()?get_queried_object_id():0);
 			$term_id = is_numeric($term_id)?$term_id:0;
-			$term_link = ($term_id?get_term_link($term_id):'');
-			$term_link = (!is_wp_error($term_link)?$term_link:'');
+			
 			
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
 			$data['slw_location_selection'] = get_option('slw-location-selection', 'no');
@@ -307,9 +303,8 @@ if(!class_exists('SlwMain')) {
 			$data['out_of_stock'] = __('Out of stock', 'woocommerce');
 			$data['in_stock'] = __('In stock', 'woocommerce');
 			$data['backorder'] = __('Available on backorder', 'woocommerce');
-			$data['max_available_qty_msg'] = __('Maximum available quantity has already been added to the cart.', 'woocommerce');
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
-			$data['slw_term_url'] = $term_link;
+			$data['slw_term_url'] = ($term_id?get_term_link($term_id):'');
 			$data['slw_term_id'] = $term_id;
 			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
 			$data['stock_location_selected'] = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
