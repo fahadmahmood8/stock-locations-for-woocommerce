@@ -84,7 +84,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				
 					$ret .= '<div class="slw_stock_location_selection ssd">
 					
-					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$slw_plugin_settings['show_in_product_page'].' default" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled><option data-price="'.$stock_price.'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" '.$selected.'>'.$stock_location_name.'</option></select>
+					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$slw_plugin_settings['show_in_product_page'].' default" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled><option data-price="'.trim($stock_price).'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" '.$selected.'>'.$stock_location_name.'</option></select>
 					
 					</div>';
 				break;
@@ -137,7 +137,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 								$disabled = 'disabled="disabled"';
 							}
 						
-							$ret .= '<option data-priority="'.$slw_location_priority.'" data-price="'.$stock_price.'" data-quantity-formatted="'.$location['quantity-formatted'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
+							$ret .= '<option data-priority="'.$slw_location_priority.'" data-price="'.trim($stock_price).'" data-quantity-formatted="'.$location['quantity-formatted'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
 						
 						}
 					}

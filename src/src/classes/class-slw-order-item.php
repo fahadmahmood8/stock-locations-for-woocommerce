@@ -37,10 +37,13 @@ if( !class_exists('SlwOrderItem') ) {
 		{
 			add_action('woocommerce_admin_order_item_headers', array($this, 'add_stock_location_column_wc_order'), 10, 1);
 			add_action('woocommerce_admin_order_item_values', array($this, 'add_stock_location_inputs_wc_order'), 10, 3);
-			add_action('save_post_shop_order', array($this, 'reduce_order_items_locations_stock_on_save'), 10, 3);
+			add_action('woocommerce_process_shop_order_meta', array($this, 'reduce_order_items_locations_stock_on_save'), 10, 3);
 			add_action('woocommerce_before_save_order_item', array($this, 'disable_wc_order_adjust_line_item_product_stock'), 99, 1);
 			add_filter('woocommerce_hidden_order_itemmeta', array($this, 'hide_stock_locations_itemmeta_wc_order'), 10, 1);
 			add_action('woocommerce_new_order_item', array($this, 'newOrderItemAllocateStock'), 10, 3);
+			
+	
+	
 
 			// get plugin settings
 			$this->plugin_settings = get_option( 'slw_settings' );
@@ -325,6 +328,10 @@ if( !class_exists('SlwOrderItem') ) {
 		 */
 		public function product_stock_location_inputs( $id, $product_stock_location_terms, $item, $item_id )
 		{
+			
+			$slw_order_id = wc_get_order_id_by_order_item_id( $item_id ); 
+			$_slw_locations_stock_status = get_post_meta($slw_order_id, '_slw_locations_stock_status', true);
+			
 			$product_id = SlwWpmlHelper::object_id( $id );
 			$product    = wc_get_product( $product_id );
 			if( empty($product) ) return;
@@ -334,7 +341,8 @@ if( !class_exists('SlwOrderItem') ) {
             // for example if 2 items where allocated to location 2, but location 2 is no longer a valid location for this stock item,
             // for this order the stock was stilled fulfilled by location 2 at the time of the order being processed.
             $product_stock_location_terms = SlwOrderItemHelper::productStockLocationsInputsAddPreviousStock($product_stock_location_terms, $item);
-
+			
+			
             // If product allows stock management
 			if( $product->get_manage_stock() == 'true' ) {
 
@@ -348,21 +356,37 @@ if( !class_exists('SlwOrderItem') ) {
 						$args_1 = array(
 							'type' => 'number'
 						);
+						
+						$postmeta_stock_at_term = 0;
 
 						// Get the item meta
 						$postmeta_stock_at_term = $product->get_meta('_stock_at_' . $term->term_id);
+						//pree($postmeta_stock_at_term);
+						if(is_array($_slw_locations_stock_status) && array_key_exists($product->get_id(), $_slw_locations_stock_status) && array_key_exists($term->term_id, $_slw_locations_stock_status[$product->get_id()])){
+							
+							//pree($_slw_locations_stock_status);
+							
+							$postmeta_stock_at_term = $_slw_locations_stock_status[$product->get_id()][$term->term_id];//$product->get_meta('_stock_at_' . $term->term_id);
+							$postmeta_stock_at_term = (is_array($postmeta_stock_at_term)?current($postmeta_stock_at_term):0);
+							//pree($postmeta_stock_at_term);
+						}
+						//pree($postmeta_stock_at_term);
 						if(!$postmeta_stock_at_term) {
 							$postmeta_stock_at_term = 0;
 						}
 
 						// Get the item meta
 						$itemmeta_stock_update_at_term = wc_get_order_item_meta($item_id, '_item_stock_updated_at_' . $term->term_id, true);
+						//pree($term->term_id);
+						//pree($postmeta_stock_at_term);
 						
-				
 						// If the order item has the stock locations updated, show the quantity already subtracted
+						//pree('_item_stock_locations_updated: '.wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true));
 						if( wc_get_order_item_meta($item_id, '_item_stock_locations_updated', true) === 'yes' ) {
 							$args_1['custom_attributes'] = array('readonly' => 'readonly');
 							$args_1['type'] = 'hidden';
+							
+							//pree('$itemmeta_stock_update_at_term: '.$itemmeta_stock_update_at_term);
 
 							if($itemmeta_stock_update_at_term) {
 								$args_1['label'] = $term->name . ' <b>(' . $postmeta_stock_at_term . ')</b> <span style="color:green;">-' . $itemmeta_stock_update_at_term . '</span>';
@@ -381,7 +405,7 @@ if( !class_exists('SlwOrderItem') ) {
 						} else {
 							$args_1['description'] = __( 'Enter the stock amount you want to subtract from this location.', 'stock-locations-for-woocommerce' );
 						}
-
+						
 						// Define $args_2 array
 						$args_2 = array(
 							'id'                => SLW_PLUGIN_SLUG . '_oitem_' . $item_id . '_' . $id . '_' . $term->term_id,
@@ -407,7 +431,7 @@ if( !class_exists('SlwOrderItem') ) {
 							if(!empty($client_item_stock_location_ids)){
 								$stock_location = SlwStockAllocationHelper::get_product_stock_location( $id, $term->term_id );
 								if( in_array($term->term_id, $client_item_stock_location_ids) ) {
-									echo '<span class="slw-client-choosed-location '.($client_item_stock_location_id==$term->term_id?'primary-selection':'secondary-selection').'">'.($client_item_stock_location_id==$term->term_id?'✔ <strong>'.__('Client selected: ', 'stock-locations-for-woocommerce').'</strong>':'').'<u>'.$stock_location[$term->term_id]->name.'</u></span>';
+									echo '<span class="slw-client-chose-location '.($client_item_stock_location_id==$term->term_id?'primary-selection':'secondary-selection').'">'.($client_item_stock_location_id==$term->term_id?'✔ <strong>'.__('Client selected: ', 'stock-locations-for-woocommerce').'</strong>':'').'<u>'.$stock_location[$term->term_id]->name.'</u></span>';
 								}else{
 									
 								}
@@ -490,7 +514,7 @@ if( !class_exists('SlwOrderItem') ) {
 					}
 				}
 	
-
+				
 				// No location stock data for line
 				if (empty($simpleLocationAllocations)) {
 					continue;
@@ -519,9 +543,12 @@ if( !class_exists('SlwOrderItem') ) {
 		 * @return void
 		 * @since 1.5.2
 		 */
-		public function reduce_order_items_locations_stock_on_save( $post_id, $post, $update )
+		public function reduce_order_items_locations_stock_on_save( $order_id, $order, $order_ids=array() )
 		{
-			$this->reduce_order_items_locations_stock( $post_id );
+			$this->reduce_order_items_locations_stock( $order_id );
+			
+			
+
 		}
 
 		/**
@@ -743,7 +770,7 @@ if( !class_exists('SlwOrderItem') ) {
 			$userLocationChoiceId = $item->get_meta('_stock_location');
 
 
-			if( !empty($userLocationChoiceId) && false) { //16/05/2022
+			if( !empty($userLocationChoiceId)) { //16/05/2022 //23/05/2024
 
 				$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
 
@@ -762,12 +789,16 @@ if( !class_exists('SlwOrderItem') ) {
 							$itemQuantity = $itemQuantity - $userStockLocation[$userLocationChoiceId]->quantity;
 							$userStockLocation[$userLocationChoiceId]->allocated_quantity = $userStockLocation[$userLocationChoiceId]->quantity;
 						}
+						
+						
 					} else {
 						return; // user selected location doesn't have auto allocation enabled so finish here and let the admin choose from the order
 					}
 				}
 			}
 
+			//wc_slw_logger('debug', '$userStockLocation: ');
+			//wc_slw_logger('debug', $userStockLocation);
 			
 				
 			// Get product stock allocation locations if customer haven't select a location
@@ -777,10 +808,12 @@ if( !class_exists('SlwOrderItem') ) {
 				
 				if ($this->different_location_per_cart_item) { //28/09/2022 - bbceg
 					$stockAllocation = SlwStockAllocationHelper::getStockAllocation($productId, $itemQuantity, 0, false, $userLocationChoiceId);
-				}
-				else {
+				}else {
 					$userStockLocation = SlwStockAllocationHelper::get_product_stock_location($productId, $userLocationChoiceId);
 					//error_log("Same location per cart item. Item Quantity: $itemQuantity, UserLocationChoice ID: $userLocationChoiceId, User stock location quantity = " . $userStockLocation[$userLocationChoiceId]->quantity);
+					//wc_slw_logger('debug', '$userLocationChoiceId: '.$userLocationChoiceId);
+					//wc_slw_logger('debug', '$userStockLocation: ');
+					//wc_slw_logger('debug', $userStockLocation);
 					
 					if( isset($userStockLocation[$userLocationChoiceId]) && $userStockLocation[$userLocationChoiceId]->quantity > $itemQuantity ) {
 						$userStockLocation[$userLocationChoiceId]->allocated_quantity = $itemQuantity;
@@ -791,12 +824,54 @@ if( !class_exists('SlwOrderItem') ) {
 					}
 				}
 			//}
-	
+			
+			//wc_slw_logger('debug', '$stockAllocation: ');
+			//wc_slw_logger('debug', $stockAllocation);
 			
 			// define stock allocation
 			if( !is_null($userStockLocation) ) {
 				// if user selected a location and has auto allocation enabled
 				$stockAllocation = $userStockLocation;
+				
+				$stockAllocation_additional = SlwStockAllocationHelper::getStockAllocation($productId, $item->get_quantity(), 0, false);
+				
+				//wc_slw_logger('debug', '!is_null($userStockLocation): '.$itemQuantity);
+				
+				//wc_slw_logger('debug', '$stockAllocation_additional: ');
+				//wc_slw_logger('debug', $stockAllocation_additional);
+				
+				if(!empty($stockAllocation)){
+					
+					$stockAllocation_qty = array();
+					
+					foreach($stockAllocation as $stockAllocation_iter){
+						$stockAllocation_qty[] = $stockAllocation_iter->quantity;
+					}
+					
+					if(array_sum($stockAllocation_qty)<$item->get_quantity()){
+						$diff = ($item->get_quantity()-array_sum($stockAllocation_qty));
+						if(!empty($stockAllocation_additional)){
+							$filled = false;
+							foreach($stockAllocation_additional as $stockAllocation_additional_id=>$stockAllocation_additional_data){
+								
+								//wc_slw_logger('debug', '$diff<$stockAllocation_additional_data->quantity');
+								
+								//wc_slw_logger('debug', $diff.' < '.$stockAllocation_additional_data->quantity.' (term_id: '.$stockAllocation_additional_data->term_id.')');
+								
+								if(!$filled && $diff<$stockAllocation_additional_data->quantity && !array_key_exists($stockAllocation_additional_data->term_id, $stockAllocation)){
+									$stockAllocation[$stockAllocation_additional_data->term_id] = $stockAllocation_additional_data;
+									$stockAllocation[$stockAllocation_additional_data->term_id]->allocated_quantity = $itemQuantity;
+									$filled = true;
+								}
+							}
+						}
+					}
+					
+					//wc_slw_logger('debug', '$stockAllocation: ');
+					//wc_slw_logger('debug', $stockAllocation);
+				}
+				
+				
 			} elseif( is_null($userStockLocation) && isset($stockAllocation) && is_array($stockAllocation) ) {
 				// if user haven't selected a location define by available locations for this product
 				$stockAllocation = $stockAllocation;
@@ -821,8 +896,15 @@ if( !class_exists('SlwOrderItem') ) {
 				}
 			}
 			
-		
+			//wc_slw_logger('debug', '<hr />');
+			
+			//wc_slw_logger('debug', '$stockAllocation: ');
+			//wc_slw_logger('debug', $stockAllocation);
+					
+			//wc_slw_logger('debug', '$item->get_id(): '.$item->get_id().', $allocationType: '.$allocationType);
 			// Allocate order item stock to locations
+			
+			
 			SlwOrderItemHelper::allocateLocationStock( $item->get_id(), $simpleLocationAllocations, $allocationType = 'auto' );
 
 		}		

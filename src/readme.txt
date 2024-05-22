@@ -152,6 +152,22 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.5 =
+- Fix: PHP Fatal error due to wp_error [Thanks to Joseph Coello][13/04/2024]
+- New: Stock status will be captured during checkout and it will always remain same for the old orders, fresh stock values won't reflect for old orders. [22/05/2024] 
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/93 [Thanks to Salvatore Messina & joaoaviz][22/05/2024]
+
+= 2.6.5 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/154 [Thanks to coello101][01/04/2024]
+- Fix: https://wordpress.org/support/topic/no-effect-when-preferred-location-is-selected/ [Thanks to @adeyinkabadmus][01/04/2024]
+
+= 2.6.4 =
+- Fix: Make STOCK_QTY available at LOCATION_NAME string translatable. [Thanks to @michaelw90][12/02/2024]
+
+= 2.6.3 =
+- Fix: Empty quantity to zero with typecasting for the variations on the variable product page. [Thanks to Philippos][24/01/2024]
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/151 [Thanks to Chingologram][03/02/2024]
+
 = 2.6.2 =
 - Fix: Quantity always 0 - https://wordpress.org/support/topic/quantity-always-0/. [Thanks to mrmelson][21/01/2024]
 

@@ -34,13 +34,13 @@
 table thead tr #stock_at_locations {
 	width: 17ch;
 }
-.slw-client-choosed-location {
+.slw-client-chose-location {
 	color: green;
 	margin-top: -8px !important;
 	margin-bottom: 13px;
 	display: block;
 }
-.slw-client-choosed-location.secondary-selection {
+.slw-client-chose-location.secondary-selection {
 	color: #003280;
 }
 .slw-import-export-addon-logo {

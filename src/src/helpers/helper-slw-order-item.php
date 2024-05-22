@@ -23,7 +23,12 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 		public static function allocateLocationStock( $orderItemId, $locationStockMap, $allocationType )
 		{
-			//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes');
+			$order_id = wc_get_order_id_by_order_item_id( $orderItemId );
+			
+			//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes #'.$order_id);
+			
+			
+			//wc_slw_logger('debug', $_slw_locations_stock_status);
 			// Get line item
 			$lineItem = new \WC_Order_Item_Product($orderItemId);
 
@@ -42,28 +47,52 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 			// Nothing to do, we should have gotten this far
 			// Checks should have happened prior
+			
 			if (empty($itemStockLocationTerms)) {
 				return false;
 			}
-
+			//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes 54');
 			// Grab all input values
 			$totalQtyAllocated = 0;
 			
 
+			//wc_slw_logger('debug', '$itemStockLocationTerms');
+			//wc_slw_logger('debug', $itemStockLocationTerms);
 
+			//wc_slw_logger('debug', '$locationStockMap');
+			//wc_slw_logger('debug', $locationStockMap);		
 
 			// Loop through location terms
 			$counter = 0;
 			foreach ($itemStockLocationTerms as $term) {
+				
+				//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes 65');
 				// No quantity for this location term
 				if (!isset($locationStockMap[$term->term_id])) {
 					continue;
 				}
+				
+				$auto_order_allocate = get_term_meta($term->term_id, 'slw_auto_allocate', true);
+				
+				$allocation_proceed = true;
+				
+				switch($allocationType){
+					case 'auto':
+						$allocationType = ($auto_order_allocate==1?'auto':'manual');
+						$allocation_proceed = ($allocationType=='auto');
+					break;					
+				}
+				
+				//wc_slw_logger('debug', '$auto_order_allocate: '.$auto_order_allocate.', $allocationType: '.$allocationType.', $term->term_id: '.$term->term_id.', $allocation_proceed: '.($allocation_proceed?'Y':'N').' = '.$allocation_proceed);
 
 				// Increment Counter
 				$counter++;
 				
 				
+				
+				if( !$allocation_proceed ) { continue; } //23/05/2024
+				
+				//wc_slw_logger('debug', 'PASSED #1');
 
 				// Get stock data
 				$item_stock_location_subtract_input_qty = $locationStockMap[$term->term_id];
@@ -73,39 +102,59 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 				$postmeta_stock_at_term = $term->quantity;
 	
+				//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes 84');
 				// Stock input is invalid
 				if (empty($item_stock_location_subtract_input_qty) || $item_stock_location_subtract_input_qty == 0) {
 					continue;
 				}
+				
+				//wc_slw_logger('debug', 'PASSED #2');
 
+
+				//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes 90');
 				// Stock input above needed quantity
 				if ($item_stock_location_subtract_input_qty > $lineItem->get_quantity()) {
 					continue;
 				}
 
+				//wc_slw_logger('debug', 'PASSED #3');
+				
+				//wc_slw_logger('debug', array_sum($locationStockMap).' !== '.$lineItem->get_quantity());
+				
+				
+				//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes 97');
 				// Total quantity assignment does not match required quantity
 				// Not all stock has been allocated to locations
 				if (array_sum($locationStockMap) !== $lineItem->get_quantity()) {
 					continue;
 				}
+				
+				//wc_slw_logger('debug', 'PASSED #4');
 				// Save input values to array
 				$totalQtyAllocated += $item_stock_location_subtract_input_qty;
 
 				// Update the postmeta of the product
 				update_post_meta( $mainProductId, '_stock_at_' . $term->term_id, $postmeta_stock_at_term - $item_stock_location_subtract_input_qty );
+				
+				
 
 				// Add the note
 				if(method_exists($lineItem->get_order(), 'add_order_note')){
 					$lineItem->get_order()->add_order_note(
 						sprintf(__('The stock in the location %1$s was updated in -%2$d for the product %3$s', 'stock-locations-for-woocommerce'), $term->name, $item_stock_location_subtract_input_qty, $mainProduct->get_name())
-				);
+					);
 				}
 				
 				
-
+				
+				//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes #'.$order_id.' for ID: '.$orderItemId);
 				// Update the itemmeta of the order item
+				
+				//wc_slw_logger('debug', '_item_stock_locations_updated > $orderItemId: '.$orderItemId);
+				
 				wc_update_order_item_meta($orderItemId, '_item_stock_locations_updated', 'yes');
 				wc_update_order_item_meta($orderItemId, '_item_stock_updated_at_' . $term->term_id, $item_stock_location_subtract_input_qty);
+				//pree($_slw_locations_stock_status);exit;
 
 				// Save itemmeta _slw_data
 				$current_slw_data = wc_get_order_item_meta( $orderItemId, '_slw_data', true );
@@ -131,8 +180,12 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 			$allow_wc_stock_reduce = apply_filters( 'slw_allow_wc_stock_reduce', true );
 			
 			// Decrease woocommerce product stock level
-			$order_id = wc_get_order_id_by_order_item_id( $orderItemId );
-		
+			
+			
+			
+			
+			
+			
 			// Manual allocation doesn't need to be restricted to the order stock reduced meta
 			if( $allocationType == 'auto' ) {
 				$wc_order_stock_reduced = get_post_meta( $order_id, '_slw_order_stock_reduced', true ); // prevents reducing stock twice for the product

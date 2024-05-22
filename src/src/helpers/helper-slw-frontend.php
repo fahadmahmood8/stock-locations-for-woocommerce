@@ -65,7 +65,7 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				
 				$stock_locations_to_display[$id]['backorder_allowed'] = ($_backorder_status?'yes':'no');
 				$stock_locations_to_display[$id]['term_id']         = $location->term_id;
-				$stock_locations_to_display[$id]['quantity']        = $location->quantity;
+				$stock_locations_to_display[$id]['quantity']        = (int)$location->quantity;
 				$stock_locations_to_display[$id]['quantity-formatted'] = slw_quantity_format($location->quantity);
 				$stock_locations_to_display[$id]['allow_backorder'] = $slw_backorder_location;
 				$stock_locations_to_display[$id]['name']            = $location->name;

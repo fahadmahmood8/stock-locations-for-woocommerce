@@ -292,12 +292,13 @@ if(!function_exists('wc_slw_admin_init')){
 			//pree($slw_update_products);
 			//update_option('slw_update_products', $slw_update_products);
 		}
+		$post_id = (isset($_GET['post'])?$_GET['post']:(isset($_GET['id'])?$_GET['id']:0));
 		
-		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
+		if(is_numeric($post_id) && $post_id>0 && isset($_GET['debug'])){
 			
-			$order = get_post(sanitize_slw_data($_GET['post']));
+			$order = get_post(sanitize_slw_data($post_id));
 			
-			if(is_object($order) && $order->post_type=='product'){
+			if(is_object($order) && in_array($order->post_type, array('product'))){
 				if(isset($_GET['get_keys'])){
 					
 
@@ -311,13 +312,14 @@ if(!function_exists('wc_slw_admin_init')){
 					exit;
 				}
 			}
-			
-			if(is_object($order) && $order->post_type=='shop_order'){
+			if(is_object($order) && substr($order->post_type, 0, strlen('shop_order'))=='shop_order'){
 				
+				pree('get_keys: ');
 				if(isset($_GET['get_keys'])){
 					pree(get_post_meta($order->ID));
 					
 				}
+				pree('get_items: ');
 				if(isset($_GET['get_items'])){
 					$order_obj = wc_get_order($order->ID);
 					foreach($order_obj->get_items() as $item_key=>$item_data){
@@ -325,7 +327,7 @@ if(!function_exists('wc_slw_admin_init')){
 						pree($item_data);
 					}
 				}
-				
+				pree('get_items_meta: ');
 				if(isset($_GET['get_items_meta'])){
 					$order_obj = wc_get_order($order->ID);
 					foreach($order_obj->get_items() as $item_key=>$item_data){
@@ -1089,7 +1091,37 @@ jQuery(document).ready(function($){
 	
 	add_filter( 'woocommerce_get_item_data', 'slw_woocommerce_get_item_data', PHP_INT_MAX, 2 );	
 	
+	function slw_woocommerce_thankyou( $order_id ) {  
+
+		if ( ! $order_id )
+        return;
+		
+		$_slw_locations_stock_status = get_post_meta($order_id, '_slw_locations_stock_status', true);
+		$_slw_locations_stock_status = (is_array($_slw_locations_stock_status)?$_slw_locations_stock_status:array());
+		
+		$order = wc_get_order( $order_id );
+		
+		//wc_slw_logger('debug', 'reduce_order_items_locations_stock_on_save: '.'Yes #'.$order_id);
+
+		if( !empty($order) && !empty($order->get_items()) ) {
+			// Loop through order items
+			foreach ( $order->get_items() as $item_id => $item ) {
+				
+				$product_id = $item['variation_id'] != 0 ? $item['variation_id'] : $item['product_id'];
+				$itemStockLocationTerms = \SLW\SRC\Helpers\SlwStockAllocationHelper::getProductStockLocations( $product_id, false );
+				
+				foreach ($itemStockLocationTerms as $term) {
+					$_slw_locations_stock_status[$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_' . $term->term_id);
+				}
+				
+			}
+			//wc_slw_logger('debug', $_slw_locations_stock_status);
+			update_post_meta($order_id, '_slw_locations_stock_status', $_slw_locations_stock_status);
+			
+		}
+	}	
 	
+	add_action('woocommerce_thankyou', 'slw_woocommerce_thankyou' , 10, 1);	
 	
 	include_once('functions-api.php');
 	include_once('filter-hooks.php');

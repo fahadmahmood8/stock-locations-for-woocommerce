@@ -1,5 +1,5 @@
 <?php if ( ! defined('WPINC') ) die; ?>
-<?php global $wc_slw_pro, $wc_slw_premium_copy, $slw_api_valid_keys; ?>
+<?php global $wc_slw_pro, $wc_slw_premium_copy, $slw_api_valid_keys, $slw_theme_name; ?>
 
 <div class="slw_api_crons mt-4">
        
@@ -27,7 +27,7 @@
 <?php		
 		foreach($slw_api_valid_keys as $param=>$param_data){
 ?>
-<tr title="<?php echo $param_data['tooltip']; ?>">
+<tr title="<?php echo (isset($param_data['tooltip'])?$param_data['tooltip']:''); ?>">
 	<td><?php echo $param; ?></td><td><?php echo $param_data['type']; ?></td><td><?php echo $param_data['options']; ?></td>
 </tr>    
 <?php			
@@ -43,11 +43,16 @@
 
 <ul>
 	<li>
-    	add_filter('slw_stock_allocation_notification_message', 'yourtheme_stock_allocation_notification_message_callback', 10, 4);
+    	add_filter('slw_stock_allocation_notification_message', '<?php echo $slw_theme_name; ?>_stock_allocation_notification_message_callback', 10, 4);
     </li>
     <li>
-    	add_filter('allow_stock_allocation_notification', 'yourtheme_allow_stock_allocation_notification_callback', 10, 4);
-    </li>
+    	add_filter('allow_stock_allocation_notification', '<?php echo $slw_theme_name; ?>_allow_stock_allocation_notification_callback', 10, 4);
+    </li>    
+    <li>
+    	add_filter('slw_stock_allocation_notification_subject', '<?php echo $slw_theme_name; ?>_allow_stock_allocation_notification_callback', 10, 4);
+    </li>    
+    
+    
     
 </ul>
 </div>		
