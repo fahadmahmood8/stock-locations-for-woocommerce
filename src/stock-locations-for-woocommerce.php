@@ -112,7 +112,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.6.6';
+		public           $version  = '2.6.7';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -206,6 +206,9 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );			
 			wp_register_script( 'slw-admin-scripts', SLW_PLUGIN_DIR_URL . 'js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), time(), true );
 			
+			if($wc_slw_pro)
+			wp_register_script( 'slw-pro-admin-scripts', SLW_PLUGIN_DIR_URL . 'pro/js/admin-scripts.js', array( 'jquery', 'jquery-blockui' ), time(), true );
+			
 			$slw_location_statuses = array();
 			
 			$terms = slw_get_locations('location', array(), false);
@@ -226,6 +229,7 @@ if(!class_exists('SlwMain')) {
 				'stock_locations' => false,
 				'wc_slw_pro' => $wc_slw_pro,
 				'wc_slw_premium_feature' => __('This is a premium feature!', 'stock-locations-for-woocommerce'),
+				'wc_slw_stock_reset_msg' => __('This action will restore the stock values to the product. Do you want to proceed?', 'stock-locations-for-woocommerce'),
 				'wc_slw_product_id' => (is_object($post)?$post->ID:0),
 				'wc_slw_location_status' => $slw_location_statuses,
 				'wc_slw_location_disabled_msg' => __('Enable this location from edit location page to save the stock value.', 'stock-locations-for-woocommerce'),
@@ -246,6 +250,15 @@ if(!class_exists('SlwMain')) {
 				$data
 			);
 			wp_enqueue_script( 'slw-admin-scripts' );
+			
+			if($wc_slw_pro){
+				wp_localize_script(
+					'slw-pro-admin-scripts',
+					'slw_admin_scripts',
+					$data
+				);
+				wp_enqueue_script( 'slw-pro-admin-scripts' );			
+			}
 				
 			if(
 					(isset($_GET['page']) && $_GET['page']=='slw-settings')

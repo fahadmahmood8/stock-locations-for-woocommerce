@@ -347,7 +347,7 @@ if( !class_exists('SlwOrderItem') ) {
 			if( $product->get_manage_stock() == 'true' ) {
 
 				// Add the input field to values table
-				echo '<td width="15%">';
+				echo '<td width="15%">'.wc_slw_edit_stocks($slw_order_id, $item_id);
 
 					// Loop throw location terms
 					foreach($product_stock_location_terms as $term) {

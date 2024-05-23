@@ -51,6 +51,11 @@
     <li>
     	add_filter('slw_stock_allocation_notification_subject', '<?php echo $slw_theme_name; ?>_allow_stock_allocation_notification_callback', 10, 4);
     </li>    
+    <li>
+    	add_filter('slw_edit_stocks_filter', '<?php echo $slw_theme_name; ?>_slw_edit_stocks_filter_callback', 10, 3);
+    </li>    
+    
+    
     
     
     

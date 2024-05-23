@@ -1,8 +1,8 @@
 === Stock Locations for WooCommerce ===
 Contributors: fahadmahmood,alexmigf
-Tags: woocommerce, stock, stock locations, simple, variable, products, product
+Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -152,6 +152,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.7 =
+- New: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/90 [Thanks to pacmanito & joaoaviz][23/05/2024]
+
 = 2.6.6 =
 - Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/93 [Thanks to Salvatore Messina & joaoaviz][22/05/2024]
 

@@ -1123,5 +1123,15 @@ jQuery(document).ready(function($){
 	
 	add_action('woocommerce_thankyou', 'slw_woocommerce_thankyou' , 10, 1);	
 	
+	if(!function_exists('wc_slw_edit_stocks')){
+		function wc_slw_edit_stocks($slw_order_id, $item_id){
+			
+			$str = '<a class="slw_edit_stocks" title="'.__('This is a premium feature!', 'stock-locations-for-woocommerce').'"></a>';
+			
+			return $str;
+			
+		}
+	}
+	
 	include_once('functions-api.php');
 	include_once('filter-hooks.php');
