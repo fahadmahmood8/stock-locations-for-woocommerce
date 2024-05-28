@@ -1,0 +1,941 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2022-07-01 22:23+0500\n"
+"PO-Revision-Date: 2022-07-01 22:23+0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;esc_attr_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: inc/addons.php:56
+msgid "Click here enable/disable taxonomy"
+msgstr ""
+
+#: inc/addons.php:56
+msgid "Use Sort Order Plugin with drag & drop option to rearrange sort order"
+msgstr ""
+
+#: inc/addons.php:60
+msgid "Click here to install WP Sort Order"
+msgstr ""
+
+#: inc/addons.php:60
+msgid "Install Sort Order Plugin with drag & drop option for taxonomy terms"
+msgstr ""
+
+#: inc/functions.php:229
+msgid "Sorry, your nonce did not verify."
+msgstr ""
+
+#: inc/functions.php:366 views/settings-api.php:15
+#: views/settings-stock-locations.php:20 views/settings-stock-locations.php:56
+#: views/taxonomy-fields-edit.php:2 views/taxonomy-fields-edit.php:75
+msgid "Enabled"
+msgstr ""
+
+#: inc/functions.php:366 views/settings-api.php:15
+#: views/taxonomy-fields-edit.php:2 views/taxonomy-fields-edit.php:75
+msgid "Disabled"
+msgstr ""
+
+#: inc/functions.php:372
+msgid "Click here to show available hooks"
+msgstr ""
+
+#: inc/functions.php:584 src/classes/class-slw-location-taxonomy.php:75
+#: src/classes/class-slw-location-taxonomy.php:76
+#: src/classes/class-slw-order-item.php:621
+#: src/classes/class-slw-order-item.php:648
+#: src/classes/class-slw-product-taxonomy.php:64
+#: src/classes/class-slw-product-taxonomy.php:65
+#: src/classes/frontend/class-slw-frontend-cart.php:99
+#: views/settings-stock-locations.php:19 views/settings-stock-locations.php:55
+msgid "Location"
+msgstr ""
+
+#: inc/functions.php:622
+msgid "Enabled/Disabled"
+msgstr ""
+
+#: inc/functions.php:623
+msgid "Auto Allocation"
+msgstr ""
+
+#: inc/functions.php:624 inc/functions.php:643
+#: views/taxonomy-fields-edit.php:53
+msgid "Higher the number will have higher the priority."
+msgstr ""
+
+#: inc/functions.php:624 views/settings-stock-locations.php:22
+#: views/settings-stock-locations.php:58
+msgid "Priority"
+msgstr ""
+
+#: inc/functions.php:625 inc/functions.php:647
+#: views/taxonomy-fields-edit.php:11 views/taxonomy-fields-new.php:2
+msgid "Default for new products"
+msgstr ""
+
+#: inc/functions.php:625
+msgid "Default Location"
+msgstr ""
+
+#: inc/functions.php:741
+msgid "Out of stock."
+msgstr ""
+
+#: inc/functions.php:745
+msgid " in stock."
+msgstr ""
+
+#: pro/functions.php:186
+msgid "Select"
+msgstr ""
+
+#: pro/functions.php:253
+msgid "Add to cart"
+msgstr ""
+
+#: pro/functions.php:257
+msgid "Choose the stock"
+msgstr ""
+
+#: pro/slw-archive-page.php:357
+msgid "Add"
+msgstr ""
+
+#: pro/slw-map.php:823
+msgid "Search Locations"
+msgstr ""
+
+#: pro/slw-map.php:847
+msgid "More Details"
+msgstr ""
+
+#: pro/slw-map.php:848
+msgid "Shop this location"
+msgstr ""
+
+#: pro/slw-map.php:848
+msgid "Directions"
+msgstr ""
+
+#: src/classes/class-slw-barcodes-tab.php:47
+msgid "Barcodes"
+msgstr ""
+
+#: src/classes/class-slw-barcodes-tab.php:160
+msgid ""
+"The International Standard Book Number (ISBN) is a unique commercial book "
+"identifier barcode."
+msgstr ""
+
+#: src/classes/class-slw-barcodes-tab.php:169
+msgid ""
+"Universal Product Code (UPC) is a 12-digit bar code used extensively for "
+"retail packaging in United States."
+msgstr ""
+
+#: src/classes/class-slw-barcodes-tab.php:179
+msgid ""
+"The European Article Number (EAN) is a barcode standard, a 12- or 13-digit "
+"product identification code."
+msgstr ""
+
+#: src/classes/class-slw-barcodes-tab.php:189
+msgid ""
+"Amazon Standard Identification Numbers (ASINs) are unique blocks of 10 "
+"letters and/or numbers that identify items."
+msgstr ""
+
+#: src/classes/class-slw-cart.php:57
+#: src/classes/frontend/class-slw-frontend-cart.php:143
+#: src/classes/frontend/class-slw-frontend-cart.php:146
+#: src/classes/frontend/class-slw-frontend-product.php:99
+#: src/classes/frontend/class-slw-frontend-product.php:101
+#: src/classes/frontend/class-slw-frontend-product.php:170
+#: src/classes/frontend/class-slw-frontend-product.php:172
+msgid "Select location..."
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:77
+#: src/classes/class-slw-product-taxonomy.php:66
+msgid "Stock locations"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:78
+#: src/classes/class-slw-product-taxonomy.php:67
+msgid "All Items"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:79
+#: src/classes/class-slw-product-taxonomy.php:68
+msgid "Parent Item"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:80
+#: src/classes/class-slw-product-taxonomy.php:69
+msgid "Parent Item:"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:81
+#: src/classes/class-slw-product-taxonomy.php:70
+msgid "New Item Name"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:82
+#: src/classes/class-slw-product-taxonomy.php:71
+msgid "Add New Item"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:83
+#: src/classes/class-slw-product-taxonomy.php:72
+msgid "Edit Item"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:84
+#: src/classes/class-slw-product-taxonomy.php:73
+msgid "Update Item"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:85
+#: src/classes/class-slw-product-taxonomy.php:74
+msgid "Separate Item with commas"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:86
+#: src/classes/class-slw-product-taxonomy.php:75
+msgid "Search Items"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:87
+#: src/classes/class-slw-product-taxonomy.php:76
+msgid "Add or remove Items"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:88
+#: src/classes/class-slw-product-taxonomy.php:77
+msgid "Choose from the most used Items"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:281
+msgid "Make default"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:283
+msgid "Remove"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:310
+msgid "Product default location saved!"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:312
+msgid ""
+"Something went wrong saving the default location. Please check WooCommerce "
+"logs."
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:328
+msgid "Product default location removed!"
+msgstr ""
+
+#: src/classes/class-slw-location-taxonomy.php:330
+msgid ""
+"Something went wrong removing the default location. Please check WooCommerce "
+"logs."
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:169
+#, php-format
+msgid ""
+"The stock in the location %1$s was restored in %2$d for the product %3$s"
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:214
+#: src/classes/class-slw-settings.php:67
+#: src/classes/class-slw-stock-locations-tab.php:58
+msgid "Stock Locations"
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:230
+#: src/classes/class-slw-order-item.php:503
+msgid "Partial or total stock in locations is missing"
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:230
+#: src/classes/class-slw-order-item.php:503
+msgid "in this order"
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:230
+#: src/classes/class-slw-order-item.php:503
+msgid "Please fill the remaining stock."
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:282
+#: src/classes/class-slw-order-item.php:300
+msgid ""
+"To be able to manage the stock for this product, please add it to a <b>Stock "
+"location</b>!"
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:377
+msgid "This location doesn't have stock and can't be subtracted."
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:380
+msgid "Enter the stock amount you want to subtract from this location."
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:408
+msgid "Client selected: "
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:423
+msgid "This product/variation don't have stock management activated."
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:506
+msgid "Stock in locations updated successfully"
+msgstr ""
+
+#: src/classes/class-slw-order-item.php:506
+msgid "for this order"
+msgstr ""
+
+#: src/classes/class-slw-product-listing.php:56
+msgid "Stock at locations"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:49
+msgid "SLW Settings"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:66 src/classes/class-slw-settings.php:785
+msgid "Settings"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:68
+msgid "Widgets"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:69
+msgid "Logs"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:70
+msgid "Developers"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:71
+msgid "Crons"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:72
+msgid "Help"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:95 src/classes/class-slw-settings.php:789
+#: views/settings-widgets.php:15
+msgid "Go Premium"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:131
+msgid "Libraries "
+msgstr ""
+
+#: src/classes/class-slw-settings.php:131
+msgid "Optional "
+msgstr ""
+
+#: src/classes/class-slw-settings.php:140
+msgid "Display stock location under"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:150
+msgid "Show location selection in cart"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:168
+msgid "Different location per cart item"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:177
+msgid "Stock management on product page"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:186
+msgid "Show location stock quantity with a postfix e.g. 20+"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:195
+msgid "Enable default location in frontend selection"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:204
+msgid "Lock frontend location to default"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:213
+msgid "Show stock quantities in location selection in frontend"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:221
+msgid "Display stock location price instead of default product/variation price"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:230
+msgid "Everything stock status to instock"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:239
+msgid "Force main product stock status to instock"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:248
+msgid "Auto delete unused product locations meta"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:257
+msgid "Include location data in formatted item meta"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:266
+msgid "Enable location email notifications"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:275
+msgid "Send copy of WC New Order email to location address"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:284
+msgid ""
+"<i class=\"fas fa-undo-alt\"></i> Restore location stock value for "
+"<i>cancelled</i> order status <small>(Optional)</small>"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:292
+msgid ""
+"<i class=\"fas fa-undo-alt\"></i> Restore location stock value for "
+"<i>failed</i> order status <small>(Optional)</small>"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:300
+msgid ""
+"<i class=\"fas fa-undo-alt\"></i> Restore location stock value for "
+"<i>pending</i> order status <small>(Optional)</small>"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:407
+msgid ""
+"If auto order allocation is enabled for the selected location in the cart, "
+"this setting will be ignored for stock reduction."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:478
+msgid "Make location selection in cart required."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:500
+msgid "It will display stock location prices with location names as well."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:513
+msgid ""
+"It will make all products and variations in stock with all stock locations."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:531
+msgid "It will affect location selectors on product and cart pages."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:545
+msgid ""
+"This option will set the default location in product pages in frontend. The "
+"default is set under the product edit page by clicking <code>Make Default</"
+"code>."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:559
+msgid ""
+"This option will lock location selectors in products and cart to the default "
+"location."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:584
+msgid "Enter a maximum number to show + sign beyond"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:609
+msgid "Runs every day at midnight."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:623
+msgid ""
+"This special meta can be used by third party plugins to show the location "
+"name and quantity subtracted."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:636
+msgid "Auto order allocation must be enabled in the location."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:679
+#: src/classes/class-slw-settings.php:702
+msgid "Select..."
+msgstr ""
+
+#: src/classes/class-slw-settings.php:682
+msgid "Without locations Dropdown"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:685
+msgid "With locations Dropdown"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:688
+msgid "With locations RadioBoxes"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:688 views/settings-stock-locations.php:36
+#: views/settings-stock-locations.php:38
+msgid "Premium Feature"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:692
+#: src/classes/class-slw-settings.php:706
+msgid "No"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:704
+msgid "Yes"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:754
+#: src/classes/class-slw-settings.php:802
+msgid "Click here to watch video tutorial"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:755
+#: src/classes/class-slw-settings.php:803
+msgid "Click here to preview illustration/screenshot"
+msgstr ""
+
+#: src/classes/class-slw-settings.php:762
+msgid "Click here to visit"
+msgstr ""
+
+#: src/classes/class-slw-shortcodes.php:269
+msgid "Not available"
+msgstr ""
+
+#: src/classes/class-slw-shortcodes.php:274
+#: src/helpers/helper-slw-frontend.php:102
+#: stock-locations-for-woocommerce.php:271
+msgid "In stock"
+msgstr ""
+
+#: src/classes/class-slw-shortcodes.php:276
+#: src/helpers/helper-slw-frontend.php:94
+#: stock-locations-for-woocommerce.php:270
+msgid "Out of stock"
+msgstr ""
+
+#: src/classes/class-slw-shortcodes.php:285
+msgid "No locations found for this product!"
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:108
+msgid ""
+"To be able to manage stock locations, please activate the <b>Stock "
+"Management</b> option under the <b>Inventory Tab</b>, and add a location to "
+"this product."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:114
+msgid ""
+"Stock locations are locked for editing because WPML will copy its value from "
+"the original language."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:136
+#: src/classes/class-slw-stock-locations-tab.php:198
+msgid "Total Stock:"
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:148
+msgid ""
+"The total stock does not match the sum of the locations stock. Please update "
+"this product to fix it or use"
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:148
+msgid "cron jobs."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:155
+msgid ""
+"To be able to manage stock locations for variations please create them and "
+"add a price to each one."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:179
+#, php-format
+msgid ""
+"To be able to manage stock locations in <b>%1$s</b>, please add a <b>price</"
+"b> and activate the <b>Stock Management</b> under the variation settings."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:209
+msgid "You need to add a stock location to this product."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:232
+msgid "Stock Qty."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:233
+msgid "Enter the stock amount for this location."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:243
+msgid "Stock Price"
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:244
+msgid "Enter the price for the stock from this location."
+msgstr ""
+
+#: src/classes/class-slw-stock-locations-tab.php:507
+msgid "An error occurred. Some field was empty."
+msgstr ""
+
+#: src/classes/frontend/class-slw-frontend-cart.php:129
+msgid "Nearest Location"
+msgstr ""
+
+#: src/classes/frontend/class-slw-frontend-product.php:274
+msgid "No locations found for this product/variant!"
+msgstr ""
+
+#: src/helpers/helper-slw-frontend.php:48
+msgid "Stock value updated. Please refresh this page."
+msgstr ""
+
+#: src/helpers/helper-slw-frontend.php:92
+msgid "On backorder"
+msgstr ""
+
+#: src/helpers/helper-slw-mail.php:33
+msgid "Stock allocated in"
+msgstr ""
+
+#: src/helpers/helper-slw-mail.php:34
+#, php-format
+msgid ""
+"This is an automatically generated notification informing that the quantity "
+"of <strong>%1$d</strong> was allocated for the item <strong>%2$s</strong> "
+"with the ID <strong>%3$d</strong>."
+msgstr ""
+
+#: src/helpers/helper-slw-order-item.php:99
+#, php-format
+msgid ""
+"The stock in the location %1$s was updated in -%2$d for the product %3$s"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:67
+#: stock-locations-for-woocommerce.php:76
+msgid "Premium"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:68
+msgid "Please enter Google API key here"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:69
+msgid "Google Map for Stock Locations"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:70
+msgid ""
+"This widget will detect the user location and zoom to current user latitude "
+"longitude by default."
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:78
+msgid "Stock Locations Archive"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:79
+msgid ""
+"This widget will display the product items category wise on location "
+"specific archives."
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:202
+msgid "This is a premium feature!"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:272
+msgid "Available on backorder"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:279
+msgid "Allow current location"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:280
+msgid "Allow current location to calculate the distance and sort by nearest"
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:284
+msgid ""
+"Sorry! You have already added the available stock quantity to your cart."
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:285
+msgid "Sorry! You can add only the available stock quantity to your cart."
+msgstr ""
+
+#: stock-locations-for-woocommerce.php:439
+msgid ""
+"Stock Locations for WooCommerce requires WooCommerce to be activaded. Please "
+"active WooCommerce plugin first."
+msgstr ""
+
+#: views/addons/import-export.php:5
+msgid "Import/Export add-on"
+msgstr ""
+
+#: views/addons/import-export.php:12
+msgid "Buy now"
+msgstr ""
+
+#: views/addons/import-export.php:15
+msgid "Installed"
+msgstr ""
+
+#: views/addons/import-export.php:22
+msgid ""
+"Import and export stock from locations keeping also your WooCommerce stock "
+"up-to-date."
+msgstr ""
+
+#: views/addons/import-export.php:27
+msgid "By Alexandre Faustino"
+msgstr ""
+
+#: views/addons/import-export.php:33
+msgid "Last version"
+msgstr ""
+
+#: views/addons/import-export.php:43
+msgid "Installed version"
+msgstr ""
+
+#: views/settings-api.php:10
+msgid ""
+"This section is for advanced level users. Please do not try with inadequate "
+"knowledge."
+msgstr ""
+
+#: views/settings-api.php:10 views/settings-help.php:7
+msgid "Contact Developer"
+msgstr ""
+
+#: views/settings-help.php:6
+msgid "Open a Ticket on Support Forums"
+msgstr ""
+
+#: views/settings-help.php:8
+msgid "Need Urgent Help?"
+msgstr ""
+
+#: views/settings-logger.php:36
+msgid "Clear Debug Log"
+msgstr ""
+
+#: views/settings-logger.php:62
+msgid "Nothing logged yet."
+msgstr ""
+
+#: views/settings-sponsor.php:5 views/settings-sponsor.php:6
+msgid "Donate"
+msgstr ""
+
+#: views/settings-sponsor.php:6
+msgid ""
+"Would like to sponsor the development of new features and keep me motivated?"
+msgstr ""
+
+#: views/settings-sponsor.php:10
+msgid "Available add-ons"
+msgstr ""
+
+#: views/settings-sponsor.php:12
+msgid ""
+"Add-ons are sent by email to you after buying process completed. This is a "
+"manual procedure, so please be patient!"
+msgstr ""
+
+#: views/settings-sponsor.php:22
+msgid "Having problems with add-ons or need updated versions?"
+msgstr ""
+
+#: views/settings-sponsor.php:22
+msgid "Create a Ticket"
+msgstr ""
+
+#: views/settings-stock-locations.php:14
+msgid "Add new"
+msgstr ""
+
+#: views/settings-stock-locations.php:14
+msgid "Video Tutorial"
+msgstr ""
+
+#: views/settings-stock-locations.php:18 views/settings-stock-locations.php:54
+msgid "ID"
+msgstr ""
+
+#: views/settings-stock-locations.php:21 views/settings-stock-locations.php:57
+msgid "Map"
+msgstr ""
+
+#: views/settings-stock-locations.php:36
+msgid "View Archive"
+msgstr ""
+
+#: views/settings-stock-locations.php:37 views/taxonomy-fields-edit.php:1
+msgid "Click here to enable/disable"
+msgstr ""
+
+#: views/settings-stock-locations.php:40
+msgid "Edit"
+msgstr ""
+
+#: views/settings-stock-locations.php:40
+msgid "List"
+msgstr ""
+
+#: views/settings-stock-locations.php:47
+msgid "No locations found in your store."
+msgstr ""
+
+#: views/settings-widgets.php:15
+msgid "This section is available in premium version."
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:17 views/taxonomy-fields-new.php:7
+msgid "Should location be selected by default for new products?"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:22 views/taxonomy-fields-new.php:20
+msgid "Auto order allocate"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:28
+msgid ""
+"Should stock be auto allocated to stock locations when an order is placed?"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:29
+msgid ""
+"See priority field below to set priority. Priority number will decide the "
+"auto location selection when show selection in cart is OFF."
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:35 views/taxonomy-fields-new.php:11
+msgid "Backorder location"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:41
+msgid ""
+"Should backorder stock be allocated to this location? Only used if auto "
+"order allocate is enabled."
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:43
+msgid ""
+"Only one backorder location is will be considered and priority number will "
+"decide the auto location selection when show selection in cart is OFF."
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:49 views/taxonomy-fields-new.php:29
+msgid "Location priority"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:51
+msgid "Click here to watch priority in action"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:52 views/taxonomy-fields-new.php:31
+msgid "This is the order in which stock is auto allocated if enabled."
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:59 views/taxonomy-fields-new.php:36
+msgid "Location email"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:62
+msgid ""
+"Email address for notifications when a customer buys from this location. "
+"Works only if auto order allocation is enabled for this location."
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:68
+msgid "Location Address"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:71 views/taxonomy-fields-edit.php:84
+#: views/taxonomy-fields-edit.php:112
+msgid "Optional"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:74
+msgid "Click here to enable/disable on map"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:82
+msgid "Location Map Popup"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:85
+msgid "Placeholders"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:86
+msgid "Click here to view the sample HTML for popup"
+msgstr ""
+
+#: views/taxonomy-fields-edit.php:109
+msgid "Opening Timings"
+msgstr ""
+
+#: views/taxonomy-fields-new.php:16
+msgid ""
+"Should backorder stock be allocated to this location? Only used if auto "
+"order allocate is enabled. Please ensure only one backorder location is set."
+msgstr ""
+
+#: views/taxonomy-fields-new.php:25
+msgid ""
+"Should stock be auto allocated to stock locations when an order is placed?"
+"<br>See priority field below to set priority."
+msgstr ""
+
+#: views/taxonomy-fields-new.php:38
+msgid ""
+"Email address for notifications when a customer buys from this location."
+"<br>Works only if auto order allocation is enabled for this location."
+msgstr ""
