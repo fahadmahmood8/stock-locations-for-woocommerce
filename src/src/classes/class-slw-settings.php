@@ -584,6 +584,8 @@ if(!class_exists('SlwSettings')) {
 		public function different_location_per_cart_item_callback()
 		{
 			$id = 'different_location_per_cart_item';
+			
+			$this->plugin_settings[$id] = (array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:'');
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
 				<option value="yes" <?php selected($this->plugin_settings[$id] == 'yes'); ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>
@@ -735,6 +737,7 @@ if(!class_exists('SlwSettings')) {
 		}		 
 		public function select_yes_no_callback( $id )
 		{
+			$this->plugin_settings[$id] = (array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:'');
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
 				<option <?php selected($this->plugin_settings[$id] == ''); ?> value=""><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>				

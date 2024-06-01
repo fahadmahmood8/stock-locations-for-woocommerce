@@ -550,5 +550,22 @@ function slw_gmap_initialize(input_id) {
 		
 	});
 	
+	setTimeout(function(){
+		
+		if($('#doaction').length>0){
+			$('<input type="button" id="slw_import_export_video" class="button action" value="'+slw_admin_scripts.slw_import_export_tutorial+'">').insertAfter($('#doaction'));
+		}
+		if($('a.page-title-action[href*="page=product_exporter"]').length>0){
+			$('<input type="button" id="slw_import_export_video" class="page-title-action" value="'+slw_admin_scripts.slw_import_export_tutorial+'">').insertAfter($('a.page-title-action[href*="page=product_exporter"]'));
+		}
+		
+		
+		
+	}, 1000);
+	
+	$('body').on('click', '#slw_import_export_video', function(){
+		window.open('https://www.youtube.com/embed/4KCexCuVetk', '');
+	});
+	
 
 }(jQuery));

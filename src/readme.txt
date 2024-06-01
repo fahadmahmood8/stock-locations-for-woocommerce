@@ -110,6 +110,8 @@ If order quantity is within the summation of all stock locations available stock
 https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/90
 [youtube http://www.youtube.com/watch?v=Q1Lq-cbv2hE]
 
+= How Import/Export work with CSV files? =
+[youtube http://www.youtube.com/watch?v=4KCexCuVetk]
 
 = How to use Cron Job? =
 [youtube http://www.youtube.com/watch?v=si_DUe-8ncY&t=114s]
@@ -158,6 +160,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.6.9 =
+- New: Bulk Import/Export using CSV files explained with a video tutorial. [01/06/2024]
+
 = 2.6.8 =
 - Fix: Variable products related improvements on the products list page where stocks can be updated with one click. [Thanks to Villa Bafo][27/05/2024]
 

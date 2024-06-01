@@ -68,13 +68,25 @@ if( !class_exists('SlwFrontendProduct') ) {
 			$type = ($wc_slw_pro?$type:str_replace('radio', 'select', $type));
 			
 			
+			$productStockLocations =  \SLW\SRC\Helpers\SlwStockAllocationHelper::sortLocationsByPriority( \SLW\SRC\Helpers\SlwStockAllocationHelper::getProductStockLocations($product_id));
+			
+			if(!$default_location || !array_key_exists($default_location, $stock_locations)){
+				
+				$location_keys = array_keys($productStockLocations);
+				$default_location = current($location_keys);
+				
+			}
 			
 			switch($type){
 			
 				case 'select_simple_default':
 				
+					
+				
 					$stock_price = $stock_locations[$default_location]['price'];
 					$stock_location_name = $stock_locations[$default_location]['name'];
+					
+					
 				
 					if($product_stock_price_status){
 						$stock_location_name .= ' '.wc_price($stock_price);

@@ -112,7 +112,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.6.8';
+		public           $version  = '2.6.9';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -233,6 +233,7 @@ if(!class_exists('SlwMain')) {
 				'wc_slw_product_id' => (is_object($post)?$post->ID:0),
 				'wc_slw_location_status' => $slw_location_statuses,
 				'wc_slw_location_disabled_msg' => __('Enable this location from edit location page to save the stock value.', 'stock-locations-for-woocommerce'),
+				'slw_import_export_tutorial' => __('CSV Import/Export Stock Locations?', 'stock-locations-for-woocommerce'),
 			);
 			$data['currency_symbol'] = get_woocommerce_currency_symbol();
 			
