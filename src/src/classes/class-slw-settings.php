@@ -597,6 +597,7 @@ if(!class_exists('SlwSettings')) {
 		public function different_location_per_cart_item_no_callback()
 		{
 			$id = 'different_location_per_cart_item_no';
+			$this->plugin_settings[$id] = (array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:'');
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
 				<option value="continue" <?php selected($this->plugin_settings[$id] == 'continue'); ?>><?php echo __('Continue without any location selection', 'stock-locations-for-woocommerce'); ?></option>

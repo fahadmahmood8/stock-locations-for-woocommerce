@@ -160,6 +160,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.7.0 =
+- New: API and Crons are protected/restricted with the domain and IP referrer values. [08/06/2024]
+
 = 2.6.9 =
 - New: Bulk Import/Export using CSV files explained with a video tutorial. [01/06/2024]
 

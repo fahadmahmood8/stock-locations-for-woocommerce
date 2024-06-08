@@ -283,19 +283,23 @@ tr.slw-premium td:after {
 	font-size: 14px;
 	font-weight: normal;
 }
-div.slw-api-requests{
+div.slw-api-requests,
+div.slw-cron-requests{
 	float:right;
 }
-div.slw-api-requests thead th{
+div.slw-api-requests thead th,
+div.slw-cron-requests thead th{
 	text-align:center;
 	border: 1px solid;
 }
 div.slw_api_crons table, div.slw_api_crons table td,
-div.slw-api-requests table, div.slw-api-requests table td {
+div.slw-api-requests table, div.slw-api-requests table td,
+div.slw-cron-requests table, div.slw-cron-requests table td {
 	border: 1px solid;
 }
 div.slw_api_crons table td,
-div.slw-api-requests table td {
+div.slw-api-requests table td,
+div.slw-cron-requests table td {
 	padding: 2px 30px;
 }
 div.slw_api_crons .slw-api-urls{

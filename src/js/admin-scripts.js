@@ -550,6 +550,31 @@ function slw_gmap_initialize(input_id) {
 		
 	});
 	
+	$('body').on('click', 'div.slw-cron-requests input[name^="validate_request"]', function(){
+		
+		
+		var requests = {};
+		
+		$.each($('div.slw-cron-requests input[name^="validate_request"]:checked'), function(i,v){
+			requests[i] = $(this).val();
+		})
+		
+		var data = {
+
+			action: 'slw_validate_cron_requests',
+			slw_validate_request: requests,
+			slw_nonce_check: slw_admin_scripts.nonce,
+		}
+		
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+			}
+		});
+		
+	});
+	
 	setTimeout(function(){
 		
 		if($('#doaction').length>0){

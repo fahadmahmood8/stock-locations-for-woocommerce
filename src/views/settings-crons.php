@@ -1,6 +1,16 @@
 <?php if ( ! defined('WPINC') ) die; ?>
 <?php global $wc_slw_pro, $wc_slw_premium_copy, $slw_crons_valid_keys, $wpdb; ?>
-
+<?php
+	$all_requests = get_option('slw_cron_request_sources', array());
+				
+	$all_requests = (is_array($all_requests)?$all_requests:array());
+	
+	$validated_requests = get_option('slw_cron_request_validated', array());
+				
+	$validated_requests = (is_array($validated_requests)?$validated_requests:array());
+	
+	//pree($validated_requests);
+?>
 <div class="slw_api_crons mt-4">
 
     
@@ -26,6 +36,29 @@
     	<li><i>curl "</i><b><?php echo home_url(); ?>/?slw-crons&</b><?php echo '<span>'.implode('=</span>&<span>', array_keys($slw_crons_valid_keys)).'</span>'; ?></b><i>"</i> <a href="https://www.youtube.com/embed/si_DUe-8ncY?start=114" target="_blank"><i class="fab fa-youtube"></i></a></li>
         <li>&nbsp;</li>
 	</ul>
+    
+<div class="slw-cron-requests">
+	<table cellpadding="10" cellspacing="0">
+    	<thead>
+        	<tr>
+                <th><?php echo __('Request Source', 'stock-locations-for-woocommerce'); ?></th>
+                <th><?php echo __('Last Ping', 'stock-locations-for-woocommerce'); ?></th>
+                <th><?php echo __('Allow/Reject?', 'stock-locations-for-woocommerce'); ?></th>
+			</tr>                
+        </thead>
+        <tbody>
+        	<?php if(!empty($all_requests)): foreach($all_requests as $timestamp=>$source): $valid = in_array($source, $validated_requests); ?>
+    		<tr>
+            	<td><?php echo $source; ?></td>
+                <td><?php echo $timestamp?date('d M, Y h:i:s A', $timestamp):'-'; ?></td>
+                <td><a class="<?php echo $valid?'valid':'invalid'; ?>"><input name="validate_request[]" value="<?php echo $source; ?>" type="checkbox" <?php echo checked($valid); ?> /></a></td>
+            </tr>
+            <?php endforeach; endif; ?>
+        </tbody>
+    
+    </table>
+
+</div>    
 
 <table cellpadding="0" cellspacing="0">
 <?php		
