@@ -184,6 +184,34 @@ if(!function_exists('slw_api_status')){
 	}
 }
 
+add_action('wp_ajax_slw_crons_status', 'slw_crons_status');
+
+if(!function_exists('slw_crons_status')){
+	function slw_crons_status(){
+
+		if(!empty($_POST) && isset($_POST['status'])){
+
+			if (
+				! isset( $_POST['slw_nonce_field'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
+			) {
+
+				echo '0';
+				
+
+			} else {
+				$status = ($_POST['status']=='yes');
+				update_option('slw_crons_status', $status);
+				
+				echo '1';
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
 
 add_action('wp_ajax_slw_widgets_settings', 'slw_widgets_settings');
 
@@ -701,7 +729,7 @@ jQuery(document).ready(function($){
 			update_option('slw_cron_request_sources', $all_requests);
 
 			
-			if(!in_array($current_source, $validated_requests)){
+			if(!in_array($current_source, $validated_requests) && (get_option('slw_crons_status')==true)){
 				
 				_e('Sorry, you are not allowed to proceed.', 'stock-locations-for-woocommerce');
 				exit;
@@ -710,6 +738,7 @@ jQuery(document).ready(function($){
 			slw_update_products();
 		}
 	}
+	
 	if(isset($_GET['slw-crons'])){
 		
 		

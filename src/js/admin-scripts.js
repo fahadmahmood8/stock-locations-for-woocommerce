@@ -289,6 +289,25 @@ function slw_gmap_initialize(input_id) {
 
 	});
 	
+	$('input#slw-crons-status').bind('click', function (e) {
+		var data = {
+
+			action: 'slw_crons_status',
+			status: $(this).is(':checked')?$(this).val():'',
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+			}
+
+		});
+
+
+	});	
+	
 	$('#slw-location-status, a.slw-location-status').bind('click', function (e) {
 		
 		

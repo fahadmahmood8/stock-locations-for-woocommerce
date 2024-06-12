@@ -160,6 +160,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.7.1 =
+- New: API and Crons are made conditional with a toggle button to turn it ON/OFF. [08/06/2024][Thanks to Nishikant Tyagi]
+
 = 2.7.0 =
 - New: API and Crons are protected/restricted with the domain and IP referrer values. [08/06/2024]
 

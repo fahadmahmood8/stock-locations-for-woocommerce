@@ -50,6 +50,7 @@
 
 ?>
 <div class="slw-api-requests">
+	<input name="validate_request[]" type="checkbox" value="default" checked="checked" style="display:none" />
 	<table cellpadding="10" cellspacing="0">
     	<thead>
         	<tr>
