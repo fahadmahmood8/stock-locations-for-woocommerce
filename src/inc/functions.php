@@ -746,7 +746,7 @@ jQuery(document).ready(function($){
 	}
 	
 
-	function slw_get_locations($taxonomy='location', $additional_meta_query=array(), $enabled_only=true){
+	function slw_get_locations($taxonomy='location', $additional_meta_query=array(), $enabled_only=true, $product_id=0){
 		
 		$args = array('hide_empty' => false, 'meta_query' => array());
 		
@@ -766,9 +766,26 @@ jQuery(document).ready(function($){
 			$args['meta_query']['relation'] = 'AND';
 			$args['meta_query'][] = $additional_meta_query;
 		}
-		//pree($taxonomy);pree($args);
+		if($product_id){
+			$product_terms = wc_get_product_terms($product_id, $taxonomy);
+			
+			if(!empty($product_terms)){
+				$include_arr = array();
+				foreach($product_terms as $product_term){
+					$include_arr[] = $product_term->term_id;
+				}
+				if(!empty($include_arr)){
+					$args['include'] = $include_arr;
+				}
+			}
+		}
+		
+		//pree($taxonomy);
+		//pree($args);
 		$terms = get_terms($taxonomy, $args);
-		//pre($terms);
+		//pree($terms);
+		
+		
 		return $terms;
 	}
 

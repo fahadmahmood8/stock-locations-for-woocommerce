@@ -160,6 +160,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.7.3 =
+- Fix: Default stock available at notice will only display the associated locations which are enabled. [Thanks to Villa Bafo][12/06/2024]
+
 = 2.7.2 =
 Fix: PHP Fatal error: Uncaught TypeError: method_exists(): Argument #1 ($object_or_class) must be of type object|string, bool given. [Thanks to @araundu][12/06/2024]
 

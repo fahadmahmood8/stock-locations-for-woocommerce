@@ -112,7 +112,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.7.2';
+		public           $version  = '2.7.3';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -294,6 +294,7 @@ if(!class_exists('SlwMain')) {
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
 			
+			$product_id = (is_product()?$post->ID:0);
 			
 			$term_id = (int)(is_archive()?get_queried_object_id():0);
 			$term_id = is_numeric($term_id)?$term_id:0;
@@ -311,7 +312,7 @@ if(!class_exists('SlwMain')) {
 			$data['is_cart'] = is_cart();
 			$data['is_checkout'] = is_checkout();
 			$data['is_product'] = is_product();
-			$data['product_id'] = 0;
+			$data['product_id'] = $product_id;
 			$data['product_type'] = '';
 			$data['show_in_product_page'] = (array_key_exists('show_in_product_page', $this->plugin_settings)?$this->plugin_settings['show_in_product_page']:'no');
 			$data['stock_locations'] = 0;
@@ -329,19 +330,18 @@ if(!class_exists('SlwMain')) {
 			$data['stock_location_selected'] = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
 			
 			$stock_locations = array();
-			$stock_locations_obj = slw_get_locations('location', array(), false);
+			$stock_locations_obj = slw_get_locations('location', array(), false, $data['product_id']);
 			
 			if( ! empty( $stock_locations_obj ) ) {
-				foreach( $stock_locations_obj as $location ) {
-					$location_notice = get_term_meta($location->term_id, 'slw_location_notice', true);
-					$location_priority = get_term_meta($location->term_id, 'slw_location_priority', true);
+				foreach( $stock_locations_obj as $location ) { //pree($location);
+					$location_notice = get_term_meta($location->term_id, 'slw_location_notice', true); //pree($location_notice);
+					$location_priority = get_term_meta($location->term_id, 'slw_location_priority', true); //pree($location_priority);
 					$stock_locations[$location->term_id] = array('id'=>$location->term_id, 'name'=>$location->name, 'priority'=>$location_priority, 'notice'=>$location_notice);
 				}
 			}
 			
 			
 			$data['stock_locations_data'] = $stock_locations;
-			//$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', 'STOCK_QTY available at LOCATION_NAME'); //12/02/2024
 			
 			
 			
@@ -392,19 +392,19 @@ if(!class_exists('SlwMain')) {
 			
 			if($data['is_product'] && (is_object($post) && $post->post_type=='product')){// && isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] == 'yes' ) {
 				
-				$product_id = $post->ID;
+				
 				
 				$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $this->plugin_settings);
 				if($everything_stock_status_to_instock && function_exists('everything_stock_status_to_instock')){
-					everything_stock_status_to_instock($product_id);
+					everything_stock_status_to_instock($data['product_id']);
 				}
 				
 				
-				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($product_id).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
-				$wc_product = wc_get_product($product_id);
+				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($data['product_id']).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
+				$wc_product = wc_get_product($data['product_id']);
 				
-				$terms = slw_get_locations();
-				
+				$terms = slw_get_locations('location', array(), true, $data['product_id']);
+				//pree($terms);
 				
 				if(!empty($meta_obj)){
 					if($meta_obj->total_locations>0){
@@ -413,20 +413,21 @@ if(!class_exists('SlwMain')) {
 				}
 				$product_price = trim(str_replace(get_woocommerce_currency_symbol(), '', strip_tags(wc_price($wc_product->get_price()))));
 				$data['product_type'] = $wc_product->get_type();
-				$data['product_id'] = $product_id;
+
 				$data['product_price_format'] = trim(str_replace(array(get_woocommerce_currency_symbol(), $product_price), array('_CURRENCY_SYMBOL', '_PRODUCT_PRICE'), strip_tags(wc_price($wc_product->get_price()))));
 				$data['product_price_raw'] = $product_price; 
 				$data['product_price'] = $wc_product->get_price(); 
-				$data['stock_status'][$product_id] = $wc_product->get_availability();
-				$data['allow_backorder'][$product_id] = get_post_meta($product_id, '_backorders', true);
+				$data['stock_status'][$data['product_id']] = $wc_product->get_availability();
+				$data['allow_backorder'][$data['product_id']] = get_post_meta($data['product_id'], '_backorders', true);
 				$data['product_price_decimals'] = apply_filters('slw_product_price_decimals', 2, $product_price);
 				
 				
 				
-				if($data['product_type']=='variable' && $product_id>0){
+				if($data['product_type']=='variable' && $data['product_id']>0){
 				
-					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN (".$data['product_id'].") AND post_type='product_variation'");
 					//$product_variations_ids = $wc_product->get_children();
+					//pree($product_variations_ids);
 					$product_variations = array();
 					
 					//pre($product_variations_ids);	
@@ -442,7 +443,7 @@ if(!class_exists('SlwMain')) {
 								
 								$data['stock_status'][$variation_id] = $wc_variation->get_availability();
 								$data['allow_backorder'][$variation_id] = get_post_meta($variation_id, '_backorders', true);
-								$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);			
+								$data['stock_quantity'][$data['product_id']][$term->term_id] = get_post_meta($data['product_id'], '_stock_at_'.$term->term_id, true);			
 								$data['stock_quantity'][$variation_id][$term->term_id] = get_post_meta($variation_id, '_stock_at_'.$term->term_id, true);
 								
 								$data['stock_quantity_sum'] += ((float)$data['stock_quantity'][$variation_id][$term->term_id])*1;
@@ -454,15 +455,16 @@ if(!class_exists('SlwMain')) {
 					
 				}else{
 					if(!empty($terms)){
-						$data['stock_quantity'][$product_id][0] = 0;
+						$data['stock_quantity'][$data['product_id']][0] = 0;
 						foreach($terms as $term){					
-							$data['stock_quantity'][$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_'.$term->term_id, true);
-							$data['stock_quantity_sum'] += ((float)$data['stock_quantity'][$product_id][$term->term_id])*1;
+							$data['stock_quantity'][$data['product_id']][$term->term_id] = get_post_meta($data['product_id'], '_stock_at_'.$term->term_id, true);
+							$data['stock_quantity_sum'] += ((float)$data['stock_quantity'][$data['product_id']][$term->term_id])*1;
 						}
-						$data['stock_quantity'][$product_id][0] = $data['stock_quantity_sum'];
+						$data['stock_quantity'][$data['product_id']][0] = $data['stock_quantity_sum'];
 					}					
 				}
 				
+				//pree($data);
 				
 				$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', sprintf(__('%s available at %s', 'stock-locations-for-woocommerce'), 'STOCK_QTY', 'LOCATION_NAME'), $data['product_id'], $terms, $data['stock_quantity']);
 				
