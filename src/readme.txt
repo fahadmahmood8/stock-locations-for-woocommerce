@@ -160,6 +160,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.7.4 =
+- Fix: Number of products to update on admin_init reduced to 25 from 50 and made it conditional with if cron is OFF. [Thanks to Simon][14/06/2024]
+
 = 2.7.3 =
 - Fix: Default stock available at notice will only display the associated locations which are enabled. [Thanks to Villa Bafo][12/06/2024]
 

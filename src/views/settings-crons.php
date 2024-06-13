@@ -25,7 +25,7 @@
 		
 		$recommended_curl = '';
 		
-		$intervals = array(5,10,15,30,60);
+		$intervals = array(5,10,15,30,60); 
 		
 		//pree($intervals);
 ?>

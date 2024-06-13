@@ -368,24 +368,27 @@ if(!function_exists('wc_slw_admin_init')){
 		//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
 		
 		
-		$slw_update_products = get_option('slw_update_products', array());
-		//pree($slw_update_products);exit;
-		$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
-		if(is_array($slw_update_products) && !empty($slw_update_products)){
-			$item_count = 0;
-			foreach($slw_update_products as $product_id){ 
+		if((get_option('slw_crons_status')!=true)){
+			$slw_update_products = get_option('slw_update_products', array());
+			//pree($slw_update_products);exit;
+			$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 			
-				if($item_count>=50){ continue; }
-			
-				$item_count++;
-				slw_update_products($product_id, false, 'update-stock');
+			if(is_array($slw_update_products) && !empty($slw_update_products)){
+				$item_count = 0;
+				foreach($slw_update_products as $product_id){ 
 				
-				/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
-					unset($slw_update_products[$key]);
-				}*/
+					if($item_count>=25){ continue; }
+				
+					$item_count++;
+					slw_update_products($product_id, false, 'update-stock');
+					
+					/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
+						unset($slw_update_products[$key]);
+					}*/
+				}
+				//pree($slw_update_products);
+				//update_option('slw_update_products', $slw_update_products);
 			}
-			//pree($slw_update_products);
-			//update_option('slw_update_products', $slw_update_products);
 		}
 		$post_id = (isset($_GET['post'])?$_GET['post']:(isset($_GET['id'])?$_GET['id']:0));
 		
@@ -728,11 +731,12 @@ jQuery(document).ready(function($){
 			
 			update_option('slw_cron_request_sources', $all_requests);
 
-			
-			if(!in_array($current_source, $validated_requests) && (get_option('slw_crons_status')==true)){
-				
-				_e('Sorry, you are not allowed to proceed.', 'stock-locations-for-woocommerce');
-				exit;
+			if((get_option('slw_crons_status')==true)){
+				if(!in_array($current_source, $validated_requests)){
+					
+					_e('Sorry, you are not allowed to proceed.', 'stock-locations-for-woocommerce');
+					exit;
+				}
 			}
 			
 			slw_update_products();
