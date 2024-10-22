@@ -180,9 +180,9 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 				}else{
 					
 					if ($product->get_manage_stock() === true) {
-						$locations[$idx]->quantity = $product->get_meta('_stock_at_' . $location->term_id, true);
+						$locations[$idx]->quantity = (int)$product->get_meta('_stock_at_' . $location->term_id, true);
 					} elseif($product->get_manage_stock() === 'parent') {
-						$locations[$idx]->quantity = $parentProduct->get_meta('_stock_at_' . $location->term_id, true);
+						$locations[$idx]->quantity = (int)$parentProduct->get_meta('_stock_at_' . $location->term_id, true);
 					} else {
 						$locations[$idx]->quantity = 0;
 					}
