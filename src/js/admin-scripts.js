@@ -270,6 +270,26 @@ function slw_gmap_initialize(input_id) {
 
 	});
 	
+	$('input#slw-logs-status').bind('click', function (e) {
+		var data = {
+
+			action: 'slw_logs_status',
+			status: $(this).is(':checked')?$(this).val():'',
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+				document.location.reload();
+			}
+
+		});
+
+
+	});
+		
 	$('input#slw-api-status').bind('click', function (e) {
 		var data = {
 
@@ -282,6 +302,7 @@ function slw_gmap_initialize(input_id) {
 		$.post(ajaxurl, data, function (response, code) {
 			$.unblockUI();
 			if (code == 'success') {
+				
 			}
 
 		});

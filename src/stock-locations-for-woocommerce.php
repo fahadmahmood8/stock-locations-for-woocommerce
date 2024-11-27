@@ -25,14 +25,21 @@ if ( !defined( 'WPINC' ) ) {
 }
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
+//use Automattic\WooCommerce\Utilities\OrderUtil;
 
-global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id;
 
+
+	
+
+global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status;
+
+//$wc_slw_hpos = OrderUtil::custom_orders_table_usage_is_enabled();
+$slw_logs_status = (get_option('slw_logs_status')==true);
 $slw_wc_stock_format = get_option('woocommerce_stock_format');
 $slw_gkey = get_option('slw-google-api-key');
 $slw_plugin_settings = get_option( 'slw_settings' );
 $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array();
-$wc_slw_data = get_plugin_data(__FILE__);
+$wc_slw_data = get_plugin_data(__FILE__, true, false);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
 define( 'SLW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -112,7 +119,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.7.5';
+		public           $version  = '2.7.6';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -577,3 +584,11 @@ function Slw()
 {
 	return SlwMain::instance();
 }
+
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
+
+	

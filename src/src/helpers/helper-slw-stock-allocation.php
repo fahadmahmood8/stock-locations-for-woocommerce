@@ -84,6 +84,8 @@ if( !class_exists('SlwStockAllocationHelper') ) {
 			if (is_null($product) || empty($product)) {
 				return false;
 			}
+			
+			//pree('$product->get_manage_stock(): '.$product->get_manage_stock());exit;
 
 			// Not managed stock
 			if ($product->get_manage_stock() !== true && $product->get_manage_stock() !== 'parent') {

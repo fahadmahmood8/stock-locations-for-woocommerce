@@ -64,6 +64,8 @@ if(!function_exists('sanitize_slw_data')){
 if(!function_exists('wc_slw_logger')){
 	function wc_slw_logger($type='debug', $data=array()){
 		
+		global $slw_logs_status;
+		
 		$types = array('debug');
 		
 		if(is_array($type) || is_object($type)){
@@ -91,6 +93,7 @@ if(!function_exists('wc_slw_logger')){
 		$function .= (array_key_exists(4, $debug_backtrace)?' / '.$debug_backtrace[4]['function']:'');
 		$function .= (array_key_exists(5, $debug_backtrace)?' / '.$debug_backtrace[5]['function']:'');
 		
+		
 		switch($type){
 			case 'debug':
 
@@ -99,11 +102,16 @@ if(!function_exists('wc_slw_logger')){
 				if((is_array($data) || is_object($data)) && !empty($data)){
 					$slw_logger[] = $data;
 					$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
-					update_option('slw_logger', $slw_logger);
+					
+					if($slw_logs_status){
+						update_option('slw_logger', $slw_logger);
+					}
 				}else{				
 					$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
 					if(trim($data)){
-						update_option('slw_logger', $slw_logger);
+						if($slw_logs_status){
+							update_option('slw_logger', $slw_logger);
+						}
 					}
 				}
 				
@@ -155,6 +163,34 @@ if(!function_exists('slw_map_status')){
 	}
 }
 
+
+add_action('wp_ajax_slw_logs_status', 'slw_logs_status');
+
+if(!function_exists('slw_logs_status')){
+	function slw_logs_status(){
+
+		if(!empty($_POST) && isset($_POST['status'])){
+
+			if (
+				! isset( $_POST['slw_nonce_field'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
+			) {
+
+				echo '0';
+				
+
+			} else {
+				$status = ($_POST['status']=='yes');
+				update_option('slw_logs_status', $status);
+				
+				echo '1';
+
+			}
+		}
+
+		wp_die();
+	}
+}
 
 add_action('wp_ajax_slw_api_status', 'slw_api_status');
 
@@ -1266,7 +1302,7 @@ jQuery(document).ready(function($){
 				
 			}
 			//wc_slw_logger('debug', $_slw_locations_stock_status);
-			update_post_meta($order_id, '_slw_locations_stock_status', $_slw_locations_stock_status);
+			wc_slw_order_update_post_meta($order_id, '_slw_locations_stock_status', $_slw_locations_stock_status);
 			
 		}
 	}	
@@ -1282,6 +1318,35 @@ jQuery(document).ready(function($){
 			
 		}
 	}
+	
+	if(!function_exists('wc_slw_order_update_post_meta')){
+		function wc_slw_order_update_post_meta($id, $key, $value){
+			$order = wc_get_order( $id );
+			$order->update_meta_data( $key, $value );
+			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
+			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
+			$order->save();
+		}
+	}
+	if(!function_exists('wc_slw_order_add_post_meta')){
+		function wc_slw_order_add_post_meta($id, $key, $value){
+			$order = wc_get_order( $id );
+			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
+			$order->add_meta_data( $key, $value );
+			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
+			$order->save();
+		}
+	}
+	if(!function_exists('wc_slw_order_delete_post_meta')){
+		function wc_slw_order_delete_post_meta($id, $key, $value){
+			$order = wc_get_order( $id );
+			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
+			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
+			$order->delete_meta_data( $key, $value );
+			$order->save();
+		}
+	}		
+	
 	
 	include_once('functions-api.php');
 	include_once('filter-hooks.php');

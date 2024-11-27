@@ -70,7 +70,7 @@ if( !class_exists('SlwOrderItem') ) {
 			}
 
 			
-
+			//pree($this->wc_manage_stock);
 
 			if( $this->wc_manage_stock === 'yes') {
 				add_action( 'woocommerce_reduce_order_stock', array( $this, 'reduce_order_items_locations_stock' ), 10, 1 );
@@ -186,7 +186,7 @@ if( !class_exists('SlwOrderItem') ) {
 	
 					// update stock status
 					SlwProductHelper::update_wc_stock_status( $product_id );
-					update_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
+					wc_slw_order_update_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
 				}
 			
 				
@@ -466,7 +466,12 @@ if( !class_exists('SlwOrderItem') ) {
 			//wc_slw_logger('debug', 'reduce_order_items_locations_stock: '.'Yes');
 			
 			global $current_screen;
+			//pree($current_screen);exit;
 			$is_shop_order = (is_object($current_screen) && isset($current_screen->post_type) && $current_screen->post_type=='shop_order');
+			
+			//pree('$is_shop_order: '.$is_shop_order);exit;
+			
+			//pree($order);exit;
 			
 			if( empty( $order ) ) return;
 
@@ -476,19 +481,27 @@ if( !class_exists('SlwOrderItem') ) {
 				$order    = wc_get_order( $order_id );
 			}
 			
+			//pree($order);exit;
+			
 			// Loop through order items
 			foreach ( $order->get_items() as $item => $item_data ) {
 				// Product ID
 				$pid = ($item_data->get_variation_id()) ? $item_data->get_variation_id() : $item_data->get_product_id();
 				$pid = SlwWpmlHelper::object_id( $pid );
 				
+				$isManagedStock = SlwStockAllocationHelper::isManagedStock($pid);
+				
+				//pree('$pid: '.$pid.', $isManagedStock: '.$isManagedStock);exit;
+				
 				// Not managed stock
-				if (!SlwStockAllocationHelper::isManagedStock($pid)) {
+				if (!$isManagedStock) {
 					continue;
 				}
 
 				// Get locations
 				$locations = SlwStockAllocationHelper::getProductStockLocations($pid, false);
+				
+				//pree($locations);exit;
 
 				// No locations set
 				if (empty($locations)) {
@@ -502,7 +515,7 @@ if( !class_exists('SlwOrderItem') ) {
 					$productId = $item_data->get_product()->get_id();
 					$productId = SlwWpmlHelper::object_id( $productId );
 					
-					
+					//pree('$productId: '.$productId);
 					
 					if (is_admin() && $is_shop_order){
 						$postIdx   = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
@@ -513,7 +526,7 @@ if( !class_exists('SlwOrderItem') ) {
 						
 					}
 				}
-	
+				//pree($simpleLocationAllocations);exit;
 				
 				// No location stock data for line
 				if (empty($simpleLocationAllocations)) {
@@ -608,11 +621,11 @@ if( !class_exists('SlwOrderItem') ) {
 			
 			$ts = date('His');
 			if(!$_slw_ts){			
-				update_post_meta($order_id, '_slw_ts', $ts);
+				wc_slw_order_update_post_meta($order_id, '_slw_ts', $ts);
 			}
 			if($_slw_ts && $_slw_ts!=$ts && !$receipt_in_progress){
 				$receipt_in_progress = true;
-				update_post_meta($order_id, '_slw_ep', $receipt_in_progress);
+				wc_slw_order_update_post_meta($order_id, '_slw_ep', $receipt_in_progress);
 			}
 			
 			
