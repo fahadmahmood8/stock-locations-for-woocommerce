@@ -1,8 +1,8 @@
 === Stock Locations for WooCommerce ===
-Contributors: fahadmahmood,alexmigf
-Tags: woocommerce, stock, stock locations, simple, variable, products, product
+Contributors: fahadmahmood,alexmigf,invoicepress
+Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
-Tested up to: 6.4
+Tested up to: 6.6
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -81,6 +81,15 @@ This plugin requires at least *WooCommerce 3.4*.
 
 == Frequently Asked Questions ==
 
+= Problems with wp all import? = 
+
+**&#128073; 1.  How can we make them activate automatically during the import process?**
+
+If you want to make them active, in Import settings check "Taxonomies (incl. Categories and Tags)",
+under this chose "Update only these taxonomies, leave the rest alone" and type "location"
+
+Use this with "custom fields: _stock_at_xxx" as warehouse number and import works perfectly.
+
 = Stock Locations | Stock Deductions | Settings and Results =
 
 **&#128073; 1. How auto order allocation work with multiple stock locations?**
@@ -105,6 +114,13 @@ If order quantity is within the summation of all stock locations available stock
 
 **&#128073; 7. How does it manage the maximum qty. to order according to the stock in a location?**
 [youtube http://www.youtube.com/watch?v=gmU3cnk0LjY]
+
+**&#128073; 8. How to allow editing location values on orders after being reduced?**
+https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/90
+[youtube http://www.youtube.com/watch?v=Q1Lq-cbv2hE]
+
+= How Import/Export work with CSV files? =
+[youtube http://www.youtube.com/watch?v=4KCexCuVetk]
 
 = How to use Cron Job? =
 [youtube http://www.youtube.com/watch?v=si_DUe-8ncY&t=114s]
@@ -149,9 +165,54 @@ On settings page you can define a number. If location stock value will be less t
 14. Set price for product as per each stock location.
 15. Pre-select default location on product page (frontend).
 16. Stock locations for each variation.
+17. How to allow editing location values on orders after being reduced?
 
 
 == Changelog ==
+= 2.7.6 =
+New: Logs can be enabled and disabled with a toggle button.  [Thanks to @AntOnKnee][24/10/2024]
+New: High-Performance Order Storage (HPOS).
+Fix: https://wordpress.org/support/topic/orders-are-not-deducting-stock-from-my-stores [Thanks to @undermix and @amyhwang][27/11/2024]
+
+= 2.7.5 =
+Fix: when metadata is missing for a stock location quantity is an empty string instead of 0 and $remainingQty - '' is causing this error. https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/161 [Thanks to @pintend][22/10/2024]
+
+= 2.7.4 =
+- Fix: Number of products to update on admin_init reduced to 25 from 50 and made it conditional with if cron is OFF. [Thanks to Simon][14/06/2024]
+
+= 2.7.3 =
+- Fix: Default stock available at notice will only display the associated locations which are enabled. [Thanks to Villa Bafo][12/06/2024]
+
+= 2.7.2 =
+Fix: PHP Fatal error: Uncaught TypeError: method_exists(): Argument #1 ($object_or_class) must be of type object|string, bool given. [Thanks to @araundu][12/06/2024]
+
+= 2.7.1 =
+- New: API and Crons are made conditional with a toggle button to turn it ON/OFF. [11/06/2024][Thanks to Nishikant Tyagi]
+
+= 2.7.0 =
+- New: API and Crons are protected/restricted with the domain and IP referrer values. [08/06/2024]
+
+= 2.6.9 =
+- New: Bulk Import/Export using CSV files explained with a video tutorial. [01/06/2024]
+
+= 2.6.8 =
+- Fix: Variable products related improvements on the products list page where stocks can be updated with one click. [Thanks to Villa Bafo][27/05/2024]
+
+= 2.6.7 =
+- New: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/90 [Thanks to pacmanito & joaoaviz][23/05/2024]
+
+= 2.6.6 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/93 [Thanks to Salvatore Messina & joaoaviz][22/05/2024]
+
+= 2.6.5 =
+- Fix: PHP Fatal error due to wp_error [Thanks to Joseph Coello][13/04/2024]
+- New: Stock status will be captured during checkout and it will always remain same for the old orders, fresh stock values won't reflect for old orders. [22/05/2024] 
+
+
+= 2.6.5 =
+- Fix: https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/154 [Thanks to coello101][01/04/2024]
+- Fix: https://wordpress.org/support/topic/no-effect-when-preferred-location-is-selected/ [Thanks to @adeyinkabadmus][01/04/2024]
+
 = 2.6.4 =
 - Fix: Make STOCK_QTY available at LOCATION_NAME string translatable. [Thanks to @michaelw90][12/02/2024]
 

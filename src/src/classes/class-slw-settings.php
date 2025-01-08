@@ -83,9 +83,12 @@ if(!class_exists('SlwSettings')) {
 		{
 			global $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_theme_name;
 			settings_errors();
+			
+			$slw_update_products = get_option('slw_update_products', array());
+			//pree($slw_update_products);
 			?>
 			<div class="wrap slw-settings-wrap">
-				<h1><i class="fas fa-sitemap"></i> <?php echo $wc_slw_data['Name'].' ('.SLW_PLUGIN_VERSION.') '.($wc_slw_pro?'Pro':''); ?><span style="float:right; color:#4200FF; font-size:12px; margin:0 20px 0 0;"><?php echo $slw_theme_name; ?></span></h1>
+				<h1><i class="fas fa-sitemap"></i> <?php echo $wc_slw_data['Name'].' ('.SLW_PLUGIN_VERSION.') '.($wc_slw_pro?'Pro':''); ?><span style="float:right; color:#4200FF; font-size:12px; margin:0 20px 0 0;"><?php echo $slw_theme_name; ?> (<?php echo count($slw_update_products); ?>)</span></h1>
 				<h2 class="nav-tab-wrapper">
 					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
 					<?php foreach( $this->settings_tabs() as $key => $data ) : $class = 'nav-tab'; ?>
@@ -584,6 +587,8 @@ if(!class_exists('SlwSettings')) {
 		public function different_location_per_cart_item_callback()
 		{
 			$id = 'different_location_per_cart_item';
+			
+			$this->plugin_settings[$id] = (array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:'');
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
 				<option value="yes" <?php selected($this->plugin_settings[$id] == 'yes'); ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>
@@ -595,6 +600,7 @@ if(!class_exists('SlwSettings')) {
 		public function different_location_per_cart_item_no_callback()
 		{
 			$id = 'different_location_per_cart_item_no';
+			$this->plugin_settings[$id] = (array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:'');
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
 				<option value="continue" <?php selected($this->plugin_settings[$id] == 'continue'); ?>><?php echo __('Continue without any location selection', 'stock-locations-for-woocommerce'); ?></option>
@@ -735,6 +741,7 @@ if(!class_exists('SlwSettings')) {
 		}		 
 		public function select_yes_no_callback( $id )
 		{
+			$this->plugin_settings[$id] = (array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:'');
 			?> 
 			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
 				<option <?php selected($this->plugin_settings[$id] == ''); ?> value=""><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>				

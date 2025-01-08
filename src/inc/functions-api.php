@@ -23,10 +23,32 @@
 			}
 			
 			if(get_option('slw_api_status')==true){
-			
 				
+				$current_source = ($_SERVER['REMOTE_ADDR'].'/'.$_SERVER['SERVER_NAME']);
+				
+				$validated_requests = get_option('slw_api_request_validated', array());
+				
+				$validated_requests = (is_array($validated_requests)?$validated_requests:array());
+				
+				$all_requests = get_option('slw_api_request_sources', array());
+				
+				$all_requests = (is_array($all_requests)?$all_requests:array());
+				
+				
+			
+				$all_requests[time()] = $current_source;
+				
+				
+				$all_requests = array_unique($all_requests);
+				
+				update_option('slw_api_request_sources', $all_requests);
 	
 				
+				if(!in_array($current_source, $validated_requests)){
+					
+					_e('Sorry, you are not allowed to proceed.', 'stock-locations-for-woocommerce');
+					exit;
+				}
 				
 				
 				
@@ -85,6 +107,17 @@
 							break;
 							case 'stock':
 								if($data['product_id'] && $data['location_id'] && $data['value']>=0){
+									
+									$product_locations = wp_get_object_terms($data['product_id'],  'location' );
+									$paux = array(intval($data['location_id']));
+									
+									
+									foreach($product_locations as $termVal) {
+										if ($termVal->term_id != $paux[0]) $paux[] = $termVal->term_id;
+									}
+									
+									wp_set_object_terms($data['product_id'], $paux, 'location');
+									
 									$response['response'] = update_post_meta($data['product_id'], '_stock_at_' . $data['location_id'], $data['value']);
 								}
 							break;
@@ -101,6 +134,11 @@
 					break;
 				}
 				
+			}
+			
+			if($data['product_id']){
+				$response['product_id'] = $data['product_id'];
+				slw_update_products($data['product_id'], false, 'update-stock');
 			}
 			
 			switch($data['format']){

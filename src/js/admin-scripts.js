@@ -270,10 +270,50 @@ function slw_gmap_initialize(input_id) {
 
 	});
 	
+	$('input#slw-logs-status').bind('click', function (e) {
+		var data = {
+
+			action: 'slw_logs_status',
+			status: $(this).is(':checked')?$(this).val():'',
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+				document.location.reload();
+			}
+
+		});
+
+
+	});
+		
 	$('input#slw-api-status').bind('click', function (e) {
 		var data = {
 
 			action: 'slw_api_status',
+			status: $(this).is(':checked')?$(this).val():'',
+			slw_nonce_field: slw_admin_scripts.nonce,
+		}
+
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+				
+			}
+
+		});
+
+
+	});
+	
+	$('input#slw-crons-status').bind('click', function (e) {
+		var data = {
+
+			action: 'slw_crons_status',
 			status: $(this).is(':checked')?$(this).val():'',
 			slw_nonce_field: slw_admin_scripts.nonce,
 		}
@@ -287,7 +327,7 @@ function slw_gmap_initialize(input_id) {
 		});
 
 
-	});
+	});	
 	
 	$('#slw-location-status, a.slw-location-status').bind('click', function (e) {
 		
@@ -524,6 +564,73 @@ function slw_gmap_initialize(input_id) {
 		}
 		
 	}, 3000);
+	
+	$('body').on('click', 'div.slw-api-requests input[name^="validate_request"]', function(){
+		
+		
+		var requests = {};
+		
+		$.each($('div.slw-api-requests input[name^="validate_request"]:checked'), function(i,v){
+			requests[i] = $(this).val();
+		})
+		
+		var data = {
+
+			action: 'slw_validate_api_requests',
+			slw_validate_request: requests,
+			slw_nonce_check: slw_admin_scripts.nonce,
+		}
+		
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+			}
+		});
+		
+	});
+	
+	$('body').on('click', 'div.slw-cron-requests input[name^="validate_request"]', function(){
+		
+		
+		var requests = {};
+		
+		$.each($('div.slw-cron-requests input[name^="validate_request"]:checked'), function(i,v){
+			requests[i] = $(this).val();
+		})
+		
+		var data = {
+
+			action: 'slw_validate_cron_requests',
+			slw_validate_request: requests,
+			slw_nonce_check: slw_admin_scripts.nonce,
+		}
+		
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+			}
+		});
+		
+	});
+	
+	setTimeout(function(){
+		
+		if($('#doaction').length>0){
+			$('<input type="button" id="slw_import_export_video" class="button action" value="'+slw_admin_scripts.slw_import_export_tutorial+'">').insertAfter($('#doaction'));
+		}
+		if($('a.page-title-action[href*="page=product_exporter"]').length>0){
+			$('<input type="button" id="slw_import_export_video" class="page-title-action" value="'+slw_admin_scripts.slw_import_export_tutorial+'">').insertAfter($('a.page-title-action[href*="page=product_exporter"]'));
+		}
+		
+		
+		
+	}, 1000);
+	
+	$('body').on('click', '#slw_import_export_video', function(){
+		window.open('https://www.youtube.com/embed/4KCexCuVetk', '');
+	});
 	
 
 }(jQuery));

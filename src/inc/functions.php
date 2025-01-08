@@ -64,6 +64,8 @@ if(!function_exists('sanitize_slw_data')){
 if(!function_exists('wc_slw_logger')){
 	function wc_slw_logger($type='debug', $data=array()){
 		
+		global $slw_logs_status;
+		
 		$types = array('debug');
 		
 		if(is_array($type) || is_object($type)){
@@ -91,6 +93,7 @@ if(!function_exists('wc_slw_logger')){
 		$function .= (array_key_exists(4, $debug_backtrace)?' / '.$debug_backtrace[4]['function']:'');
 		$function .= (array_key_exists(5, $debug_backtrace)?' / '.$debug_backtrace[5]['function']:'');
 		
+		
 		switch($type){
 			case 'debug':
 
@@ -99,11 +102,16 @@ if(!function_exists('wc_slw_logger')){
 				if((is_array($data) || is_object($data)) && !empty($data)){
 					$slw_logger[] = $data;
 					$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
-					update_option('slw_logger', $slw_logger);
+					
+					if($slw_logs_status){
+						update_option('slw_logger', $slw_logger);
+					}
 				}else{				
 					$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
 					if(trim($data)){
-						update_option('slw_logger', $slw_logger);
+						if($slw_logs_status){
+							update_option('slw_logger', $slw_logger);
+						}
 					}
 				}
 				
@@ -156,6 +164,34 @@ if(!function_exists('slw_map_status')){
 }
 
 
+add_action('wp_ajax_slw_logs_status', 'slw_logs_status');
+
+if(!function_exists('slw_logs_status')){
+	function slw_logs_status(){
+
+		if(!empty($_POST) && isset($_POST['status'])){
+
+			if (
+				! isset( $_POST['slw_nonce_field'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
+			) {
+
+				echo '0';
+				
+
+			} else {
+				$status = ($_POST['status']=='yes');
+				update_option('slw_logs_status', $status);
+				
+				echo '1';
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
 add_action('wp_ajax_slw_api_status', 'slw_api_status');
 
 if(!function_exists('slw_api_status')){
@@ -174,6 +210,34 @@ if(!function_exists('slw_api_status')){
 			} else {
 				$status = ($_POST['status']=='yes');
 				update_option('slw_api_status', $status);
+				
+				echo '1';
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
+add_action('wp_ajax_slw_crons_status', 'slw_crons_status');
+
+if(!function_exists('slw_crons_status')){
+	function slw_crons_status(){
+
+		if(!empty($_POST) && isset($_POST['status'])){
+
+			if (
+				! isset( $_POST['slw_nonce_field'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
+			) {
+
+				echo '0';
+				
+
+			} else {
+				$status = ($_POST['status']=='yes');
+				update_option('slw_crons_status', $status);
 				
 				echo '1';
 
@@ -215,6 +279,73 @@ if(!function_exists('slw_widgets_settings')){
 		wp_die();
 	}
 }
+
+
+add_action('wp_ajax_slw_validate_api_requests', 'slw_validate_api_requests_callback');
+
+if(!function_exists('slw_validate_api_requests_callback')){
+	function slw_validate_api_requests_callback(){
+
+		if(!empty($_POST) && isset($_POST['slw_validate_request'])){
+
+			if (
+				! isset( $_POST['slw_nonce_check'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_check'], 'slw_nonce' )
+			) {
+
+				_e('Sorry, your nonce did not verify.', 'stock-locations-for-woocommerce');
+				exit;
+
+			} else {
+				$slw_validate_request = sanitize_slw_data($_POST['slw_validate_request']);
+			
+				if(is_array($slw_validate_request)){
+					update_option('slw_api_request_validated', $slw_validate_request);
+				}else{
+					update_option('slw_api_request_validated', array());
+				}
+				
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
+
+add_action('wp_ajax_slw_validate_cron_requests', 'slw_validate_cron_requests_callback');
+
+if(!function_exists('slw_validate_cron_requests_callback')){
+	function slw_validate_cron_requests_callback(){
+
+		if(!empty($_POST) && isset($_POST['slw_validate_request'])){
+
+			if (
+				! isset( $_POST['slw_nonce_check'] )
+				|| ! wp_verify_nonce( $_POST['slw_nonce_check'], 'slw_nonce' )
+			) {
+
+				_e('Sorry, your nonce did not verify.', 'stock-locations-for-woocommerce');
+				exit;
+
+			} else {
+				$slw_validate_request = sanitize_slw_data($_POST['slw_validate_request']);
+			
+				if(is_array($slw_validate_request)){
+					update_option('slw_cron_request_validated', $slw_validate_request);
+				}else{
+					update_option('slw_cron_request_validated', array());
+				}
+				
+
+			}
+		}
+
+		wp_die();
+	}
+}
+
 
 add_action('wp_ajax_slw_clear_debug_log', 'slw_clear_debug_log');
 
@@ -273,31 +404,35 @@ if(!function_exists('wc_slw_admin_init')){
 		//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
 		
 		
-		$slw_update_products = get_option('slw_update_products', array());
-		//pree($slw_update_products);exit;
-		$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
-		if(is_array($slw_update_products) && !empty($slw_update_products)){
-			$item_count = 0;
-			foreach($slw_update_products as $product_id){ 
+		if((get_option('slw_crons_status')!=true)){
+			$slw_update_products = get_option('slw_update_products', array());
+			//pree($slw_update_products);exit;
+			$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 			
-				if($item_count>=50){ continue; }
-			
-				$item_count++;
-				slw_update_products($product_id, false, 'update-stock');
+			if(is_array($slw_update_products) && !empty($slw_update_products)){
+				$item_count = 0;
+				foreach($slw_update_products as $product_id){ 
 				
-				/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
-					unset($slw_update_products[$key]);
-				}*/
+					if($item_count>=25){ continue; }
+				
+					$item_count++;
+					slw_update_products($product_id, false, 'update-stock');
+					
+					/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
+						unset($slw_update_products[$key]);
+					}*/
+				}
+				//pree($slw_update_products);
+				//update_option('slw_update_products', $slw_update_products);
 			}
-			//pree($slw_update_products);
-			//update_option('slw_update_products', $slw_update_products);
 		}
+		$post_id = (isset($_GET['post'])?$_GET['post']:(isset($_GET['id'])?$_GET['id']:0));
 		
-		if(isset($_GET['post']) && is_numeric($_GET['post']) && $_GET['post']>0 && isset($_GET['debug'])){
+		if(is_numeric($post_id) && $post_id>0 && isset($_GET['debug'])){
 			
-			$order = get_post(sanitize_slw_data($_GET['post']));
+			$order = get_post(sanitize_slw_data($post_id));
 			
-			if(is_object($order) && $order->post_type=='product'){
+			if(is_object($order) && in_array($order->post_type, array('product'))){
 				if(isset($_GET['get_keys'])){
 					
 
@@ -311,13 +446,14 @@ if(!function_exists('wc_slw_admin_init')){
 					exit;
 				}
 			}
-			
-			if(is_object($order) && $order->post_type=='shop_order'){
+			if(is_object($order) && substr($order->post_type, 0, strlen('shop_order'))=='shop_order'){
 				
+				pree('get_keys: ');
 				if(isset($_GET['get_keys'])){
 					pree(get_post_meta($order->ID));
 					
 				}
+				pree('get_items: ');
 				if(isset($_GET['get_items'])){
 					$order_obj = wc_get_order($order->ID);
 					foreach($order_obj->get_items() as $item_key=>$item_data){
@@ -325,7 +461,7 @@ if(!function_exists('wc_slw_admin_init')){
 						pree($item_data);
 					}
 				}
-				
+				pree('get_items_meta: ');
 				if(isset($_GET['get_items_meta'])){
 					$order_obj = wc_get_order($order->ID);
 					foreach($order_obj->get_items() as $item_key=>$item_data){
@@ -408,11 +544,12 @@ jQuery(document).ready(function($){
 
 
 
-
+			$slw_crons = isset($_GET['slw-crons']);
+			
 			$limited = (isset($_GET['limit'])?sanitize_slw_data($_GET['limit']):0);
 			$reconsider = (isset($_GET['reconsider'])?sanitize_slw_data($_GET['reconsider']):'');
 			$limit = (is_numeric($limited) && $limited>0?$limited:10);
-			$action = (isset($_GET['action'])?sanitize_slw_data($_GET['action']):sanitize_slw_data($action));
+			$action = ($slw_crons && isset($_GET['action'])?sanitize_slw_data($_GET['action']):sanitize_slw_data($action));
 			$product_id = (isset($_GET['product_id'])?sanitize_slw_data($_GET['product_id']):sanitize_slw_data($product_id));
 			$product_ids = 	array();
 			$slw_default_locations = slw_get_locations('location', array('key'=>'slw_default_location', 'value'=>1, 'compare'=>'='), true);	
@@ -548,7 +685,7 @@ jQuery(document).ready(function($){
 	
 					//$product_post = get_post($res_obj->ID);
 					if($cron){ echo '<li>ID: '.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>'; }
-					//pree($action);exit;
+					//pree($action);//exit;
 					switch($action){
 						case 'update-stock':
 							//pree($product_post);
@@ -583,7 +720,7 @@ jQuery(document).ready(function($){
 												$product_post->ID,
 												'_stock_at_%'
 												);
-							
+								//pree($qry);
 								$abf = $wpdb->get_results($qry);
 								if(!empty($abf)){
 									foreach($abf as $subProd) {
@@ -609,15 +746,47 @@ jQuery(document).ready(function($){
 	}
 	if(!function_exists('slw_crons')){
 		function slw_crons(){	
+		
+		
+			$current_source = ($_SERVER['REMOTE_ADDR'].'/'.$_SERVER['SERVER_NAME']);
+			
+			$validated_requests = get_option('slw_cron_request_validated', array());
+			
+			$validated_requests = (is_array($validated_requests)?$validated_requests:array());
+			
+			$all_requests = get_option('slw_cron_request_sources', array());
+			
+			$all_requests = (is_array($all_requests)?$all_requests:array());
+			
+			
+		
+			$all_requests[time()] = $current_source;
+			
+			
+			$all_requests = array_unique($all_requests);
+			
+			update_option('slw_cron_request_sources', $all_requests);
+
+			if((get_option('slw_crons_status')==true)){
+				if(!in_array($current_source, $validated_requests)){
+					
+					_e('Sorry, you are not allowed to proceed.', 'stock-locations-for-woocommerce');
+					exit;
+				}
+			}
+			
 			slw_update_products();
 		}
 	}
+	
 	if(isset($_GET['slw-crons'])){
+		
+		
 		add_action('init', 'slw_crons');
 	}
 	
 
-	function slw_get_locations($taxonomy='location', $additional_meta_query=array(), $enabled_only=true){
+	function slw_get_locations($taxonomy='location', $additional_meta_query=array(), $enabled_only=true, $product_id=0){
 		
 		$args = array('hide_empty' => false, 'meta_query' => array());
 		
@@ -637,9 +806,26 @@ jQuery(document).ready(function($){
 			$args['meta_query']['relation'] = 'AND';
 			$args['meta_query'][] = $additional_meta_query;
 		}
-		//pree($taxonomy);pree($args);
+		if($product_id){
+			$product_terms = wc_get_product_terms($product_id, $taxonomy);
+			
+			if(!empty($product_terms)){
+				$include_arr = array();
+				foreach($product_terms as $product_term){
+					$include_arr[] = $product_term->term_id;
+				}
+				if(!empty($include_arr)){
+					$args['include'] = $include_arr;
+				}
+			}
+		}
+		
+		//pree($taxonomy);
+		//pree($args);
 		$terms = get_terms($taxonomy, $args);
-		//pre($terms);
+		//pree($terms);
+		
+		
 		return $terms;
 	}
 
@@ -1034,6 +1220,8 @@ jQuery(document).ready(function($){
 			
 			if($stock_qty>0)
 			update_post_meta($product_id, '_stock_status', 'instock');
+			else
+			update_post_meta($product_id, '_stock_status', 'outofstock');
 		}
 		
 	}
@@ -1089,6 +1277,75 @@ jQuery(document).ready(function($){
 	
 	add_filter( 'woocommerce_get_item_data', 'slw_woocommerce_get_item_data', PHP_INT_MAX, 2 );	
 	
+	function slw_woocommerce_thankyou( $order_id ) {  
+
+		if ( ! $order_id )
+        return;
+		
+		$_slw_locations_stock_status = get_post_meta($order_id, '_slw_locations_stock_status', true);
+		$_slw_locations_stock_status = (is_array($_slw_locations_stock_status)?$_slw_locations_stock_status:array());
+		
+		$order = wc_get_order( $order_id );
+		
+		//wc_slw_logger('debug', 'reduce_order_items_locations_stock_on_save: '.'Yes #'.$order_id);
+
+		if( !empty($order) && !empty($order->get_items()) ) {
+			// Loop through order items
+			foreach ( $order->get_items() as $item_id => $item ) {
+				
+				$product_id = $item['variation_id'] != 0 ? $item['variation_id'] : $item['product_id'];
+				$itemStockLocationTerms = \SLW\SRC\Helpers\SlwStockAllocationHelper::getProductStockLocations( $product_id, false );
+				
+				foreach ($itemStockLocationTerms as $term) {
+					$_slw_locations_stock_status[$product_id][$term->term_id] = get_post_meta($product_id, '_stock_at_' . $term->term_id);
+				}
+				
+			}
+			//wc_slw_logger('debug', $_slw_locations_stock_status);
+			wc_slw_order_update_post_meta($order_id, '_slw_locations_stock_status', $_slw_locations_stock_status);
+			
+		}
+	}	
+	
+	add_action('woocommerce_thankyou', 'slw_woocommerce_thankyou' , 10, 1);	
+	
+	if(!function_exists('wc_slw_edit_stocks')){
+		function wc_slw_edit_stocks($slw_order_id, $item_id){
+			
+			$str = '<a href="https://www.youtube.com/embed/Q1Lq-cbv2hE" target="_blank" class="slw_edit_stocks" title="'.__('This is a premium feature!', 'stock-locations-for-woocommerce').'"></a>';
+			
+			return $str;
+			
+		}
+	}
+	
+	if(!function_exists('wc_slw_order_update_post_meta')){
+		function wc_slw_order_update_post_meta($id, $key, $value){
+			$order = wc_get_order( $id );
+			$order->update_meta_data( $key, $value );
+			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
+			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
+			$order->save();
+		}
+	}
+	if(!function_exists('wc_slw_order_add_post_meta')){
+		function wc_slw_order_add_post_meta($id, $key, $value){
+			$order = wc_get_order( $id );
+			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
+			$order->add_meta_data( $key, $value );
+			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
+			$order->save();
+		}
+	}
+	if(!function_exists('wc_slw_order_delete_post_meta')){
+		function wc_slw_order_delete_post_meta($id, $key, $value){
+			$order = wc_get_order( $id );
+			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
+			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
+			$order->delete_meta_data( $key, $value );
+			$order->save();
+		}
+	}		
 	
 	
 	include_once('functions-api.php');

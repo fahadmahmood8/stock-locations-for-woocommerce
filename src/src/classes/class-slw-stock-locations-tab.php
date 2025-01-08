@@ -283,7 +283,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			if ( !$force && ! current_user_can( 'edit_product', $post_id ))
 				return $post_id;
 			
-			
+
 
 			// WPML
 			$post_id = SlwWpmlHelper::object_id( $post_id );
@@ -336,11 +336,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 					$stock_value = self::update_product_stock($product, $product_stock_location_terms, $terms_total, $force);
 
 					
-					
+					$master_stock_value = 0;
 
 					// Check if product has variations
 					if( is_array($product_variations) && !empty($product_variations) ) {
-						$master_stock_value = 0;
+						
 						// Interate over variations
 						foreach( $product_variations as $item ) {
 
@@ -363,6 +363,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					}
 					
 					//pree($master_stock_value);exit;
+
 					slw_update_product_stock_status($post_id, $master_stock_value);
 					
 

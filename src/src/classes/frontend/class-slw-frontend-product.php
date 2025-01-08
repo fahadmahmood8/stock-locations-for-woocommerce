@@ -17,6 +17,8 @@ if ( !defined( 'WPINC' ) ) {
 if( !class_exists('SlwFrontendProduct') ) {
 
 	class SlwFrontendProduct{
+		
+		var $plugin_settings;
 		/**
 		 * Construct.
 		 *
@@ -68,13 +70,25 @@ if( !class_exists('SlwFrontendProduct') ) {
 			$type = ($wc_slw_pro?$type:str_replace('radio', 'select', $type));
 			
 			
+			$productStockLocations =  \SLW\SRC\Helpers\SlwStockAllocationHelper::sortLocationsByPriority( \SLW\SRC\Helpers\SlwStockAllocationHelper::getProductStockLocations($product_id));
+			
+			if(!$default_location || !array_key_exists($default_location, $stock_locations)){
+				
+				$location_keys = array_keys($productStockLocations);
+				$default_location = current($location_keys);
+				
+			}
 			
 			switch($type){
 			
 				case 'select_simple_default':
 				
+					
+				
 					$stock_price = $stock_locations[$default_location]['price'];
 					$stock_location_name = $stock_locations[$default_location]['name'];
+					
+					
 				
 					if($product_stock_price_status){
 						$stock_location_name .= ' '.wc_price($stock_price);
@@ -84,7 +98,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 				
 					$ret .= '<div class="slw_stock_location_selection ssd">
 					
-					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$slw_plugin_settings['show_in_product_page'].' default" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled><option data-price="'.$stock_price.'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" '.$selected.'>'.$stock_location_name.'</option></select>
+					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$slw_plugin_settings['show_in_product_page'].' default" name="slw_add_to_cart_item_stock_location" style="display:block;" required disabled><option data-price="'.trim($stock_price).'" data-quantity="'.$stock_locations[$default_location]['quantity'].'" value="'.$default_location.'" '.$selected.'>'.$stock_location_name.'</option></select>
 					
 					</div>';
 				break;
@@ -95,9 +109,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 					
 					<select id="slw_item_stock_location_simple_product" class="slw_item_stock_location sls display_'.$slw_plugin_settings['show_in_product_page'].' remaining" name="slw_add_to_cart_item_stock_location" style="display:block;" required>';
 					if( $default_location != 0 ) {
-						$ret .= '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+						$ret .= '<option data-price="" data-quantity="" value="0">'.__('View store inventory', 'stock-locations-for-woocommerce').'</option>';
 					} else {
-						$ret .= '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+						$ret .= '<option data-price="" data-quantity="" value="0" selected>'.__('View store inventory', 'stock-locations-for-woocommerce').'</option>';
 					}
 					
 					
@@ -137,7 +151,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 								$disabled = 'disabled="disabled"';
 							}
 						
-							$ret .= '<option data-priority="'.$slw_location_priority.'" data-price="'.$stock_price.'" data-quantity-formatted="'.$location['quantity-formatted'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
+							$ret .= '<option data-priority="'.$slw_location_priority.'" data-price="'.trim($stock_price).'" data-quantity-formatted="'.$location['quantity-formatted'].'" data-quantity="'.$location['quantity'].'" value="'.$location['term_id'].'" '.$disabled.' '.$selected.'>'.$stock_location_name.'</option>';
 						
 						}
 					}
@@ -169,9 +183,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 						$ret .= '<option data-price="" data-quantity="" value="'.$term_id.'" selected></option>';
 					}else{
 						if( $default_location != 0 ) {
-							$ret .= '<option data-price="" data-quantity="" value="0">'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+							$ret .= '<option data-price="" data-quantity="" value="0">'.__('View store inventory', 'stock-locations-for-woocommerce').'</option>';
 						} else {
-							$ret .= '<option data-price="" data-quantity="" value="0" selected>'.__('Select location...', 'stock-locations-for-woocommerce').'</option>';
+							$ret .= '<option data-price="" data-quantity="" value="0" selected>'.__('View store inventory', 'stock-locations-for-woocommerce').'</option>';
 						}
 					}
 					$ret .= '</select></div>';

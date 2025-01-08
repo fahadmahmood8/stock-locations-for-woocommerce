@@ -33,7 +33,7 @@ if ( !class_exists('SlwMailHelper') ) {
 			$plugin_settings = get_option( 'slw_settings' );
 			// Send email notification to location
 			$proceed = ( isset($plugin_settings['location_email_notifications']) && $plugin_settings['location_email_notifications'] == 'on' && isset($item_location_meta['slw_auto_allocate']) && $item_location_meta['slw_auto_allocate'] == '1' && isset($item_location_meta['slw_location_email']) && !empty($item_location_meta['slw_location_email']) && is_email($item_location_meta['slw_location_email']) );
-			$proceed_inspect = isset($plugin_settings['location_email_notifications']).' - '.$plugin_settings['location_email_notifications'].' - '.isset($item_location_meta['slw_auto_allocate']).' - '.$item_location_meta['slw_auto_allocate'].' - '.isset($item_location_meta['slw_location_email']).' - '.$item_location_meta['slw_location_email'].' - '.is_email($item_location_meta['slw_location_email']);
+			//$proceed_inspect = isset($plugin_settings['location_email_notifications']).' - '.$plugin_settings['location_email_notifications'].' - '.isset($item_location_meta['slw_auto_allocate']).' - '.$item_location_meta['slw_auto_allocate'].' - '.isset($item_location_meta['slw_location_email']).' - '.$item_location_meta['slw_location_email'].' - '.is_email($item_location_meta['slw_location_email']);
 			//wc_slw_logger('debug', '$proceed: '.$proceed.' ('.$proceed_inspect.')');
 			if($proceed){
 				$to = sanitize_slw_data( $item_location_meta['slw_location_email'] );
@@ -44,6 +44,7 @@ if ( !class_exists('SlwMailHelper') ) {
 				$message = apply_filters('slw_stock_allocation_notification_message', $slw_stock_allocation_notification_message, $quantity, $item->get_name(), $item->get_id());
 				
 				$body = apply_filters( 'slw_stock_allocation_notification_message', $message, $term, $quantity, $item );
+				
 				$headers = array('Content-Type: text/html; charset=UTF-8');
 				add_filter('wp_mail_content_type', function( $content_type ) { return 'text/html'; }); // forces wp_mail() to use 'text/html'
 
