@@ -4,13 +4,20 @@ on:
   push:
     tags:
       - "*.*.*"
+
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Use a stable Ubuntu version
 
     steps:
-      - uses: actions/checkout@master
+      # Step 1: Check out the repository
+      - uses: actions/checkout@v3
+
+      # Step 2: Install Subversion
+      - name: Install Subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      # Step 3: Deploy using the deploy.sh script
       - name: Deploy
         run: chmod +x ./deploy.sh && ./deploy.sh
         env:
