@@ -298,6 +298,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 			$product_variations = array();
 			
+			$product_variations_stock = array();
+			
 			// If product is type variable
 			if( $product_id && is_a( $product, 'WC_Product' ) ){
 				if($product->is_type('variable')) {
@@ -305,11 +307,23 @@ if(!class_exists('SlwStockLocationsTab')) {
 					//$product_variations_ids = $product->get_children();
 					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
 					
+					//pre($product_variations_ids);
+					
 					if(is_array($product_variations_ids)){
 						foreach( $product_variations_ids as $variation_obj ) {
+							//pre($variation_obj);
+							
 							$variation_id = $variation_obj->variation_id;
-							$product_variations[] = $product->get_available_variation( $variation_id );
+							$variation = wc_get_product($variation_id);
+							$variation_arr_data = $product->get_available_variation( $variation_id );
+							$product_variations[] = $variation_arr_data;
+							//if($variation->get_stock_quantity()){
+								$product_variations_stock[$variation_id] = $variation->get_stock_quantity();
+							//}
 						}
+						
+						//pre($product_variations);
+						//pre($product_variations_stock);
 					}
 				}elseif($product->is_type('simple')){
 					
@@ -319,6 +333,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 			
 			// Product location terms
 			$product_stock_location_terms = wp_get_post_terms($post_id, SlwLocationTaxonomy::get_tax_Names('singular'));
+			
+			//pre($product_stock_location_terms);
 			
 			// Count how many terms exist for this product
 			if( empty($product_stock_location_terms) ){
@@ -334,19 +350,25 @@ if(!class_exists('SlwStockLocationsTab')) {
 				if( $terms_total>0 ) {
 					//pree($post_id);pree($product_stock_location_terms);pree($terms_total);pree($force);exit;
 					$stock_value = self::update_product_stock($product, $product_stock_location_terms, $terms_total, $force);
+					
+					//pre($stock_value);
 
 					
 					$master_stock_value = 0;
 
 					// Check if product has variations
-					if( is_array($product_variations) && !empty($product_variations) ) {
+					if( is_array($product_variations_stock) && !empty($product_variations_stock) ) {
 						
 						// Interate over variations
-						foreach( $product_variations as $item ) {
-
-							$item_id = $item['variation_id'];
+						foreach( $product_variations_stock as $item_id=>$stock_value ) {
 							
-							$stock_value = self::update_product_stock($item_id, $product_stock_location_terms, $terms_total, $force);
+							//pre($item_id.' => '.$stock_value);
+
+							//$item_id = $item['variation_id'];
+							
+							//$stock_value = self::update_product_stock($item_id, $product_stock_location_terms, $terms_total, $force);
+							
+							//slw_update_product_stock_status($item_id, $stock_value);
 							
 							if($stock_value>0){
 								$master_stock_value += $stock_value;
@@ -354,7 +376,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 						}
 						
+						$stock_value = $master_stock_value;
 						
+						//pre('$master_stock_value: '.$master_stock_value);
 
 					}else{
 						if($stock_value>0){
@@ -363,13 +387,16 @@ if(!class_exists('SlwStockLocationsTab')) {
 					}
 					
 					//pree($master_stock_value);exit;
+					//pre('$post_id: '.$post_id.', $master_stock_value: '.$master_stock_value);
+					
+					
 
-					slw_update_product_stock_status($post_id, $master_stock_value);
+					slw_update_product_stock_status($post_id, $stock_value);
 					
 
 				}
 			}
-			
+			//pre($stock_value);
 			return $stock_value;
 		}
 

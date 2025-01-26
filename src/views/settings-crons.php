@@ -84,8 +84,8 @@
 </table>
     
     <ul>
-        <li>&nbsp;</li>
-        <li style="background-color: #4200FFB0;	color: #fff;	padding: 10px 20px;	border-radius: 22px;"><strong><?php _e('Try one of the following cron job arrangements:', 'stock-locations-for-woocommerce'); ?></strong> <a title="<?php _e('Click here to understand how to create a custom cron job command for your products stock status.', 'stock-locations-for-woocommerce'); ?>" style="font-size:12px; color:#FF0; margin-bottom:10px;" href="https://wordpress.org/support/topic/stock-not-reducing-when-orders-received/#post-17016960" target="_blank">[<?php _e('How does it work? Click here to understand.', 'stock-locations-for-woocommerce'); ?>]</a></li>
+        <li></li>
+        <li style="background-color: #4200FFB0;	color: #fff;	padding: 10px 20px;	border-radius: 22px;"><strong><?php _e('Try one of the following cron job arrangements:', 'stock-locations-for-woocommerce'); ?></strong> <a title="<?php _e('Click here to understand how to create a custom cron job command for your products stock status.', 'stock-locations-for-woocommerce'); ?>" style="font-size:12px; color:#FF0; margin-bottom:10px;" href="https://wordpress.org/support/topic/stock-not-reducing-when-orders-received/#post-17016960" target="_blank">[<?php _e('How does it work? Click here to understand.', 'stock-locations-for-woocommerce'); ?>]</a> <strong style="color:yellow; float:right;" title="<?php _e('You can use this shortcode to check the stock statuses and extra taxonomies related to the products listed.', 'stock-locations-for-woocommerce'); ?>"><?php _e('Shortcode', 'stock-locations-for-woocommerce'); ?>: [SLW-SHOW-PRODUCTS-STOCK-OVERVIEW]</strong></li>
 
         <?php if(!empty($intervals)){  foreach($intervals as $interval){ ?>
         <?php 
