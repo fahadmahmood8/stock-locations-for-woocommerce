@@ -1205,35 +1205,63 @@ jQuery(document).ready(function($){
 	function slw_fix_outofstock_terms($product_ids) {
 		global $wpdb;
 	
-		// Ensure product_ids is an array
+		// Ensure $product_ids is an array and sanitize
 		if (!is_array($product_ids)) {
 			$product_ids = [$product_ids];
 		}
-	
-		// Sanitize product IDs
 		$product_ids = array_map('intval', $product_ids);
 	
-		// Adjusted query with wpdb prefix
+		// Early exit if no valid product IDs
+		if (empty($product_ids)) {
+			return;
+		}
+	
+		// Expand $product_ids to include variation IDs for variable products
+		$expanded_product_ids = [];
+		foreach ($product_ids as $product_id) {
+			$product = wc_get_product($product_id);
+	
+			if ($product && $product->is_type('variable')) {
+				$variation_ids = $product->get_children(); // Get all variation IDs
+				$expanded_product_ids = array_merge($expanded_product_ids, $variation_ids);
+			}
+	
+			$expanded_product_ids[] = $product_id; // Always include the parent product
+		}
+	
+		// Remove duplicates
+		$expanded_product_ids = array_unique($expanded_product_ids);
+	
+		// Query to find products with incorrect `outofstock` term
 		$query = "
 			SELECT tr.object_id
 			FROM {$wpdb->prefix}term_relationships tr
 			INNER JOIN {$wpdb->prefix}term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-			INNER JOIN {$wpdb->prefix}postmeta pm_stock_status ON tr.object_id = pm_stock_status.post_id AND pm_stock_status.meta_key = '_stock_status'
-			INNER JOIN {$wpdb->prefix}postmeta pm_stock ON tr.object_id = pm_stock.post_id AND pm_stock.meta_key = '_stock'
-			WHERE tt.taxonomy = 'product_visibility' AND tt.term_id = (
-				SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = 'outofstock'
-			)
-			AND pm_stock_status.meta_value = 'instock' AND CAST(pm_stock.meta_value AS UNSIGNED) > 0
-			AND tr.object_id IN (" . implode(",", $product_ids) . ")
+			INNER JOIN {$wpdb->prefix}postmeta pm_stock_status 
+				ON tr.object_id = pm_stock_status.post_id AND pm_stock_status.meta_key = '_stock_status'
+			INNER JOIN {$wpdb->prefix}postmeta pm_stock 
+				ON tr.object_id = pm_stock.post_id AND pm_stock.meta_key = '_stock'
+			WHERE tt.taxonomy = 'product_visibility'
+			  AND tt.term_id = (
+				  SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = 'outofstock'
+			  )
+			  AND pm_stock_status.meta_value = 'instock'
+			  AND CAST(pm_stock.meta_value AS UNSIGNED) > 0
+			  AND tr.object_id IN (" . implode(",", $expanded_product_ids) . ")
 		";
 	
+		// Fetch product IDs to fix
 		$products_to_fix = $wpdb->get_col($query);
 	
-		// Remove the `outofstock` term from these products
+		// Remove the `outofstock` term from affected products
 		foreach ($products_to_fix as $product_id) {
 			wp_remove_object_terms($product_id, 'outofstock', 'product_visibility');
+	
+			// Optional: Log the fixed product
+			error_log("Fixed product ID: $product_id (removed `outofstock` term)");
 		}
 	}
+
 	
 	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
 		
@@ -1366,6 +1394,7 @@ jQuery(document).ready(function($){
 				}
 				
 			}
+			//pree($_slw_locations_stock_status);exit;
 			//wc_slw_logger('debug', $_slw_locations_stock_status);
 			wc_slw_order_update_post_meta($order_id, '_slw_locations_stock_status', $_slw_locations_stock_status);
 			
@@ -1440,14 +1469,10 @@ jQuery(document).ready(function($){
 	
 		global $wpdb;
 	
-		// Query to fetch all products
+		// Query to fetch parent products
 		$query = "
-			SELECT p.ID, p.post_title, pm_stock.meta_value AS stock_value, pm_stock_status.meta_value AS stock_status
+			SELECT p.ID, p.post_title
 			FROM {$wpdb->prefix}posts p
-			LEFT JOIN {$wpdb->prefix}postmeta pm_stock
-				ON p.ID = pm_stock.post_id AND pm_stock.meta_key = '_stock'
-			LEFT JOIN {$wpdb->prefix}postmeta pm_stock_status
-				ON p.ID = pm_stock_status.post_id AND pm_stock_status.meta_key = '_stock_status'
 			WHERE p.post_type = 'product' AND p.post_status = 'publish'
 		";
 	
@@ -1463,7 +1488,6 @@ jQuery(document).ready(function($){
 			<tr>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Product ID', 'stock-locations-for-woocommerce') . '</th>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Product Name', 'stock-locations-for-woocommerce') . '</th>
-				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Product Type', 'stock-locations-for-woocommerce') . '</th>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Stock Value', 'stock-locations-for-woocommerce') . '</th>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Stock Status', 'stock-locations-for-woocommerce') . '</th>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Valid Stock', 'stock-locations-for-woocommerce') . '</th>
@@ -1472,36 +1496,86 @@ jQuery(document).ready(function($){
 		</thead><tbody>';
 	
 		foreach ($products as $product) {
-			// Get product type
-			$product_type = wc_get_product($product->ID)->get_type();
+			// Load product object
+			$wc_product = wc_get_product($product->ID);
 	
-			// Get taxonomy terms for all taxonomies
+			if (!$wc_product) {
+				continue;
+			}
+	
+			// Get product type
+			$product_type = $wc_product->get_type();
+	
+			// Get taxonomy terms
 			$terms = wp_get_object_terms($product->ID, get_object_taxonomies('product'));
 			$term_names = wp_list_pluck($terms, 'name');
-			$term_csv = implode(', ', $term_names);
+			$term_csv = '';
+			foreach ($term_names as $term) {
+				// Highlight 'outofstock' in red
+				if ($term === 'outofstock') {
+					$term_csv .= '<span style="color: red; font-weight: bold;">' . esc_html($term) . '</span>, ';
+				} else {
+					$term_csv .= esc_html($term) . ', ';
+				}
+			}
+			$term_csv = rtrim($term_csv, ', ');
 	
-			// Determine row and text colors
-			$row_color = $product_type === 'simple' ? '#f9f9f9' : ($product_type === 'variable' ? '#e9f7e9' : '#f7e9e9');
-			$stock_color = $product->stock_status === 'instock' ? 'green' : 'red';
-	
-			// Validate stock
-			$valid_stock = ($product->stock_status === 'instock' && (int)$product->stock_value > 0) ? __('Yes', 'stock-locations-for-woocommerce') : __('No', 'stock-locations-for-woocommerce');
-	
-			// Add row to table
-			$output .= '<tr style="background-color: ' . esc_attr($row_color) . ';">
+			// Parent product row
+			$output .= '<tr style="background-color: #f9f9f9;">
 				<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($product->ID) . '</td>
 				<td style="border: 1px solid #ccc; padding: 8px;">
 					<a href="' . esc_url(admin_url('post.php?post=' . $product->ID . '&action=edit')) . '">' . esc_html($product->post_title) . '</a>
 				</td>
-				<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($product_type) . '</td>
-				<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($product->stock_value ?? 'N/A') . '</td>
-				<td style="border: 1px solid #ccc; padding: 8px; color: ' . esc_attr($stock_color) . ';">' . esc_html($product->stock_status ?? 'N/A') . '</td>
-				<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($valid_stock) . '</td>
-				<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($term_csv) . '</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">' . $term_csv . '</td>
 			</tr>';
+	
+			// Fetch and display variations for variable products
+			if ($product_type === 'variable') {
+				$variations = $wc_product->get_children();
+	
+				foreach ($variations as $variation_id) {
+					$variation = wc_get_product($variation_id);
+					if (!$variation) {
+						continue;
+					}
+	
+					// Get variation stock data
+					$stock_value = $variation->get_stock_quantity();
+					$stock_status = $variation->get_stock_status();
+					$stock_color = $stock_status === 'instock' ? 'green' : 'red';
+					$valid_stock = ($stock_status === 'instock' && (int)$stock_value > 0) ? __('Yes', 'stock-locations-for-woocommerce') : __('No', 'stock-locations-for-woocommerce');
+	
+					// Get variation taxonomy terms
+					$variation_terms = wp_get_object_terms($variation_id, get_object_taxonomies('product'));
+					$variation_term_csv = '';
+					foreach ($variation_terms as $term) {
+						// Highlight 'outofstock' in red
+						if ($term->name === 'outofstock') {
+							$variation_term_csv .= '<span style="color: red; font-size: 22px;">' . esc_html($term->name) . '</span>, ';
+						} else {
+							$variation_term_csv .= esc_html($term->name) . ', ';
+						}
+					}
+					$variation_term_csv = rtrim($variation_term_csv, ', ');
+	
+					// Variation row
+					$output .= '<tr style="background-color: #e9f7e9;">
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($variation_id) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">&mdash; ' . esc_html($variation->get_name()) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($stock_value ?? 'N/A') . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px; color: ' . esc_attr($stock_color) . ';">' . esc_html($stock_status) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($valid_stock) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . $variation_term_csv . '</td>
+					</tr>';
+				}
+			}
 		}
 	
 		$output .= '</tbody></table>';
 	
 		return $output;
 	});
+
