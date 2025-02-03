@@ -1469,11 +1469,32 @@ jQuery(document).ready(function($){
 	
 		global $wpdb;
 	
+		// Process $_GET['ids'] if provided
+		$ids = isset($_GET['ids']) ? explode(',', sanitize_text_field($_GET['ids'])) : [];
+		$ids = array_map('intval', $ids); // Sanitize IDs
+	
+		// Include parent products for variations
+		$final_ids = [];
+		foreach ($ids as $id) {
+			$product = wc_get_product($id);
+			if ($product) {
+				if ($product->is_type('variation')) {
+					$parent_id = $product->get_parent_id();
+					$final_ids[] = $parent_id;
+				}
+				$final_ids[] = $id;
+			}
+		}
+		$final_ids = array_unique($final_ids); // Remove duplicates
+	
+		// Build query condition for specific products
+		$product_condition = !empty($final_ids) ? "AND p.ID IN (" . implode(',', $final_ids) . ")" : '';
+	
 		// Query to fetch parent products
 		$query = "
 			SELECT p.ID, p.post_title
 			FROM {$wpdb->prefix}posts p
-			WHERE p.post_type = 'product' AND p.post_status = 'publish'
+			WHERE p.post_type = 'product' AND p.post_status = 'publish' $product_condition
 		";
 	
 		$products = $wpdb->get_results($query);
@@ -1491,6 +1512,7 @@ jQuery(document).ready(function($){
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Stock Value', 'stock-locations-for-woocommerce') . '</th>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Stock Status', 'stock-locations-for-woocommerce') . '</th>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Valid Stock', 'stock-locations-for-woocommerce') . '</th>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Backorder', 'stock-locations-for-woocommerce') . '</th>
 				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Taxonomy Terms', 'stock-locations-for-woocommerce') . '</th>
 			</tr>
 		</thead><tbody>';
@@ -1513,22 +1535,28 @@ jQuery(document).ready(function($){
 			foreach ($term_names as $term) {
 				// Highlight 'outofstock' in red
 				if ($term === 'outofstock') {
-					$term_csv .= '<span style="color: red; font-weight: bold;">' . esc_html($term) . '</span>, ';
+					$term_csv .= '<span style="color: red; font-size: 20px;">' . esc_html($term) . '</span>, ';
 				} else {
 					$term_csv .= esc_html($term) . ', ';
 				}
 			}
 			$term_csv = rtrim($term_csv, ', ');
 	
+			// Determine background and text color for parent product row
+			$row_style = $product_type === 'variable' 
+				? 'background-color: #333333; color: #ffffff;' 
+				: 'background-color: #f9f9f9;';
+	
 			// Parent product row
-			$output .= '<tr style="background-color: #f9f9f9;">
+			$output .= '<tr style="' . esc_attr($row_style) . '">
 				<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($product->ID) . '</td>
 				<td style="border: 1px solid #ccc; padding: 8px;">
-					<a href="' . esc_url(admin_url('post.php?post=' . $product->ID . '&action=edit')) . '">' . esc_html($product->post_title) . '</a>
+					<a href="' . esc_url(admin_url('post.php?post=' . $product->ID . '&action=edit')) . '" style="color: inherit;">' . esc_html($product->post_title) . '</a>
 				</td>
 				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
 				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
 				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">' . __('N/A', 'stock-locations-for-woocommerce') . '</td>
 				<td style="border: 1px solid #ccc; padding: 8px;">' . $term_csv . '</td>
 			</tr>';
 	
@@ -1548,13 +1576,15 @@ jQuery(document).ready(function($){
 					$stock_color = $stock_status === 'instock' ? 'green' : 'red';
 					$valid_stock = ($stock_status === 'instock' && (int)$stock_value > 0) ? __('Yes', 'stock-locations-for-woocommerce') : __('No', 'stock-locations-for-woocommerce');
 	
+					// Backorder status
+					$backorder_status = $variation->get_backorders() === 'yes' ? __('Yes', 'stock-locations-for-woocommerce') : __('No', 'stock-locations-for-woocommerce');
+	
 					// Get variation taxonomy terms
 					$variation_terms = wp_get_object_terms($variation_id, get_object_taxonomies('product'));
 					$variation_term_csv = '';
 					foreach ($variation_terms as $term) {
-						// Highlight 'outofstock' in red
 						if ($term->name === 'outofstock') {
-							$variation_term_csv .= '<span style="color: red; font-size: 22px;">' . esc_html($term->name) . '</span>, ';
+							$variation_term_csv .= '<span style="color: red; font-size: 20px;">' . esc_html($term->name) . '</span>, ';
 						} else {
 							$variation_term_csv .= esc_html($term->name) . ', ';
 						}
@@ -1566,8 +1596,9 @@ jQuery(document).ready(function($){
 						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($variation_id) . '</td>
 						<td style="border: 1px solid #ccc; padding: 8px;">&mdash; ' . esc_html($variation->get_name()) . '</td>
 						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($stock_value ?? 'N/A') . '</td>
-						<td style="border: 1px solid #ccc; padding: 8px; color: ' . esc_attr($stock_color) . ';">' . esc_html($stock_status) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px; color: ' . esc_attr($stock_color) . '; font-size: 20px;">' . esc_html($stock_status) . '</td>
 						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($valid_stock) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($backorder_status) . '</td>
 						<td style="border: 1px solid #ccc; padding: 8px;">' . $variation_term_csv . '</td>
 					</tr>';
 				}
@@ -1578,4 +1609,3 @@ jQuery(document).ready(function($){
 	
 		return $output;
 	});
-

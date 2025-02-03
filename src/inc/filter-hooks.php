@@ -72,7 +72,7 @@
 		
 		
 	add_filter('posts_request', function ($query) {
-		if ((is_product_category() || is_admin()) && isset($_GET['sql-query'])) { // Check if on a WooCommerce category page
+		if (((function_exists('is_product_category') && is_product_category()) || is_admin()) && isset($_GET['sql-query'])) { // Check if on a WooCommerce category page
 			pre("WooCommerce Category Page SQL Query: " . $query);
 		}
 		return $query;

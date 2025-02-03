@@ -31,8 +31,18 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 	
 
-global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status;
+global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status, $slw_woocommerce_product_form_hooks;
 
+$slw_woocommerce_product_form_hooks = [
+				'' => __('Select Position', 'stock-locations-for-woocommerce'),
+				'woocommerce_before_add_to_cart_button' => __('Before Add to Cart Button', 'stock-locations-for-woocommerce'),
+				'woocommerce_before_variations_form' => __('Before Variations Form', 'stock-locations-for-woocommerce'),
+				'woocommerce_product_additional_information' => __('Additional Information', 'stock-locations-for-woocommerce'),
+				'woocommerce_before_single_variation' => __('Before Single Variation', 'stock-locations-for-woocommerce'),
+				'woocommerce_after_single_variation' => __('After Single Variation', 'stock-locations-for-woocommerce'),
+				'woocommerce_after_variations_form' => __('After Variations Form', 'stock-locations-for-woocommerce'),
+				'woocommerce_after_add_to_cart_button' => __('After Add to Cart Button', 'stock-locations-for-woocommerce')
+			];	
 //$wc_slw_hpos = OrderUtil::custom_orders_table_usage_is_enabled();
 $slw_logs_status = (get_option('slw_logs_status')==true);
 $slw_wc_stock_format = get_option('woocommerce_stock_format');
@@ -119,7 +129,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.8.0';
+		public           $version  = '2.8.1';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -322,6 +332,7 @@ if(!class_exists('SlwMain')) {
 			$data['product_id'] = $product_id;
 			$data['product_type'] = '';
 			$data['show_in_product_page'] = (array_key_exists('show_in_product_page', $this->plugin_settings)?$this->plugin_settings['show_in_product_page']:'no');
+			$data['show_in_product_page_pos'] = (array_key_exists('show_in_product_page_pos', $this->plugin_settings)?$this->plugin_settings['show_in_product_page_pos']:'');			
 			$data['stock_locations'] = 0;
 			$data['stock_quantity'] = array();
 			$data['stock_status'] = array();

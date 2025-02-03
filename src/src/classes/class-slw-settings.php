@@ -187,11 +187,20 @@ if(!class_exists('SlwSettings')) {
 			
 			add_settings_field(
 				'show_in_product_page',
-				__('Stock management on product page', 'stock-locations-for-woocommerce'),
+				__('Stock management on a product page', 'stock-locations-for-woocommerce'),
 				array( $this, 'show_in_product_page_callback' ),
 				'slw-setting-admin',
 				'slw_setting_setting_section',
 				array('class'=>'show_in_product_page')
+			);
+			
+			add_settings_field(
+				'show_in_product_page_pos',
+				__('Stock management position on a product page', 'stock-locations-for-woocommerce'),
+				array( $this, 'show_in_position_product_page_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'show_in_position_product_page')
 			);
 			
 			add_settings_field(
@@ -354,6 +363,9 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['show_in_product_page'] ) ) {
 				$sanitary_values['show_in_product_page'] = $input['show_in_product_page'];
 			}
+			if ( isset( $input['show_in_product_page_pos'] ) ) {
+				$sanitary_values['show_in_product_page_pos'] = $input['show_in_product_page_pos'];
+			}			
 			if ( isset( $input['show_with_postfix'] ) ) {
 				$sanitary_values['show_with_postfix'] = (int)$input['show_with_postfix'];
 			}			
@@ -400,7 +412,7 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['wc_restore_stock_on_pending'] ) ) {
 				$sanitary_values['wc_restore_stock_on_pending'] = $input['wc_restore_stock_on_pending'];
 			}
-	
+			//pree($sanitary_values);exit;
 			return $sanitary_values;
 		}
 
@@ -632,6 +644,10 @@ if(!class_exists('SlwSettings')) {
 		{
 			$this->select_yes_no_product_page_callback('show_in_product_page');
 		}
+		
+		public function show_in_position_product_page_callback(){
+			$this->select_product_page_stock_position_callback('show_in_product_page_pos');
+		}
 
 
 		/**
@@ -708,48 +724,69 @@ if(!class_exists('SlwSettings')) {
 		 * @since 1.2.1
 		 * @return void
 		 */
-		public function select_yes_no_product_page_callback( $id )
-		{
-			?> 
-			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
-
-				<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
-				<option disabled <?php echo $selected; ?>><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>
-
-				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
-				<option value="yes_without" <?php echo $selected; ?>>1. <?php echo __('Without locations Dropdown', 'stock-locations-for-woocommerce'); ?></option>
-
-				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes' ? 'selected' : ''; ?>
-				<option value="yes" <?php echo $selected; ?>>2. <?php echo __('With locations Dropdown', 'stock-locations-for-woocommerce'); ?></option>
-                
-                <?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'yes_radio' ? 'selected' : ''; ?>
-				<option value="yes_radio" <?php echo $selected; ?>>3. <?php echo __('With locations RadioBoxes', 'stock-locations-for-woocommerce'); ?> (<?php echo __('Premium Feature', 'stock-locations-for-woocommerce'); ?>)</option>
-                
-                
-				<?php $selected = isset( $this->plugin_settings[$id] ) && $this->plugin_settings[$id] === 'no' ? 'selected' : ''; ?>
-				<option value="no" <?php echo $selected; ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
-
-			</select>
-<?php
-			$id = $id.'_pos';
-?>            
+		 
+		public function select_product_page_stock_position_callback($id){
+			global $slw_woocommerce_product_form_hooks;
+			//pree($this->plugin_settings);
+?>
             <select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
-            	<?php $selected = isset($this->plugin_settings[$id]) ?: 'selected'; ?>
-				<option disabled <?php echo $selected; ?>><?php echo __('Select Position', 'stock-locations-for-woocommerce'); ?></option>
+
+				
+                
+<?php
+				foreach ($slw_woocommerce_product_form_hooks as $key => $value) {
+					$selected = (isset($this->plugin_settings[$id]) && $this->plugin_settings[$id] === $key) ? 'selected' : '';
+					echo "<option value='$key' $selected>$value</option>";
+				}
+?>                
             </select>
-			<?php
-		}		 
-		public function select_yes_no_callback( $id )
-		{
-			$this->plugin_settings[$id] = (array_key_exists($id, $this->plugin_settings)?$this->plugin_settings[$id]:'');
-			?> 
-			<select name="slw_settings[<?php echo $id; ?>]" id="<?php echo $id; ?>">
-				<option <?php selected($this->plugin_settings[$id] == ''); ?> value=""><?php echo __('Select...', 'stock-locations-for-woocommerce'); ?></option>				
-				<option value="yes" <?php selected($this->plugin_settings[$id] == 'yes'); ?>><?php echo __('Yes', 'stock-locations-for-woocommerce'); ?></option>				
-				<option value="no" <?php selected($this->plugin_settings[$id] == 'no'); ?>><?php echo __('No', 'stock-locations-for-woocommerce'); ?></option>
-			</select>
-			<?php
+<?php            			
 		}
+		public function select_yes_no_product_page_callback($id) {
+			// Retrieve the current value for the setting
+			$current_value = isset($this->plugin_settings[$id]) ? $this->plugin_settings[$id] : '';
+		
+			// Define the options
+			$options = [
+				'' => __('Select...', 'stock-locations-for-woocommerce'),
+				'yes_without' => '1. ' . __('Without locations Dropdown', 'stock-locations-for-woocommerce'),
+				'yes' => '2. ' . __('With locations Dropdown', 'stock-locations-for-woocommerce'),
+				'yes_radio' => '3. ' . __('With locations RadioBoxes', 'stock-locations-for-woocommerce') . ' (' . __('Premium Feature', 'stock-locations-for-woocommerce') . ')',
+				'no' => __('No', 'stock-locations-for-woocommerce'),
+			];
+		
+			// Output the select dropdown
+			echo '<select name="slw_settings[' . esc_attr($id) . ']" id="' . esc_attr($id) . '">';
+		
+			foreach ($options as $value => $label) {
+				$selected = ($current_value === $value) ? 'selected' : '';
+				echo '<option value="' . esc_attr($value) . '" ' . $selected . '>' . esc_html($label) . '</option>';
+			}
+		
+			echo '</select>';
+		}
+			 
+		public function select_yes_no_callback($id) {
+			// Get the current value for the setting
+			$current_value = isset($this->plugin_settings[$id]) ? $this->plugin_settings[$id] : '';
+		
+			// Define the options
+			$options = [
+				'' => __('Select...', 'stock-locations-for-woocommerce'),
+				'yes' => __('Yes', 'stock-locations-for-woocommerce'),
+				'no' => __('No', 'stock-locations-for-woocommerce'),
+			];
+		
+			// Output the select dropdown
+			echo '<select name="slw_settings[' . esc_attr($id) . ']" id="' . esc_attr($id) . '">';
+		
+			foreach ($options as $value => $label) {
+				echo '<option value="' . esc_attr($value) . '" ' . selected($current_value, $value, false) . '>' . esc_html($label) . '</option>';
+			}
+		
+			echo '</select>';
+		}
+
 
 		/**
 		 * Checkbox callback.
