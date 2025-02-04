@@ -72,8 +72,8 @@
 		
 		
 	add_filter('posts_request', function ($query) {
-		if (((function_exists('is_product_category') && is_product_category()) || is_admin()) && isset($_GET['sql-query'])) { // Check if on a WooCommerce category page
+		if (isset($_GET['sql-query']) && ((function_exists('is_product_category') && is_product_category()) || (is_admin() && get_current_screen()->id === 'edit-product_cat'))) {
 			pre("WooCommerce Category Page SQL Query: " . $query);
 		}
 		return $query;
-	});	
+	});
