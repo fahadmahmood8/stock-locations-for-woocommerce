@@ -289,6 +289,22 @@ function slw_gmap_initialize(input_id) {
 
 
 	});
+	$('input#slw-update-product-locations-stock-values').bind('click', function (e) {
+		var data = {
+			action: 'slw_update_product_locations_stock_values',
+			status: $(this).is(':checked') ? $(this).val() : '',
+			slw_nonce_field: slw_admin_scripts.nonce,
+		};
+	
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success') {
+				// Action after success (if needed)
+			}
+		});
+	});
+
 		
 	$('input#slw-api-status').bind('click', function (e) {
 		var data = {
@@ -328,6 +344,33 @@ function slw_gmap_initialize(input_id) {
 
 
 	});	
+	
+	$('#slw-location-assignment, a.slw-location-assignment').bind('click', function (e) {
+		var assignment_val = '';
+	
+		if ($(this).is('input[type="checkbox"]')) {
+			assignment_val = $(this).is(':checked') ? $(this).val() : '';
+		} else {
+			assignment_val = $(this).hasClass('checked') ? '' : 'yes';
+			$(this).toggleClass('checked');
+		}
+	
+		var data = {
+			action: 'slw_location_assignment',
+			assignment: assignment_val,
+			location_id: $(this).data('id'),
+			slw_nonce_field: slw_admin_scripts.nonce,
+		};
+	
+		$.blockUI({ message: false });
+		$.post(ajaxurl, data, function (response, code) {
+			$.unblockUI();
+			if (code == 'success' && response.success) {
+
+			}
+		});
+	});
+
 	
 	$('#slw-location-status, a.slw-location-status').bind('click', function (e) {
 		

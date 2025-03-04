@@ -266,7 +266,12 @@ if(!class_exists('SlwLocationTaxonomy')) {
 		public function product_default_location_selection()
 		{
 			$product_id = get_the_ID();
+		
+			
 			if( empty( $product_id ) ) return;
+			
+			
+			
 
 			$default_location = ! empty( get_post_meta( $product_id, '_slw_default_location', true ) ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			?>

@@ -88,7 +88,7 @@ if(!class_exists('SlwSettings')) {
 			//pree($slw_update_products);
 			?>
 			<div class="wrap slw-settings-wrap">
-				<h1><i class="fas fa-sitemap"></i> <?php echo $wc_slw_data['Name'].' ('.SLW_PLUGIN_VERSION.') '.($wc_slw_pro?'Pro':''); ?><span style="float:right; color:#4200FF; font-size:12px; margin:0 20px 0 0;"><?php echo $slw_theme_name; ?> (<?php echo count($slw_update_products); ?>)</span></h1>
+				<h1><i class="fas fa-sitemap"></i> <?php echo $wc_slw_data['Name'].' ('.SLW_PLUGIN_VERSION.') '.($wc_slw_pro?'Pro':''); ?><span style="float:right; color:#4200FF; font-size:12px; margin:0 <?php echo (!$wc_slw_pro?'14':''); ?>0px 0 0;"><?php echo $slw_theme_name; ?> (<?php echo count($slw_update_products); ?>)</span></h1>
 				<h2 class="nav-tab-wrapper">
 					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
 					<?php foreach( $this->settings_tabs() as $key => $data ) : $class = 'nav-tab'; ?>

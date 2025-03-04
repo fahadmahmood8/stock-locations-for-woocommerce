@@ -35,9 +35,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 			$selected_hook = isset($this->plugin_settings['show_in_product_page_pos']) 
 				? $this->plugin_settings['show_in_product_page_pos'] 
 				: '';
-			
+
 			// Get the available hooks from the global array
-			$available_hooks = array_keys($slw_woocommerce_product_form_hooks);
+			$available_hooks = (is_array($slw_woocommerce_product_form_hooks)?array_keys($slw_woocommerce_product_form_hooks):array());
 			
 			if (in_array($selected_hook, $available_hooks, true)) {
 				//pree($selected_hook);
@@ -356,8 +356,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 				$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $variation_id );
 				$default_location      = isset( $slw_plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 				
-				
-				
+				//pree($stock_locations);
+				//pree($default_location);
+				//exit;
 				
 				if( !empty($stock_locations) ) {
 					wp_send_json_success( compact( 'stock_locations', 'default_location' ) );

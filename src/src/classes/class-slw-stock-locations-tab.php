@@ -121,9 +121,11 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 			// Check if the product has terms
 			if($product_stock_location_terms) {
+				
+				$backorder_status = $product->get_backorders() === 'no' ? __('No', 'stock-locations-for-woocommerce'):__('Yes', 'stock-locations-for-woocommerce');
 
 				echo '<div id="' . $this->tab_stock_locations . '_wrapper" style="display:none;">';
-				echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$product->get_id().' ('. $product->get_title() . ')</h4></div>';
+				echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$product->get_id().' ('. $product->get_title() . ') <span class="backorder-status"><span class="backorder-'.strtolower($backorder_status).'">'.__('Backorder', 'stock-locations-for-woocommerce').': '.$backorder_status.'</span></span></h4></div>';
 
 				// Loop throw terms
 				foreach($product_stock_location_terms as $term) {
@@ -154,11 +156,19 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 				// Check if product has variations
 				if( isset($product_variations) && ( !empty($product_variations) || ($product_variations !== 0) ) ) {
+					
+					$hide_out_of_stock_items = get_option( 'woocommerce_hide_out_of_stock_items' );
 
 					// Interate over variations
 					foreach( $product_variations as $variation ) {
+						
+						
 
 						$variation_id = $variation['variation_id'];
+						
+						$variation_obj = wc_get_product($variation_id);
+						
+						$backorder_status = $variation_obj->get_backorders() === 'no' ? __('No', 'stock-locations-for-woocommerce'):__('Yes', 'stock-locations-for-woocommerce');
 
 						if( is_array($variation['attributes']) ) {
 							$variation_attributes = implode(",", $variation['attributes']);
@@ -177,7 +187,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 							echo '<div id="' . $this->tab_stock_locations . '_wrapper_variations" style="display:none;">';
 						}
 
-						echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$variation_id.' ('. ucfirst($variation_attributes) . ')</h4></div>';
+						echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$variation_id.' ('. ucfirst($variation_attributes) . ') ('. $product->get_title() . ') <span class="backorder-status"><span class="backorder-'.strtolower($backorder_status).'">'.__('Hide outofstock', 'stock-locations-for-woocommerce').': '.$hide_out_of_stock_items.' / '.__('Backorder', 'stock-locations-for-woocommerce').': '.$backorder_status.'</span></span></h4></div>';
 
 						// Loop throw terms
 						foreach($product_stock_location_terms as $term) {
@@ -188,7 +198,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 						}
 
 						// Get Variation Object
-						$variation_obj = wc_get_product($variation_id);
+						//$variation_obj = wc_get_product($variation_id);
 
 
 						if( $variation_obj->managing_stock() ) {

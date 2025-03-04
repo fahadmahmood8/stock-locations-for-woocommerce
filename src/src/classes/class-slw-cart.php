@@ -27,6 +27,8 @@ if(!class_exists('SlwCart')) {
 			// get settings
 			$plugin_settings = get_option( 'slw_settings' );
 
+
+			
 			// check if show in cart is enabled
 			if( $plugin_settings['show_in_cart'] == 'yes' ) {
 				add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 10, 2 );
@@ -48,11 +50,17 @@ if(!class_exists('SlwCart')) {
          */
         public function add_cart_item_stock_locations( $cart_item, $cart_item_key )
         {
+			
+			
 			if( empty($cart_item) ) return;
 
             $product_id = $cart_item['variation_id'] != 0 ? $cart_item['variation_id'] : $cart_item['product_id'];
+			
+			$stock_locations = SlwStockAllocationHelper::getProductStockLocations($product_id, true, null);
+			
+			
             
-            if( !empty($stock_locations = SlwStockAllocationHelper::getProductStockLocations($product_id, true, null)) ) {
+            if( !empty($stock_locations)) {
                 echo '<select class="slw_cart_item_stock_location" style="display:block;" required>';
                 echo '<option disabled selected value="0">'.__('View store inventory', 'stock-locations-for-woocommerce').'</option>';
                 foreach( $stock_locations as $id => $location ) {

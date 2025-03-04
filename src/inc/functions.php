@@ -1,31 +1,31 @@
 <?php if ( ! defined( 'ABSPATH' ) ){ exit; }else{ clearstatcache(); }
 
 if(!function_exists('pre')){
-function pre($data){
-	if(isset($_GET['debug'])){
-	  pree($data);
+	function pre($data){
+		if(isset($_GET['debug'])){
+		  pree($data);
+		}
 	}
-  }
 }
 if(!function_exists('pree')){
-function pree($data){
+	function pree($data){
 	
-	$debug_backtrace = debug_backtrace();
+		$debug_backtrace = debug_backtrace();
+			
+		$function = $debug_backtrace[0]['function'];
+		$function .= ' / '.$debug_backtrace[1]['function'];
+		$function .= ' / '.$debug_backtrace[2]['function'];
+		$function .= ' / '.$debug_backtrace[3]['function'];
+		$function .= ' / '.$debug_backtrace[4]['function'];
 		
-	$function = $debug_backtrace[0]['function'];
-	$function .= ' / '.$debug_backtrace[1]['function'];
-	$function .= ' / '.$debug_backtrace[2]['function'];
-	$function .= ' / '.$debug_backtrace[3]['function'];
-	$function .= ' / '.$debug_backtrace[4]['function'];
+		//if(function_exists('wc_slw_logger')){ wc_slw_logger('debug', $function); }
+		
+		echo '<pre>';
+		//print_r($function);
+		print_r($data);
+		echo '</pre>';
 	
-	//if(function_exists('wc_slw_logger')){ wc_slw_logger('debug', $function); }
-	
-	echo '<pre>';
-	//print_r($function);
-	print_r($data);
-	echo '</pre>';
-
-  }
+	}
 }
 if(!function_exists('slw_notices')){
 	function slw_notices($data, $echo = false){
@@ -123,6 +123,27 @@ if(!function_exists('wc_slw_logger')){
 	}
 }
 
+add_action('wp_ajax_slw_location_assignment', 'slw_location_assignment');
+
+if (!function_exists('slw_location_assignment')) {
+    function slw_location_assignment() {
+        if (!empty($_POST) && isset($_POST['assignment'])) {
+            if (!isset($_POST['slw_nonce_field']) || !wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')) {
+               echo '0';	
+            } else {
+                $assignment = ($_POST['assignment'] == 'yes');
+                $location_id = sanitize_slw_data($_POST['location_id']);
+
+                update_term_meta($location_id, 'slw_location_assignment', $assignment);
+
+				echo '1';
+
+            }
+        }
+
+        wp_die();
+    }
+}
 
 
 add_action('wp_ajax_slw_location_status', 'slw_location_status');
@@ -191,6 +212,23 @@ if(!function_exists('slw_logs_status')){
 		wp_die();
 	}
 }
+add_action('wp_ajax_slw_update_product_locations_stock_values', 'slw_update_product_locations_stock_values');
+
+if (!function_exists('slw_update_product_locations_stock_values')) {
+    function slw_update_product_locations_stock_values() {
+        if (!empty($_POST) && isset($_POST['status'])) {
+            if (!isset($_POST['slw_nonce_field']) || !wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')) {
+                echo '0';
+            } else {
+                $status = ($_POST['status'] == 'yes');
+                update_option('slw_update_product_locations_stock_values', $status);
+                echo '1';
+            }
+        }
+        wp_die();
+    }
+}
+
 
 add_action('wp_ajax_slw_api_status', 'slw_api_status');
 
@@ -373,19 +411,7 @@ if(!function_exists('slw_clear_debug_log')){
 	}
 }
 
-add_action( 'pmxi_saved_post', function( $id )
-{
-	$import_id = ( isset( $_GET['id'] ) ? $_GET['id'] : ( isset( $_GET['import_id'] ) ? $_GET['import_id'] : 'new' ) );
-	// get locations total stock
-	$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
 
-	// update stock
-	slw_update_product_stock_status( $id, $locations_total_stock );
-	
-	// update stock status
-	\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
-
-}, 10, 1 );
 
 if(!function_exists('slw_quantity_format')){
 	function slw_quantity_format($data){
@@ -1276,7 +1302,7 @@ jQuery(document).ready(function($){
 		
 		//wc_slw_logger('debug', $product_id.'='.$stock_qty.' - '.$function);
 		
-		//pre('$product_id: '.$product_id.', $stock_qty: '.$stock_qty);
+
 		
 		
 		if(is_numeric($product_id)){
@@ -1292,22 +1318,22 @@ jQuery(document).ready(function($){
 				$product->set_manage_stock(true);
 				
 
-				//pre('$product->set_manage_stock(true);');
+
 				
-				//pre('$product->set_stock_quantity('.$stock_qty.');');
+
 			
 				if($stock_qty>0){
 					// Set the stock status to "in stock"
 					$product->set_stock_status('instock');
 					$product->save();
 					slw_fix_outofstock_terms($product_id);
-					//pre('$product->set_stock_quantity('.$stock_qty.'); INSTOCK');
+
 				}else{
 					$product->set_stock_status('outofstock');
 					$product->save();
-					//pre('$product->set_stock_quantity('.$stock_qty.'); OUTOFSTOCK');
+
 				}
-				//pre('$stock_qty: '.$stock_qty);
+
 				
 				
 			
@@ -1609,3 +1635,146 @@ jQuery(document).ready(function($){
 	
 		return $output;
 	});
+
+	add_action('wp_insert_post', 'assign_slw_location_terms_on_creation', 10, 3);
+	
+	function assign_slw_location_terms_on_creation($post_id, $post, $update) {
+		// Ensure it's a product and not an update/edit
+		if ($update || get_post_type($post_id) !== 'product') {
+			return;
+		}
+	
+		// Check if this is a manual submission (Admin Panel) or API-based creation
+		$is_manual_submission = isset($_POST) && !empty($_POST); // API-based creation doesn't have $_POST data
+	
+		// Get all terms from the 'location' taxonomy with slw_location_assignment enabled
+		$enabled_terms = get_terms([
+			'taxonomy'   => 'location',
+			'hide_empty' => false,
+			'meta_query' => [
+				[
+					'key'   => 'slw_location_assignment',
+					'value' => '1', // Fetch only terms where slw_location_assignment is enabled
+				]
+			],
+		]);
+	
+		if (!empty($enabled_terms) && !is_wp_error($enabled_terms)) {
+			$enabled_term_ids = wp_list_pluck($enabled_terms, 'term_id'); // Extract term IDs
+	
+			if ($is_manual_submission) {
+				// Preserve manually selected terms in the admin panel
+				$selected_terms = wp_get_object_terms($post_id, 'location', ['fields' => 'ids']);
+				$final_terms = array_unique(array_merge($selected_terms, $enabled_term_ids));
+			} else {
+				// If created via API, just assign the enabled terms
+				$final_terms = $enabled_term_ids;
+			}
+	
+			// Assign terms to the product
+			wp_set_object_terms($post_id, $final_terms, 'location', false);
+		}
+	}
+	if (!function_exists('slw_update_products_stock_values')) {
+		function slw_update_products_stock_values($product_id, $product = null, $update = true, $from_hook = true) {
+			
+			if(!get_option('slw_update_product_locations_stock_values')){
+				return;
+			}
+			// Detect which hook called this function
+			$current_hook = current_filter();
+	
+			switch ($current_hook) {
+				case 'woocommerce_process_product_meta':
+				case 'woocommerce_save_product_variation':
+				case 'wp_insert_post':
+				case 'transition_post_status':
+				case 'woocommerce_product_import_inserted_product_object':
+				case 'woocommerce_rest_insert_product_object':
+				case 'pmxi_saved_post':
+					// No need to modify $product_id, it's passed correctly
+					break;
+	
+				case 'updated_post_meta':
+					// Correct handling for updated_post_meta (2nd parameter is post_id)
+					$product_id = $product;
+					break;
+	
+				default:
+					// Log unknown hooks for debugging
+					error_log("slw_update_products_stock_values triggered by unknown hook: " . $current_hook);
+					break;
+			}
+	
+			// Ensure correct product ID extraction
+			if ($product instanceof WP_Post) {
+				$product_id = $product->ID;
+			} elseif ($product instanceof WC_Product) {
+				$product_id = $product->get_id();
+			}
+	
+			if ($product_id instanceof WP_Post) {
+				$product_id = $product_id->ID;
+			} elseif ($product_id instanceof WC_Product) {
+				$product_id = $product_id->get_id();
+			}
+	
+			// Ensure it's a WooCommerce product before proceeding
+			if (get_post_type($product_id) !== 'product') {
+				return;
+			}
+	
+			// Call the SLW stock locations function
+			$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save(
+				$product_id,
+				array(),
+				$update,
+				$from_hook
+			);
+	
+			return $SlwStockLocationsTab;
+		}
+	}
+
+	
+	add_action( 'pmxi_saved_post', function( $id )
+	{
+		if(get_option('slw_update_product_locations_stock_values')){
+			return;
+		}
+		
+		$import_id = ( isset( $_GET['id'] ) ? $_GET['id'] : ( isset( $_GET['import_id'] ) ? $_GET['import_id'] : 'new' ) );
+		// get locations total stock
+		$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
+	
+		// update stock
+		slw_update_product_stock_status( $id, $locations_total_stock );
+		
+		// update stock status
+		\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
+	
+	}, 10, 1 );	
+	
+	// 1. Covers WooCommerce Admin updates (already included)
+	add_action('woocommerce_process_product_meta', 'slw_update_products_stock_values', 25);
+	
+	// 2. Covers product variations being updated
+	add_action('woocommerce_save_product_variation', 'slw_update_products_stock_values', 25, 2);
+	
+	// 3. Covers both manual & API-based product updates
+	add_action('wp_insert_post', 'slw_update_products_stock_values', 25, 3);
+	
+	// 4. Covers changes in product status (e.g., Draft → Published)
+	add_action('transition_post_status', 'slw_update_products_stock_values', 25, 3);
+	
+	// 5. Covers updates to product metadata (like stock, price, attributes)
+	add_action('updated_post_meta', 'slw_update_products_stock_values', 25, 4);
+	
+	// 6. Covers bulk product updates via WooCommerce CSV import
+	add_action('woocommerce_product_import_inserted_product_object', 'slw_update_products_stock_values', 25, 2);
+	
+	// 7. Covers REST API & third-party API updates
+	add_action('woocommerce_rest_insert_product_object', 'slw_update_products_stock_values', 25, 3);
+	
+	// 8. Covers WP All Import & similar tools
+	add_action('pmxi_saved_post', 'slw_update_products_stock_values', 25, 1);
