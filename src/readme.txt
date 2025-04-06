@@ -169,8 +169,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.8.5 =
+Products with zero stock won't appear on archive pages if you are using location taxonomy archive page. [Thanks to Anna Pantelakaki / balloon.gr][06/04/2025]
+
 = 2.8.4 =
-Archive page related improvements are made. [Thanks to Anna Pantelakaki / balloon.gr][06/04/2025]
+Archive page related improvements are made. [Thanks to Anna Pantelakaki / balloon.gr][05/04/2025]
 
 = 2.7.8 =
 Fix: slw_update_product_stock_status function has been updated to clear the product_visibility terms when stock available. [Thanks to Renzo Westenbroek & Tim Sombroek from Webreturn][26/01/2025]
