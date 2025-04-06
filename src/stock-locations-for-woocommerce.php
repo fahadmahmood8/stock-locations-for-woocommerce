@@ -129,7 +129,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.8.3';
+		public           $version  = '2.8.4';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -472,6 +472,7 @@ if(!class_exists('SlwMain')) {
 					}
 					
 				}else{
+					
 					if(!empty($terms)){
 						$data['stock_quantity'][$data['product_id']][0] = 0;
 						foreach($terms as $term){					
@@ -481,6 +482,7 @@ if(!class_exists('SlwMain')) {
 						$data['stock_quantity'][$data['product_id']][0] = $data['stock_quantity_sum'];
 					}					
 				}
+				
 				
 				//pree($data);
 				
@@ -496,7 +498,18 @@ if(!class_exists('SlwMain')) {
 			}
 			
 			
-			
+			if( is_archive() && is_tax( 'location' ) && $data['slw_term_id']) {
+				$products_by_location_term_id = slw_get_products_by_location_term_id($data['slw_term_id']);
+				
+				if(!empty($products_by_location_term_id)){
+					
+					foreach($products_by_location_term_id as $product_id_by_location){					
+						$data['stock_quantity'][$product_id_by_location][$data['slw_term_id']] = get_post_meta($product_id_by_location, '_stock_at_'.$data['slw_term_id'], true);
+						//$data['stock_quantity_sum'] += ((float)$data['stock_quantity'][$product_id_by_location][$data['slw_term_id']])*1;
+					}
+
+				}		
+			}
 			
 			
 		
@@ -508,14 +521,21 @@ if(!class_exists('SlwMain')) {
 				time(),
 				true
 			);
+			wp_enqueue_script(
+				'slw-jquery-blockui',
+				SLW_PLUGIN_DIR_URL . 'js/jquery.blockUI.js',
+				array('jquery'),
+				time(),
+				true
+			);
 			wp_localize_script(
 				'slw-common-scripts',
 				'slw_frontend',
 				$data
 			);
 			
-			if( is_archive() ) {
-				if(get_option('slw-archives-status')=='yes'){
+			if( is_archive() && is_tax( 'location' )) {
+				//if(get_option('slw-archives-status')=='yes'){
 					wp_enqueue_script(
 						'slw-archive-scripts',
 						SLW_PLUGIN_DIR_URL . 'js/archive.js',
@@ -523,7 +543,7 @@ if(!class_exists('SlwMain')) {
 						time(),
 						true
 					);	
-				}
+				//}
 			}
 			
 			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
@@ -544,6 +564,7 @@ if(!class_exists('SlwMain')) {
 	}
 
 }
+
 
 /**
  * Initiate the plugin.

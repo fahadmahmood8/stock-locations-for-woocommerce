@@ -30,7 +30,7 @@
   
   
 	<a class="btn btn-sm btn-success mb-4" href="<?php echo admin_url( 'edit-tags.php?taxonomy=location&post_type=product' ); ?>"><?php _e( 'Add new', 'stock-locations-for-woocommerce' ); ?></a> <a title="<?php _e( 'Video Tutorial', 'stock-locations-for-woocommerce' ); ?>" href="https://www.youtube.com/embed/7ZIv_d7prLA" style="float:right;" target="_blank"><i class="fab fa-youtube"></i></a>
-	<table class="widefat w-50 slw_need_popup">
+	<table class="widefat w-75 slw_need_popup">
 		<thead>
 			<tr>
             	<th><?php _e( 'ID', 'stock-locations-for-woocommerce' ); ?></th>
