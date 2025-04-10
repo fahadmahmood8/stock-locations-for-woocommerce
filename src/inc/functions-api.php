@@ -134,6 +134,9 @@
 					break;
 				}
 				
+			}else{
+				_e('Sorry, API is not enabled.', 'stock-locations-for-woocommerce');
+				exit;
 			}
 			
 			if($data['product_id']){
