@@ -184,34 +184,47 @@ if(!function_exists('slw_map_status')){
 	}
 }
 
-
 add_action('wp_ajax_slw_logs_status', 'slw_logs_status');
 
-if(!function_exists('slw_logs_status')){
-	function slw_logs_status(){
+if (!function_exists('slw_logs_status')) {
+	function slw_logs_status() {
 
-		if(!empty($_POST) && isset($_POST['status'])){
-
-			if (
-				! isset( $_POST['slw_nonce_field'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
-			) {
-
-				echo '0';
-				
-
-			} else {
-				$status = ($_POST['status']=='yes');
-				update_option('slw_logs_status', $status);
-				
-				echo '1';
-
-			}
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error(array(
+				'status'  => 'error',
+				'message' => __('Access denied', 'stock-locations-for-woocommerce')
+			), 403);
 		}
 
-		wp_die();
+		if (
+			!isset($_POST['slw_nonce_field']) ||
+			!wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')
+		) {
+			wp_send_json_error(array(
+				'status'  => 'error',
+				'message' => __('Invalid security token', 'stock-locations-for-woocommerce')
+			), 400);
+		}
+
+		if (isset($_POST['status'])) {
+			$status = ($_POST['status'] === 'yes');
+			update_option('slw_logs_status', $status);
+
+			wp_send_json_success(array(
+				'status'  => $status ? 'enabled' : 'disabled',
+				'message' => $status
+					? __('Log status enabled', 'stock-locations-for-woocommerce')
+					: __('Log status disabled', 'stock-locations-for-woocommerce')
+			));
+		}
+
+		wp_send_json_error(array(
+			'status'  => 'error',
+			'message' => __('Missing status parameter', 'stock-locations-for-woocommerce')
+		), 400);
 	}
 }
+
 add_action('wp_ajax_slw_update_product_locations_stock_values', 'slw_update_product_locations_stock_values');
 
 if (!function_exists('slw_update_product_locations_stock_values')) {
@@ -260,31 +273,45 @@ if(!function_exists('slw_api_status')){
 
 add_action('wp_ajax_slw_crons_status', 'slw_crons_status');
 
-if(!function_exists('slw_crons_status')){
-	function slw_crons_status(){
+if (!function_exists('slw_crons_status')) {
+	function slw_crons_status() {
 
-		if(!empty($_POST) && isset($_POST['status'])){
-
-			if (
-				! isset( $_POST['slw_nonce_field'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
-			) {
-
-				echo '0';
-				
-
-			} else {
-				$status = ($_POST['status']=='yes');
-				update_option('slw_crons_status', $status);
-				
-				echo '1';
-
-			}
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error(array(
+				'status' => 'error',
+				'message' => __('Unauthorized access', 'stock-locations-for-woocommerce')
+			), 403);
 		}
 
-		wp_die();
+		if (
+			!isset($_POST['slw_nonce_field']) ||
+			!wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')
+		) {
+			wp_send_json_error(array(
+				'status' => 'error',
+				'message' => __('Invalid nonce', 'stock-locations-for-woocommerce')
+			), 400);
+		}
+
+		if (isset($_POST['status'])) {
+			$status = ($_POST['status'] === 'yes');
+			update_option('slw_crons_status', $status);
+
+			wp_send_json_success(array(
+				'status' => $status ? 'enabled' : 'disabled',
+				'message' => $status
+					? __('Cron has been enabled.', 'stock-locations-for-woocommerce')
+					: __('Cron has been disabled.', 'stock-locations-for-woocommerce')
+			));
+		}
+
+		wp_send_json_error(array(
+			'status' => 'error',
+			'message' => __('Missing status parameter', 'stock-locations-for-woocommerce')
+		), 400);
 	}
 }
+
 
 
 add_action('wp_ajax_slw_widgets_settings', 'slw_widgets_settings');
