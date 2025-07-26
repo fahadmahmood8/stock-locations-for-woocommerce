@@ -1428,7 +1428,8 @@ jQuery(document).ready(function($){
 		if ( ! $order_id )
         return;
 		
-		$_slw_locations_stock_status = get_post_meta($order_id, '_slw_locations_stock_status', true);
+		$_slw_locations_stock_status = wc_slw_order_get_post_meta( $order_id, '_slw_locations_stock_status' );
+
 		$_slw_locations_stock_status = (is_array($_slw_locations_stock_status)?$_slw_locations_stock_status:array());
 		
 		$order = wc_get_order( $order_id );
@@ -1466,33 +1467,61 @@ jQuery(document).ready(function($){
 		}
 	}
 	
-	if(!function_exists('wc_slw_order_update_post_meta')){
-		function wc_slw_order_update_post_meta($id, $key, $value){
-			$order = wc_get_order( $id );
+	if ( ! function_exists( 'wc_slw_order_get_post_meta' ) ) {
+		function wc_slw_order_get_post_meta( $id, $key ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return null;
+			}
+	
+			return $order->get_meta( $key );
+		}
+	}
+
+		
+	if ( ! function_exists( 'wc_slw_order_update_post_meta' ) ) {
+		function wc_slw_order_update_post_meta( $id, $key, $value ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return false; // gracefully fail if invalid
+			}
+	
 			$order->update_meta_data( $key, $value );
-			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
-			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
 			$order->save();
+			return true;
 		}
 	}
-	if(!function_exists('wc_slw_order_add_post_meta')){
-		function wc_slw_order_add_post_meta($id, $key, $value){
-			$order = wc_get_order( $id );
-			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
+	
+	if ( ! function_exists( 'wc_slw_order_add_post_meta' ) ) {
+		function wc_slw_order_add_post_meta( $id, $key, $value ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return false; // return false if order is invalid
+			}
+	
 			$order->add_meta_data( $key, $value );
-			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
 			$order->save();
+			return true;
 		}
 	}
-	if(!function_exists('wc_slw_order_delete_post_meta')){
-		function wc_slw_order_delete_post_meta($id, $key, $value){
-			$order = wc_get_order( $id );
-			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
-			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
+	
+	if ( ! function_exists( 'wc_slw_order_delete_post_meta' ) ) {
+		function wc_slw_order_delete_post_meta( $id, $key, $value = '' ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return false; // order not found or invalid
+			}
+	
 			$order->delete_meta_data( $key, $value );
 			$order->save();
+			return true;
 		}
-	}		
+	}
+	
 	
 	
 	include_once('functions-api.php');

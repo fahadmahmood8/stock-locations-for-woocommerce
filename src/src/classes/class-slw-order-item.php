@@ -134,7 +134,9 @@ if( !class_exists('SlwOrderItem') ) {
 			if( empty($order) || ! is_object($order) ) return;
 
 
-			$wc_order_stock_reduced = get_post_meta( $order->get_id(), '_slw_order_stock_reduced', true );
+			
+			$wc_order_stock_reduced = $order->get_meta( '_slw_order_stock_reduced' );
+
 		
 			
 
@@ -330,7 +332,10 @@ if( !class_exists('SlwOrderItem') ) {
 		{
 			
 			$slw_order_id = wc_get_order_id_by_order_item_id( $item_id ); 
-			$_slw_locations_stock_status = get_post_meta($slw_order_id, '_slw_locations_stock_status', true);
+			$_slw_locations_stock_status = wc_slw_order_get_post_meta( $slw_order_id, '_slw_locations_stock_status' );
+
+			
+			
 			
 			$product_id = SlwWpmlHelper::object_id( $id );
 			$product    = wc_get_product( $product_id );
@@ -616,8 +621,10 @@ if( !class_exists('SlwOrderItem') ) {
 		{
 
 			$order_id = $item->get_order_id();
-			$_slw_ts = get_post_meta($order_id, '_slw_ts', true);
-			$receipt_in_progress = get_post_meta($order_id, '_slw_ep', true);
+			$_slw_ts = wc_slw_order_get_post_meta( $order_id, '_slw_ts' );
+
+			$receipt_in_progress = wc_slw_order_get_post_meta( $order_id, '_slw_ep' );
+
 			
 			$ts = date('His');
 			if(!$_slw_ts){			
