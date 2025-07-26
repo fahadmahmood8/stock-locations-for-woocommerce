@@ -1341,7 +1341,7 @@ jQuery(document).ready(function($){
 						
 				$product->set_stock_quantity($stock_qty);
 				update_post_meta($product_id, '_manage_stock', 'yes');
-				update_post_meta($product_id, 'manage_stock', true);				
+				//update_post_meta($product_id, 'manage_stock', true);				
 				$product->set_manage_stock(true);
 				
 

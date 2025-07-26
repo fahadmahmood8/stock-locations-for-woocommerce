@@ -169,6 +169,10 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.8.8 =
+Redundant code and/or not used by WooCommerce core, https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/165 [Thanks to mvrijs][11/07/2025]
+Fix: Conditional usage of PHP function slw_get_products_by_location_term_id in the free version. [Thanks to Justin Trevorrow / Ironistic  |  Technical Manager][26/07/2025]
+
 = 2.8.6 =
 API related else case message added. [Thanks to Fawad Tiemoerie / commercebird.com][10/04/2025]
 
