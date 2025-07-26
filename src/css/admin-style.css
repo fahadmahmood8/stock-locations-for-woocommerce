@@ -516,7 +516,7 @@ table.location-edit tr.term-name-wrap th > a svg{
 	background-position: 10px 2px;
 	top: 12px;
 	position: absolute;
-	right: 132px;
+	right: 20px;
 }
 .slw-settings-wrap h2 > a.gopro:hover {
 	background-color: rgba(66,0,255,0.4);
@@ -525,8 +525,12 @@ table.location-edit tr.term-name-wrap th > a svg{
 div.slw-settings-wrap .fa-eye,
 div.slw-settings-wrap .fa-map-marked-alt,
 table.wp-list-table td.slw_location_status svg.slw_location_status-enabled,
-table.wp-list-table td.slw_default_location svg{
+table.wp-list-table td.slw_default_location svg,
+div.slw-settings-wrap a.slw-location-assignment .fa-check-circle{
 	color:#093;
+}
+div.slw-settings-wrap a.slw-location-assignment .fa-times-circle{
+	color:#900;
 }
 div.slw-settings-wrap .fa-eye-slash,
 div.slw-settings-wrap .fa-map-marked,
@@ -577,13 +581,17 @@ body.wc-variable-product #stock-locations-for-woocommerce_tab_stock_locations #s
 	display:none !important;
 }
 div.slw-settings-wrap a.slw-location-status .fa-eye,
-div.slw-settings-wrap a.slw-location-status .fa-eye-slash{
+div.slw-settings-wrap a.slw-location-status .fa-eye-slash,
+div.slw-settings-wrap a.slw-location-assignment .fa-check-circle,
+div.slw-settings-wrap a.slw-location-assignment .fa-times-circle{
 	display:none;
 }
-div.slw-settings-wrap a.slw-location-status.checked .fa-eye{
+div.slw-settings-wrap a.slw-location-status.checked .fa-eye,
+div.slw-settings-wrap a.slw-location-assignment.checked .fa-check-circle{
 	display:block;
 }
-div.slw-settings-wrap a.slw-location-status:not(.checked) .fa-eye-slash{
+div.slw-settings-wrap a.slw-location-status:not(.checked) .fa-eye-slash,
+div.slw-settings-wrap a.slw-location-assignment:not(.checked) .fa-times-circle{
 	display:block;
 }
 table.table-view-list td.stock_at_locations span{
@@ -730,4 +738,17 @@ input:checked + .slider:before {
 	content: "\f464";
 	position: relative;
 	font-size:24px;
+}
+div.woocommerce_options_panel h4 > span.backorder-status {
+	float: right;
+	font-weight: bold;
+	margin: 0 40px 0 0;
+}
+div.woocommerce_options_panel h4 > span.backorder-status .backorder-yes,
+div.woocommerce_options_panel h4 > span.backorder-status .backorder-notify{
+	color:#093;
+	
+}
+div.woocommerce_options_panel h4 > span.backorder-status .backorder-no{
+	color:#900;
 }

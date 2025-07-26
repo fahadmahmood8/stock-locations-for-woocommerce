@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf,invoicepress
 Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
-Tested up to: 6.6
+Tested up to: 6.8
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -169,6 +169,26 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 2.8.9 =
+*New: Custom function wc_slw_order_update_post_meta updated and implemented for HPOS compatibility. [Thanks to webairstudio][26/07/2025]
+
+= 2.8.8 =
+Redundant code and/or not used by WooCommerce core, https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/165 [Thanks to mvrijs][11/07/2025]
+Fix: Conditional usage of PHP function slw_get_products_by_location_term_id in the free version. [Thanks to Justin Trevorrow / Ironistic  |  Technical Manager][26/07/2025]
+
+= 2.8.6 =
+API related else case message added. [Thanks to Fawad Tiemoerie / commercebird.com][10/04/2025]
+
+= 2.8.5 =
+Products with zero stock won't appear on archive pages if you are using location taxonomy archive page. [Thanks to Anna Pantelakaki / balloon.gr][06/04/2025]
+
+= 2.8.4 =
+Archive page related improvements are made. [Thanks to Anna Pantelakaki / balloon.gr][05/04/2025]
+
+= 2.7.8 =
+Fix: slw_update_product_stock_status function has been updated to clear the product_visibility terms when stock available. [Thanks to Renzo Westenbroek & Tim Sombroek from Webreturn][26/01/2025]
+New: Shortcode: [SLW-SHOW-PRODUCTS-STOCK-OVERVIEW] added to have insights about the products and the stock levels.
+
 = 2.7.6 =
 New: Logs can be enabled and disabled with a toggle button.  [Thanks to @AntOnKnee][24/10/2024]
 New: High-Performance Order Storage (HPOS).

@@ -173,3 +173,14 @@
 	select.slw_item_stock_location option[data-quantity="0"][data-backorder="no"] {
 		color: #ccc;
 	}
+	div.slw_stock_location_list{
+		margin: 0 0 20px 0;
+	}
+	div.slw_stock_location_list ul.slw_stock_location_list_ul{
+		margin:0;
+		padding:0;
+	}
+	div.slw_stock_location_list ul.slw_stock_location_list_ul > li{
+		display:none;
+		list-style:none;
+	}

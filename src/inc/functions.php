@@ -1,31 +1,31 @@
 <?php if ( ! defined( 'ABSPATH' ) ){ exit; }else{ clearstatcache(); }
 
 if(!function_exists('pre')){
-function pre($data){
-	if(isset($_GET['debug'])){
-	  pree($data);
+	function pre($data){
+		if(isset($_GET['debug'])){
+		  pree($data);
+		}
 	}
-  }
 }
 if(!function_exists('pree')){
-function pree($data){
+	function pree($data){
 	
-	$debug_backtrace = debug_backtrace();
+		$debug_backtrace = debug_backtrace();
+			
+		$function = $debug_backtrace[0]['function'];
+		$function .= ' / '.$debug_backtrace[1]['function'];
+		$function .= ' / '.$debug_backtrace[2]['function'];
+		$function .= ' / '.$debug_backtrace[3]['function'];
+		$function .= ' / '.$debug_backtrace[4]['function'];
 		
-	$function = $debug_backtrace[0]['function'];
-	$function .= ' / '.$debug_backtrace[1]['function'];
-	$function .= ' / '.$debug_backtrace[2]['function'];
-	$function .= ' / '.$debug_backtrace[3]['function'];
-	$function .= ' / '.$debug_backtrace[4]['function'];
+		//if(function_exists('wc_slw_logger')){ wc_slw_logger('debug', $function); }
+		
+		echo '<pre>';
+		//print_r($function);
+		print_r($data);
+		echo '</pre>';
 	
-	//if(function_exists('wc_slw_logger')){ wc_slw_logger('debug', $function); }
-	
-	echo '<pre>';
-	//print_r($function);
-	print_r($data);
-	echo '</pre>';
-
-  }
+	}
 }
 if(!function_exists('slw_notices')){
 	function slw_notices($data, $echo = false){
@@ -123,6 +123,27 @@ if(!function_exists('wc_slw_logger')){
 	}
 }
 
+add_action('wp_ajax_slw_location_assignment', 'slw_location_assignment');
+
+if (!function_exists('slw_location_assignment')) {
+    function slw_location_assignment() {
+        if (!empty($_POST) && isset($_POST['assignment'])) {
+            if (!isset($_POST['slw_nonce_field']) || !wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')) {
+               echo '0';	
+            } else {
+                $assignment = ($_POST['assignment'] == 'yes');
+                $location_id = sanitize_slw_data($_POST['location_id']);
+
+                update_term_meta($location_id, 'slw_location_assignment', $assignment);
+
+				echo '1';
+
+            }
+        }
+
+        wp_die();
+    }
+}
 
 
 add_action('wp_ajax_slw_location_status', 'slw_location_status');
@@ -163,34 +184,64 @@ if(!function_exists('slw_map_status')){
 	}
 }
 
-
 add_action('wp_ajax_slw_logs_status', 'slw_logs_status');
 
-if(!function_exists('slw_logs_status')){
-	function slw_logs_status(){
+if (!function_exists('slw_logs_status')) {
+	function slw_logs_status() {
 
-		if(!empty($_POST) && isset($_POST['status'])){
-
-			if (
-				! isset( $_POST['slw_nonce_field'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
-			) {
-
-				echo '0';
-				
-
-			} else {
-				$status = ($_POST['status']=='yes');
-				update_option('slw_logs_status', $status);
-				
-				echo '1';
-
-			}
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error(array(
+				'status'  => 'error',
+				'message' => __('Access denied', 'stock-locations-for-woocommerce')
+			), 403);
 		}
 
-		wp_die();
+		if (
+			!isset($_POST['slw_nonce_field']) ||
+			!wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')
+		) {
+			wp_send_json_error(array(
+				'status'  => 'error',
+				'message' => __('Invalid security token', 'stock-locations-for-woocommerce')
+			), 400);
+		}
+
+		if (isset($_POST['status'])) {
+			$status = ($_POST['status'] === 'yes');
+			update_option('slw_logs_status', $status);
+
+			wp_send_json_success(array(
+				'status'  => $status ? 'enabled' : 'disabled',
+				'message' => $status
+					? __('Log status enabled', 'stock-locations-for-woocommerce')
+					: __('Log status disabled', 'stock-locations-for-woocommerce')
+			));
+		}
+
+		wp_send_json_error(array(
+			'status'  => 'error',
+			'message' => __('Missing status parameter', 'stock-locations-for-woocommerce')
+		), 400);
 	}
 }
+
+add_action('wp_ajax_slw_update_product_locations_stock_values', 'slw_update_product_locations_stock_values');
+
+if (!function_exists('slw_update_product_locations_stock_values')) {
+    function slw_update_product_locations_stock_values() {
+        if (!empty($_POST) && isset($_POST['status'])) {
+            if (!isset($_POST['slw_nonce_field']) || !wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')) {
+                echo '0';
+            } else {
+                $status = ($_POST['status'] == 'yes');
+                update_option('slw_update_product_locations_stock_values', $status);
+                echo '1';
+            }
+        }
+        wp_die();
+    }
+}
+
 
 add_action('wp_ajax_slw_api_status', 'slw_api_status');
 
@@ -222,31 +273,45 @@ if(!function_exists('slw_api_status')){
 
 add_action('wp_ajax_slw_crons_status', 'slw_crons_status');
 
-if(!function_exists('slw_crons_status')){
-	function slw_crons_status(){
+if (!function_exists('slw_crons_status')) {
+	function slw_crons_status() {
 
-		if(!empty($_POST) && isset($_POST['status'])){
-
-			if (
-				! isset( $_POST['slw_nonce_field'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
-			) {
-
-				echo '0';
-				
-
-			} else {
-				$status = ($_POST['status']=='yes');
-				update_option('slw_crons_status', $status);
-				
-				echo '1';
-
-			}
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error(array(
+				'status' => 'error',
+				'message' => __('Unauthorized access', 'stock-locations-for-woocommerce')
+			), 403);
 		}
 
-		wp_die();
+		if (
+			!isset($_POST['slw_nonce_field']) ||
+			!wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')
+		) {
+			wp_send_json_error(array(
+				'status' => 'error',
+				'message' => __('Invalid nonce', 'stock-locations-for-woocommerce')
+			), 400);
+		}
+
+		if (isset($_POST['status'])) {
+			$status = ($_POST['status'] === 'yes');
+			update_option('slw_crons_status', $status);
+
+			wp_send_json_success(array(
+				'status' => $status ? 'enabled' : 'disabled',
+				'message' => $status
+					? __('Cron has been enabled.', 'stock-locations-for-woocommerce')
+					: __('Cron has been disabled.', 'stock-locations-for-woocommerce')
+			));
+		}
+
+		wp_send_json_error(array(
+			'status' => 'error',
+			'message' => __('Missing status parameter', 'stock-locations-for-woocommerce')
+		), 400);
 	}
 }
+
 
 
 add_action('wp_ajax_slw_widgets_settings', 'slw_widgets_settings');
@@ -373,19 +438,7 @@ if(!function_exists('slw_clear_debug_log')){
 	}
 }
 
-add_action( 'pmxi_saved_post', function( $id )
-{
-	$import_id = ( isset( $_GET['id'] ) ? $_GET['id'] : ( isset( $_GET['import_id'] ) ? $_GET['import_id'] : 'new' ) );
-	// get locations total stock
-	$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
 
-	// update stock
-	slw_update_product_stock_status( $id, $locations_total_stock );
-	
-	// update stock status
-	\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
-
-}, 10, 1 );
 
 if(!function_exists('slw_quantity_format')){
 	function slw_quantity_format($data){
@@ -684,21 +737,22 @@ jQuery(document).ready(function($){
 				foreach($products as $product_post){ if(!is_object($product_post)){ continue; }
 	
 					//$product_post = get_post($res_obj->ID);
-					if($cron){ echo '<li>ID: '.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>'; }
+					if($cron){ echo '<li> ID:'.$product_post->ID.'- <a href="'.get_permalink($product_post->ID).'" target="_blank">'.$product_post->post_title.'</a>'; }
 					//pree($action);//exit;
 					switch($action){
 						case 'update-stock':
 							//pree($product_post);
+							$product = wc_get_product($product_post->ID);
 							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true, true);
 							
 							update_post_meta($product_post->ID, $today_slw_cron_sniffed, $timestamp);
 							update_post_meta($product_post->ID, '_manage_stock', 'yes');
 							
-							if($cron){ echo ' stock updated to '.$SlwStockLocationsTab.'.'; }
+							if($cron){ echo ' stock updated from '.$product->get_stock_quantity().' to '.$SlwStockLocationsTab.'.'; }
 							
 							/*Start - Fix added by Stefan Murawski - 15/02/2023*/
 
-							if($cron){
+							/*if($cron){
 								$qry = $wpdb->prepare("
 													SELECT
 															p.ID, sum(pm.meta_value) as total
@@ -725,10 +779,10 @@ jQuery(document).ready(function($){
 								if(!empty($abf)){
 									foreach($abf as $subProd) {
 										update_post_meta($subProd->ID, '_stock', $subProd->total);
-										echo " Product Variant ".$subProd->ID." updated."; 
+										echo "<br /> Product Variant ".$subProd->ID." stock updated to ".$subProd->total."."; 
 									}
 								}
-							}
+							}*/
 							
 							/*End - Fix added by Stefan Murawski - 15/02/2023*/
 
@@ -1201,6 +1255,67 @@ jQuery(document).ready(function($){
 		
 	}
 	
+	function slw_fix_outofstock_terms($product_ids) {
+		global $wpdb;
+	
+		// Ensure $product_ids is an array and sanitize
+		if (!is_array($product_ids)) {
+			$product_ids = [$product_ids];
+		}
+		$product_ids = array_map('intval', $product_ids);
+	
+		// Early exit if no valid product IDs
+		if (empty($product_ids)) {
+			return;
+		}
+	
+		// Expand $product_ids to include variation IDs for variable products
+		$expanded_product_ids = [];
+		foreach ($product_ids as $product_id) {
+			$product = wc_get_product($product_id);
+	
+			if ($product && $product->is_type('variable')) {
+				$variation_ids = $product->get_children(); // Get all variation IDs
+				$expanded_product_ids = array_merge($expanded_product_ids, $variation_ids);
+			}
+	
+			$expanded_product_ids[] = $product_id; // Always include the parent product
+		}
+	
+		// Remove duplicates
+		$expanded_product_ids = array_unique($expanded_product_ids);
+	
+		// Query to find products with incorrect `outofstock` term
+		$query = "
+			SELECT tr.object_id
+			FROM {$wpdb->prefix}term_relationships tr
+			INNER JOIN {$wpdb->prefix}term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+			INNER JOIN {$wpdb->prefix}postmeta pm_stock_status 
+				ON tr.object_id = pm_stock_status.post_id AND pm_stock_status.meta_key = '_stock_status'
+			INNER JOIN {$wpdb->prefix}postmeta pm_stock 
+				ON tr.object_id = pm_stock.post_id AND pm_stock.meta_key = '_stock'
+			WHERE tt.taxonomy = 'product_visibility'
+			  AND tt.term_id = (
+				  SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = 'outofstock'
+			  )
+			  AND pm_stock_status.meta_value = 'instock'
+			  AND CAST(pm_stock.meta_value AS UNSIGNED) > 0
+			  AND tr.object_id IN (" . implode(",", $expanded_product_ids) . ")
+		";
+	
+		// Fetch product IDs to fix
+		$products_to_fix = $wpdb->get_col($query);
+	
+		// Remove the `outofstock` term from affected products
+		foreach ($products_to_fix as $product_id) {
+			wp_remove_object_terms($product_id, 'outofstock', 'product_visibility');
+	
+			// Optional: Log the fixed product
+			error_log("Fixed product ID: $product_id (removed `outofstock` term)");
+		}
+	}
+
+	
 	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
 		
 		//slw_location_status
@@ -1214,14 +1329,45 @@ jQuery(document).ready(function($){
 		
 		//wc_slw_logger('debug', $product_id.'='.$stock_qty.' - '.$function);
 		
+
+		
+		
 		if(is_numeric($product_id)){
 			$stock_qty = (int)$stock_qty;
-			update_post_meta($product_id, '_stock', $stock_qty);
 			
-			if($stock_qty>0)
-			update_post_meta($product_id, '_stock_status', 'instock');
-			else
-			update_post_meta($product_id, '_stock_status', 'outofstock');
+			$product = wc_get_product($product_id);
+			
+			if(is_object($product)){
+						
+				$product->set_stock_quantity($stock_qty);
+				update_post_meta($product_id, '_manage_stock', 'yes');
+				//update_post_meta($product_id, 'manage_stock', true);				
+				$product->set_manage_stock(true);
+				
+
+
+				
+
+			
+				if($stock_qty>0){
+					// Set the stock status to "in stock"
+					$product->set_stock_status('instock');
+					$product->save();
+					slw_fix_outofstock_terms($product_id);
+
+				}else{
+					$product->set_stock_status('outofstock');
+					$product->save();
+
+				}
+
+				
+				
+			
+				// Save the changes
+							
+				
+			}
 		}
 		
 	}
@@ -1282,7 +1428,8 @@ jQuery(document).ready(function($){
 		if ( ! $order_id )
         return;
 		
-		$_slw_locations_stock_status = get_post_meta($order_id, '_slw_locations_stock_status', true);
+		$_slw_locations_stock_status = wc_slw_order_get_post_meta( $order_id, '_slw_locations_stock_status' );
+
 		$_slw_locations_stock_status = (is_array($_slw_locations_stock_status)?$_slw_locations_stock_status:array());
 		
 		$order = wc_get_order( $order_id );
@@ -1301,6 +1448,7 @@ jQuery(document).ready(function($){
 				}
 				
 			}
+			//pree($_slw_locations_stock_status);exit;
 			//wc_slw_logger('debug', $_slw_locations_stock_status);
 			wc_slw_order_update_post_meta($order_id, '_slw_locations_stock_status', $_slw_locations_stock_status);
 			
@@ -1319,34 +1467,370 @@ jQuery(document).ready(function($){
 		}
 	}
 	
-	if(!function_exists('wc_slw_order_update_post_meta')){
-		function wc_slw_order_update_post_meta($id, $key, $value){
-			$order = wc_get_order( $id );
+	if ( ! function_exists( 'wc_slw_order_get_post_meta' ) ) {
+		function wc_slw_order_get_post_meta( $id, $key ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return null;
+			}
+	
+			return $order->get_meta( $key );
+		}
+	}
+
+		
+	if ( ! function_exists( 'wc_slw_order_update_post_meta' ) ) {
+		function wc_slw_order_update_post_meta( $id, $key, $value ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return false; // gracefully fail if invalid
+			}
+	
 			$order->update_meta_data( $key, $value );
-			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
-			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
 			$order->save();
+			return true;
 		}
 	}
-	if(!function_exists('wc_slw_order_add_post_meta')){
-		function wc_slw_order_add_post_meta($id, $key, $value){
-			$order = wc_get_order( $id );
-			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
+	
+	if ( ! function_exists( 'wc_slw_order_add_post_meta' ) ) {
+		function wc_slw_order_add_post_meta( $id, $key, $value ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return false; // return false if order is invalid
+			}
+	
 			$order->add_meta_data( $key, $value );
-			//$order->delete_meta_data( $meta_key_3, $meta_value_3 );
 			$order->save();
+			return true;
 		}
 	}
-	if(!function_exists('wc_slw_order_delete_post_meta')){
-		function wc_slw_order_delete_post_meta($id, $key, $value){
-			$order = wc_get_order( $id );
-			//$order->update_meta_data( $meta_key_1, $meta_value_1 );
-			//$order->add_meta_data( $meta_key_2, $meta_value_2 );
+	
+	if ( ! function_exists( 'wc_slw_order_delete_post_meta' ) ) {
+		function wc_slw_order_delete_post_meta( $id, $key, $value = '' ) {
+			$order = ( $id instanceof WC_Order ) ? $id : wc_get_order( $id );
+	
+			if ( ! $order ) {
+				return false; // order not found or invalid
+			}
+	
 			$order->delete_meta_data( $key, $value );
 			$order->save();
+			return true;
 		}
-	}		
+	}
+	
 	
 	
 	include_once('functions-api.php');
 	include_once('filter-hooks.php');
+	
+	/*
+	add_action('template_redirect', function () {
+		if (!is_user_logged_in() || !current_user_can('administrator')) { return; }
+		if (is_tax('product_cat')) {
+			global $wp_query;
+	
+			// Output the SQL query running for the current product category page
+			echo '<h3>Main Query SQL:</h3>';
+			echo '<pre>';
+			print_r($wp_query->request); // Outputs the actual SQL query
+			echo '</pre>';
+	
+		   // die(); // Stop execution to display the query
+		}
+	});
+	*/
+	
+	add_shortcode('SLW-SHOW-PRODUCTS-STOCK-OVERVIEW', function () {
+		if (!is_user_logged_in() || !current_user_can('administrator')) {
+			return '<p>' . __('You do not have permission to view this content.', 'stock-locations-for-woocommerce') . '</p>';
+		}
+	
+		global $wpdb;
+	
+		// Process $_GET['ids'] if provided
+		$ids = isset($_GET['ids']) ? explode(',', sanitize_text_field($_GET['ids'])) : [];
+		$ids = array_map('intval', $ids); // Sanitize IDs
+	
+		// Include parent products for variations
+		$final_ids = [];
+		foreach ($ids as $id) {
+			$product = wc_get_product($id);
+			if ($product) {
+				if ($product->is_type('variation')) {
+					$parent_id = $product->get_parent_id();
+					$final_ids[] = $parent_id;
+				}
+				$final_ids[] = $id;
+			}
+		}
+		$final_ids = array_unique($final_ids); // Remove duplicates
+	
+		// Build query condition for specific products
+		$product_condition = !empty($final_ids) ? "AND p.ID IN (" . implode(',', $final_ids) . ")" : '';
+	
+		// Query to fetch parent products
+		$query = "
+			SELECT p.ID, p.post_title
+			FROM {$wpdb->prefix}posts p
+			WHERE p.post_type = 'product' AND p.post_status = 'publish' $product_condition
+		";
+	
+		$products = $wpdb->get_results($query);
+	
+		if (empty($products)) {
+			return '<p>' . __('No products found.', 'stock-locations-for-woocommerce') . '</p>';
+		}
+	
+		// Generate HTML table
+		$output = '<table style="width: 100%; border-collapse: collapse;">';
+		$output .= '<thead>
+			<tr>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Product ID', 'stock-locations-for-woocommerce') . '</th>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Product Name', 'stock-locations-for-woocommerce') . '</th>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Stock Value', 'stock-locations-for-woocommerce') . '</th>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Stock Status', 'stock-locations-for-woocommerce') . '</th>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Valid Stock', 'stock-locations-for-woocommerce') . '</th>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Backorder', 'stock-locations-for-woocommerce') . '</th>
+				<th style="border: 1px solid #ccc; padding: 8px;">' . __('Taxonomy Terms', 'stock-locations-for-woocommerce') . '</th>
+			</tr>
+		</thead><tbody>';
+	
+		foreach ($products as $product) {
+			// Load product object
+			$wc_product = wc_get_product($product->ID);
+	
+			if (!$wc_product) {
+				continue;
+			}
+	
+			// Get product type
+			$product_type = $wc_product->get_type();
+	
+			// Get taxonomy terms
+			$terms = wp_get_object_terms($product->ID, get_object_taxonomies('product'));
+			$term_names = wp_list_pluck($terms, 'name');
+			$term_csv = '';
+			foreach ($term_names as $term) {
+				// Highlight 'outofstock' in red
+				if ($term === 'outofstock') {
+					$term_csv .= '<span style="color: red; font-size: 20px;">' . esc_html($term) . '</span>, ';
+				} else {
+					$term_csv .= esc_html($term) . ', ';
+				}
+			}
+			$term_csv = rtrim($term_csv, ', ');
+	
+			// Determine background and text color for parent product row
+			$row_style = $product_type === 'variable' 
+				? 'background-color: #333333; color: #ffffff;' 
+				: 'background-color: #f9f9f9;';
+	
+			// Parent product row
+			$output .= '<tr style="' . esc_attr($row_style) . '">
+				<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($product->ID) . '</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">
+					<a href="' . esc_url(admin_url('post.php?post=' . $product->ID . '&action=edit')) . '" style="color: inherit;">' . esc_html($product->post_title) . '</a>
+				</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">N/A</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">' . __('N/A', 'stock-locations-for-woocommerce') . '</td>
+				<td style="border: 1px solid #ccc; padding: 8px;">' . $term_csv . '</td>
+			</tr>';
+	
+			// Fetch and display variations for variable products
+			if ($product_type === 'variable') {
+				$variations = $wc_product->get_children();
+	
+				foreach ($variations as $variation_id) {
+					$variation = wc_get_product($variation_id);
+					if (!$variation) {
+						continue;
+					}
+	
+					// Get variation stock data
+					$stock_value = $variation->get_stock_quantity();
+					$stock_status = $variation->get_stock_status();
+					$stock_color = $stock_status === 'instock' ? 'green' : 'red';
+					$valid_stock = ($stock_status === 'instock' && (int)$stock_value > 0) ? __('Yes', 'stock-locations-for-woocommerce') : __('No', 'stock-locations-for-woocommerce');
+	
+					// Backorder status
+					$backorder_status = $variation->get_backorders() === 'yes' ? __('Yes', 'stock-locations-for-woocommerce') : __('No', 'stock-locations-for-woocommerce');
+	
+					// Get variation taxonomy terms
+					$variation_terms = wp_get_object_terms($variation_id, get_object_taxonomies('product'));
+					$variation_term_csv = '';
+					foreach ($variation_terms as $term) {
+						if ($term->name === 'outofstock') {
+							$variation_term_csv .= '<span style="color: red; font-size: 20px;">' . esc_html($term->name) . '</span>, ';
+						} else {
+							$variation_term_csv .= esc_html($term->name) . ', ';
+						}
+					}
+					$variation_term_csv = rtrim($variation_term_csv, ', ');
+	
+					// Variation row
+					$output .= '<tr style="background-color: #e9f7e9;">
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($variation_id) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">&mdash; ' . esc_html($variation->get_name()) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($stock_value ?? 'N/A') . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px; color: ' . esc_attr($stock_color) . '; font-size: 20px;">' . esc_html($stock_status) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($valid_stock) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . esc_html($backorder_status) . '</td>
+						<td style="border: 1px solid #ccc; padding: 8px;">' . $variation_term_csv . '</td>
+					</tr>';
+				}
+			}
+		}
+	
+		$output .= '</tbody></table>';
+	
+		return $output;
+	});
+
+	add_action('wp_insert_post', 'assign_slw_location_terms_on_creation', 10, 3);
+	
+	function assign_slw_location_terms_on_creation($post_id, $post, $update) {
+		// Ensure it's a product and not an update/edit
+		if ($update || get_post_type($post_id) !== 'product') {
+			return;
+		}
+	
+		// Check if this is a manual submission (Admin Panel) or API-based creation
+		$is_manual_submission = isset($_POST) && !empty($_POST); // API-based creation doesn't have $_POST data
+	
+		// Get all terms from the 'location' taxonomy with slw_location_assignment enabled
+		$enabled_terms = get_terms([
+			'taxonomy'   => 'location',
+			'hide_empty' => false,
+			'meta_query' => [
+				[
+					'key'   => 'slw_location_assignment',
+					'value' => '1', // Fetch only terms where slw_location_assignment is enabled
+				]
+			],
+		]);
+	
+		if (!empty($enabled_terms) && !is_wp_error($enabled_terms)) {
+			$enabled_term_ids = wp_list_pluck($enabled_terms, 'term_id'); // Extract term IDs
+	
+			if ($is_manual_submission) {
+				// Preserve manually selected terms in the admin panel
+				$selected_terms = wp_get_object_terms($post_id, 'location', ['fields' => 'ids']);
+				$final_terms = array_unique(array_merge($selected_terms, $enabled_term_ids));
+			} else {
+				// If created via API, just assign the enabled terms
+				$final_terms = $enabled_term_ids;
+			}
+	
+			// Assign terms to the product
+			wp_set_object_terms($post_id, $final_terms, 'location', false);
+		}
+	}
+	if (!function_exists('slw_update_products_stock_values')) {
+		function slw_update_products_stock_values($product_id, $product = null, $update = true, $from_hook = true) {
+			
+			if(!get_option('slw_update_product_locations_stock_values')){
+				return;
+			}
+			// Detect which hook called this function
+			$current_hook = current_filter();
+	
+			switch ($current_hook) {
+				case 'woocommerce_process_product_meta':
+				case 'woocommerce_save_product_variation':
+				case 'wp_insert_post':
+				case 'transition_post_status':
+				case 'woocommerce_product_import_inserted_product_object':
+				case 'woocommerce_rest_insert_product_object':
+				case 'pmxi_saved_post':
+					// No need to modify $product_id, it's passed correctly
+					break;
+	
+				case 'updated_post_meta':
+					// Correct handling for updated_post_meta (2nd parameter is post_id)
+					$product_id = $product;
+					break;
+	
+				default:
+					// Log unknown hooks for debugging
+					error_log("slw_update_products_stock_values triggered by unknown hook: " . $current_hook);
+					break;
+			}
+	
+			// Ensure correct product ID extraction
+			if ($product instanceof WP_Post) {
+				$product_id = $product->ID;
+			} elseif ($product instanceof WC_Product) {
+				$product_id = $product->get_id();
+			}
+	
+			if ($product_id instanceof WP_Post) {
+				$product_id = $product_id->ID;
+			} elseif ($product_id instanceof WC_Product) {
+				$product_id = $product_id->get_id();
+			}
+	
+			// Ensure it's a WooCommerce product before proceeding
+			if (get_post_type($product_id) !== 'product') {
+				return;
+			}
+	
+			// Call the SLW stock locations function
+			$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save(
+				$product_id,
+				array(),
+				$update,
+				$from_hook
+			);
+	
+			return $SlwStockLocationsTab;
+		}
+	}
+
+	
+	add_action( 'pmxi_saved_post', function( $id )
+	{
+		if(get_option('slw_update_product_locations_stock_values')){
+			return;
+		}
+		
+		$import_id = ( isset( $_GET['id'] ) ? $_GET['id'] : ( isset( $_GET['import_id'] ) ? $_GET['import_id'] : 'new' ) );
+		// get locations total stock
+		$locations_total_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
+	
+		// update stock
+		slw_update_product_stock_status( $id, $locations_total_stock );
+		
+		// update stock status
+		\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
+	
+	}, 10, 1 );	
+	
+	// 1. Covers WooCommerce Admin updates (already included)
+	add_action('woocommerce_process_product_meta', 'slw_update_products_stock_values', 25);
+	
+	// 2. Covers product variations being updated
+	add_action('woocommerce_save_product_variation', 'slw_update_products_stock_values', 25, 2);
+	
+	// 3. Covers both manual & API-based product updates
+	add_action('wp_insert_post', 'slw_update_products_stock_values', 25, 3);
+	
+	// 4. Covers changes in product status (e.g., Draft → Published)
+	add_action('transition_post_status', 'slw_update_products_stock_values', 25, 3);
+	
+	// 5. Covers updates to product metadata (like stock, price, attributes)
+	add_action('updated_post_meta', 'slw_update_products_stock_values', 25, 4);
+	
+	// 6. Covers bulk product updates via WooCommerce CSV import
+	add_action('woocommerce_product_import_inserted_product_object', 'slw_update_products_stock_values', 25, 2);
+	
+	// 7. Covers REST API & third-party API updates
+	add_action('woocommerce_rest_insert_product_object', 'slw_update_products_stock_values', 25, 3);
+	
+	// 8. Covers WP All Import & similar tools
+	add_action('pmxi_saved_post', 'slw_update_products_stock_values', 25, 1);

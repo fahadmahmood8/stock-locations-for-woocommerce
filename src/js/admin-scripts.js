@@ -269,26 +269,53 @@ function slw_gmap_initialize(input_id) {
 		});
 
 	});
-	
-	$('input#slw-logs-status').bind('click', function (e) {
+		
+	$('input#slw-logs-status').on('click', function () {
+		var isChecked = $(this).is(':checked');
 		var data = {
-
 			action: 'slw_logs_status',
-			status: $(this).is(':checked')?$(this).val():'',
+			status: isChecked ? $(this).val() : '',
+			slw_nonce_field: slw_admin_scripts.nonce
+		};
+	
+		$.blockUI({ message: false });
+	
+		$.post(ajaxurl, data, function (response) {
+			var message = '';
+	
+			if (response.success) {
+				message = response.data.message + ' (Status: ' + response.data.status + ')';
+			} else {
+				message = 'Error: ' + response.data.message;
+			}
+	
+			$.blockUI({ message: '<h4>' + message + '</h4>' });
+	
+			setTimeout(function () {
+				$.unblockUI();
+			}, 3000);
+		}).fail(function () {
+			$.unblockUI();
+			alert(slw_admin_scripts.slw_error_occurred);
+		});
+	});
+	
+	$('input#slw-update-product-locations-stock-values').bind('click', function (e) {
+		var data = {
+			action: 'slw_update_product_locations_stock_values',
+			status: $(this).is(':checked') ? $(this).val() : '',
 			slw_nonce_field: slw_admin_scripts.nonce,
-		}
-
+		};
+	
 		$.blockUI({ message: false });
 		$.post(ajaxurl, data, function (response, code) {
 			$.unblockUI();
 			if (code == 'success') {
-				document.location.reload();
+				// Action after success (if needed)
 			}
-
 		});
-
-
 	});
+
 		
 	$('input#slw-api-status').bind('click', function (e) {
 		var data = {
@@ -309,25 +336,59 @@ function slw_gmap_initialize(input_id) {
 
 
 	});
-	
-	$('input#slw-crons-status').bind('click', function (e) {
+	$('input#slw-crons-status').on('click', function () {
 		var data = {
-
 			action: 'slw_crons_status',
-			status: $(this).is(':checked')?$(this).val():'',
-			slw_nonce_field: slw_admin_scripts.nonce,
-		}
+			status: $(this).is(':checked') ? $(this).val() : '',
+			slw_nonce_field: slw_admin_scripts.nonce
+		};
+	
+		$.blockUI({ message: false });
+	
+		$.post(ajaxurl, data, function (response) {
+			var message = '';
+	
+			if (response.success) {
+				message = response.data.message + ' (Status: ' + response.data.status + ')';
+			} else {
+				message = 'Error: ' + response.data.message;
+			}
+	
+			$.blockUI({ message: '<h4>' + message + '</h4>' });
+	
+			setTimeout(function () {
+				$.unblockUI();
+			}, 3000);
+		});
+	});
 
+	
+	$('#slw-location-assignment, a.slw-location-assignment').bind('click', function (e) {
+		var assignment_val = '';
+	
+		if ($(this).is('input[type="checkbox"]')) {
+			assignment_val = $(this).is(':checked') ? $(this).val() : '';
+		} else {
+			assignment_val = $(this).hasClass('checked') ? '' : 'yes';
+			$(this).toggleClass('checked');
+		}
+	
+		var data = {
+			action: 'slw_location_assignment',
+			assignment: assignment_val,
+			location_id: $(this).data('id'),
+			slw_nonce_field: slw_admin_scripts.nonce,
+		};
+	
 		$.blockUI({ message: false });
 		$.post(ajaxurl, data, function (response, code) {
 			$.unblockUI();
-			if (code == 'success') {
+			if (code == 'success' && response.success) {
+
 			}
-
 		});
+	});
 
-
-	});	
 	
 	$('#slw-location-status, a.slw-location-status').bind('click', function (e) {
 		

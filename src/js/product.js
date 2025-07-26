@@ -195,6 +195,7 @@
 
 						slw_add_to_cart_item_stock_location_trigger();
 						
+						
 
 					} else {
 						
@@ -226,6 +227,22 @@
 		}else if($('select[name^="slw_add_to_cart_item_stock_location"]').length>0){
 			$('select[name^="slw_add_to_cart_item_stock_location"]').change();
 		}
+			
+		switch (slw_frontend.show_in_product_page) {
+			case 'yes_without':
+				// Get the selected variation ID from the hidden field
+				var selectedVariationId = $('input[name="variation_id"]').val();
+		
+				// Hide all list items
+				$('.slw_stock_location_list_ul > li').hide();
+		
+				// Show only the list items matching the selected variation
+				$('.slw_stock_location_list_ul > li.variation-' + selectedVariationId).show();
+		
+				break;
+		}
+
+		
 		slw_add_to_cart_item_stock_status_update();
 	}
 	if((slw_frontend.is_product==true && slw_frontend.show_in_product_page=='no')){

@@ -31,12 +31,18 @@ if( !class_exists('SlwFrontendCart') ) {
 			// get settings
 			$this->plugin_settings = get_option( 'slw_settings' );
 			
+
+			
 			// check if show in cart is enabled
 			add_action( 'woocommerce_after_cart_item_name', array($this, 'add_cart_item_stock_locations'), 99, 2 );
+			//add_action( 'woocommerce_cart_item_product', array($this, 'add_cart_item_stock_locations'), 99, 2 );
 			add_filter( 'woocommerce_get_item_data', array($this, 'show_cart_item_stock_locations'), 99, 2 );
 			
+			$proceed_ajax = ( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' );
 			
-			if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {				
+
+			
+			if($proceed_ajax) {				
 				add_action( 'wp_ajax_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
 				add_action( 'wp_ajax_nopriv_update_cart_stock_locations', array($this, 'update_cart_stock_locations') );
 				add_action( 'woocommerce_checkout_create_order_line_item', array($this, 'create_order_line_item_meta_with_selected_location'), 10, 4 );
@@ -76,8 +82,10 @@ if( !class_exists('SlwFrontendCart') ) {
 					( is_checkout() && isset($this->plugin_settings['general_display_settings']) && isset($this->plugin_settings['general_display_settings']['checkout_page']) && $this->plugin_settings['general_display_settings']['checkout_page'] == 'on' )	
 					
 				
-			);						
+			);	
+			
 
+			
 			//TESTED FOR THE FOLLOWING PAGE
 			//CART PAGE
 			//CHECKOUT PAGE
@@ -117,6 +125,7 @@ if( !class_exists('SlwFrontendCart') ) {
 		}
 		public function add_cart_item_stock_locations( $cart_item, $cart_item_key )
 		{
+
 			
 			if( empty($cart_item) ) return;
 			
@@ -141,6 +150,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			}
 			
 			
+			
 			if( !empty($stock_locations) ) {
 				
 				if( isset($this->plugin_settings['show_in_cart']) && $this->plugin_settings['show_in_cart'] == 'yes' ) {
@@ -159,7 +169,7 @@ if( !class_exists('SlwFrontendCart') ) {
 						
 					}
 					
-					if( 
+					$proceed = ( 
 							(
 								isset($this->plugin_settings['different_location_per_cart_item']) 
 							&& 
@@ -184,7 +194,11 @@ if( !class_exists('SlwFrontendCart') ) {
 						||
 						
 							!$stock_location_selected
-					) {
+					);
+					
+					
+					
+					if($proceed) {
 					
 						echo '<label class="slw_cart_item_stock_location_label">'.__('Location', 'stock-locations-for-woocommerce').':</label>';
 						
