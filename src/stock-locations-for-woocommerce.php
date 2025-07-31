@@ -78,7 +78,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.8.9';
+		public           $version  = '2.9.0';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -97,23 +97,6 @@ if(!class_exists('SlwMain')) {
 
 			$this->init();
 
-			// Instantiate classes
-			new SLW\SRC\Classes\SlwLocationTaxonomy;
-			new SLW\SRC\Classes\SlwStockLocationsTab;
-			new SLW\SRC\Classes\SlwOrderItem;
-			new SLW\SRC\Classes\SlwShortcodes;
-			new SLW\SRC\Classes\SlwProductListing;
-			new SLW\SRC\Classes\SlwProductRest;
-			new SLW\SRC\Classes\SlwSettings;
-			// Frontend
-			new SLW\SRC\Classes\Frontend\SlwFrontendCart;
-			new SLW\SRC\Classes\Frontend\SlwFrontendProduct;
-
-			// get settings
-			$this->plugin_settings = get_option( 'slw_settings', array() );
-			$this->plugin_settings = is_array($this->plugin_settings)?$this->plugin_settings:array();
-						
-			
 			$slw_woocommerce_product_form_hooks = [
 							'' => __('Select Position', 'stock-locations-for-woocommerce'),
 							'woocommerce_before_add_to_cart_button' => __('Before Add to Cart Button', 'stock-locations-for-woocommerce'),
@@ -167,7 +150,23 @@ if(!class_exists('SlwMain')) {
 					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png', 'https://ps.w.org/stock-locations-for-woocommerce/assets/screenshot-17.png'),
 					
 				)
-			);			
+			);		
+			
+			// Instantiate classes
+			new SLW\SRC\Classes\SlwLocationTaxonomy;
+			new SLW\SRC\Classes\SlwStockLocationsTab;
+			new SLW\SRC\Classes\SlwOrderItem;
+			new SLW\SRC\Classes\SlwShortcodes;
+			new SLW\SRC\Classes\SlwProductListing;
+			new SLW\SRC\Classes\SlwProductRest;
+			new SLW\SRC\Classes\SlwSettings;
+			// Frontend
+			new SLW\SRC\Classes\Frontend\SlwFrontendCart;
+			new SLW\SRC\Classes\Frontend\SlwFrontendProduct;
+
+			// get settings
+			$this->plugin_settings = get_option( 'slw_settings', array() );
+			$this->plugin_settings = is_array($this->plugin_settings)?$this->plugin_settings:array();				
 		}
 
 		/**
