@@ -133,6 +133,13 @@ if(!class_exists('SlwStockLocationsTab')) {
 					$postmeta[] = $this->create_stock_location_input($product_id, $term);
 
 				}
+								
+				$total_location_stock = 0;
+				foreach ($postmeta as $entry) {
+					$total_location_stock += isset($entry['stock']) ? (float) $entry['stock'] : 0;
+				}
+
+
 
 				if( $product->managing_stock() ) {
 					echo '<div id="' . $this->tab_stock_locations . '_total"><u>' . __('Total Stock:', 'stock-locations-for-woocommerce') . ' <b>' . ($product->get_stock_quantity() + 0) . '</b></u></div>';
@@ -143,7 +150,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 				// Check if the total stock matches the sum of the locations stock, if not show warning message
 
-				if( $product->get_stock_quantity() != array_sum($postmeta) ) {
+				if( $product->get_stock_quantity() != $total_location_stock ) {
 					echo '<div id="' . $this->tab_stock_locations . '_alert" style="display:none;">' . __('The total stock does not match the sum of the locations stock. Please update this product to fix it or use', 'stock-locations-for-woocommerce') .' <a href="'.admin_url('admin.php?page=slw-settings&tab=crons').'" target="_blank">'.__('cron jobs.', 'stock-locations-for-woocommerce').'</a>.</div>';
 				}
 
@@ -196,6 +203,12 @@ if(!class_exists('SlwStockLocationsTab')) {
 							$postmeta_variations[] = $this->create_stock_location_input($variation_id, $term);
 
 						}
+						
+						$total_location_stock = 0;
+						foreach ($postmeta_variations as $entry) {
+							$total_location_stock += isset($entry['stock']) ? (float) $entry['stock'] : 0;
+						}
+
 
 						// Get Variation Object
 						//$variation_obj = wc_get_product($variation_id);
@@ -206,6 +219,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 							echo '<hr>';
 						}
 
+		
+						
 						echo '</div>';
 
 					}
@@ -226,51 +241,93 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 * @since 1.0.0
 		 * @return array
 		 */
-		private function create_stock_location_input( $id, $term )
-		{
+		private function create_stock_location_input( $id, $term ) {
+			// Ensure correct ID for current language if WPML is active
 			$id = SlwWpmlHelper::object_id( $id );
 			
-			$postmeta = 0;
+			// Fetch meta values
+			$stock_qty   = get_post_meta( $id, '_stock_at_' . $term->term_id, true );
+			$stock_price = get_post_meta( $id, '_stock_location_price_' . $term->term_id, true );
+			
+			// Stock Quantity input
+			woocommerce_wp_text_input( array(
+			'id'            => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id,
+			'label'         => '<b>' . esc_html( $term->name ) . '</b><br />' . __( 'Stock Qty.', 'stock-locations-for-woocommerce' ),
+			'description'   => __( 'Enter the stock amount for this location.', 'stock-locations-for-woocommerce' ),
+			'desc_tip'      => true,
+			'class'         => 'woocommerce',
+			'type'          => 'number',
+			'data_type'     => 'stock',
+			'value'         => $stock_qty,
+			'wrapper_class' => 'stock_location_qty',
+			) );
+			
+			// Stock Price input
+			woocommerce_wp_text_input( array(
+			'id'                => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id,
+			'label'             => '<br />' . __( 'Stock Price', 'stock-locations-for-woocommerce' ),
+			'description'       => __( 'Enter the price for the stock from this location.', 'stock-locations-for-woocommerce' ),
+			'desc_tip'          => true,
+			'class'             => 'woocommerce',
+			'type'              => 'number',
+			'data_type'         => 'decimal',
+			'value'             => $stock_price,
+			'wrapper_class'     => 'stock_location_price price-' . esc_attr( $stock_price ),
+			'custom_attributes' => array(
+				'step' => '0.01',
+				'min'  => '0',
+			),
+			) );
+			
+			// Determine if location is enabled and stock is not an array
+			$location_enabled = get_term_meta( $term->term_id, 'slw_location_status', true );
+			
+			if ( ! is_array( $stock_qty ) && $location_enabled ) {
+				return $stock_qty;
+			}
+			
+			return 0;
+		}
+
+		private function create_stock_location_input($id, $term) {
+			$id = SlwWpmlHelper::object_id($id);
+		
 			$_stock_at = get_post_meta($id, '_stock_at_' . $term->term_id, true);
 			$_stock_location_price = get_post_meta($id, '_stock_location_price_' . $term->term_id, true);
-
-			// Create the input
-			woocommerce_wp_text_input( array(
+		
+			// Render inputs
+			woocommerce_wp_text_input([
 				'id'            => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id,
-				'label'         => '<b>'.$term->name.'</b><br />'.__( 'Stock Qty.', 'stock-locations-for-woocommerce' ),
-				'description'   => __( 'Enter the stock amount for this location.', 'stock-locations-for-woocommerce' ),
+				'label'         => '<b>' . $term->name . '</b><br />' . __('Stock Qty.', 'stock-locations-for-woocommerce'),
+				'description'   => __('Enter the stock amount for this location.', 'stock-locations-for-woocommerce'),
 				'desc_tip'      => true,
 				'class'         => 'woocommerce',
 				'type'          => 'number',
 				'data_type'     => 'stock',
 				'value'         => $_stock_at,
 				'wrapper_class' => 'stock_location_qty',
-			) );
-			woocommerce_wp_text_input( array(
+			]);
+		
+			woocommerce_wp_text_input([
 				'id'            => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id,
-				'label'         => '<br />'.__( 'Stock Price', 'stock-locations-for-woocommerce' ),
-				'description'   => __( 'Enter the price for the stock from this location.', 'stock-locations-for-woocommerce' ),
+				'label'         => '<br />' . __('Stock Price', 'stock-locations-for-woocommerce'),
+				'description'   => __('Enter the price for the stock from this location.', 'stock-locations-for-woocommerce'),
 				'desc_tip'      => true,
 				'class'         => 'woocommerce',
 				'type'          => 'number',
 				'data_type'     => 'decimal',
-				'custom_attributes' => array('step' => '0.01', 'min' => '0'),
+				'custom_attributes' => ['step' => '0.01', 'min' => '0'],
 				'value'         => $_stock_location_price,
-				'wrapper_class' => 'stock_location_price price-'.$_stock_location_price,
-			) );
-			
-			$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);
-			
-			if(is_array($_stock_at)){
-			}elseif($slw_location_status){
-				$postmeta = $_stock_at;
-			}
-			
-			
-
-			return $postmeta;
-
+				'wrapper_class' => 'stock_location_price price-' . $_stock_location_price,
+			]);
+		
+			return [
+				'location_term_id' => $term->term_id,
+				'stock'            => $_stock_at,
+				'price'            => $_stock_location_price
+			];
 		}
+
 
 		/**
 		 * Saves data from custom Stock Locations tab upon WC Product save.
