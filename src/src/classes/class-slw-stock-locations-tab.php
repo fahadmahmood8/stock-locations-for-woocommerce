@@ -235,60 +235,6 @@ if(!class_exists('SlwStockLocationsTab')) {
 
 		}
 
-		/**
-		 * Create Stock Locations inputs in WC Product.
-		 *
-		 * @since 1.0.0
-		 * @return array
-		 */
-		private function create_stock_location_input( $id, $term ) {
-			// Ensure correct ID for current language if WPML is active
-			$id = SlwWpmlHelper::object_id( $id );
-			
-			// Fetch meta values
-			$stock_qty   = get_post_meta( $id, '_stock_at_' . $term->term_id, true );
-			$stock_price = get_post_meta( $id, '_stock_location_price_' . $term->term_id, true );
-			
-			// Stock Quantity input
-			woocommerce_wp_text_input( array(
-			'id'            => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_' . $term->term_id,
-			'label'         => '<b>' . esc_html( $term->name ) . '</b><br />' . __( 'Stock Qty.', 'stock-locations-for-woocommerce' ),
-			'description'   => __( 'Enter the stock amount for this location.', 'stock-locations-for-woocommerce' ),
-			'desc_tip'      => true,
-			'class'         => 'woocommerce',
-			'type'          => 'number',
-			'data_type'     => 'stock',
-			'value'         => $stock_qty,
-			'wrapper_class' => 'stock_location_qty',
-			) );
-			
-			// Stock Price input
-			woocommerce_wp_text_input( array(
-			'id'                => '_' . SLW_PLUGIN_SLUG . $id . '_stock_location_price_' . $term->term_id,
-			'label'             => '<br />' . __( 'Stock Price', 'stock-locations-for-woocommerce' ),
-			'description'       => __( 'Enter the price for the stock from this location.', 'stock-locations-for-woocommerce' ),
-			'desc_tip'          => true,
-			'class'             => 'woocommerce',
-			'type'              => 'number',
-			'data_type'         => 'decimal',
-			'value'             => $stock_price,
-			'wrapper_class'     => 'stock_location_price price-' . esc_attr( $stock_price ),
-			'custom_attributes' => array(
-				'step' => '0.01',
-				'min'  => '0',
-			),
-			) );
-			
-			// Determine if location is enabled and stock is not an array
-			$location_enabled = get_term_meta( $term->term_id, 'slw_location_status', true );
-			
-			if ( ! is_array( $stock_qty ) && $location_enabled ) {
-				return $stock_qty;
-			}
-			
-			return 0;
-		}
-
 		private function create_stock_location_input($id, $term) {
 			$id = SlwWpmlHelper::object_id($id);
 		

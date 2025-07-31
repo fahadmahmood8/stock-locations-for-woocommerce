@@ -169,7 +169,7 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
-= 2.9.1 =
+= 2.9.3 =
 * Fix: PHP Warning: array_sum() https://wordpress.org/support/topic/php-warning-array_sum. [Thanks to @tushonline][31/07/2025]
 
 = 2.9.0 =
