@@ -222,7 +222,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 								if ($stock) {
 									$ret .= '<li class="slw_stock_location_item variation-' . esc_attr($variation_id) . '">'
 										. sprintf(
-											__('%s available at %s %s %.2f', 'stock-locations-for-woocommerce'),
+											'%s '.__('available at', 'stock-locations-for-woocommerce').' %s %s %.2f',
 											esc_html($stock),
 											esc_html($location->name),
 											esc_html($currency_symbol),

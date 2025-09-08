@@ -78,7 +78,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.9.4';
+		public           $version  = '2.9.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -493,7 +493,7 @@ if(!class_exists('SlwMain')) {
 				
 				//pree($data);
 				
-				$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', sprintf(__('%s available at %s', 'stock-locations-for-woocommerce'), 'STOCK_QTY', 'LOCATION_NAME'), $data['product_id'], $terms, $data['stock_quantity']);
+				$data['stock_locations_product_page_notice'] = apply_filters('slw_product_stock_location_notice', sprintf('%s '.__('available at', 'stock-locations-for-woocommerce').' %s', 'STOCK_QTY', 'LOCATION_NAME'), $data['product_id'], $terms, $data['stock_quantity']);
 				
 				wp_enqueue_script( 'slw-frontend-product-underscore', SLW_PLUGIN_DIR_URL . 'js/underscore-min.js', array( 'jquery' ), time(), true );
 				wp_enqueue_script( 'slw-frontend-product-scripts', SLW_PLUGIN_DIR_URL . 'js/product.js', array( 'jquery-blockui' ), time(), true );
