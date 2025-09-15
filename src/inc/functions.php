@@ -582,6 +582,12 @@ jQuery(document).ready(function($){
 						$ret .= '<span>'.$val.'</span>';
 					}
 				break;
+				case 'prerequisites':
+					if(is_array($val)){
+					}else{
+						$ret = $val;
+					}
+				break;
 				default:
 					$ret = '<span data-val="'.$val.'">'.$val.'</span>';
 				break;
@@ -1810,6 +1816,50 @@ jQuery(document).ready(function($){
 		\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
 	
 	}, 10, 1 );	
+	
+	register_activation_hook( __FILE__, function() {
+		flush_rewrite_rules();
+	});
+	register_deactivation_hook( __FILE__, function() {
+		flush_rewrite_rules();
+	});
+		
+	add_filter( 'template_include', function( $template ) {
+		
+		
+		
+		if ( is_tax( 'location' ) ) {
+			
+
+
+			if ( get_option( 'slw-archives-status' ) === 'yes' ){	
+				
+		        $archive_template = SLW_PLUGIN_DIR.'/pro/slw-archive-page.php';
+
+				if(file_exists($archive_template)){
+					//pree($archive_template);exit;
+					return $archive_template;//exit;
+				}
+    		}
+			
+
+			// Force plugin fallback if no taxonomy-location.php in theme
+			$theme_template = locate_template( [ 'taxonomy-location.php', 'archive.php' ] );
+			
+			$plugin_template = SLW_PLUGIN_DIR . '/templates/taxonomy-location-fallback.php';				
+			
+			//pree($plugin_template);exit;
+	
+			if ( empty( $theme_template ) ) {
+	
+				if ( file_exists( $plugin_template ) ) {
+					return $plugin_template;
+				}
+			}
+		}
+		return $template;
+	}, PHP_INT_MAX);
+
 	
 	// 1. Covers WooCommerce Admin updates (already included)
 	add_action('woocommerce_process_product_meta', 'slw_update_products_stock_values', 25);

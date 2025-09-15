@@ -91,6 +91,11 @@ if(!class_exists('SlwProductTaxonomy')) {
                 'show_in_nav_menus'          => true,
 				'show_tagcloud'              => true,
 				'capabilities'               => $capabilities,
+				'rewrite'           => array(
+					'slug'         => 'location',   // the URL base
+					'with_front'   => false,
+					'hierarchical' => true
+				),
             );
 
             register_taxonomy( $this->get_tax_names('singular'), 'product', $args );

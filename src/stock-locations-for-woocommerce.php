@@ -78,7 +78,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.9.5';
+		public           $version  = '2.9.6';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -96,61 +96,66 @@ if(!class_exists('SlwMain')) {
 			define( 'SLW_PLUGIN_VERSION', $this->version );
 
 			$this->init();
-
-			$slw_woocommerce_product_form_hooks = [
-							'' => __('Select Position', 'stock-locations-for-woocommerce'),
-							'woocommerce_before_add_to_cart_button' => __('Before Add to Cart Button', 'stock-locations-for-woocommerce'),
-							'woocommerce_before_variations_form' => __('Before Variations Form', 'stock-locations-for-woocommerce'),
-							'woocommerce_product_additional_information' => __('Additional Information', 'stock-locations-for-woocommerce'),
-							'woocommerce_before_single_variation' => __('Before Single Variation', 'stock-locations-for-woocommerce'),
-							'woocommerce_after_single_variation' => __('After Single Variation', 'stock-locations-for-woocommerce'),
-							'woocommerce_after_variations_form' => __('After Variations Form', 'stock-locations-for-woocommerce'),
-							'woocommerce_after_add_to_cart_button' => __('After Add to Cart Button', 'stock-locations-for-woocommerce')
-						];	
+			
+			add_action('init', function() use (&$slw_woocommerce_product_form_hooks, &$slw_api_valid_keys, &$slw_widgets_arr) {
+	
+				$slw_woocommerce_product_form_hooks = [
+								'' => __('Select Position', 'stock-locations-for-woocommerce'),
+								'woocommerce_before_add_to_cart_button' => __('Before Add to Cart Button', 'stock-locations-for-woocommerce'),
+								'woocommerce_before_variations_form' => __('Before Variations Form', 'stock-locations-for-woocommerce'),
+								'woocommerce_product_additional_information' => __('Additional Information', 'stock-locations-for-woocommerce'),
+								'woocommerce_before_single_variation' => __('Before Single Variation', 'stock-locations-for-woocommerce'),
+								'woocommerce_after_single_variation' => __('After Single Variation', 'stock-locations-for-woocommerce'),
+								'woocommerce_after_variations_form' => __('After Variations Form', 'stock-locations-for-woocommerce'),
+								'woocommerce_after_add_to_cart_button' => __('After Add to Cart Button', 'stock-locations-for-woocommerce')
+							];	
+			
+				$slw_api_valid_keys = array(			
+					'id' => array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is a location, so ID is location_id and when item is product so ID is considered as a product_id.', 'stock-locations-for-woocommerce')),
+					'value' => array('type'=>'int', 'options'=>''),
+					'action' => array('type'=>'string', 'options'=>'get|set'),
+					'item' => array('type'=>'string', 'options'=>'location|product|stock|price', 'tooltip'=>__('When item is other than location and product so product_id or location_id would be required as a parameter, ID parameter will not be adequate.', 'stock-locations-for-woocommerce')),
+					'format' => array('type'=>'string', 'options'=>'json|default'),
+					'product_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than product.', 'stock-locations-for-woocommerce')),
+					'location_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than location.', 'stock-locations-for-woocommerce')),
+				);
+				
+				
+				$slw_widgets_arr = array(
+					'slw-map' => array(
+						'type' => __('Premium', 'stock-locations-for-woocommerce'),
+						'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
+						'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
+						'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
+						'shortcode' => array('<strong>Shortcode:</strong><br />[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" diameter-range="100" distance-unit="km" zoom="13" search-field-placeholder="" shop-button-text="Shop This Location" directions-button-text="Directions" shop-location-link="default|shop|previous|store-link"]<br /><br />', '<strong>Hooks:</strong><br />add_action("before_slw_shop_button", function($location_data){ }, 11, 1);', 'add_action("after_slw_shop_button", function($location_data){ }, 11, 1);', 'add_filter("slw-map-location-label", function($label, $name, $location_id){ }, 11, 3);', 'add_filter("slw-map-location-name", function($name, $label, $location_id){ }, 11, 3);', 'add_action("slw-map-before-search-box", function($placeholder){ }, 11, 1);', 'add_action("slw-map-after-search-box", function($placeholder){ }, 11, 1);',),					
+						'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
 						
-			$slw_api_valid_keys = array(			
-				'id' => array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is a location, so ID is location_id and when item is product so ID is considered as a product_id.', 'stock-locations-for-woocommerce')),
-				'value' => array('type'=>'int', 'options'=>''),
-				'action' => array('type'=>'string', 'options'=>'get|set'),
-				'item' => array('type'=>'string', 'options'=>'location|product|stock|price', 'tooltip'=>__('When item is other than location and product so product_id or location_id would be required as a parameter, ID parameter will not be adequate.', 'stock-locations-for-woocommerce')),
-				'format' => array('type'=>'string', 'options'=>'json|default'),
-				'product_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than product.', 'stock-locations-for-woocommerce')),
-				'location_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than location.', 'stock-locations-for-woocommerce')),
-			);
+					),
+					'slw-archives' => array(
+						'type' => __('Premium', 'stock-locations-for-woocommerce'),
+						'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
+						'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
+						'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
+						'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);<br /><br /><strong>Shortcodes:</strong><br />[slw-archive-meta meta_key="location_address"]'),					
+						'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
+						
+						
+					),
+					'slw-location-selection' => array(
+						'type' => __('Premium', 'stock-locations-for-woocommerce'),
+						'input' => array('name'=>'slw-location-selection', 'type'=>'toggle', 'caption'=>''),
+						'title' => __('Stock Locations Selection (Popup)', 'stock-locations-for-woocommerce'),
+						'description' => __('This widget will implement a popup with the location names to land on specific location archives.', 'stock-locations-for-woocommerce'),
+						'shortcode' => array(
+						
+								'add_filter("<strong>slw_location_selection_popup_content</strong>", "<strong>yourtheme_location_selection_popup_content_callback</strong>", 10, 2);',
+								'add_filter("<strong>slw_location_selection_popup_display</strong>", "<strong>yourtheme_location_selection_popup_display_callback</strong>", 10, 2);'),
+						'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png', 'https://ps.w.org/stock-locations-for-woocommerce/assets/screenshot-17.png'),
+						
+					)
+				);		
 			
-			
-			$slw_widgets_arr = array(
-				'slw-map' => array(
-					'type' => __('Premium', 'stock-locations-for-woocommerce'),
-					'input' => array('name'=>'slw-google-api-key', 'type'=>'text', 'caption'=>__('Please enter Google API key here', 'stock-locations-for-woocommerce')),
-					'title' => __('Google Map for Stock Locations', 'stock-locations-for-woocommerce'),
-					'description' => __('This widget will detect the user location and zoom to current user latitude longitude by default.', 'stock-locations-for-woocommerce'),
-					'shortcode' => array('<strong>Shortcode:</strong><br />[SLW-MAP search-field="yes" locations-list="yes" map="yes" map-width="68%" list-width="400px" diameter-range="100" distance-unit="km" zoom="13" search-field-placeholder="" shop-button-text="Shop This Location" directions-button-text="Directions" shop-location-link="default|shop|previous|store-link"]<br /><br />', '<strong>Hooks:</strong><br />add_action("before_slw_shop_button", function($location_data){ }, 11, 1);', 'add_action("after_slw_shop_button", function($location_data){ }, 11, 1);', 'add_filter("slw-map-location-label", function($label, $name, $location_id){ }, 11, 3);', 'add_filter("slw-map-location-name", function($name, $label, $location_id){ }, 11, 3);', 'add_action("slw-map-before-search-box", function($placeholder){ }, 11, 1);', 'add_action("slw-map-after-search-box", function($placeholder){ }, 11, 1);',),					
-					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-map-thumb.png', SLW_PLUGIN_URL.'images/slw-map-popup-thumb.png'),
-					
-				),
-				'slw-archives' => array(
-					'type' => __('Premium', 'stock-locations-for-woocommerce'),
-					'input' => array('name'=>'slw-archives-status', 'type'=>'toggle', 'caption'=>''),
-					'title' => __('Stock Locations Archive', 'stock-locations-for-woocommerce'),
-					'description' => __('This widget will display the product items category wise on location specific archives.', 'stock-locations-for-woocommerce'),
-					'shortcode' => array('add_action("<strong>slw_archive_items_below_title</strong>", "yourtheme_archive_items_below_title", 11, 3);','add_action("<strong>slw_archive_items_below_qty</strong>", "yourtheme_archive_items_below_qty", 11, 3);', 'add_filter("<strong>slw_archive_product_image</strong>", "yourtheme_archive_product_image_callback", 11, 2);', 'add_action("<strong>slw_archive_before_wrapper</strong>", "yourtheme_archive_before_wrapper_callback", 11, 1);', 'add_action("<strong>slw_archive_after_wrapper</strong>", "yourtheme_archive_after_wrapper_callback", 11, 1);', 'add_action("<strong>slw-archive-wrapper</strong>", "yourtheme_archive_wrapper_classes", 11, 1);','add_action("<strong>slw_archive_inside_wrapper_start</strong>", "yourtheme_archive_inside_wrapper_start_callback", 11, 3);','add_action("<strong>slw_archive_inside_wrapper_end</strong>", "yourtheme_archive_inside_wrapper_end_callback", 11, 3);<br /><br /><strong>Shortcodes:</strong><br />[slw-archive-meta meta_key="location_address"]'),					
-					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-archives-thumb.png'),
-					
-				),
-				'slw-location-selection' => array(
-					'type' => __('Premium', 'stock-locations-for-woocommerce'),
-					'input' => array('name'=>'slw-location-selection', 'type'=>'toggle', 'caption'=>''),
-					'title' => __('Stock Locations Selection (Popup)', 'stock-locations-for-woocommerce'),
-					'description' => __('This widget will implement a popup with the location names to land on specific location archives.', 'stock-locations-for-woocommerce'),
-					'shortcode' => array(
-					
-							'add_filter("<strong>slw_location_selection_popup_content</strong>", "<strong>yourtheme_location_selection_popup_content_callback</strong>", 10, 2);',
-							'add_filter("<strong>slw_location_selection_popup_display</strong>", "<strong>yourtheme_location_selection_popup_display_callback</strong>", 10, 2);'),
-					'screenshot' => array(SLW_PLUGIN_URL.'images/slw-location-popup-thumb.png', 'https://ps.w.org/stock-locations-for-woocommerce/assets/screenshot-17.png'),
-					
-				)
-			);		
+			});
 			
 			// Instantiate classes
 			new SLW\SRC\Classes\SlwLocationTaxonomy;
