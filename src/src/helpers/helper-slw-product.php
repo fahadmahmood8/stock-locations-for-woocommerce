@@ -133,7 +133,9 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 	}
 	
 }
-add_action( 'slw_product_wc_stock_status', function( $locations_stock, $id, $force_main_product_stock_status_to_instock=false ) {
+add_action( 'slw_product_wc_stock_status', 'slw_product_wc_stock_status_callback', 10, 3 );
+
+function slw_product_wc_stock_status_callback( $locations_stock, $id, $force_main_product_stock_status_to_instock = false ) {
 	
 	static $processing = [];
 	
