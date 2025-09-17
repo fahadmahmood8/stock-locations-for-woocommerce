@@ -169,7 +169,7 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
-= 2.9.7 =
+= 2.9.8 =
 * Fixed: fatal error with anonymous (closure) callbacks — replaced problematic closure with a named callback so hooks can be reliably added/removed. [17/09/2025]
 
 = 2.9.6 =
