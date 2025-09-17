@@ -195,4 +195,4 @@ function slw_product_wc_stock_status_callback( $locations_stock, $id, $force_mai
 	
 	$processing[$id] = false;
 	
-}, 10, 3 );
+}
