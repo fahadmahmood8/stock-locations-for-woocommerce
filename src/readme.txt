@@ -169,6 +169,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 3.0.0 =
+* Improved: When a product is on sale and stock-location-based pricing is active, the base price is treated as the original (crossed) price, and the location price is shown as the current price. If the location price is higher than the base/sale price, the base/sale price will be hidden. [Thanks to Armando Moreira][19/10/2025]
+
 = 2.9.9 =
 Added: Location selection modal now appears automatically when visiting the website. [Thanks to Kishen Visani][16/10/2025]
 
@@ -182,7 +185,7 @@ Fixed: Locations with zero stock now still appear when the woocommerce_hide_out_
 
 Improved: woocommerce_hide_out_of_stock_items setting is now fully respected on shop, archive, and location taxonomy pages. [Thanks to Kishen Visani][17/10/2025]
 
-Improved: When a product is on sale and stock-location-based pricing is active, the base price is treated as the original (crossed) price, and the location price is shown as the current price. If the location price is higher than the base/sale price, the base/sale price will be hidden. [Thanks to Armando Moreira][19/10/2025]
+
 
 = 2.9.8 =
 * Fixed: fatal error with anonymous (closure) callbacks — replaced problematic closure with a named callback so hooks can be reliably added/removed. [17/09/2025]
@@ -798,3 +801,8 @@ Fix: PHP Fatal error: Uncaught TypeError: method_exists(): Argument #1 ($object_
 
 = 1.0.0 =
 - Initial release
+
+== Upgrade Notice ==
+= 3.0.0 =
+This update introduces a more dynamic and consistent behavior for stock-location pricing and visibility across all pages.
+If you've customized templates or location display logic, please review your hooks — especially slw_stock_location_name — to ensure compatibility with the new pricing and modal features.

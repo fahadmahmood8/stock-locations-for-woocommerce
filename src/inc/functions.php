@@ -41,6 +41,13 @@ if(!function_exists('slw_notices')){
 	
 	}
 }
+if(!function_exists('get_slw_stock_location_selected')){
+	function get_slw_stock_location_selected(){
+		global $woocommerce;
+		return ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+	}
+}
+
 if(!function_exists('sanitize_slw_data')){
 	function sanitize_slw_data( $input ) {
 		if(is_array($input)){		
