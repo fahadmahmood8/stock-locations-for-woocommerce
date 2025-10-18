@@ -75,11 +75,13 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		 
 		public static function location_select_input($type='select', $product_id=0, $stock_locations=array(), $html=''){
+			
 			//return $html;
+			
 			$ret = '';
 
 			global $slw_plugin_settings, $wc_slw_pro;
-			
+			//pree($product_id);
 			$product = wc_get_product($product_id);
 			
 			$default_location      = array_key_exists('default_location_in_frontend_selection', $slw_plugin_settings ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
@@ -214,6 +216,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 					if (!empty($variations) && !empty($locations) && !is_wp_error($locations)) {
 						foreach ($variations as $variation_id) {
 							// Get the default price for the variation
+							//pree($variation_id);
 							$variation = wc_get_product($variation_id);
 							$default_price = $variation ? $variation->get_price() : 0;
 				
@@ -320,9 +323,11 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		public function variable_location_select()
 		{
+			//return;
 			global $product, $slw_plugin_settings;
 			if( empty($product) ) return;
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
+			//pree($product_id);
 			$product = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 			
@@ -386,7 +391,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 			
 			global $woocommerce;
 			
-			$stock_location_selected = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+			$stock_location_selected = get_slw_stock_location_selected();
 			
 			
 			if($stock_location_selected){

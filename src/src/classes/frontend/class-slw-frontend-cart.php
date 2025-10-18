@@ -136,7 +136,7 @@ if( !class_exists('SlwFrontendCart') ) {
 			$stock_locations       = SlwFrontendHelper::get_all_product_stock_locations_for_selection( $product_id );
 			$default_location      = isset( $this->plugin_settings['default_location_in_frontend_selection'] ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
 			$lock_default_location = isset( $this->plugin_settings['lock_default_location_in_frontend'] ) && $this->plugin_settings['lock_default_location_in_frontend'] == 'on' ? true : false;
-			$stock_location_selected = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+			$stock_location_selected = get_slw_stock_location_selected();
 			
 			
 			$different_location_per_cart_item = (isset($this->plugin_settings['different_location_per_cart_item'])?$this->plugin_settings['different_location_per_cart_item']:'');

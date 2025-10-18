@@ -15,13 +15,26 @@ jQuery(document).ready(function($){
 	});
 
 	
-	setTimeout(function(){
-		if(slw_frontend.slw_location_selection_popup!='' && typeof slw_frontend.stock_location_selected==null){
-			$.blockUI({message:slw_frontend.slw_location_selection_popup});
+	setTimeout(function() {
+		// Check if we are on the home or front page
+		var isHomePage = window.location.pathname === '/' || window.location.pathname === '/index.php';
+	
+		if (
+			slw_frontend.slw_location_selection_popup != '' &&
+			(
+				isHomePage || 
+				(typeof slw_frontend.stock_location_selected == 'object' && slw_frontend.stock_location_selected == null)
+			)
+		) {
+			$.blockUI({ message: slw_frontend.slw_location_selection_popup });
 			$('.blockUI:before').hide();
-			
 		}
+	
 	}, 2000);
+	
+	$('body').on('click', '.blockUI.blockOverlay', function(){
+		$.unblockUI();
+	});
 	
 	$('body').on('click', 'div.slw-location-selection-popup ul li a', function(event){
 		
@@ -35,9 +48,15 @@ jQuery(document).ready(function($){
 				'slw_nonce_field': slw_frontend.nonce
 		};
 		$.post(slw_frontend.ajaxurl, data, function(response) {
-			//document.location.href = location_url;
-			document.location.reload();
+			if (window.location.href !== location_url && !slw_frontend.is_product) {
+				// Redirect to the desired location URL
+				window.location.href = location_url;
+			} else {
+				// Reload the current page
+				window.location.reload();
+			}
 		});
+
 		
 	});
 	

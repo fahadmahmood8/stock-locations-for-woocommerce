@@ -56,7 +56,7 @@
 	if(!function_exists('slw_location_selection_popup_display_callback')){
 		function slw_location_selection_popup_display_callback($is_front_page=false, $is_shop=false){
 			//pree($is_front_page);pree($is_shop);
-			$output = ($is_front_page || $is_shop);
+			$output = ($is_front_page || $is_shop || true);
 			return (boolean)$output;
 			
 		}			

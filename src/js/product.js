@@ -31,7 +31,7 @@
 		//console.log('location_qty: '+location_qty+' ~ cart_qty: '+cart_qty);
 		
 		var halt = (location_id==0 || location_qty<1 || location_qty<=cart_qty);
-
+		//console.log('halt: '+halt);
 		if(halt){
 			if(backorders_allowed=='no'){
 				if($('button[name="add-to-cart"], button.single_add_to_cart_button').length>0){ 
@@ -52,6 +52,16 @@
 		}
 		
 		var price_dom = $('.woocommerce-variation-price .woocommerce-Price-amount.amount');
+		
+		if(price_dom.length==0){
+			price_dom = $('ins span.woocommerce-Price-amount.amount');
+		}
+		
+		if(price_dom.length==0){
+			price_dom = $('span.woocommerce-Price-amount.amount');
+		}
+		
+		//console.log(price_dom);
 		
 		var price = $.trim(qty_obj.data('price'));
 		price = (price!=''?price:slw_frontend.product_price_raw);
@@ -132,7 +142,7 @@
 							
 								$.each(response.data.stock_locations, function(i) {
 									var obj = response.data.stock_locations[i];
-									if( obj.quantity < 1 && obj.allow_backorder != 1 ) {
+									if( slw_frontend.slw_wc_hide_out_of_stock=='yes' && (obj.quantity < 1 && obj.allow_backorder != 1) ) {
 										
 									} else {
 										let selected = false;
@@ -388,7 +398,7 @@
 	
 	
 	$('body').on('change', 'select[name^="slw_add_to_cart_item_stock_location"], input[type="radio"][name^="slw_add_to_cart_item_stock_location"]', function(){
-		
+		//console.log('slw_update_input_and_price');
 		slw_update_input_and_price($(this), $);
 
 		

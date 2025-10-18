@@ -77,7 +77,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		public function tab_content_stock_locations_wc_product( $array )
 		{
-			global $wpdb;
+			global $wpdb, $slw_wc_hide_out_of_stock;
 			// Get the product ID
 			$product_id = SlwWpmlHelper::object_id( get_the_ID() );
 
@@ -164,7 +164,6 @@ if(!class_exists('SlwStockLocationsTab')) {
 				// Check if product has variations
 				if( isset($product_variations) && ( !empty($product_variations) || ($product_variations !== 0) ) ) {
 					
-					$hide_out_of_stock_items = get_option( 'woocommerce_hide_out_of_stock_items' );
 
 					// Interate over variations
 					foreach( $product_variations as $variation ) {
@@ -194,7 +193,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 							echo '<div id="' . $this->tab_stock_locations . '_wrapper_variations" style="display:none;">';
 						}
 
-						echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$variation_id.' ('. ucfirst($variation_attributes) . ') ('. $product->get_title() . ') <span class="backorder-status"><span class="backorder-'.strtolower($backorder_status).'">'.__('Hide outofstock', 'stock-locations-for-woocommerce').': '.$hide_out_of_stock_items.' / '.__('Backorder', 'stock-locations-for-woocommerce').': '.$backorder_status.'</span></span></h4></div>';
+						echo '<div id="' . $this->tab_stock_locations . '_title"><h4>#'.$variation_id.' ('. ucfirst($variation_attributes) . ') ('. $product->get_title() . ') <span class="backorder-status"><span class="backorder-'.strtolower($backorder_status).'">'.__('Hide outofstock', 'stock-locations-for-woocommerce').': '.$slw_wc_hide_out_of_stock.' / '.__('Backorder', 'stock-locations-for-woocommerce').': '.$backorder_status.'</span></span></h4></div>';
 
 						// Loop throw terms
 						foreach($product_stock_location_terms as $term) {
@@ -526,6 +525,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			// WPML
 			if(is_numeric($id)){
 				$id = SlwWpmlHelper::object_id( $id );
+				//pree($id);
 				$product = wc_get_product($id);
 			}
 			if(is_object($id)){

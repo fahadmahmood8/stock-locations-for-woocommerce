@@ -92,10 +92,15 @@
      <li>
     	add_filter('slw_product_stock_location_notice', '<?php echo $slw_theme_name; ?>_slw_product_stock_location_notice_callback', 10, 4);
     </li>       
-    
-    
-    
-    
+    <li>
+    	add_filter('slw_stock_location_name', '<?php echo $slw_theme_name; ?>_slw_stock_location_name_callback', 10, 3);
+    </li> 
+    <li>
+    	add_filter('slw_allow_wc_stock_reduce', '<?php echo $slw_theme_name; ?>_slw_allow_wc_stock_reduce_callback', 10, 1);
+    </li>     
+    <li>
+    	add_filter('slw_notice_msg', '<?php echo $slw_theme_name; ?>_slw_notice_msg_callback', 10, 6);
+    </li>     
     
     
 </ul>

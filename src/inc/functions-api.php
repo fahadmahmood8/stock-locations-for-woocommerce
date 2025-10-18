@@ -72,12 +72,14 @@
 								}
 							break;
 							case 'product':
+								//pree($data['id']);
 								if($data['id']){
 									$response[$data['id']] = wc_get_product($data['id']);
 								}else{
 									$products = get_posts( array('post_type'=>'product') );								
 									if(!empty($products)){
 										foreach($products as $product){ if(!is_object($product)){ continue; }
+											//pree($product->ID);
 											$response[$product->ID] = wc_get_product($product->ID);
 										}
 									}

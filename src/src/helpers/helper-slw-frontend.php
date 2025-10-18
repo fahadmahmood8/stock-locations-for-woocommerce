@@ -20,12 +20,17 @@ if ( !class_exists('SlwFrontendHelper') ) {
 
 		public static function get_all_product_stock_locations_for_selection( $product_id, $everything_stock_status_to_instock=false )
 		{
+			
+			global $slw_wc_hide_out_of_stock;
+			
+			//return;
 
 			//pree($product_id);
 			$stock_locations = SlwStockAllocationHelper::getProductStockLocations( $product_id );
 			
 			if( empty($stock_locations) ) return;
-
+			
+			//pree($product_id);
 			$product = wc_get_product( $product_id );
 			if( empty( $product ) ) return;// || $product->get_type() != 'simple'
 
@@ -61,14 +66,13 @@ if ( !class_exists('SlwFrontendHelper') ) {
 				
 				$slw_backorder_location = (property_exists($location, 'slw_backorder_location')?$location->slw_backorder_location:false);
 				
-				if($location->quantity<=0 && !$slw_backorder_location){ continue; }
+				if($slw_wc_hide_out_of_stock=='yes' && ($location->quantity<=0 && !$slw_backorder_location)){ continue; }
 				
 				$stock_locations_to_display[$id]['backorder_allowed'] = ($_backorder_status?'yes':'no');
 				$stock_locations_to_display[$id]['term_id']         = $location->term_id;
 				$stock_locations_to_display[$id]['quantity']        = (int)$location->quantity;
 				$stock_locations_to_display[$id]['quantity-formatted'] = slw_quantity_format($location->quantity);
 				$stock_locations_to_display[$id]['allow_backorder'] = $slw_backorder_location;
-				$stock_locations_to_display[$id]['name']            = $location->name;
 				
 				
 				
@@ -88,7 +92,9 @@ if ( !class_exists('SlwFrontendHelper') ) {
 					$product_stock_price = $product_price;
 					$stock_locations_to_display[$id]['price']            = ($product_stock_price);
 				}
-
+				
+				$stock_locations_to_display[$id]['name']            = 
+				wp_kses_post( apply_filters('slw_stock_location_name', $location->name , $stock_locations_to_display[$id]['price'], $stock_locations_to_display[$id]['quantity']));
 
 				//pree($location->quantity .'<=0 && '.!$everything_stock_status_to_instock);
 				

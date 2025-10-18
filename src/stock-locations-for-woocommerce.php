@@ -31,7 +31,7 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 	
 
-global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status, $slw_woocommerce_product_form_hooks;
+global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status, $slw_woocommerce_product_form_hooks, $slw_wc_hide_out_of_stock;
 
 $slw_crons_valid_keys = array(				
 				'action' => array('type'=>'string', 'options'=>'update-stock'),
@@ -41,6 +41,7 @@ $slw_crons_valid_keys = array(
 			);
 
 //$wc_slw_hpos = OrderUtil::custom_orders_table_usage_is_enabled();
+$slw_wc_hide_out_of_stock = get_option( 'woocommerce_hide_out_of_stock_items' );
 $slw_logs_status = (get_option('slw_logs_status')==true);
 $slw_wc_stock_format = get_option('woocommerce_stock_format');
 $slw_gkey = get_option('slw-google-api-key');
@@ -78,7 +79,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '2.9.8';
+		public           $version  = '2.9.9';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -316,9 +317,10 @@ if(!class_exists('SlwMain')) {
 		 * @since 1.2.0
 		 * @return void
 		 */
+		 
 		public function enqueue_frontend()
 		{
-			global $post, $wpdb, $wc_slw_pro, $woocommerce;
+			global $post, $wpdb, $wc_slw_pro, $woocommerce, $slw_wc_hide_out_of_stock;
 			wp_enqueue_style( 'slw-frontend-styles', SLW_PLUGIN_DIR_URL . 'css/frontend-style.css', null, time() );
 			wp_enqueue_style( 'slw-common-styles', SLW_PLUGIN_DIR_URL . 'css/common-style.css', array(), time() );
 			
@@ -331,6 +333,7 @@ if(!class_exists('SlwMain')) {
 			$term_link = (!is_wp_error($term_link)?$term_link:'');
 			
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
+			$data['slw_wc_hide_out_of_stock'] = $slw_wc_hide_out_of_stock;
 			$data['slw_location_selection'] = get_option('slw-location-selection', 'no');
 			$data['slw_location_selection_popup'] = (apply_filters('slw_location_selection_popup_display', is_front_page(), is_shop()) && function_exists('slw_location_selection_popup') && (get_option('slw-location-selection', 'no')=='yes')?slw_location_selection_popup():'');
 			$data['is_home_page'] = (is_home()?'yes':'no');
@@ -357,7 +360,7 @@ if(!class_exists('SlwMain')) {
 			$data['slw_term_url'] = $term_link;
 			$data['slw_term_id'] = $term_id;
 			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
-			$data['stock_location_selected'] = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+			$data['stock_location_selected'] = get_slw_stock_location_selected();
 			
 			$stock_locations = array();
 			$stock_locations_obj = slw_get_locations('location', array(), false, $data['product_id']);
@@ -431,6 +434,7 @@ if(!class_exists('SlwMain')) {
 				
 				
 				$meta_obj = $wpdb->get_row('SELECT COUNT(*) AS total_locations FROM '.$wpdb->prefix.'postmeta pm WHERE pm.post_id="'.esc_sql($data['product_id']).'" AND pm.meta_key LIKE "_stock_at_%" AND pm.meta_value>0');
+				//pree($data['product_id']);
 				$wc_product = wc_get_product($data['product_id']);
 				
 				$terms = slw_get_locations('location', array(), true, $data['product_id']);
@@ -446,13 +450,17 @@ if(!class_exists('SlwMain')) {
 
 				$data['product_price_format'] = trim(str_replace(array(get_woocommerce_currency_symbol(), $product_price), array('_CURRENCY_SYMBOL', '_PRODUCT_PRICE'), strip_tags(wc_price($wc_product->get_price()))));
 				$data['product_price_raw'] = $product_price; 
+				$data['product_min_max_prices'] = slw_get_min_max_location_prices($wc_product);
 				$data['product_price'] = $wc_product->get_price(); 
 				$data['stock_status'][$data['product_id']] = $wc_product->get_availability();
 				$data['allow_backorder'][$data['product_id']] = get_post_meta($data['product_id'], '_backorders', true);
 				$data['product_price_decimals'] = apply_filters('slw_product_price_decimals', 2, $product_price);
 				
 				
-				
+				$extra_data = slw_get_product_stock_by_location($data['product_id'], $data['product_type'], $terms);
+				$data = array_merge( $data, $extra_data );
+
+				/*
 				if($data['product_type']=='variable' && $data['product_id']>0){
 				
 					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN (".$data['product_id'].") AND post_type='product_variation'");
@@ -493,7 +501,7 @@ if(!class_exists('SlwMain')) {
 						}
 						$data['stock_quantity'][$data['product_id']][0] = $data['stock_quantity_sum'];
 					}					
-				}
+				}*/
 				
 				
 				//pree($data);
