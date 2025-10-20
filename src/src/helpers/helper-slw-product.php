@@ -11,6 +11,87 @@ use SLW\SRC\Helpers\SlwStockAllocationHelper;
 
 if ( ! defined( 'WPINC' ) ) die;
 
+
+
+if ( ! function_exists( __NAMESPACE__ . '\slw_product_wc_stock_status_callback' ) ) {
+function slw_product_wc_stock_status_callback( $locations_stock, $id, $force_main_product_stock_status_to_instock = false ) {
+	
+	static $processing = [];
+	
+	if ( isset($processing[$id]) && $processing[$id] ) {
+		return;
+	}
+	
+	$processing[$id] = true;
+	
+	global $slw_plugin_settings;
+	if ( ! is_array( $slw_plugin_settings ) ) {
+		$slw_plugin_settings = [];
+	}
+
+	$force_main_product_stock_status_to_instock = (!$force_main_product_stock_status_to_instock?array_key_exists('force_main_product_stock_status_to_instock', $slw_plugin_settings):$force_main_product_stock_status_to_instock);
+
+	if(is_numeric($id)){
+		//pree($id);
+		$product = wc_get_product( $id );
+	}
+	
+	if(is_object($id)){
+		$product = $id;
+		$id = $product->get_id();
+	}
+	
+	if( ! empty( $id ) && $force_main_product_stock_status_to_instock) {
+		
+		if( empty( $product ) ) return;
+	
+		$parent_id = $product->get_parent_id();
+		
+		
+		if( $parent_id == 0 ) {
+			
+			
+			
+			if(!$locations_stock){
+				$locations_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
+			}
+
+			$_backorders = get_post_meta($id, '_backorders', true);
+			$_backorder_status = ($_backorders!='no');
+			
+			if($_backorder_status){
+				update_post_meta( $id, '_stock_status', 'onbackorder' );
+			}else{
+				if( $locations_stock > 0 ) {
+					update_post_meta( $id, '_stock_status', 'instock' );
+				}elseif( $locations_stock <= 0 ) {
+					
+					update_post_meta( $id, '_stock_status', 'outofstock' );
+					
+				}
+			}
+			
+			// Temporarily remove this callback while we call the updater to avoid recursion
+		remove_action( 'slw_product_wc_stock_status', __NAMESPACE__ . '\slw_product_wc_stock_status_callback', 10 );
+		
+		// call the function that actually updates the main product stock status
+		\slw_update_product_stock_status( $id, $locations_stock );
+		
+		// re-add the callback
+		add_action( 'slw_product_wc_stock_status', __NAMESPACE__ . '\slw_product_wc_stock_status_callback', 10, 3 );
+
+
+
+		}
+	}
+	
+	unset( $processing[$id] );
+	
+}
+}
+add_action( 'slw_product_wc_stock_status', __NAMESPACE__ . '\slw_product_wc_stock_status_callback', 10, 3 );
+
+
 if ( ! class_exists( 'SlwProductHelper' ) ) {
 
 	class SlwProductHelper
@@ -104,7 +185,7 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			$approved_status_string = array('instock', 'outofstock', 'onbackorder');
 			if ( ! in_array( $status, $approved_status_string ) ) return;
 			$product_id = (int) $product_id;
-			pree($product_id);
+			//pree($product_id);
 			$product = wc_get_product( $product_id );
 			if ( $product->is_type( 'variation' ) ) {
 				do_action( 'woocommerce_variation_set_stock_status', $product_id, $status, $product );
@@ -137,82 +218,3 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 	}
 	
 }
-
-
-if ( ! function_exists( __NAMESPACE__ . '\slw_product_wc_stock_status_callback' ) ) {
-function slw_product_wc_stock_status_callback( $locations_stock, $id, $force_main_product_stock_status_to_instock = false ) {
-	
-	static $processing = [];
-	
-	if ( isset($processing[$id]) && $processing[$id] ) {
-		return;
-	}
-	
-	$processing[$id] = true;
-	
-	global $slw_plugin_settings;
-	if ( ! is_array( $slw_plugin_settings ) ) {
-		$slw_plugin_settings = [];
-	}
-
-	$force_main_product_stock_status_to_instock = (!$force_main_product_stock_status_to_instock?array_key_exists('force_main_product_stock_status_to_instock', $slw_plugin_settings):$force_main_product_stock_status_to_instock);
-
-	if(is_numeric($id)){
-		//pree($id);
-		$product = wc_get_product( $id );
-	}
-	
-	if(is_object($id)){
-		$product = $id;
-		$id = $product->get_id();
-	}
-	
-	if( ! empty( $id ) && $force_main_product_stock_status_to_instock) {
-		
-		if( empty( $product ) ) return;
-	
-		$parent_id = $product->get_parent_id();
-		
-		
-		if( $parent_id == 0 ) {
-			
-			
-			
-			if(!$locations_stock){
-				$locations_stock = \SLW\SRC\Helpers\SlwProductHelper::get_product_locations_stock_total( $id );
-			}
-
-			$_backorders = get_post_meta($id, '_backorders', true);
-			$_backorder_status = ($_backorders!='no');
-			
-			if($_backorder_status){
-				update_post_meta( $id, '_stock_status', 'onbackorder' );
-			}else{
-				if( $locations_stock > 0 ) {
-					update_post_meta( $id, '_stock_status', 'instock' );
-				}elseif( $locations_stock <= 0 ) {
-					
-					update_post_meta( $id, '_stock_status', 'outofstock' );
-					
-				}
-			}
-			
-			// Temporarily remove this callback while we call the updater to avoid recursion
-		remove_action( 'slw_product_wc_stock_status', __NAMESPACE__ . '\slw_product_wc_stock_status_callback', 10 );
-		
-		// call the function that actually updates the main product stock status
-		\slw_update_product_stock_status( $id, $locations_stock );
-		
-		// re-add the callback
-		add_action( 'slw_product_wc_stock_status', __NAMESPACE__ . '\slw_product_wc_stock_status_callback', 10, 3 );
-
-
-
-		}
-	}
-	
-	unset( $processing[$id] );
-	
-}
-}
-add_action( 'slw_product_wc_stock_status', __NAMESPACE__ . '\slw_product_wc_stock_status_callback', 10, 3 );

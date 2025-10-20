@@ -79,7 +79,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '3.0.0';
+		public           $version  = '3.0.1';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -335,7 +335,7 @@ if(!class_exists('SlwMain')) {
 			$data = (is_array($this->plugin_settings)?$this->plugin_settings:array());
 			$data['slw_wc_hide_out_of_stock'] = $slw_wc_hide_out_of_stock;
 			$data['slw_location_selection'] = get_option('slw-location-selection', 'no');
-			$data['slw_location_selection_popup'] = (apply_filters('slw_location_selection_popup_display', is_front_page(), is_shop()) && function_exists('slw_location_selection_popup') && (get_option('slw-location-selection', 'no')=='yes')?slw_location_selection_popup():'');
+			$data['slw_location_selection_popup'] = (apply_filters('slw_location_selection_popup_display', is_front_page(), is_shop()) && function_exists('slw_location_selection_popup') && (get_option('slw-location-selection', 'no')=='yes')?slw_location_selection_popup($product_id):'');
 			$data['is_home_page'] = (is_home()?'yes':'no');
 			$data['is_front_page'] = (is_front_page()?'yes':'no');
 			$data['ajaxurl'] = admin_url( 'admin-ajax.php' );
