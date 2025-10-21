@@ -169,6 +169,17 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 3.0.2 =
+* Fixed: Only enabled/active stock locations will contribute in total stock value but it would still be editable. [Thanks to @josephkallinit][21/10/2025]
+* Fixed: Prevented potential PHP error when `$slw_api_valid_keys` is null during API validation. [Thanks to Tushar Tajane][21/10/2025]
+* New: Order notes can be turned off from the settings. [Thanks to Rob Wood][21/10/2025]
+* Fixed: Incorrect price range display for variable products when location-based stock prices are higher than variation base prices. The location price now overrides confusing WooCommerce default range formatting.
+* Improved: Sale price logic now fully respects location-based pricing — ensuring both range and sale indicators are hidden when local price is higher. [21/10/2025]
+
+= 3.0.1 =
+* Added: Conditional CSS injection for WooCommerce Blocks to hide sale and del elements when location price exceeds the base or sale price.
+* Improved: Price hiding logic refactored for better compatibility across all product types (simple, variable, grouped). [20/10/2025]
+
 = 3.0.0 =
 * Improved: When a product is on sale and stock-location-based pricing is active, the base price is treated as the original (crossed) price, and the location price is shown as the current price. If the location price is higher than the base/sale price, the base/sale price will be hidden. [Thanks to Armando Moreira][19/10/2025]
 

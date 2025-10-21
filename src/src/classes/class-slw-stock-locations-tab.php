@@ -151,7 +151,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				// Check if the total stock matches the sum of the locations stock, if not show warning message
 
 				if( $product->get_stock_quantity() != $total_location_stock ) {
-					echo '<div id="' . $this->tab_stock_locations . '_alert" style="display:none;">' . __('The total stock does not match the sum of the locations stock. Please update this product to fix it or use', 'stock-locations-for-woocommerce') .' <a href="'.admin_url('admin.php?page=slw-settings&tab=crons').'" target="_blank">'.__('cron jobs.', 'stock-locations-for-woocommerce').'</a>.</div>';
+					echo '<div id="' . $this->tab_stock_locations . '_alert" style="display:none;">' . sprintf(__('Total stock is calculated from active/enabled locations only. Use %s for interval-based updates in passive mode.', 'stock-locations-for-woocommerce'), '<a href="'.admin_url('admin.php?page=slw-settings&tab=crons').'" target="_blank">'.__('cron jobs.', 'stock-locations-for-woocommerce').'</a>').'</div>';
 				}
 
 				echo '</div>';
@@ -521,6 +521,8 @@ if(!class_exists('SlwStockLocationsTab')) {
 		 */
 		public static function update_product_stock( $id, $product_stock_location_terms, $terms_total, $force_main_product_update=false )
 		{
+			//pree($id);exit;
+			
 			$stock_ret = 0;
 			// WPML
 			if(is_numeric($id)){
@@ -560,6 +562,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 			
 			if(is_array($product_stock_location_terms) && !empty($product_stock_location_terms)){
 			// Loop through terms
+				
+				//pree($product_stock_location_terms);exit;
+				
 				foreach ( $product_stock_location_terms as $term ) {
 					
 					
@@ -576,13 +581,14 @@ if(!class_exists('SlwStockLocationsTab')) {
 					if($product->get_parent_id()){
 						//pree('$stock_input_id: '.$stock_input_id.' - '.$_POST[$stock_input_id]);exit;//pree($_POST);
 					}
+					//pree($slw_location_status);
 									
 					if( !empty($_POST) && isset($_POST[$stock_input_id])) {
 	
 						// Initiate counter
 						$counter++;
 						
-						if(!$slw_location_status){ continue; }
+						//if(!$slw_location_status){ continue; }
 						// Save input amounts to array					
 						
 						$input_amount = sanitize_slw_data($_POST[$stock_input_id]);
@@ -592,7 +598,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 						}
 						
 						if($input_amount>=0){
-							$input_amounts[] = $input_amount;
+							if($slw_location_status){
+								$input_amounts[] = $input_amount;
+							}
 						}else{
 							continue;
 						}
@@ -658,7 +666,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					}
 					
 					
-					$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);			
+					//$slw_location_status = get_term_meta($term->term_id, 'slw_location_status', true);			
 					
 					if($slw_location_status){
 						// Get post meta
@@ -672,7 +680,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 					
 	
 				}
-				
+				//exit;
 				if($counter === $terms_total) {											
 					
 					$stock_ret = array_sum($input_amounts);

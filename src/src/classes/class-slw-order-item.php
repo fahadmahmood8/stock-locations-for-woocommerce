@@ -134,6 +134,7 @@ if( !class_exists('SlwOrderItem') ) {
 			if( empty($order) || ! is_object($order) ) return;
 
 
+			global $slw_proceed_order_note;
 			
 			$wc_order_stock_reduced = $order->get_meta( '_slw_order_stock_reduced' );
 
@@ -172,9 +173,14 @@ if( !class_exists('SlwOrderItem') ) {
 							wc_delete_order_item_meta( $item_id, '_slw_data' );
 	
 							// add order note
-							$order->add_order_note(
-								sprintf( __('The stock in the location %1$s was restored in %2$d for the product %3$s', 'stock-locations-for-woocommerce'), $location->name, $slw_data[$location_id]['quantity_subtracted'], $product->get_name() )
-							);
+							
+							
+							
+							if($slw_proceed_order_note){
+								$order->add_order_note(
+									sprintf( __('The stock in the location %1$s was restored in %2$d for the product %3$s', 'stock-locations-for-woocommerce'), $location->name, $slw_data[$location_id]['quantity_subtracted'], $product->get_name() )
+								);
+							}
 						}
 					}
 	
@@ -637,6 +643,9 @@ if( !class_exists('SlwOrderItem') ) {
 			
 			
 			$proceed = ( isset($this->plugin_settings['include_location_data_in_formatted_item_meta']) && $this->plugin_settings['include_location_data_in_formatted_item_meta'] == 'yes' );
+			
+			
+			
 			
 			$proceed = (
 					

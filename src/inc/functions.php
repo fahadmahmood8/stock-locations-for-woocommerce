@@ -1486,7 +1486,8 @@ jQuery(document).ready(function($){
 
 	
 	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
-		
+		//wc_slw_logger('debug', $product_id.' - '.$stock_qty);
+		//return;
 		//slw_location_status
 		/*$debug_backtrace = debug_backtrace();
 			

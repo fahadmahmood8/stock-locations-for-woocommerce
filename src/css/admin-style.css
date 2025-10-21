@@ -23,13 +23,18 @@
 #stock-locations-for-woocommerce_tab_stock_locations_alert {
 	padding-left:11px;
 	padding-top:11px;
-	color:orange;
+	color:#4200FF;
+	font-size:14px;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_alert > a {
+	color:#900;
 }
 #stock-locations-for-woocommerce_tab_stock_locations_alert:before {
-	font-family: Font Awesome\ 5 Free;
-	content: '\f071';
+	content: '\26A0';
 	font-weight: 900;
+	font-size:20px;
 	margin-right: 6px;
+	color:#900;
 }
 table thead tr #stock_at_locations {
 	width: 17ch;
@@ -704,7 +709,6 @@ input:checked + .slider:before {
 } 
 .slw-location-disabled input.wc_input_stock {
 	background-color: #ddd;
-	text-decoration: line-through;
 }
 .slw_edit_stocks{
 	color: #4200FF;

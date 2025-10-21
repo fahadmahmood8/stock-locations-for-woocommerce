@@ -31,7 +31,7 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 	
 
-global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status, $slw_woocommerce_product_form_hooks, $slw_wc_hide_out_of_stock;
+global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status, $slw_woocommerce_product_form_hooks, $slw_wc_hide_out_of_stock, $slw_proceed_order_note;
 
 $slw_crons_valid_keys = array(				
 				'action' => array('type'=>'string', 'options'=>'update-stock'),
@@ -47,6 +47,7 @@ $slw_wc_stock_format = get_option('woocommerce_stock_format');
 $slw_gkey = get_option('slw-google-api-key');
 $slw_plugin_settings = get_option( 'slw_settings' );
 $slw_plugin_settings = is_array($slw_plugin_settings)?$slw_plugin_settings:array();
+$slw_proceed_order_note = ( isset($slw_plugin_settings['turn_order_notes_off_from_this_plugin']) && $slw_plugin_settings['turn_order_notes_off_from_this_plugin'] == 'yes' );
 $wc_slw_data = get_plugin_data(__FILE__, true, false);
 define( 'SLW_PLUGIN_DIR', dirname( __FILE__ ) );
 define( 'SLW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -79,7 +80,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '3.0.1';
+		public           $version  = '3.0.2';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -261,7 +262,7 @@ if(!class_exists('SlwMain')) {
 				'wc_slw_stock_reset_msg' => __('This action will restore the stock values to the product. Do you want to proceed?', 'stock-locations-for-woocommerce'),
 				'wc_slw_product_id' => (is_object($post)?$post->ID:0),
 				'wc_slw_location_status' => $slw_location_statuses,
-				'wc_slw_location_disabled_msg' => __('Enable this location from edit location page to save the stock value.', 'stock-locations-for-woocommerce'),
+				'wc_slw_location_disabled_msg' => __('Enable this location from edit location page to contribute in the total stock value.', 'stock-locations-for-woocommerce'),
 				'slw_import_export_tutorial' => __('CSV Import/Export Stock Locations?', 'stock-locations-for-woocommerce'),
 				'slw_error_occurred' => __('An error occurred while processing your request.', 'stock-locations-for-woocommerce'),
 			);

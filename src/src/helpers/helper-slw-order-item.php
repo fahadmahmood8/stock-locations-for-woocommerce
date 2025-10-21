@@ -23,6 +23,8 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 
 		public static function allocateLocationStock( $orderItemId, $locationStockMap, $allocationType )
 		{
+			global $slw_proceed_order_note;
+			
 			$order_id = wc_get_order_id_by_order_item_id( $orderItemId );
 			$order_obj = wc_get_order($order_id);
 			//wc_slw_logger('debug', 'allocateLocationStock: '.'Yes #'.$order_id);
@@ -139,7 +141,7 @@ if ( !class_exists('SlwOrderItemHelper') ) {
 				
 
 				// Add the note
-				if(is_object($order_obj) && method_exists($order_obj, 'add_order_note')){
+				if($slw_proceed_order_note && is_object($order_obj) && method_exists($order_obj, 'add_order_note')){
 					$order_obj->add_order_note(
 						sprintf(__('The stock in the location %1$s was updated in -%2$d for the product %3$s', 'stock-locations-for-woocommerce'), $term->name, $item_stock_location_subtract_input_qty, $mainProduct->get_name())
 					);

@@ -15,6 +15,10 @@
 			if(!empty($_GET)){
 				
 				$received = sanitize_slw_data($_GET);
+				
+				if ( empty( $slw_api_valid_keys ) || ! is_array( $slw_api_valid_keys ) ) {
+					$slw_api_valid_keys = [];
+				}
 				foreach($received as $k=>$v){
 					if(array_key_exists($k, $slw_api_valid_keys)){
 						$data[$k] = $v;
