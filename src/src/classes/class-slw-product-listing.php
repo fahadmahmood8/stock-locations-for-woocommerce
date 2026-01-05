@@ -113,6 +113,7 @@ if(!class_exists('SlwProductListing')) {
 			if( $column_name  == 'stock_at_locations' ) {
 
 				$product_id = SlwWpmlHelper::object_id( get_the_ID() );
+				//pree($product_id); 
 				$product    = wc_get_product( $product_id );
 				
 				if( !empty($product) ) {
@@ -127,7 +128,8 @@ if(!class_exists('SlwProductListing')) {
 							$variation_id = $variation_obj->variation_id;
 							$product_variations[] = $product->get_available_variation( $variation_id );
 						}
-						foreach ($product_variations as $variation) { 
+						foreach ($product_variations as $variation) {
+							//pree($variation['variation_id']); 
 							$variations_products[] = wc_get_product( $variation['variation_id'] );
 						}
 					}

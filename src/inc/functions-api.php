@@ -15,6 +15,10 @@
 			if(!empty($_GET)){
 				
 				$received = sanitize_slw_data($_GET);
+				
+				if ( empty( $slw_api_valid_keys ) || ! is_array( $slw_api_valid_keys ) ) {
+					$slw_api_valid_keys = [];
+				}
 				foreach($received as $k=>$v){
 					if(array_key_exists($k, $slw_api_valid_keys)){
 						$data[$k] = $v;
@@ -72,12 +76,14 @@
 								}
 							break;
 							case 'product':
+								//pree($data['id']);
 								if($data['id']){
 									$response[$data['id']] = wc_get_product($data['id']);
 								}else{
 									$products = get_posts( array('post_type'=>'product') );								
 									if(!empty($products)){
 										foreach($products as $product){ if(!is_object($product)){ continue; }
+											//pree($product->ID);
 											$response[$product->ID] = wc_get_product($product->ID);
 										}
 									}

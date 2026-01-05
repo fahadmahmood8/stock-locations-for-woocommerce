@@ -26,40 +26,46 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		public function __construct()
 		{
-			global $slw_woocommerce_product_form_hooks;
 			
-			// Get plugin settings
-			$this->plugin_settings = get_option('slw_settings');
-			
-			// Get the selected hook from the settings
-			$selected_hook = isset($this->plugin_settings['show_in_product_page_pos']) 
-				? $this->plugin_settings['show_in_product_page_pos'] 
-				: '';
-
-			// Get the available hooks from the global array
-			$available_hooks = (is_array($slw_woocommerce_product_form_hooks)?array_keys($slw_woocommerce_product_form_hooks):array());
-			
-			if (in_array($selected_hook, $available_hooks, true)) {
-				//pree($selected_hook);
-				add_action($selected_hook, function() {
-					if (isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] != 'no') {
-						global $product;
-			
-						if (is_a($product, 'WC_Product_Variable')) {
-							echo $this->variable_location_select();
-						} elseif (is_a($product, 'WC_Product_Simple')) {
-							echo $this->simple_location_select();
+			add_action('init', function(){
+				global $slw_woocommerce_product_form_hooks;
+				
+				
+				
+				// Get plugin settings
+				$this->plugin_settings = get_option('slw_settings');
+				
+				// Get the selected hook from the settings
+				$selected_hook = isset($this->plugin_settings['show_in_product_page_pos']) 
+					? $this->plugin_settings['show_in_product_page_pos'] 
+					: '';
+	
+				// Get the available hooks from the global array
+				$available_hooks = (is_array($slw_woocommerce_product_form_hooks)?array_keys($slw_woocommerce_product_form_hooks):array());
+				
+				
+				
+				if (in_array($selected_hook, $available_hooks, true)) {
+					//pree($selected_hook);
+					add_action($selected_hook, function() {
+						if (isset($this->plugin_settings['show_in_product_page']) && $this->plugin_settings['show_in_product_page'] != 'no') {
+							global $product;
+				
+							if (is_a($product, 'WC_Product_Variable')) {
+								echo $this->variable_location_select();
+							} elseif (is_a($product, 'WC_Product_Simple')) {
+								echo $this->simple_location_select();
+							}
 						}
-					}
-				});
-			}
-
-			
-			add_filter( 'woocommerce_add_cart_item_data', array($this, 'add_to_cart_location_validation'), 10, 3 );
-
-			add_action( 'wp_ajax_get_variation_locations', array($this, 'get_variation_locations') );
-			add_action( 'wp_ajax_nopriv_get_variation_locations', array($this, 'get_variation_locations') );
-			
+					});
+				}
+	
+				
+				add_filter( 'woocommerce_add_cart_item_data', array($this, 'add_to_cart_location_validation'), 10, 3 );
+	
+				add_action( 'wp_ajax_get_variation_locations', array($this, 'get_variation_locations') );
+				add_action( 'wp_ajax_nopriv_get_variation_locations', array($this, 'get_variation_locations') );
+			});
 		}
 
 		/**
@@ -69,11 +75,13 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		 
 		public static function location_select_input($type='select', $product_id=0, $stock_locations=array(), $html=''){
+			
 			//return $html;
+			
 			$ret = '';
 
 			global $slw_plugin_settings, $wc_slw_pro;
-			
+			//pree($product_id);
 			$product = wc_get_product($product_id);
 			
 			$default_location      = array_key_exists('default_location_in_frontend_selection', $slw_plugin_settings ) ? get_post_meta( $product_id, '_slw_default_location', true ) : 0;
@@ -208,6 +216,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 					if (!empty($variations) && !empty($locations) && !is_wp_error($locations)) {
 						foreach ($variations as $variation_id) {
 							// Get the default price for the variation
+							//pree($variation_id);
 							$variation = wc_get_product($variation_id);
 							$default_price = $variation ? $variation->get_price() : 0;
 				
@@ -222,7 +231,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 								if ($stock) {
 									$ret .= '<li class="slw_stock_location_item variation-' . esc_attr($variation_id) . '">'
 										. sprintf(
-											__('%s available at %s %s %.2f', 'stock-locations-for-woocommerce'),
+											'%s '.__('available at', 'stock-locations-for-woocommerce').' %s %s %.2f',
 											esc_html($stock),
 											esc_html($location->name),
 											esc_html($currency_symbol),
@@ -314,9 +323,11 @@ if( !class_exists('SlwFrontendProduct') ) {
 		 */
 		public function variable_location_select()
 		{
+			//return;
 			global $product, $slw_plugin_settings;
 			if( empty($product) ) return;
 			$product_id            = SlwWpmlHelper::object_id( $product->get_id() );
+			//pree($product_id);
 			$product = wc_get_product( $product_id );
 			if( empty($product) || $product->get_type() != 'variable' ) return;
 			
@@ -380,7 +391,7 @@ if( !class_exists('SlwFrontendProduct') ) {
 			
 			global $woocommerce;
 			
-			$stock_location_selected = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+			$stock_location_selected = get_slw_stock_location_selected();
 			
 			
 			if($stock_location_selected){

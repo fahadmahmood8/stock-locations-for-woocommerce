@@ -305,6 +305,8 @@ if(!class_exists('SlwShortcodes')) {
 		 */
 		public function display_product_message( $atts, $innerHtml = '' )
 		{
+			//return $innerHtml;
+			
 			global $woocommerce, $product, $post;
 
 			if( ! is_product() ) return;

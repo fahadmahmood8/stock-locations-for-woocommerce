@@ -169,7 +169,48 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
-= 2.9.1 =
+= 3.0.2 =
+* Fixed: Only enabled/active stock locations will contribute in total stock value but it would still be editable. [Thanks to @josephkallinit][21/10/2025]
+* Fixed: Prevented potential PHP error when `$slw_api_valid_keys` is null during API validation. [Thanks to Tushar Tajane][21/10/2025]
+* New: Order notes can be turned off from the settings. [Thanks to Rob Wood][21/10/2025]
+* Fixed: Incorrect price range display for variable products when location-based stock prices are higher than variation base prices. The location price now overrides confusing WooCommerce default range formatting.
+* Improved: Sale price logic now fully respects location-based pricing — ensuring both range and sale indicators are hidden when local price is higher. [21/10/2025]
+
+= 3.0.1 =
+* Added: Conditional CSS injection for WooCommerce Blocks to hide sale and del elements when location price exceeds the base or sale price.
+* Improved: Price hiding logic refactored for better compatibility across all product types (simple, variable, grouped). [20/10/2025]
+
+= 3.0.0 =
+* Improved: When a product is on sale and stock-location-based pricing is active, the base price is treated as the original (crossed) price, and the location price is shown as the current price. If the location price is higher than the base/sale price, the base/sale price will be hidden. [Thanks to Armando Moreira][19/10/2025]
+
+= 2.9.9 =
+Added: Location selection modal now appears automatically when visiting the website. [Thanks to Kishen Visani][16/10/2025]
+
+Added: Product page now also supports the location selection modal when enabled from the backend. [Thanks to Kishen Visani][16/10/2025]
+
+Improved: Once a location is selected, it is automatically applied as the default location/store across simple and variable product pages. [Thanks to Kishen Visani][16/10/2025]
+
+Added: Each location name can now optionally include its price or stock value as an appended string via the new slw_stock_location_name filter hook. [Thanks to Armando Moreira][18/10/2025]
+
+Fixed: Locations with zero stock now still appear when the woocommerce_hide_out_of_stock_items option is disabled (unchecked). [Thanks to Armando Moreira][18/10/2025]
+
+Improved: woocommerce_hide_out_of_stock_items setting is now fully respected on shop, archive, and location taxonomy pages. [Thanks to Kishen Visani][17/10/2025]
+
+
+
+= 2.9.8 =
+* Fixed: fatal error with anonymous (closure) callbacks — replaced problematic closure with a named callback so hooks can be reliably added/removed. [17/09/2025]
+
+= 2.9.6 =
+* Improved version with premium widgets. [15/09/2025]
+
+= 2.9.5 =
+* Fix: Textdomain related issue resolved. [08/09/2025]
+
+= 2.9.4 =
+* Fix: Recursive function causing stock status loop. [Thanks to Claudio Lanfranchi | SYPRO][01/09/2025]
+
+= 2.9.3 =
 * Fix: PHP Warning: array_sum() https://wordpress.org/support/topic/php-warning-array_sum. [Thanks to @tushonline][31/07/2025]
 
 = 2.9.0 =
@@ -771,3 +812,8 @@ Fix: PHP Fatal error: Uncaught TypeError: method_exists(): Argument #1 ($object_
 
 = 1.0.0 =
 - Initial release
+
+== Upgrade Notice ==
+= 3.0.0 =
+This update introduces a more dynamic and consistent behavior for stock-location pricing and visibility across all pages.
+If you've customized templates or location display logic, please review your hooks — especially slw_stock_location_name — to ensure compatibility with the new pricing and modal features.

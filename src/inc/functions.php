@@ -41,6 +41,13 @@ if(!function_exists('slw_notices')){
 	
 	}
 }
+if(!function_exists('get_slw_stock_location_selected')){
+	function get_slw_stock_location_selected(){
+		global $woocommerce;
+		return ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+	}
+}
+
 if(!function_exists('sanitize_slw_data')){
 	function sanitize_slw_data( $input ) {
 		if(is_array($input)){		
@@ -535,6 +542,70 @@ add_action('admin_init', 'wc_slw_admin_init');
 add_action('wp_head', 'slw_wp_head');
 function slw_wp_head(){
 ?>
+<style type="text/css">
+<?php 
+if ( is_product() ) {
+
+	global $product;
+	if ( ! $product instanceof WC_Product ) return;
+
+	if ( ! function_exists( 'slw_get_min_max_location_prices' ) ) return;
+
+	$location_prices = slw_get_min_max_location_prices( $product );
+	if ( empty( $location_prices['min'] ) || empty( $location_prices['max'] ) ) return;
+
+	$product_price = (float) $product->get_price();
+	$min = (float) $location_prices['min'];
+	$max = (float) $location_prices['max'];
+
+	$base_min = $product_price;
+	$base_max = $product_price;
+
+	if ( $product->is_type( 'variable' ) ) {
+		$variation_prices = array_filter( array_map( function( $vid ) {
+			$variation = wc_get_product( $vid );
+			return $variation ? (float) $variation->get_price() : null;
+		}, $product->get_children() ) );
+
+		if ( ! empty( $variation_prices ) ) {
+			$base_min = min( $variation_prices );
+			$base_max = max( $variation_prices );
+		}
+	}
+
+	$should_hide        = $product->is_on_sale() && $product_price <= $max;
+	$should_hide_range  = $product->is_type( 'variable' ) && $max > $base_max;
+
+	if ( $should_hide || $should_hide_range ) :
+?>
+	/* Hide sale prices */
+	.price del,
+	.woocommerce-Price-amount.amount del,
+	.wc-block-components-product-price del,
+	.wp-block-woocommerce-product-price del,
+	.wc-block-components-sale-badge {
+		display: none !important;
+	}
+
+<?php if ( $should_hide_range ) : ?>
+	/* Hide price range on variable products */
+	.price .from,
+	
+	.price .woocommerce-Price-amount:first-child + .woocommerce-Price-amount,
+	.woocommerce-Price-amount.range,
+	.price span.price-range,
+	.wc-block-components-product-price {
+		display: none !important;
+	}
+<?php endif; ?>
+
+<?php
+	endif;
+}
+?>
+</style>
+
+
 <script type="text/javascript" language="javascript">
 <?php if(!is_admin() && !wp_doing_ajax() && array_key_exists('add-to-cart', $_GET)  && array_key_exists('stock-location', $_GET)){ ?>
 var newURL = location.href.split("?")[0];
@@ -580,6 +651,12 @@ jQuery(document).ready(function($){
 						$ret .= '<i class="fas fa-code" title="'.__('Click here to show available hooks', 'stock-locations-for-woocommerce').'"></i><ul><li><span>'.implode('</span></li><li><span>', $val).'</span></li></ul>';
 					}else{
 						$ret .= '<span>'.$val.'</span>';
+					}
+				break;
+				case 'prerequisites':
+					if(is_array($val)){
+					}else{
+						$ret = $val;
 					}
 				break;
 				default:
@@ -742,6 +819,7 @@ jQuery(document).ready(function($){
 					switch($action){
 						case 'update-stock':
 							//pree($product_post);
+							//pree($product_post->ID);
 							$product = wc_get_product($product_post->ID);
 							$SlwStockLocationsTab = \SLW\SRC\Classes\SlwStockLocationsTab::save_tab_data_stock_locations_wc_product_save($product_post->ID, $product_post, true, true);
 							
@@ -958,6 +1036,7 @@ jQuery(document).ready(function($){
 			global $post;
 			$class = '';
 			if(is_object($post) && $post->post_type=='product'){
+				//pree($post->ID);
 				$product = wc_get_product($post->ID);
 				
 				if(is_object($product)){
@@ -1015,8 +1094,95 @@ jQuery(document).ready(function($){
 		}	 
 	}
 	add_filter ('manage_location_custom_column', 'manage_category_custom_fields', 10,3);
+	
+	function slw_woocommerce_product_is_in_stock($instock_status = false, $product_id = 0, $string = false) {
+		global $product, $slw_plugin_settings, $wpdb, $woocommerce;
+	
+		// Detect selected store/location from session
+		$location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session()) ? $woocommerce->session->get('stock_location_selected') : 0);
+		
+		$location = get_term_by('id', $location_id, 'location');
+		$store_name = ((is_object($location) && isset($location->term_id)) ? $location->name : '');
+		//pree($location_id.' - '.$store_name);
+	
+		$product = (is_numeric($product_id) ? wc_get_product($product_id) : $product);
+		
+		$type = (is_object($product) ? $product->get_type() : '');
+		if ( !is_numeric($product_id) && is_object($product) && method_exists($product, 'get_id') ) {
+			$product_id = $product->get_id();
+		}
+		//pree($product);
+		
+		
+		switch ($type) {
+			case 'variable':
+				if ($product_id > 0) {
+					$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					if (!empty($variations)) {
+						$variations_stock_status = array();
+						foreach ($variations as $variation_obj) {
+							$variation_id = $variation_obj->variation_id;
+							$product_variation = wc_get_product($variation_id);
+	
+							// Check store/location-based stock if available
+							if ($location_id) {
+								$stock_at_location = get_post_meta($variation_id, '_stock_at_' . $location_id, true);
+								$instock_statuses = ( (float)$stock_at_location > 0 );
+							} else {
+								$instock_statuses = (
+									(
+										($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity() > 0 || $product_variation->get_backorders() != 'no'))
+										||
+										(!$product_variation->get_manage_stock() && $product_variation->get_stock_status() != 'outofstock')
+									)
+								);
+							}
+	
+							$variations_stock_status[$variation_id] = $instock_statuses;
+						}
+						$instock_status = (array_sum($variations_stock_status) > 0);
+					}
+				}
+			break;
+	
+			case 'simple':
+				if ($location_id) {
+					//pree($$product_id.' - '.$location_id);
+					$stock_at_location = get_post_meta($product_id, '_stock_at_' . $location_id, true);
+					
+					$instock_status = ( (float)$stock_at_location > 0 );
+					
+					//pree($stock_at_location.' - '.$instock_status);
+				} else {
+					$instock_status = (
+						(
+							($product->get_manage_stock() && ($product->get_stock_quantity() > 0 || $product->get_backorders() != 'no'))
+							||
+							(!$product->get_manage_stock() && $product->get_stock_status() != 'outofstock')
+						)
+					);
+				}
+			break;
+		}
+	
+		if ($instock_status && $product_id) {
+			update_post_meta($product_id, '_stock_status', 'instock');
+		}
+	
+		$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
+		if ($everything_stock_status_to_instock) {
+			$instock_status = true;
+		}
+	
+		if ($string) {
+			$instock_status = ($instock_status ? 'instock' : 'outofstock');
+		}
+	
+		return $instock_status;
+	}
 
-    function slw_woocommerce_product_is_in_stock($instock_status=false, $product_id=0, $string=false) {
+
+    function slw_woocommerce_product_is_in_stock_old($instock_status=false, $product_id=0, $string=false) {
 
 		global $product, $slw_plugin_settings, $wpdb;
 		
@@ -1093,7 +1259,7 @@ jQuery(document).ready(function($){
 		return $instock_status;
 	}
 	
-	add_filter('woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock' );
+	add_filter( 'woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock', 10, 2 );
 	
 	function slw_woocommerce_format_localized_price($value=''){
 		$symbol = get_woocommerce_currency_symbol();
@@ -1101,7 +1267,7 @@ jQuery(document).ready(function($){
 	}
 	//add_filter('woocommerce_format_localized_price', 'slw_woocommerce_format_localized_price');
 		
-	add_filter( 'woocommerce_get_availability_text', 'slw_change_stock_text', 9, 2 ); //
+	//add_filter( 'woocommerce_get_availability_text', 'slw_change_stock_text', 9, 2 ); //
 	add_filter( 'woocommerce_get_availability', 'slw_filter_woocommerce_get_availability', 9, 2 ); 	
 	
 	function slw_change_stock_text ( $availability, $product) {
@@ -1110,13 +1276,13 @@ jQuery(document).ready(function($){
 		
 		if($product) {
 			$stock = $product->get_stock_quantity();
+			//pree($product);
 
-			$_product = wc_get_product( $product );
-			if ( !$_product->is_in_stock() ) {
+			if ( !$product->is_in_stock() ) {
 				$availability = __(  'Out of stock', 'woocommerce' );
 			} 
 				
-			if ( $_product->is_in_stock() && $stock>0) {
+			if ( $product->is_in_stock() && $stock>0) {
 				switch($slw_wc_stock_format){
 					default:
 						$availability = $stock .' '. strtolower(__(  'In stock', 'woocommerce' ));
@@ -1133,7 +1299,7 @@ jQuery(document).ready(function($){
 				}
 			}else{
 				
-				$_backorders = get_post_meta($_product->get_id(), '_backorders', true);			
+				$_backorders = get_post_meta($product->get_id(), '_backorders', true);			
 	
 				if($_backorders=='yes'){
 					$availability = __(  'On backorder', 'woocommerce' );
@@ -1144,6 +1310,7 @@ jQuery(document).ready(function($){
 		}
 		
 		
+		//return apply_filters('slw_change_stock_text_string', $availability, $product);
 		return $availability;
 	}	
 	function slw_filter_woocommerce_get_availability( $array, $product ) { 
@@ -1256,6 +1423,7 @@ jQuery(document).ready(function($){
 	}
 	
 	function slw_fix_outofstock_terms($product_ids) {
+		
 		global $wpdb;
 	
 		// Ensure $product_ids is an array and sanitize
@@ -1272,6 +1440,7 @@ jQuery(document).ready(function($){
 		// Expand $product_ids to include variation IDs for variable products
 		$expanded_product_ids = [];
 		foreach ($product_ids as $product_id) {
+			//pree($product_id);
 			$product = wc_get_product($product_id);
 	
 			if ($product && $product->is_type('variable')) {
@@ -1317,15 +1486,16 @@ jQuery(document).ready(function($){
 
 	
 	function slw_update_product_stock_status($product_id=0, $stock_qty=0){
-		
+		//wc_slw_logger('debug', $product_id.' - '.$stock_qty);
+		//return;
 		//slw_location_status
-		$debug_backtrace = debug_backtrace();
+		/*$debug_backtrace = debug_backtrace();
 			
 		$function = $debug_backtrace[0]['function'];
 		$function .= ' / '.$debug_backtrace[1]['function'];
 		$function .= ' / '.$debug_backtrace[2]['function'];
 		$function .= ' / '.$debug_backtrace[3]['function'];
-		$function .= ' / '.$debug_backtrace[4]['function'];		
+		$function .= ' / '.$debug_backtrace[4]['function'];	*/	
 		
 		//wc_slw_logger('debug', $product_id.'='.$stock_qty.' - '.$function);
 		
@@ -1334,7 +1504,7 @@ jQuery(document).ready(function($){
 		
 		if(is_numeric($product_id)){
 			$stock_qty = (int)$stock_qty;
-			
+			//pree($product_id);
 			$product = wc_get_product($product_id);
 			
 			if(is_object($product)){
@@ -1377,7 +1547,7 @@ jQuery(document).ready(function($){
 			
 			global $woocommerce;
  
-		   $selected_stock_location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+		   $selected_stock_location_id = get_slw_stock_location_selected();
 		   
 		   if($selected_stock_location_id>0){
 
@@ -1558,6 +1728,7 @@ jQuery(document).ready(function($){
 		// Include parent products for variations
 		$final_ids = [];
 		foreach ($ids as $id) {
+			//pree($id);
 			$product = wc_get_product($id);
 			if ($product) {
 				if ($product->is_type('variation')) {
@@ -1601,6 +1772,7 @@ jQuery(document).ready(function($){
 	
 		foreach ($products as $product) {
 			// Load product object
+			//pree($product->ID);
 			$wc_product = wc_get_product($product->ID);
 	
 			if (!$wc_product) {
@@ -1647,6 +1819,7 @@ jQuery(document).ready(function($){
 				$variations = $wc_product->get_children();
 	
 				foreach ($variations as $variation_id) {
+					//pree($variation_id);
 					$variation = wc_get_product($variation_id);
 					if (!$variation) {
 						continue;
@@ -1731,6 +1904,132 @@ jQuery(document).ready(function($){
 			wp_set_object_terms($post_id, $final_terms, 'location', false);
 		}
 	}
+	if(!function_exists('slw_get_product_stock_by_location')){
+		function slw_get_product_stock_by_location( $product_id, $product_type = 'simple', $terms=array()) {
+			global $wpdb;
+			
+			
+		
+			$data = array(
+				'product_id'         => (int) $product_id,
+				'product_type'       => $product_type,
+				'stock_quantity'     => array(),
+				'stock_status'       => array(),
+				'allow_backorder'    => array(),
+				'stock_quantity_sum' => 0,
+			);
+			if(empty($terms)){
+				$terms = slw_get_locations('location', array(), true, $data['product_id']);
+			}
+		
+			if ( empty( $product_id ) || empty( $terms ) ) {
+				return $data;
+			}
+		
+			if ( $product_type === 'variable' ) {
+				// Fetch variation IDs for this variable product
+				$variation_results = $wpdb->get_results( $wpdb->prepare(
+					"SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'product_variation'",
+					$product_id
+				) );
+		
+				foreach ( $variation_results as $variation_obj ) {
+					$variation_id = $variation_obj->variation_id;
+					//pree($variation_id);
+					$wc_variation = wc_get_product( $variation_id );
+		
+					$data['stock_quantity'][ $variation_id ][0] = 0;
+		
+					foreach ( $terms as $term ) {
+						$term_id = $term->term_id;
+		
+						// Stock details
+						$data['stock_status'][ $variation_id ]       = $wc_variation ? $wc_variation->get_availability() : '';
+						$data['allow_backorder'][ $variation_id ]    = get_post_meta( $variation_id, '_backorders', true );
+						$data['stock_quantity'][ $product_id ][ $term_id ] = get_post_meta( $product_id, '_stock_at_' . $term_id, true );
+						$data['stock_quantity'][ $variation_id ][ $term_id ] = get_post_meta( $variation_id, '_stock_at_' . $term_id, true );
+		
+						$data['stock_quantity_sum'] += (float) $data['stock_quantity'][ $variation_id ][ $term_id ];
+					}
+		
+					$data['stock_quantity'][ $variation_id ][0] = $data['stock_quantity_sum'];
+				}
+			} else {
+				// Simple product
+				$data['stock_quantity'][ $product_id ][0] = 0;
+		
+				foreach ( $terms as $term ) {
+					$term_id = $term->term_id;
+		
+					$data['stock_quantity'][ $product_id ][ $term_id ] = get_post_meta( $product_id, '_stock_at_' . $term_id, true );
+					$data['stock_quantity_sum'] += (float) $data['stock_quantity'][ $product_id ][ $term_id ];
+				}
+		
+				$data['stock_quantity'][ $product_id ][0] = $data['stock_quantity_sum'];
+			}
+		
+			return $data;
+		}
+	}
+	
+	function slw_get_min_max_location_prices( $product ) {
+		
+		global $slw_plugin_settings;
+		
+		$product_stock_price_status = array_key_exists('product_stock_price_status', $slw_plugin_settings);
+	
+	
+		if ( is_numeric( $product ) ) {
+			$product = wc_get_product( $product );
+		}
+		if ( ! $product instanceof WC_Product || !$product_stock_price_status) {
+			return array( 'min' => null, 'max' => null );
+		}
+		
+		
+		
+		$prices = array();
+	
+		// Get all locations (include empty ones).
+		$locations = get_terms( array(
+			'taxonomy'   => 'location',
+			'hide_empty' => false,
+		) );
+	
+		if ( empty( $locations ) || is_wp_error( $locations ) ) {
+			return array( 'min' => null, 'max' => null );
+		}
+	
+		if ( $product->is_type( 'variable' ) ) {
+			foreach ( $product->get_children() as $variation_id ) {
+				foreach ( $locations as $location ) {
+					$price = get_post_meta( $variation_id, '_stock_location_price_' . $location->term_id, true );
+					if ( $price !== '' && is_numeric( $price ) ) {
+						$prices[] = floatval( $price );
+					}
+				}
+			}
+		} else {
+			$product_id = $product->get_id();
+			foreach ( $locations as $location ) {
+				$price = get_post_meta( $product_id, '_stock_location_price_' . $location->term_id, true );
+				if ( $price !== '' && is_numeric( $price ) ) {
+					$prices[] = floatval( $price );
+				}
+			}
+		}
+	
+		if ( empty( $prices ) ) {
+			return array( 'min' => null, 'max' => null );
+		}
+	
+		return array(
+			'min' => min( $prices ),
+			'max' => max( $prices ),
+		);
+	}
+
+
 	if (!function_exists('slw_update_products_stock_values')) {
 		function slw_update_products_stock_values($product_id, $product = null, $update = true, $from_hook = true) {
 			
@@ -1810,6 +2109,50 @@ jQuery(document).ready(function($){
 		\SLW\SRC\Helpers\SlwProductHelper::update_wc_stock_status( $id );
 	
 	}, 10, 1 );	
+	
+	register_activation_hook( __FILE__, function() {
+		flush_rewrite_rules();
+	});
+	register_deactivation_hook( __FILE__, function() {
+		flush_rewrite_rules();
+	});
+		
+	add_filter( 'template_include', function( $template ) {
+		
+		
+		
+		if ( is_tax( 'location' ) ) {
+			
+
+
+			if ( get_option( 'slw-archives-status' ) === 'yes' ){	
+				
+		        $archive_template = SLW_PLUGIN_DIR.'/pro/slw-archive-page.php';
+
+				if(file_exists($archive_template)){
+					//pree($archive_template);exit;
+					return $archive_template;//exit;
+				}
+    		}
+			
+
+			// Force plugin fallback if no taxonomy-location.php in theme
+			$theme_template = locate_template( [ 'taxonomy-location.php', 'archive.php' ] );
+			
+			$plugin_template = SLW_PLUGIN_DIR . '/templates/taxonomy-location-fallback.php';				
+			
+			//pree($plugin_template);exit;
+	
+			if ( empty( $theme_template ) ) {
+	
+				if ( file_exists( $plugin_template ) ) {
+					return $plugin_template;
+				}
+			}
+		}
+		return $template;
+	}, PHP_INT_MAX);
+
 	
 	// 1. Covers WooCommerce Admin updates (already included)
 	add_action('woocommerce_process_product_meta', 'slw_update_products_stock_values', 25);

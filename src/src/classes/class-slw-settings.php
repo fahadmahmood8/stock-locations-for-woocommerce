@@ -282,6 +282,15 @@ if(!class_exists('SlwSettings')) {
 				'slw_setting_setting_section',
 				array('class'=>'include_location_data_in_formatted_item_meta')
 			);
+			
+			add_settings_field(
+				'turn_order_notes_off_from_this_plugin',
+				__('Turn order notes off from this plugin', 'stock-locations-for-woocommerce'),
+				array( $this, 'turn_order_notes_off_from_this_plugin_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'turn_order_notes_off_from_this_plugin')
+			);
 
 			add_settings_field(
 				'location_email_notifications',
@@ -396,6 +405,9 @@ if(!class_exists('SlwSettings')) {
 			}
 			if ( isset( $input['include_location_data_in_formatted_item_meta'] ) ) {
 				$sanitary_values['include_location_data_in_formatted_item_meta'] = $input['include_location_data_in_formatted_item_meta'];
+			}
+			if ( isset( $input['turn_order_notes_off_from_this_plugin'] ) ) {
+				$sanitary_values['turn_order_notes_off_from_this_plugin'] = $input['turn_order_notes_off_from_this_plugin'];
 			}
 			if ( isset( $input['location_email_notifications'] ) ) {
 				$sanitary_values['location_email_notifications'] = $input['location_email_notifications'];
@@ -677,6 +689,16 @@ if(!class_exists('SlwSettings')) {
 			<p><?php echo __('This special meta can be used by third party plugins to show the location name and quantity subtracted.', 'stock-locations-for-woocommerce'); ?></p>
 			<?php
 		}
+		
+		public function turn_order_notes_off_from_this_plugin_callback()
+		{
+			$this->select_yes_no_callback('turn_order_notes_off_from_this_plugin');
+			?>
+			<p><?php echo __('This plugin will not add any new order notes to WooCommerce orders if you turn this option ON by selecting Yes.', 'stock-locations-for-woocommerce'); ?></p>
+			<?php
+		}
+				
+		
 
 		/**
 		 * Location email notifications callback.
