@@ -27,6 +27,38 @@ if(!function_exists('pree')){
 	
 	}
 }
+add_filter('woocommerce_available_variation', function ($v, $product, $variation) {
+    global $woocommerce;
+    
+    $selected_location_id = isset($woocommerce->session) ? $woocommerce->session->get('stock_location_selected') : 0;
+    $variation_id = $variation->get_id();
+    
+    if ($selected_location_id > 0) {
+        // Specific location selected
+        $stock_at_location = get_post_meta($variation_id, '_stock_at_' . $selected_location_id, true);
+        $has_stock = (float)$stock_at_location > 0;
+        $v['is_in_stock'] = $has_stock;
+        $v['is_purchasable'] = $has_stock;
+        if ($has_stock) $v['max_qty'] = (int)$stock_at_location;
+    } else {
+        // No location selected - check if ANY location has stock
+        $all_locations = get_terms(['taxonomy' => 'location', 'hide_empty' => false]);
+        $has_any_stock = false;
+        
+        foreach ($all_locations as $location) {
+            $stock_at_location = get_post_meta($variation_id, '_stock_at_' . $location->term_id, true);
+            if ((float)$stock_at_location > 0) {
+                $has_any_stock = true;
+                break;
+            }
+        }
+        
+        $v['is_in_stock'] = $has_any_stock;
+        $v['is_purchasable'] = $has_any_stock;
+    }
+    
+    return $v;
+}, 10, 3);
 if(!function_exists('slw_notices')){
 	function slw_notices($data, $echo = false){
 		$ret = '<div class="slw-notice">';
