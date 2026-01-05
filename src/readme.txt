@@ -4,7 +4,7 @@ Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 3.0.4
+Stable tag: {VERSION}
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,8 +169,11 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= {VERSION} =
+* Added: WooCommerce variation availability now respects location stock for swatch-based themes like Woodmart. [Thanks to Renzo Westenbroek][{DATE}/{YEAR}]
+
 = 3.0.4 =
-* Added: WooCommerce variation availability now respects location stock for swatch-based themes like Woodmart. [Thanks to Renzo Westenbroek][05/01/2026]
+* Tested: WooCommerce variation availability now respects location stock for swatch-based themes like Woodmart. [Thanks to Renzo Westenbroek][05/01/2026]
 
 = 3.0.2 =
 * Fixed: Only enabled/active stock locations will contribute in total stock value but it would still be editable. [Thanks to @josephkallinit][21/10/2025]
