@@ -756,3 +756,45 @@ div.woocommerce_options_panel h4 > span.backorder-status .backorder-notify{
 div.woocommerce_options_panel h4 > span.backorder-status .backorder-no{
 	color:#900;
 }
+table.slw-api-params-table{
+}
+table.slw-api-params-table tr.scope-variable{
+	background-color:#F90;
+}
+.slw-api-json-payload div {
+    background-color: #1e1e1e;       /* dark code editor background */
+    color: #d4d4d4;                  /* light text for readability */
+    font-family: 'Courier New', Courier, monospace; /* fixed-width font */
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    overflow-x: auto;                /* horizontal scroll if needed */
+    white-space: pre-wrap;           /* preserves indentation & line breaks */
+    word-break: normal;              /* avoid wrapping mid-word */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    margin-top: 10px;
+	display:none;
+}
+
+/* Optional: key highlights if you wrap keys in <b> or <span> */
+.slw-api-json-payload div b {
+    color: #9cdcfe;                  /* bright blue for keys */
+}
+
+.slw-api-json-payload div i {
+    color: #c586c0;                  /* optional highlight for emphasis */
+}
+.slw-api-json-payload div a{
+	color: #f0ad4e;
+}
+.slw-api-json-payload div:before {
+    content: "Multi-Location Payload-Driven Action Dispatcher (Premium Feature)";
+    display: block;               /* makes it appear on its own line */
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace; /* match code font */
+    font-size: 14px;
+    color: #f0ad4e;              /* nice highlight color */
+    margin-bottom: 6px;           /* space between label and JSON */
+}

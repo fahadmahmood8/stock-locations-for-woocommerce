@@ -169,6 +169,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 3.0.7 =
+* Added: JSON payload-based API for bulk updating stock and price per location for products and variations. [Thanks to Mark Boorman][12/01/2026]
+
 = 3.0.6 =
 * Added: WooCommerce variation availability now respects location stock for swatch-based themes like Woodmart. [Thanks to Renzo Westenbroek][05/01/2026]
 

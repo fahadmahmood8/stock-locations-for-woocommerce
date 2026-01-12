@@ -54,7 +54,7 @@
 					exit;
 				}
 				
-				
+				//pree($data['action']);exit;
 				
 				switch($data['action']){
 					case 'read':
@@ -138,6 +138,31 @@
 							break;
 						}
 					break;
+					default:
+						//pree($data['format']);exit;
+						$response['response'] = true;
+						$raw_json = file_get_contents('php://input');
+						$decoded_payload = json_decode($raw_json, true);
+						
+						if (json_last_error() !== JSON_ERROR_NONE) {
+							$decoded_payload = []; // prevent crashes on invalid JSON
+						}
+						
+						//pree($decoded_payload['payload']);exit;
+						
+						// Only process if it is a valid JSON array/object with payloads
+						if(function_exists('slw_api_payload_update')){
+							slw_api_payload_update($decoded_payload);
+						}
+					
+						
+						// After processing JSON payload, we can exit if we want to avoid the old URL-style handling
+						
+						echo json_encode($response);
+						exit;
+					
+				
+					break;
 				}
 				
 			}else{
@@ -162,4 +187,14 @@
 				
 			exit;	
 		}
-	});
+	}, 100);
+	
+	add_action('wp_ajax_slw_api_get_product_stock_data', 'slw_api_get_product_stock_data');
+	
+	if(!function_exists('slw_api_get_product_stock_data')){
+		function slw_api_get_product_stock_data(){
+			global $wc_slw_premium_copy;
+			echo __('This is a premium feature!', 'stock-locations-for-woocommerce').' '.__('Click here to', 'stock-locations-for-woocommerce').' <a class="gopro" target="_blank" href="'.esc_url($wc_slw_premium_copy).'">'.__("Go Premium",'stock-locations-for-woocommerce').'</a>';
+			exit;
+		}
+	}

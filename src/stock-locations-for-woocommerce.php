@@ -80,7 +80,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '3.0.6';
+		public           $version  = '3.0.7';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -113,14 +113,17 @@ if(!class_exists('SlwMain')) {
 							];	
 			
 				$slw_api_valid_keys = array(			
-					'id' => array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is a location, so ID is location_id and when item is product so ID is considered as a product_id.', 'stock-locations-for-woocommerce')),
-					'value' => array('type'=>'int', 'options'=>''),
-					'action' => array('type'=>'string', 'options'=>'get|set'),
-					'item' => array('type'=>'string', 'options'=>'location|product|stock|price', 'tooltip'=>__('When item is other than location and product so product_id or location_id would be required as a parameter, ID parameter will not be adequate.', 'stock-locations-for-woocommerce')),
-					'format' => array('type'=>'string', 'options'=>'json|default'),
-					'product_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than product.', 'stock-locations-for-woocommerce')),
-					'location_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than location.', 'stock-locations-for-woocommerce')),
+					'id' => array('type'=>'int', 'options'=>'<input type="text" placeholder="'.__('Insert Product ID', 'stock-locations-for-woocommerce').'" class="slw-api-id-input" /> <input type="button" value="Try" class="slw-api-id-try" />', 'tooltip'=>__('When item is a location, so ID is location_id and when item is product so ID is considered as a product_id.', 'stock-locations-for-woocommerce'), 'scope'=>''),
+					'value' => array('type'=>'int', 'options'=>'', 'scope'=>''),
+					'action' => array('type'=>'string', 'options'=>'get|set', 'scope'=>''),
+					'item' => array('type'=>'string', 'options'=>'location|product|stock|price', 'tooltip'=>__('When item is other than location and product so product_id or location_id would be required as a parameter, ID parameter will not be adequate.', 'stock-locations-for-woocommerce'), 'scope'=>''),
+					'format' => array('type'=>'string', 'options'=>'json|default', 'scope'=>''),
+					'product_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than product.', 'stock-locations-for-woocommerce'), 'scope'=>''),
+					'location_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than location.', 'stock-locations-for-woocommerce'), 'scope'=>''),
+					'location'=>array('type'=>'json', 'options'=>'location_id, stock_value', 'tooltip'=>__('For variable products.', 'stock-locations-for-woocommerce'), 'scope'=>'variable'),
 				);
+
+
 				
 				
 				$slw_widgets_arr = array(
@@ -157,7 +160,7 @@ if(!class_exists('SlwMain')) {
 					)
 				);		
 			
-			});
+			}, 1);
 			
 			// Instantiate classes
 			new SLW\SRC\Classes\SlwLocationTaxonomy;
@@ -228,7 +231,7 @@ if(!class_exists('SlwMain')) {
 		 */
 		public function enqueue_admin()
 		{
-			global $current_screen, $post, $slw_gkey, $wc_slw_pro;
+			global $current_screen, $post, $slw_gkey, $wc_slw_pro, $slw_api_valid_keys;
 
 					
 			wp_enqueue_style( 'slw-admin-styles', SLW_PLUGIN_DIR_URL . 'css/admin-style.css', array(), time() );
@@ -253,11 +256,13 @@ if(!class_exists('SlwMain')) {
 			
 			$data = array(
 				'slug'    => SLW_PLUGIN_SLUG,
+				'home_url' => trailingslashit( home_url() ),
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'slw_nonce' ),
 				'slw_gkey' => $slw_gkey,
 				'stock_locations' => false,
 				'wc_slw_pro' => $wc_slw_pro,
+				'wc_slw_api_valid_keys'=>$slw_api_valid_keys,
 				'wc_slw_premium_feature' => __('This is a premium feature!', 'stock-locations-for-woocommerce'),
 				'wc_slw_stock_reset_msg' => __('This action will restore the stock values to the product. Do you want to proceed?', 'stock-locations-for-woocommerce'),
 				'wc_slw_product_id' => (is_object($post)?$post->ID:0),
