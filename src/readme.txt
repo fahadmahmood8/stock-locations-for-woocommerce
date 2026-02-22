@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf,invoicepress
 Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -169,6 +169,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 3.0.8 =
+* Fixed: Compatibility issue with Woodmart theme where early returns in slw_wp_head() prevented closing of <style> tag, causing invalid HTML and breaking mobile viewport (meta viewport ignored, pages rendering in desktop mode on mobile). Refactored dynamic CSS output to collect rules first and only inject <style> block when content exists; bumped hook priority to 20 for safer execution after theme styles. [Thanks to Spikee] [22/02/2026]
+
 = 3.0.7 =
 * Added: JSON payload-based API for bulk updating stock and price per location for products and variations. [Thanks to Mark Boorman][12/01/2026]
 

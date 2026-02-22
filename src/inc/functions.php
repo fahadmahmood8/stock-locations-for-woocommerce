@@ -570,85 +570,166 @@ if(!function_exists('wc_slw_admin_init')){
 	}
 }
 add_action('admin_init', 'wc_slw_admin_init');
-
-add_action('wp_head', 'slw_wp_head');
-function slw_wp_head(){
-?>
-<style type="text/css">
-<?php 
-if ( is_product() ) {
-
-	global $product;
-	if ( ! $product instanceof WC_Product ) return;
-
-	if ( ! function_exists( 'slw_get_min_max_location_prices' ) ) return;
-
-	$location_prices = slw_get_min_max_location_prices( $product );
-	if ( empty( $location_prices['min'] ) || empty( $location_prices['max'] ) ) return;
-
-	$product_price = (float) $product->get_price();
-	$min = (float) $location_prices['min'];
-	$max = (float) $location_prices['max'];
-
-	$base_min = $product_price;
-	$base_max = $product_price;
-
-	if ( $product->is_type( 'variable' ) ) {
-		$variation_prices = array_filter( array_map( function( $vid ) {
-			$variation = wc_get_product( $vid );
-			return $variation ? (float) $variation->get_price() : null;
-		}, $product->get_children() ) );
-
-		if ( ! empty( $variation_prices ) ) {
-			$base_min = min( $variation_prices );
-			$base_max = max( $variation_prices );
-		}
-	}
-
-	$should_hide        = $product->is_on_sale() && $product_price <= $max;
-	$should_hide_range  = $product->is_type( 'variable' ) && $max > $base_max;
-
-	if ( $should_hide || $should_hide_range ) :
-?>
-	/* Hide sale prices */
-	.price del,
-	.woocommerce-Price-amount.amount del,
-	.wc-block-components-product-price del,
-	.wp-block-woocommerce-product-price del,
-	.wc-block-components-sale-badge {
-		display: none !important;
-	}
-
-<?php if ( $should_hide_range ) : ?>
-	/* Hide price range on variable products */
-	.price .from,
+	add_action('wp_enqueue_scripts', 'slw_enqueue_dynamic_styles', 20); // Run after WooCommerce/theme enqueues
 	
-	.price .woocommerce-Price-amount:first-child + .woocommerce-Price-amount,
-	.woocommerce-Price-amount.range,
-	.price span.price-range,
-	.wc-block-components-product-price {
-		display: none !important;
+	function slw_enqueue_dynamic_styles() {
+		if (!is_product()) {
+			return;
+		}
+	
+		global $product;
+		if (!$product instanceof WC_Product) {
+			return;
+		}
+	
+		if (!function_exists('slw_get_min_max_location_prices')) {
+			return;
+		}
+	
+		$location_prices = slw_get_min_max_location_prices($product);
+		if (empty($location_prices['min']) || empty($location_prices['max'])) {
+			return;
+		}
+	
+		$product_price = (float) $product->get_price();
+		$min            = (float) $location_prices['min'];
+		$max            = (float) $location_prices['max'];
+		$base_min       = $product_price;
+		$base_max       = $product_price;
+	
+		if ($product->is_type('variable')) {
+			$variation_prices = array_filter(array_map(function($vid) {
+				$variation = wc_get_product($vid);
+				return $variation ? (float) $variation->get_price() : null;
+			}, $product->get_children()));
+	
+			if (!empty($variation_prices)) {
+				$base_min = min($variation_prices);
+				$base_max = max($variation_prices);
+			}
+		}
+	
+		$should_hide       = $product->is_on_sale() && $product_price <= $max;
+		$should_hide_range = $product->is_type('variable') && $max > $base_max;
+	
+		if (!$should_hide && !$should_hide_range) {
+			return;
+		}
+	
+		// Build the CSS string
+		$css = '';
+	
+		if ($should_hide) {
+			$css .= "/* Hide sale prices */\n";
+			$css .= ".price del,
+					 .woocommerce-Price-amount.amount del,
+					 .wc-block-components-product-price del,
+					 .wp-block-woocommerce-product-price del,
+					 .wc-block-components-sale-badge {
+						 display: none !important;
+					 }\n";
+		}
+	
+		if ($should_hide_range) {
+			$css .= "/* Hide price range on variable products */\n";
+			$css .= ".price .from,
+					 .price .woocommerce-Price-amount:first-child + .woocommerce-Price-amount,
+					 .woocommerce-Price-amount.range,
+					 .price span.price-range,
+					 .wc-block-components-product-price {
+						 display: none !important;
+					 }\n";
+		}
+	
+		if (empty($css)) {
+			return;
+		}
+	
+		// Attach to a reliable handle that's always enqueued on product pages
+		// 'woocommerce-general' is good (WooCommerce core), or use your theme's main handle if known
+		$handle = 'woocommerce-general'; // Safe default; change to 'woodmart-theme' if you know Woodmart's main handle
+	
+		wp_add_inline_style($handle, $css);
 	}
-<?php endif; ?>
 
-<?php
-	endif;
-}
-?>
-</style>
-
-
-<script type="text/javascript" language="javascript">
-<?php if(!is_admin() && !wp_doing_ajax() && array_key_exists('add-to-cart', $_GET)  && array_key_exists('stock-location', $_GET)){ ?>
-var newURL = location.href.split("?")[0];
-window.history.pushState('object', document.title, newURL);
-<?php } ?>
-jQuery(document).ready(function($){
-
-});
-</script>
-<?php	
-}
+	
+	function slw_wp_head(){ //JUST MUTED ON 22/02/2026
+	?>
+	<style type="text/css">
+	<?php 
+	if ( is_product() ) {
+	
+		global $product;
+		if ( ! $product instanceof WC_Product ) return;
+	
+		if ( ! function_exists( 'slw_get_min_max_location_prices' ) ) return;
+	
+		$location_prices = slw_get_min_max_location_prices( $product );
+		if ( empty( $location_prices['min'] ) || empty( $location_prices['max'] ) ) return;
+	
+		$product_price = (float) $product->get_price();
+		$min = (float) $location_prices['min'];
+		$max = (float) $location_prices['max'];
+	
+		$base_min = $product_price;
+		$base_max = $product_price;
+	
+		if ( $product->is_type( 'variable' ) ) {
+			$variation_prices = array_filter( array_map( function( $vid ) {
+				$variation = wc_get_product( $vid );
+				return $variation ? (float) $variation->get_price() : null;
+			}, $product->get_children() ) );
+	
+			if ( ! empty( $variation_prices ) ) {
+				$base_min = min( $variation_prices );
+				$base_max = max( $variation_prices );
+			}
+		}
+	
+		$should_hide        = $product->is_on_sale() && $product_price <= $max;
+		$should_hide_range  = $product->is_type( 'variable' ) && $max > $base_max;
+	
+		if ( $should_hide || $should_hide_range ) :
+	?>
+		/* Hide sale prices */
+		.price del,
+		.woocommerce-Price-amount.amount del,
+		.wc-block-components-product-price del,
+		.wp-block-woocommerce-product-price del,
+		.wc-block-components-sale-badge {
+			display: none !important;
+		}
+	
+	<?php if ( $should_hide_range ) : ?>
+		/* Hide price range on variable products */
+		.price .from,
+		
+		.price .woocommerce-Price-amount:first-child + .woocommerce-Price-amount,
+		.woocommerce-Price-amount.range,
+		.price span.price-range,
+		.wc-block-components-product-price {
+			display: none !important;
+		}
+	<?php endif; ?>
+	
+	<?php
+		endif;
+	}
+	?>
+	</style>
+	
+	
+	<script type="text/javascript" language="javascript">
+	<?php if(!is_admin() && !wp_doing_ajax() && array_key_exists('add-to-cart', $_GET)  && array_key_exists('stock-location', $_GET)){ ?>
+	var newURL = location.href.split("?")[0];
+	window.history.pushState('object', document.title, newURL);
+	<?php } ?>
+	jQuery(document).ready(function($){
+	
+	});
+	</script>
+	<?php	
+	}
 
 	if(!function_exists('slw_widget_val')){
 		function slw_widget_val($type, $val=''){
@@ -1132,7 +1213,7 @@ jQuery(document).ready(function($){
 	
 		// Detect selected store/location from session
 		$location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session()) ? $woocommerce->session->get('stock_location_selected') : 0);
-		
+		$instock_status = false;
 		$location = get_term_by('id', $location_id, 'location');
 		$store_name = ((is_object($location) && isset($location->term_id)) ? $location->name : '');
 		//pree($location_id.' - '.$store_name);
@@ -1144,6 +1225,8 @@ jQuery(document).ready(function($){
 			$product_id = $product->get_id();
 		}
 		//pree($product);
+		
+		
 		
 		
 		switch ($type) {
@@ -1161,13 +1244,27 @@ jQuery(document).ready(function($){
 								$stock_at_location = get_post_meta($variation_id, '_stock_at_' . $location_id, true);
 								$instock_statuses = ( (float)$stock_at_location > 0 );
 							} else {
-								$instock_statuses = (
+								/*$instock_statuses = (
 									(
 										($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity() > 0 || $product_variation->get_backorders() != 'no'))
 										||
 										(!$product_variation->get_manage_stock() && $product_variation->get_stock_status() != 'outofstock')
 									)
+								);*/
+								
+								
+								$instock_status = (
+										$product_variation->get_manage_stock() 
+									&& 
+									(
+									
+											(!in_array($product_variation->get_stock_status(), array('onbackorder'))) //IT WILL ALSO HANDLE INSTOCK VALUE CASE
+										||
+											(in_array($product_variation->get_stock_status(), array('outofstock')) && $product_variation->get_stock_quantity() > 0) //IT WILL HANDLE PARTICULARLY OUTOFSTOCK && QTY IS POSITIVE
+									
+									)
 								);
+								
 							}
 	
 							$variations_stock_status[$variation_id] = $instock_statuses;
@@ -1186,13 +1283,27 @@ jQuery(document).ready(function($){
 					
 					//pree($stock_at_location.' - '.$instock_status);
 				} else {
+					
 					$instock_status = (
+							$product->get_manage_stock() 
+						&& 
 						(
-							($product->get_manage_stock() && ($product->get_stock_quantity() > 0 || $product->get_backorders() != 'no'))
+						
+								(!in_array($product->get_stock_status(), array('onbackorder'))) //IT WILL ALSO HANDLE INSTOCK VALUE CASE
 							||
-							(!$product->get_manage_stock() && $product->get_stock_status() != 'outofstock')
+								(in_array($product->get_stock_status(), array('outofstock')) && $product->get_stock_quantity() > 0) //IT WILL HANDLE PARTICULARLY OUTOFSTOCK && QTY IS POSITIVE
+						
 						)
 					);
+					
+			
+				
+					/*&&
+					(
+						($product->get_manage_stock() && ($product->get_stock_quantity() > 0 || $product->get_backorders() != 'no'))
+						||
+						(!$product->get_manage_stock() && $product->get_stock_status() != 'outofstock')
+					)*/
 				}
 			break;
 		}
@@ -1257,7 +1368,7 @@ jQuery(document).ready(function($){
 			
 			break;
 			case 'simple':
-			
+				
 				
 				
 				$instock_status = (
