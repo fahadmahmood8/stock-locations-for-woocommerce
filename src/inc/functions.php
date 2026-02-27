@@ -1213,15 +1213,26 @@ add_action('admin_init', 'wc_slw_admin_init');
 	
 		// Detect selected store/location from session
 		$location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session()) ? $woocommerce->session->get('stock_location_selected') : 0);
-		$instock_status = false;
 		$location = get_term_by('id', $location_id, 'location');
 		$store_name = ((is_object($location) && isset($location->term_id)) ? $location->name : '');
 		//pree($location_id.' - '.$store_name);
 	
-		$product = (is_numeric($product_id) ? wc_get_product($product_id) : $product);
-		
-		$type = (is_object($product) ? $product->get_type() : '');
-		if ( !is_numeric($product_id) && is_object($product) && method_exists($product, 'get_id') ) {
+		// WooCommerce 2.7+ passes a WC_Product object as the 2nd argument, not a numeric ID
+		if ($product_id instanceof WC_Product) {
+			$product = $product_id;
+			$product_id = $product->get_id();
+		} elseif (is_numeric($product_id) && $product_id > 0) {
+			$product = wc_get_product($product_id);
+		}
+		// else: fall through to global $product
+
+		// If we can't identify the product, return the original WooCommerce status
+		if (!is_object($product) || !method_exists($product, 'get_type')) {
+			return $instock_status;
+		}
+
+		$type = $product->get_type();
+		if (!is_numeric($product_id) || $product_id <= 0) {
 			$product_id = $product->get_id();
 		}
 		//pree($product);
@@ -1253,7 +1264,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 								);*/
 								
 								
-								$instock_status = (
+								$instock_statuses = (
 										$product_variation->get_manage_stock() 
 									&& 
 									(
