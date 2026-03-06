@@ -40,9 +40,180 @@ function slw_gmap_initialize(input_id) {
 		slwAjaxSaveProductDefaultLocation();
 		slwAjaxRemoveProductDefaultLocation();
 		slwEnableLockDefaultLocation();
+		slwApiDemo();
 	}
+	function slw_build_api_url(params) {
+		//console.log(params);
+		var base = slw_admin_scripts.home_url + '/?slw-api&';
+		var parts = [];
 	
+		$.each(slw_admin_scripts.wc_slw_api_valid_keys, function (key, config) {
 	
+
+			if (config.scope === 'variable') {
+				return;
+			}
+
+	
+			var value = params[key] !== undefined ? params[key] : '';
+	
+			parts.push('<span>' + key + '=' + value + '</span>');
+		});
+	
+		return base + parts.join('&amp;');
+	}
+	/**
+	 * Build JSON payload for product variations + locations
+	 * @param {Object} data - AJAX response from slw_api_get_product_stock_data
+	 * @param {String} actionType - 'get' or 'set'
+	 * @param {String} formatType - 'json' or 'default'
+	 * @returns {Array} - array of payload objects for each variation
+	 */
+	function slw_build_json_payload(data, actionType = 'get', formatType = 'json') {
+		var payloads = [];
+	
+		$.each(data.variations, function (i, variation) {
+	
+			// Construct base object
+			var baseObj = {
+				id: variation.variation_id || data.product_id, // variation or main product
+				product_id: data.product_id,
+				variation_id: variation.variation_id,
+				action: actionType,
+				format: formatType
+			};
+	
+			// Each location becomes an object with id, stock_value, stock_price
+			var locations = [];
+
+			$.each(variation.locations, function (j, loc) {
+				locations.push({
+					variation_id: variation.variation_id,
+					location_id: loc.location_id,
+					stock_value: loc.stock_value,
+					stock_price: loc.stock_price
+				});
+			});
+	
+			// Attach locations array
+			baseObj.location = locations;
+	
+			// Add to final array
+			payloads.push(baseObj);
+		});
+	
+		return payloads;
+	}
+
+	function slwApiDemo(){
+		
+		$('button.slw-api-id-try').on('click', function(){
+			$('.slw-api-id-input').change();
+		});
+		
+		$('.slw-api-id-input').on('change', function () {
+		
+				var product_id = $(this).val();
+		
+				if (!product_id) {
+					return;
+				}
+				$.blockUI({ message: false });
+				$.ajax({
+					url: slw_admin_scripts.ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'slw_api_get_product_stock_data',
+						nonce: slw_admin_scripts.nonce,
+						product_id: product_id
+					},
+					success: function (response) {
+						
+						$.unblockUI(); // always first
+						
+						if (!response.success) {
+							
+							return;
+						}
+
+		
+						var data = response.data;
+						var payloads = slw_build_json_payload(response.data, 'set', 'json');
+
+			
+						var html = '';
+						
+						$.each(data.variations, function (i, variation) {
+						
+							// Iterate over locations inside this variation
+							$.each(variation.locations, function (j, loc) {
+						
+								// STOCK URL
+								var stockParams = {
+									id: variation.variation_id || data.product_id, // variation or main product
+									product_id: data.product_id,
+									variation_id: variation.variation_id,
+									item: 'stock',
+									value: loc.stock_value,
+									location_id: loc.location_id
+								};
+						
+								var stockUrl = slw_build_api_url(stockParams);
+								html += '<b>' + stockUrl + '</b><br/>';
+						
+								// PRICE URL
+								var priceParams = {
+									id: variation.variation_id || data.product_id,
+									product_id: data.product_id,
+									variation_id: variation.variation_id,
+									item: 'price',
+									value: loc.stock_price,
+									location_id: loc.location_id
+								};
+						
+								var priceUrl = slw_build_api_url(priceParams);
+								html += '<b>' + priceUrl + '</b><br/>';
+							});
+						
+						});
+						
+						$('.slw-api-urls ul li u').html(html);
+						
+						var prettyJson = JSON.stringify(payloads, null, 2);
+						$('div.slw-api-json-payload div').html('var payloads = '+prettyJson + `;
+$.ajax({
+	url: '`+slw_admin_scripts.home_url+`?slw-api',
+	type: 'POST',
+	dataType: 'json',
+	contentType: 'application/json',
+	data: JSON.stringify({ payload: payloads }),
+	success: function(res) {
+		
+	}
+});
+						`).fadeIn();
+
+					},
+					error: function (xhr, textStatus, errorThrown) {
+						//console.log('error');
+						console.log(xhr);
+						
+						$('div.slw-api-json-payload div').html(xhr.responseText).show();
+						$.unblockUI();
+					
+					},
+					complete: function (xhr) {
+						//console.log('complete');
+						//console.log(xhr);
+						$.unblockUI();
+					}
+					
+				});
+		
+		});	
+		
+	}
 	
 	
 	function slwDisableVariableStockInput()

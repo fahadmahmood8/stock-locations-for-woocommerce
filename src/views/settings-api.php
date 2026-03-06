@@ -30,25 +30,33 @@
 ?>
 <div class="slw-api-urls">
 	<ul>
-    	<li><b><?php echo home_url(); ?>/?slw-api&</b><?php echo '<span>'.implode('=</span>&<span>', array_keys($slw_api_valid_keys)).'</span>'; ?> <a href="https://www.youtube.com/embed/si_DUe-8ncY" target="_blank"><i class="fab fa-youtube"></i></a></li>
+    	<li><u><b><?php echo home_url(); ?>/?slw-api&</b><?php echo '<span>'.implode('=</span>&<span>', array_keys($slw_api_valid_keys)).'</span>'; ?></u> <a href="https://www.youtube.com/embed/si_DUe-8ncY" target="_blank"><i class="fab fa-youtube"></i></a></li>
 	</ul>        
 </div>
-<table cellpadding="0" cellspacing="0">
+<table cellpadding="0" cellspacing="0" class="slw-api-params-table">
 <?php		
 		foreach($slw_api_valid_keys as $param=>$param_data){
 ?>
-<tr title="<?php echo (isset($param_data['tooltip'])?$param_data['tooltip']:''); ?>">
+<tr title="<?php echo (isset($param_data['tooltip'])?$param_data['tooltip']:''); ?>" class="scope-<?php echo $param_data['scope']; ?>">
 	<td><?php echo $param; ?></td><td><?php echo $param_data['type']; ?></td><td><?php echo $param_data['options']; ?></td>
 </tr>    
 <?php			
 		}
 ?>
+
+
 </table>
 <?php		
 	}
+
 	
 
 ?>
+<div class="slw-api-json-payload" style="white-space:pre; font-family:monospace;">
+<a href="https://www.youtube.com/embed/DXCJyZnVj5o" target="_blank"><i class="fab fa-youtube"></i></a>
+<div></div>
+</div>
+
 <div class="slw-api-requests">
 	<input name="validate_request[]" type="checkbox" value="default" checked="checked" style="display:none" />
 	<table cellpadding="10" cellspacing="0">
