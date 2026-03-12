@@ -169,6 +169,9 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 3.1.0 =
+* Resolved 'get_variation_default_attribute' fatal error and out-of-stock display issue caused by Stock Locations plugin update, ensuring variable and simple products now show correct stock status. [Thanks to Renzo Westenbroek | Webreturn][12/03/2026]
+
 = 3.0.9 =
 * Fixed: Including API response and optimized approach to DB writes, backorder related status and a few more improvements suggested in support threads since October 2025. [07/03/2026]
 = 3.0.8 =
