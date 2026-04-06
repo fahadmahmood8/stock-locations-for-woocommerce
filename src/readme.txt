@@ -4,7 +4,7 @@ Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: __STABLE_TAG__
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,6 +169,18 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 3.1.1 =
+* Fix: Corrected stock status calculation when all locations have zero stock to prevent false "in stock" state. [Thankst to @armanuniverse][06/04/2026]
+* Fix: Ensured proper handling and saving of _stock_status (instock/outofstock) in database.
+* Improvement: Replaced unreliable stock status checks with aggregated per-location stock calculation.
+* Improvement: Standardized return values to boolean for accurate WooCommerce compatibility.
+* Props: Thanks to armanuniverse for identifying and sharing the fix.
+
+= 3.1.0 =
+* Resolved 'get_variation_default_attribute' fatal error and out-of-stock display issue caused by Stock Locations plugin update, ensuring variable and simple products now show correct stock status. [Thanks to Renzo Westenbroek | Webreturn][12/03/2026]
+
+= 3.0.9 =
+* Fixed: Including API response and optimized approach to DB writes, backorder related status and a few more improvements suggested in support threads since October 2025. [07/03/2026]
 = 3.0.8 =
 * Fixed: Compatibility issue with Woodmart theme where early returns in slw_wp_head() prevented closing of <style> tag, causing invalid HTML and breaking mobile viewport (meta viewport ignored, pages rendering in desktop mode on mobile). Refactored dynamic CSS output to collect rules first and only inject <style> block when content exists; bumped hook priority to 20 for safer execution after theme styles. [Thanks to Spikee] [22/02/2026]
 

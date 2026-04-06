@@ -1210,23 +1210,26 @@ add_action('admin_init', 'wc_slw_admin_init');
 	
 	function slw_woocommerce_product_is_in_stock($instock_status = false, $product_id = 0, $string = false) {
 		global $product, $slw_plugin_settings, $wpdb, $woocommerce;
+		$product_obj = $product;
+		if ($product_id instanceof WC_Product) {
+			$product_obj = $product_id;
+			$product_id = $product_obj->get_id();
+		} elseif (is_numeric($product_id) && $product_id > 0) {
+			$product_obj = wc_get_product($product_id);
+		}
+		
+		if (!$product_obj) return false;
 	
 		// Detect selected store/location from session
 		$location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session()) ? $woocommerce->session->get('stock_location_selected') : 0);
-		$instock_status = false;
+		//$instock_status = false; //07/03/2026
 		$location = get_term_by('id', $location_id, 'location');
 		$store_name = ((is_object($location) && isset($location->term_id)) ? $location->name : '');
 		//pree($location_id.' - '.$store_name);
 	
-		$product = (is_numeric($product_id) ? wc_get_product($product_id) : $product);
-		
-		$type = (is_object($product) ? $product->get_type() : '');
-		if ( !is_numeric($product_id) && is_object($product) && method_exists($product, 'get_id') ) {
-			$product_id = $product->get_id();
-		}
-		//pree($product);
 		
 		
+		$type = $product_obj->get_type();
 		
 		
 		switch ($type) {
@@ -1242,18 +1245,10 @@ add_action('admin_init', 'wc_slw_admin_init');
 							// Check store/location-based stock if available
 							if ($location_id) {
 								$stock_at_location = get_post_meta($variation_id, '_stock_at_' . $location_id, true);
-								$instock_statuses = ( (float)$stock_at_location > 0 );
+								$variation_instock  = ( (float)$stock_at_location > 0 );
 							} else {
-								/*$instock_statuses = (
-									(
-										($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity() > 0 || $product_variation->get_backorders() != 'no'))
-										||
-										(!$product_variation->get_manage_stock() && $product_variation->get_stock_status() != 'outofstock')
-									)
-								);*/
 								
-								
-								$instock_status = (
+								$variation_instock  = (
 										$product_variation->get_manage_stock() 
 									&& 
 									(
@@ -1267,9 +1262,9 @@ add_action('admin_init', 'wc_slw_admin_init');
 								
 							}
 	
-							$variations_stock_status[$variation_id] = $instock_statuses;
+							$variations_stock_status[$variation_id] = $variation_instock;
 						}
-						$instock_status = (array_sum($variations_stock_status) > 0);
+						$instock_status = !empty($variations_stock_status) ? (array_sum($variations_stock_status) > 0) : false;
 					}
 				}
 			break;
@@ -1283,124 +1278,59 @@ add_action('admin_init', 'wc_slw_admin_init');
 					
 					//pree($stock_at_location.' - '.$instock_status);
 				} else {
+					$all_locations = get_terms( array( 'taxonomy' => 'location', 'hide_empty' => false ) );
+					$total_stock   = 0;
+					foreach ( $all_locations as $loc ) {
+						$total_stock += (float) get_post_meta( $product_id, '_stock_at_' . $loc->term_id, true );
+					}
+					$instock_status = ( $total_stock > 0 );
+				}/*else {
 					
 					$instock_status = (
-							$product->get_manage_stock() 
+							$product_obj->get_manage_stock() 
 						&& 
 						(
 						
-								(!in_array($product->get_stock_status(), array('onbackorder'))) //IT WILL ALSO HANDLE INSTOCK VALUE CASE
+								(!in_array($product_obj->get_stock_status(), array('onbackorder'))) //IT WILL ALSO HANDLE INSTOCK VALUE CASE
 							||
-								(in_array($product->get_stock_status(), array('outofstock')) && $product->get_stock_quantity() > 0) //IT WILL HANDLE PARTICULARLY OUTOFSTOCK && QTY IS POSITIVE
+								(in_array($product_obj->get_stock_status(), array('outofstock')) && $product_obj->get_stock_quantity() > 0) //IT WILL HANDLE PARTICULARLY OUTOFSTOCK && QTY IS POSITIVE
 						
 						)
 					);
 					
 			
 				
-					/*&&
-					(
-						($product->get_manage_stock() && ($product->get_stock_quantity() > 0 || $product->get_backorders() != 'no'))
-						||
-						(!$product->get_manage_stock() && $product->get_stock_status() != 'outofstock')
-					)*/
-				}
+					
+				}*/
+			break;
+			default:
+            	$instock_status = false;
 			break;
 		}
 	
-		if ($instock_status && $product_id) {
-			update_post_meta($product_id, '_stock_status', 'instock');
-		}
+
 	
 		$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
 		if ($everything_stock_status_to_instock) {
 			$instock_status = true;
 		}
-	
-		if ($string) {
+		/*if (is_bool($instock_status) && $instock_status && $product_id) {
+			update_post_meta($product_id, '_stock_status', 'instock');
+		}else{
 			$instock_status = ($instock_status ? 'instock' : 'outofstock');
 		}
 	
+		return $instock_status;*/
+		
+		$instock_status = (bool) $instock_status;
+		if ( $product_id ) {
+			update_post_meta( $product_id, '_stock_status', $instock_status ? 'instock' : 'outofstock' );
+		}
 		return $instock_status;
 	}
 
 
-    function slw_woocommerce_product_is_in_stock_old($instock_status=false, $product_id=0, $string=false) {
-
-		global $product, $slw_plugin_settings, $wpdb;
-		
-		
-		
-		$product = ($product_id?wc_get_product($product_id):$product);
-		
-		$type = (is_object($product)?$product->get_type():'');
-		
-		switch($type){
-			case 'variable':
-				//$variations = $product->get_children();
-				if($product_id>0){
-					$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
-					
-					if(!empty($variations)){
-							$variations_stock_status = array();
-							foreach($variations as $variation_obj){
-								$variation_id = $variation_obj->variation_id;
-								$product_variation = wc_get_product($variation_id);
-								
-								$instock_statuses = (
-										(
-				
-												($product_variation->get_manage_stock() && ($product_variation->get_stock_quantity()>0 || $product_variation->get_backorders()!='no'))
-											||
-											
-												(!$product_variation->get_manage_stock() && $product_variation->get_stock_status()!='outofstock')			
-										)
-										
-								);
-								$variations_stock_status[$variation_id] = $instock_statuses;
-								
-								
-							}
-	
-							$instock_status = (array_sum($variations_stock_status)>0);
-					}
-				}
-			
-			break;
-			case 'simple':
-				
-				
-				
-				$instock_status = (
-										(
-				
-												($product->get_manage_stock() && ($product->get_stock_quantity()>0 || $product->get_backorders()!='no'))
-											||
-											
-												(!$product->get_manage_stock() && $product->get_stock_status()!='outofstock')			
-										)
-										
-								);
-				
-				
-			break;
-		}
-		
-		if($instock_status && $product_id){
-
-			update_post_meta($product_id, '_stock_status', 'instock');
-
-		}
-		
-		$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
-		if($everything_stock_status_to_instock){ $instock_status = true; }
-		
-		if($string){
-			$instock_status = ($instock_status?'instock':'outofstock');
-		}
-		
-		return $instock_status;
-	}
+    
 	
 	add_filter( 'woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock', 10, 2 );
 	
@@ -1662,7 +1592,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 				
 
 			
-				if($stock_qty>0){
+				/*if($stock_qty>0){ //07/03/2026
 					// Set the stock status to "in stock"
 					$product->set_stock_status('instock');
 					$product->save();
@@ -1672,9 +1602,24 @@ add_action('admin_init', 'wc_slw_admin_init');
 					$product->set_stock_status('outofstock');
 					$product->save();
 
-				}
+				}*/
 
+				if ($stock_qty > 0) {
+					$product->set_stock_status('instock');
+				} else {
+					// Respect backorders
+					if ($product->backorders_allowed()) {
+						$product->set_stock_status('onbackorder');
+					} else {
+						$product->set_stock_status('outofstock');
+					}
+				}
 				
+				$product->save();
+				
+				if ($stock_qty > 0) {
+					slw_fix_outofstock_terms($product_id);
+				}
 				
 			
 				// Save the changes
