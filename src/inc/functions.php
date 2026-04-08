@@ -32,6 +32,8 @@ add_filter('woocommerce_available_variation', function ($v, $product, $variation
     
     $selected_location_id = isset($woocommerce->session) ? $woocommerce->session->get('stock_location_selected') : 0;
     $variation_id = $variation->get_id();
+	$product_id = $product->get_id();
+
     
     if ($selected_location_id > 0) {
         // Specific location selected
@@ -42,7 +44,9 @@ add_filter('woocommerce_available_variation', function ($v, $product, $variation
         if ($has_stock) $v['max_qty'] = (int)$stock_at_location;
     } else {
         // No location selected - check if ANY location has stock
-        $all_locations = get_terms(['taxonomy' => 'location', 'hide_empty' => false]);
+        //$all_locations = get_terms(['taxonomy' => 'location', 'hide_empty' => false]);
+		$all_locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]);
+
         $has_any_stock = false;
         
         foreach ($all_locations as $location) {
@@ -1278,7 +1282,8 @@ add_action('admin_init', 'wc_slw_admin_init');
 					
 					//pree($stock_at_location.' - '.$instock_status);
 				} else {
-					$all_locations = get_terms( array( 'taxonomy' => 'location', 'hide_empty' => false ) );
+					//$all_locations = get_terms( array( 'taxonomy' => 'location', 'hide_empty' => false ) );
+					$all_locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]);
 					$total_stock   = 0;
 					foreach ( $all_locations as $loc ) {
 						$total_stock += (float) get_post_meta( $product_id, '_stock_at_' . $loc->term_id, true );
@@ -2073,16 +2078,18 @@ add_action('admin_init', 'wc_slw_admin_init');
 		if ( ! $product instanceof WC_Product || !$product_stock_price_status) {
 			return array( 'min' => null, 'max' => null );
 		}
-		
+		$product_id = $product->get_id();
+
 		
 		
 		$prices = array();
 	
 		// Get all locations (include empty ones).
-		$locations = get_terms( array(
+		/*$locations = get_terms( array(
 			'taxonomy'   => 'location',
 			'hide_empty' => false,
-		) );
+		) );*/
+		$locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]);
 	
 		if ( empty( $locations ) || is_wp_error( $locations ) ) {
 			return array( 'min' => null, 'max' => null );
