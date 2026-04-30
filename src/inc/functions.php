@@ -1272,7 +1272,8 @@ add_action('admin_init', 'wc_slw_admin_init');
 					}
 				}
 			break;
-	
+			
+			case 'variation':	
 			case 'simple':
 				if ($location_id) {
 					//pree($$product_id.' - '.$location_id);
@@ -1283,7 +1284,8 @@ add_action('admin_init', 'wc_slw_admin_init');
 					//pree($stock_at_location.' - '.$instock_status);
 				} else {
 					//$all_locations = get_terms( array( 'taxonomy' => 'location', 'hide_empty' => false ) );
-					$all_locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]);
+					//$all_locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]); //kennydude 30/04/2026
+					$all_locations = wc_get_product_terms(($type == 'variation') ? $product_obj->get_parent_id() : $product_id, 'location', ['fields' => 'all',]);
 					$total_stock   = 0;
 					foreach ( $all_locations as $loc ) {
 						$total_stock += (float) get_post_meta( $product_id, '_stock_at_' . $loc->term_id, true );
