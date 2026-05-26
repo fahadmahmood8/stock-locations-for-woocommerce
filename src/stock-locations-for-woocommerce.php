@@ -80,7 +80,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '3.1.4';
+		public           $version  = '3.1.5';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -368,6 +368,7 @@ if(!class_exists('SlwMain')) {
 			$data['slw_term_add_to_cart_url'] = $data['slw_term_url'].'?stock-location='.$data['slw_term_id'].'&add-to-cart=';
 			$data['stock_location_selected'] = get_slw_stock_location_selected();
 			
+			
 			$stock_locations = array();
 			$stock_locations_obj = slw_get_locations('location', array(), false, $data['product_id']);
 			
@@ -461,6 +462,8 @@ if(!class_exists('SlwMain')) {
 				$data['stock_status'][$data['product_id']] = $wc_product->get_availability();
 				$data['allow_backorder'][$data['product_id']] = get_post_meta($data['product_id'], '_backorders', true);
 				$data['product_price_decimals'] = apply_filters('slw_product_price_decimals', 2, $product_price);
+				
+				
 				
 				
 				$extra_data = slw_get_product_stock_by_location($data['product_id'], $data['product_type'], $terms);

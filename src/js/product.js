@@ -423,8 +423,94 @@
 	
 
 
-	
 	function slw_update_product_location_msg(vpid){
+	
+		$('div.stock-msg').remove();		
+		
+		var total_stock = 0;
+	
+		var qty_obj = (typeof slw_frontend.stock_quantity[vpid]=='object' ? slw_frontend.stock_quantity[vpid] : []);
+		
+		// Toggle:
+		// true  = show all locations with stock
+		// false = show only highest priority location
+		var show_all_locations = (
+			typeof slw_frontend.product_location_show_stock_qty != 'undefined'
+			&& slw_frontend.product_location_show_stock_qty == 'on'
+		);
+	
+		var sorted_locations = _.sortBy(slw_frontend.stock_locations_data, 'priority').reverse();
+	
+		if(typeof qty_obj == 'object'){
+	
+			var stock_msgs = [];
+			
+			$.each(sorted_locations, function(j, k){
+	
+				var id = k.id;
+				var qty = qty_obj[id];
+				
+	
+				if(typeof qty != 'undefined' && qty != '' && qty > 0){
+				
+					qty = parseFloat(qty);
+			
+					if(!isNaN(qty)){
+						total_stock += qty;
+					}
+					
+				}
+		
+			});
+
+	
+			$.each(sorted_locations, function(j, k){
+	
+				var id = k.id;
+				var v = qty_obj[id];
+	
+				if(typeof v != 'undefined' && v != '' && v > 0){
+	
+					var stock_msg = slw_frontend.stock_locations_product_page_notice;
+					stock_msg = stock_msg.replace('STOCK_QTY', v);
+					stock_msg = stock_msg.replace('LOCATION_NAME', k.name);
+	
+					stock_msgs.push(stock_msg);
+	
+					// Stop after first/highest if toggle disabled
+					if(!show_all_locations){
+						return false;
+					}
+				}
+	
+			});
+	
+			if(stock_msgs.length > 0){
+	
+				var final_msg = stock_msgs.join('<br>');
+	
+				if($('div.single_variation_wrap').length > 0){
+	
+					$('<div class="stock-msg s">'+final_msg+'</div>')
+						.insertBefore($('div.single_variation_wrap'));
+	
+				}else if($('div.slw_stock_location_selection').length > 0){
+	
+					$('<div class="stock-msg m">'+final_msg+'</div>')
+						.insertAfter($('div.slw_stock_location_selection'));
+	
+				}
+			}
+			
+			if($('.stock.in-stock').length>0){
+				if($('.stock.in-stock .stock-number').length>0){
+					$('.stock.in-stock .stock-number').remove();
+				}
+				$('.stock.in-stock').append('&nbsp;<span class="stock-number">'+total_stock+'</span>');
+			}
+		}
+	}
+	function slw_update_product_location_msg_old(vpid){
 		
 			$('div.stock-msg').remove();		
 			
@@ -469,9 +555,9 @@
 				
 				
 				if($('div.single_variation_wrap').length>0){
-					$('<div class="stock-msg">'+stock_msg+'</div>').insertBefore($('div.single_variation_wrap'));
+					$('<div class="stock-msg s">'+stock_msg+'</div>').insertBefore($('div.single_variation_wrap'));
 				}else if($('div.slw_stock_location_selection').length>0){
-					$('<div class="stock-msg">'+stock_msg+'</div>').insertAfter($('div.slw_stock_location_selection'));
+					$('<div class="stock-msg m">'+stock_msg+'</div>').insertAfter($('div.slw_stock_location_selection'));
 				}
 				
 			}

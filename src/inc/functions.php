@@ -1394,6 +1394,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 		return $availability;
 	}	
 	function slw_filter_woocommerce_get_availability( $array, $product ) { 
+	
 		$array['availability'] = apply_filters('woocommerce_get_availability_text', $array['availability'], $product);
 		return $array; 
 	}; 

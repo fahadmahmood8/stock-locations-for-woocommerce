@@ -340,7 +340,8 @@ if( !class_exists('SlwFrontendProduct') ) {
 				case 'yes_without':
 					$location_select_input_type = 'list_variable';
 				break;
-			}			
+			}		
+			//pree($location_select_input_type);	
 			$location_select_input = $this->location_select_input($location_select_input_type, $product_id);
 			echo $location_select_input;
 			

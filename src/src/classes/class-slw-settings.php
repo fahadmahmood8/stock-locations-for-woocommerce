@@ -237,6 +237,14 @@ if(!class_exists('SlwSettings')) {
 				'slw-setting-admin',
 				'slw_setting_setting_section',
 				array('class'=>'product_location_selection_show_stock_qty')
+			);
+			add_settings_field(
+				'product_location_show_stock_qty',
+				__('Show all locations stock values on frontend', 'stock-locations-for-woocommerce'),
+				array( $this, 'product_location_show_stock_qty_callback' ),
+				'slw-setting-admin',
+				'slw_setting_setting_section',
+				array('class'=>'product_location_show_stock_qty')
 			);			
 			add_settings_field(
 				'product_stock_price_status',
@@ -387,6 +395,10 @@ if(!class_exists('SlwSettings')) {
 			if ( isset( $input['product_location_selection_show_stock_qty'] ) ) {
 				$sanitary_values['product_location_selection_show_stock_qty'] = $input['product_location_selection_show_stock_qty'];
 			}
+			if ( isset( $input['product_location_show_stock_qty'] ) ) {
+				$sanitary_values['product_location_show_stock_qty'] = $input['product_location_show_stock_qty'];
+			}			
+			
 			if ( isset( $input['product_stock_price_status'] ) ) {
 				$sanitary_values['product_stock_price_status'] = $input['product_stock_price_status'];
 			}	
@@ -566,6 +578,8 @@ if(!class_exists('SlwSettings')) {
 			
 			
 		}
+		
+		
 		public function product_location_selection_show_stock_qty_callback()
 		{
 			$this->checkbox_callback('product_location_selection_show_stock_qty');
@@ -573,6 +587,14 @@ if(!class_exists('SlwSettings')) {
 			<span><?php echo __('It will affect location selectors on product and cart pages.', 'stock-locations-for-woocommerce'); ?></span>
 			<?php
 		}
+		
+		public function product_location_show_stock_qty_callback()
+		{
+			$this->checkbox_callback('product_location_show_stock_qty');
+			?>
+			<span><?php echo __('It will appear as text based notices under the location selection area.', 'stock-locations-for-woocommerce'); ?></span>
+			<?php
+		}		
 
 		/**
 		 * Allow default location.

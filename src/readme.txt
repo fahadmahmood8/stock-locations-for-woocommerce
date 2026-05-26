@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf,invoicepress
 Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
