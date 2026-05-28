@@ -31,7 +31,7 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 	
 
-global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status, $slw_woocommerce_product_form_hooks, $slw_wc_hide_out_of_stock, $slw_proceed_order_note;
+global $wc_slw_hpos, $wc_slw_data, $wc_slw_pro, $wc_slw_premium_copy, $slw_plugin_settings, $slw_gkey, $slw_api_valid_keys, $slw_crons_valid_keys, $slw_widgets_arr, $slw_wc_stock_format, $slw_theme_name, $slw_order_id, $slw_logs_status, $slw_woocommerce_product_form_hooks, $slw_wc_hide_out_of_stock, $slw_proceed_order_note, $slw_optional_features_key;
 
 $slw_crons_valid_keys = array(				
 				'action' => array('type'=>'string', 'options'=>'update-stock'),
@@ -41,6 +41,7 @@ $slw_crons_valid_keys = array(
 			);
 
 //$wc_slw_hpos = OrderUtil::custom_orders_table_usage_is_enabled();
+$slw_optional_features_key = 'slw_optional_features';
 $slw_wc_hide_out_of_stock = get_option( 'woocommerce_hide_out_of_stock_items' );
 $slw_logs_status = (get_option('slw_logs_status')==true);
 $slw_wc_stock_format = get_option('woocommerce_stock_format');
@@ -80,7 +81,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '3.1.7';
+		public           $version  = '3.1.8';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others

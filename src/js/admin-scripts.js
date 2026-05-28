@@ -532,7 +532,39 @@ $.ajax({
 			}, 3000);
 		});
 	});
-
+	
+	$('body').on('change', '.slw-optional-features-btn input', function () {
+	
+		var $input = $(this);
+	
+		var data = {
+			action: 'slw_update_optional_feature',
+			feature_key: $input.data('feature-key'),
+			feature_status: $input.is(':checked') ? 1 : 0,
+			slw_nonce_field: slw_admin_scripts.nonce
+		};
+	
+		$.blockUI({ message: false });
+	
+		$.post(ajaxurl, data, function (response) {
+	
+			var message = '';
+	
+			if (response.success) {
+				message = response.data.message;
+			} else {
+				message = 'Error: ' + response.data.message;
+			}
+	
+			$.blockUI();
+	
+			setTimeout(function () {
+				$.unblockUI();
+			}, 2000);
+	
+		});
+	
+	});
 	
 	$('#slw-location-assignment, a.slw-location-assignment').bind('click', function (e) {
 		var assignment_val = '';

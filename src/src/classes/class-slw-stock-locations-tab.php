@@ -688,9 +688,9 @@ if(!class_exists('SlwStockLocationsTab')) {
 					//pree('$id: '.$id.', $stock_ret: '.$stock_ret.', $parent_product_id: '.$parent_product_id);exit;
 					
 					if($stock_ret>0){
-						update_post_meta($parent_product_id, '_stock_status', 'instock');
+						//update_post_meta($parent_product_id, '_stock_status', 'instock');
 					}else{
-						update_post_meta($parent_product_id, '_stock_status', 'outofstock');
+						//update_post_meta($parent_product_id, '_stock_status', 'outofstock');
 					}								
 					slw_update_product_stock_status( $id, $stock_ret );
 					

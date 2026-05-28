@@ -1228,7 +1228,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 		//pree($product_obj);
 		//pree('$product_obj');
 		
-		if (!$product_obj){ return false; }
+		if (!$product_obj){ return $instock_status; }
 	
 		// Detect selected store/location from session
 		$location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session()) ? $woocommerce->session->get('stock_location_selected') : 0);
@@ -1358,7 +1358,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 		
 		if ( $product_id ) {
 			//pree(get_post_meta( $product_id, '_stock_status'));
-			update_post_meta( $product_id, '_stock_status', $instock_status ? 'instock' : 'outofstock' );
+			//update_post_meta( $product_id, '_stock_status', $instock_status ? 'instock' : 'outofstock' );
 		}
 		
 		//pree('$instock_status: '.$instock_status);
@@ -1622,7 +1622,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 			if(is_object($product)){
 						
 				$product->set_stock_quantity($stock_qty);
-				update_post_meta($product_id, '_manage_stock', 'yes');
+				//update_post_meta($product_id, '_manage_stock', 'yes');
 				//update_post_meta($product_id, 'manage_stock', true);				
 				$product->set_manage_stock(true);
 				
@@ -1657,7 +1657,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 				$product->save();
 				
 				if ($stock_qty > 0) {
-					slw_fix_outofstock_terms($product_id);
+					//slw_fix_outofstock_terms($product_id);
 				}
 				
 			
@@ -1823,6 +1823,7 @@ add_action('admin_init', 'wc_slw_admin_init');
 	
 	include_once('functions-api.php');
 	include_once('filter-hooks.php');
+	include_once('functions-wc.php');
 	
 	/*
 	add_action('template_redirect', function () {

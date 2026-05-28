@@ -60,16 +60,17 @@ function slw_product_wc_stock_status_callback( $locations_stock, $id, $force_mai
 			$_backorder_status = ($_backorders!='no');
 			
 			if($_backorder_status){
-				update_post_meta( $id, '_stock_status', 'onbackorder' );
+				//update_post_meta( $id, '_stock_status', 'onbackorder' );
 			}else{
 				if( $locations_stock > 0 ) {
-					update_post_meta( $id, '_stock_status', 'instock' );
+					//update_post_meta( $id, '_stock_status', 'instock' );
 				}elseif( $locations_stock <= 0 ) {
 					
-					update_post_meta( $id, '_stock_status', 'outofstock' );
+					//update_post_meta( $id, '_stock_status', 'outofstock' );
 					
 				}
 			}
+			\slw_update_product_stock_status( $id, $locations_stock );
 			
 			// Temporarily remove this callback while we call the updater to avoid recursion
 		remove_action( 'slw_product_wc_stock_status', __NAMESPACE__ . '\slw_product_wc_stock_status_callback', 10 );
@@ -143,17 +144,19 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			// backorder disabled
 			if(!$product->backorders_allowed()){//( ! $product->is_on_backorder() ) { //20/01/2022 // https://github.com/fahadmahmood8/stock-locations-for-woocommerce/issues/121
 				if( $stock_qty > 0 ) {
-					update_post_meta( $product_id, '_stock_status', 'instock' );
+					//update_post_meta( $product_id, '_stock_status', 'instock' );
+					
 					
 					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 					// remove the link in outofstock taxonomy for the current product
-					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
+					//wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
+					
 
 				} else {
-					update_post_meta( $product_id, '_stock_status', 'outofstock' );
+					//update_post_meta( $product_id, '_stock_status', 'outofstock' );
 					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'outofstock' );
 					// add the link in outofstock taxonomy for the current product
-					wp_set_post_terms( $product_id, 'outofstock', 'product_visibility', true ); 
+					//wp_set_post_terms( $product_id, 'outofstock', 'product_visibility', true ); 
 
 				}
 
@@ -163,15 +166,17 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 				$current_stock_status = get_post_meta( $product_id, '_stock_status', true );
 
 				if( $stock_qty > 0 ) { //&& $current_stock_status != 'instock'
-					update_post_meta( $product_id, '_stock_status', 'instock' );
+					//update_post_meta( $product_id, '_stock_status', 'instock' );
 					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'instock' );
 					// remove the link in outofstock taxonomy for the current product
-					wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
+					//wp_remove_object_terms( $product_id, 'outofstock', 'product_visibility' ); 
 				} else {
-					update_post_meta( $product_id, '_stock_status', 'onbackorder' );
+					//update_post_meta( $product_id, '_stock_status', 'onbackorder' );
 					SlwProductHelper::call_wc_product_stock_status_action( $product_id, 'onbackorder' );
 				}
 			}
+			
+			\slw_update_product_stock_status( $product_id, $stock_qty );
 			
 			// hook
 			do_action( 'slw_product_wc_stock_status', $stock_qty, $product_id, $force_main_product_update );
