@@ -209,6 +209,11 @@
 
 					} else {
 						
+						if($('button[name="add-to-cart"], button.single_add_to_cart_button').length>0){ 
+							$('.single_add_to_cart_button').removeClass('disabled wc-variation-is-unavailable').prop('disabled', false);
+				            $('.woocommerce-variation-add-to-cart').removeClass('woocommerce-variation-add-to-cart-disabled');
+						}			
+						
 						return;
 					}
 					if($('.woocommerce-variation-availability p.stock').length>0){

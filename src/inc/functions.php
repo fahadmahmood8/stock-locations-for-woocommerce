@@ -1213,6 +1213,9 @@ add_action('admin_init', 'wc_slw_admin_init');
 	add_filter ('manage_location_custom_column', 'manage_category_custom_fields', 10,3);
 	
 	function slw_woocommerce_product_is_in_stock($instock_status = false, $product_id = 0, $string = false) {
+		
+		
+		
 		global $product, $slw_plugin_settings, $wpdb, $woocommerce;
 		$product_obj = $product;
 		if ($product_id instanceof WC_Product) {
@@ -1222,7 +1225,10 @@ add_action('admin_init', 'wc_slw_admin_init');
 			$product_obj = wc_get_product($product_id);
 		}
 		
-		if (!$product_obj) return false;
+		//pree($product_obj);
+		//pree('$product_obj');
+		
+		if (!$product_obj){ return false; }
 	
 		// Detect selected store/location from session
 		$location_id = ((isset($woocommerce->session) && $woocommerce->session->has_session()) ? $woocommerce->session->get('stock_location_selected') : 0);
@@ -1235,12 +1241,16 @@ add_action('admin_init', 'wc_slw_admin_init');
 		
 		$type = $product_obj->get_type();
 		
+		//pree($type);
 		
 		switch ($type) {
 			case 'variable':
+				//pree('$product_id: '.$product_id);
 				if ($product_id > 0) {
 					$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					//pree($variations);
 					if (!empty($variations)) {
+						
 						$variations_stock_status = array();
 						foreach ($variations as $variation_obj) {
 							$variation_id = $variation_obj->variation_id;
@@ -1269,7 +1279,11 @@ add_action('admin_init', 'wc_slw_admin_init');
 							$variations_stock_status[$variation_id] = $variation_instock;
 						}
 						$instock_status = !empty($variations_stock_status) ? (array_sum($variations_stock_status) > 0) : false;
+					}else{
+						
 					}
+					
+					
 				}
 			break;
 			
@@ -1286,11 +1300,17 @@ add_action('admin_init', 'wc_slw_admin_init');
 					//$all_locations = get_terms( array( 'taxonomy' => 'location', 'hide_empty' => false ) );
 					//$all_locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]); //kennydude 30/04/2026
 					$all_locations = wc_get_product_terms(($type == 'variation') ? $product_obj->get_parent_id() : $product_id, 'location', ['fields' => 'all',]);
-					$total_stock   = 0;
-					foreach ( $all_locations as $loc ) {
-						$total_stock += (float) get_post_meta( $product_id, '_stock_at_' . $loc->term_id, true );
+					//pree($all_locations);
+					if(!empty($all_locations)){
+						$total_stock   = 0;
+						foreach ( $all_locations as $loc ) {
+							$total_stock += (float) get_post_meta( $product_id, '_stock_at_' . $loc->term_id, true );
+						}
+						$instock_status = ( $total_stock > 0 );
+					}else{
+						$instock_status = ( $product_obj && method_exists($product_obj, 'get_stock_quantity') && $product_obj->get_stock_quantity() > 0 );
 					}
-					$instock_status = ( $total_stock > 0 );
+					
 				}/*else {
 					
 					$instock_status = (
@@ -1318,6 +1338,9 @@ add_action('admin_init', 'wc_slw_admin_init');
 
 	
 		$everything_stock_status_to_instock = array_key_exists('everything_stock_status_to_instock', $slw_plugin_settings);
+		
+		//pree('$everything_stock_status_to_instock: '.$everything_stock_status_to_instock);
+		
 		if ($everything_stock_status_to_instock) {
 			$instock_status = true;
 		}
@@ -1330,9 +1353,16 @@ add_action('admin_init', 'wc_slw_admin_init');
 		return $instock_status;*/
 		
 		$instock_status = (bool) $instock_status;
+		
+		//pree('$instock_status: '.$instock_status);
+		
 		if ( $product_id ) {
+			//pree(get_post_meta( $product_id, '_stock_status'));
 			update_post_meta( $product_id, '_stock_status', $instock_status ? 'instock' : 'outofstock' );
 		}
+		
+		//pree('$instock_status: '.$instock_status);
+		
 		return $instock_status;
 	}
 
@@ -1340,6 +1370,7 @@ add_action('admin_init', 'wc_slw_admin_init');
     
 	
 	add_filter( 'woocommerce_product_is_in_stock', 'slw_woocommerce_product_is_in_stock', 10, 2 );
+	add_filter( 'woocommerce_variation_is_in_stock', 'slw_woocommerce_product_is_in_stock', 10, 2 );
 	
 	function slw_woocommerce_format_localized_price($value=''){
 		$symbol = get_woocommerce_currency_symbol();
