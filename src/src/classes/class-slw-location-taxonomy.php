@@ -314,7 +314,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 
 		public function ajax_save_product_default_location()
 		{
-			check_ajax_referer( 'slw_nonce', 'nonce' );
+			slw_verify_admin_request( 'slw_nonce', 'nonce' );
 
 			if( isset( $_POST['product_id'] ) && isset( $_POST['term_id'] ) ) {
 				$product_id = sanitize_slw_data( $_POST['product_id'] );
@@ -331,16 +331,13 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			}
 		}
 
-		public function ajax_remove_product_default_location()
-		{
-			check_ajax_referer( 'slw_nonce', 'nonce' );
-
+		public function ajax_remove_product_default_location(){
+			slw_verify_admin_request( 'slw_nonce', 'nonce' );
+		
 			if( isset( $_POST['product_id'] ) ) {
 				$product_id = sanitize_slw_data( $_POST['product_id'] );
-
-				// remove product default location
 				$response   = delete_post_meta( $product_id, '_slw_default_location' );
-
+		
 				if( $response ) {
 					wp_send_json_success( array( 'message' => __( 'Product default location removed!' ) ) );
 				} else {

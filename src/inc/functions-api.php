@@ -1,5 +1,23 @@
 <?php
+	function slw_get_api_key($length = 32) {
+		$option_name = 'slw_secure_api_key';
 	
+		// Return existing key if it already exists
+		$api_key = get_option($option_name);
+	
+		if (!empty($api_key)) {
+			return $api_key;
+		}
+	
+		// Generate a new key
+		$api_key = bin2hex(random_bytes($length));
+	
+		// Save it to wp_options
+		update_option($option_name, $api_key, false);
+	
+		return $api_key;
+	}
+
 	add_action('init', function(){
 		
 		
@@ -28,6 +46,7 @@
 			
 			if(get_option('slw_api_status')==true){
 				
+				
 				$current_source = ($_SERVER['REMOTE_ADDR'].'/'.$_SERVER['SERVER_NAME']);
 				
 				$validated_requests = get_option('slw_api_request_validated', array());
@@ -50,9 +69,39 @@
 				
 				if(!in_array($current_source, $validated_requests)){
 					
-					_e('Sorry, you are not allowed to proceed.', 'stock-locations-for-woocommerce');
-					exit;
+					wp_send_json_error(
+						array(
+							'message' => __('Sorry, you are not allowed to proceed..', 'stock-locations-for-woocommerce'),
+						),
+						403
+					);
 				}
+				
+				$raw_json = file_get_contents('php://input');
+				$decoded_payload = json_decode($raw_json, true);
+				if (!is_array($decoded_payload)) {
+					$decoded_payload = array();
+				}
+				$api_key = '';
+				
+				if (!empty($data['api_key'])) {
+					$api_key = $data['api_key'];
+				} elseif (!empty($decoded_payload['api_key'])) {
+					$api_key = $decoded_payload['api_key'];
+				}
+
+												
+				if (
+					empty($api_key) ||
+					!hash_equals(slw_get_api_key(), $api_key)
+				) {
+					wp_send_json_error(
+						array(
+							'message' => __('Unauthorized.', 'stock-locations-for-woocommerce'),
+						),
+						403
+					);
+				}		
 				
 				//pree($data['action']);exit;
 				
@@ -173,14 +222,19 @@
 						}
 					break;
 					default:
+					
+						if (empty($decoded_payload['payload'])) {
+							wp_send_json_error(
+								array(
+									'message' => __('Invalid request.', 'stock-locations-for-woocommerce'),
+								),
+								400
+							);
+						}
 						//pree($data['format']);exit;
 						$response['response'] = true;
-						$raw_json = file_get_contents('php://input');
-						$decoded_payload = json_decode($raw_json, true);
 						
-						if (json_last_error() !== JSON_ERROR_NONE) {
-							$decoded_payload = []; // prevent crashes on invalid JSON
-						}
+						
 						
 						//pree($decoded_payload['payload']);exit;
 						
@@ -192,8 +246,7 @@
 						
 						// After processing JSON payload, we can exit if we want to avoid the old URL-style handling
 						
-						echo json_encode($response);
-						exit;
+						wp_send_json($response);
 					
 				
 					break;
@@ -215,7 +268,7 @@
 					pree($response);
 				break;
 				case 'json':
-					echo json_encode($response);
+					wp_send_json($response);
 				break;
 			}
 				

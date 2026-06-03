@@ -81,7 +81,7 @@ if(!class_exists('SlwMain')) {
 
 	class SlwMain{
 		// versions
-		public           $version  = '3.1.8';
+		public           $version  = '3.1.9';
 		public           $import_export_addon_version = '1.1.1';
 
 		// others
@@ -113,7 +113,7 @@ if(!class_exists('SlwMain')) {
 								'woocommerce_after_add_to_cart_button' => __('After Add to Cart Button', 'stock-locations-for-woocommerce')
 							];	
 			
-				$slw_api_valid_keys = array(			
+				$slw_api_valid_keys = array(		
 					'id' => array('type'=>'int', 'options'=>'<input type="text" placeholder="'.__('Insert Product ID', 'stock-locations-for-woocommerce').'" class="slw-api-id-input" /> <input type="button" value="Try" class="slw-api-id-try" />', 'tooltip'=>__('When item is a location, so ID is location_id and when item is product so ID is considered as a product_id.', 'stock-locations-for-woocommerce'), 'scope'=>''),
 					'value' => array('type'=>'int', 'options'=>'', 'scope'=>''),
 					'action' => array('type'=>'string', 'options'=>'get|set', 'scope'=>''),
@@ -122,6 +122,7 @@ if(!class_exists('SlwMain')) {
 					'product_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than product.', 'stock-locations-for-woocommerce'), 'scope'=>''),
 					'location_id'=>array('type'=>'int', 'options'=>'', 'tooltip'=>__('When item is other than location.', 'stock-locations-for-woocommerce'), 'scope'=>''),
 					'location'=>array('type'=>'json', 'options'=>'location_id, stock_value', 'tooltip'=>__('For variable products.', 'stock-locations-for-woocommerce'), 'scope'=>'variable'),
+					'api_key'=>array('type'=>'string', 'options'=>'<small>'.slw_get_api_key().'</small>'),
 				);
 
 

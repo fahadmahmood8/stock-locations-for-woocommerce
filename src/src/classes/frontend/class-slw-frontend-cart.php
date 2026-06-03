@@ -260,6 +260,10 @@ if( !class_exists('SlwFrontendCart') ) {
 				wp_send_json( array( 'nonce_fail' => 1 ) );
 				exit;
 			}
+			if( wp_get_referer() === false || strpos( wp_get_referer(), home_url() ) !== 0 ) {
+				wp_send_json( array( 'error' => 1 ) );
+				exit;
+			}
 			// Save the stock locations to the cart meta
 			$cart = WC()->cart->cart_contents;
 			$cart_id = $_POST['cart_id'];

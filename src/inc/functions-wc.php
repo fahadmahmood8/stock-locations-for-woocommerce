@@ -1,4 +1,5 @@
 <?php
+
 	function slw_feature_enabled($feature_key){
 		
 		global $slw_optional_features_key;
@@ -14,22 +15,7 @@
 	add_action('wp_ajax_slw_update_optional_feature', function () {
 	
 		
-		if (!current_user_can('manage_options')) {
-			wp_send_json_error(array(
-				'status'  => 'error',
-				'message' => __('Access denied', 'stock-locations-for-woocommerce')
-			), 403);
-		}
-
-		if (
-			!isset($_POST['slw_nonce_field']) ||
-			!wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')
-		) {
-			wp_send_json_error(array(
-				'status'  => 'error',
-				'message' => __('Invalid security token', 'stock-locations-for-woocommerce')
-			), 400);
-		}
+		slw_verify_admin_request();
 
 	
 		$feature_key = isset($_POST['feature_key'])

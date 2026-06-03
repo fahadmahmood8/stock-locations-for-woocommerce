@@ -1,579 +1,519 @@
 <?php if ( ! defined( 'ABSPATH' ) ){ exit; }else{ clearstatcache(); }
 
-if(!function_exists('pre')){
-	function pre($data){
-		if(isset($_GET['debug'])){
-		  pree($data);
+	function slw_verify_admin_request($key='slw_nonce', $field='slw_nonce_field') {
+	
+		check_ajax_referer( $key, $field );
+	
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Unauthorized', 'stock-locations-for-woocommerce' ),
+				),
+				403
+			);
 		}
 	}
-}
-if(!function_exists('pree')){
-	function pree($data){
 	
-		$debug_backtrace = debug_backtrace();
+	if(!function_exists('pre')){
+		function pre($data){
+			if(isset($_GET['debug'])){
+			  pree($data);
+			}
+		}
+	}
+	if(!function_exists('pree')){
+		function pree($data){
+		
+			$debug_backtrace = debug_backtrace();
+				
+			$function = $debug_backtrace[0]['function'];
+			$function .= ' / '.$debug_backtrace[1]['function'];
+			$function .= ' / '.$debug_backtrace[2]['function'];
+			$function .= ' / '.$debug_backtrace[3]['function'];
+			$function .= ' / '.$debug_backtrace[4]['function'];
 			
-		$function = $debug_backtrace[0]['function'];
-		$function .= ' / '.$debug_backtrace[1]['function'];
-		$function .= ' / '.$debug_backtrace[2]['function'];
-		$function .= ' / '.$debug_backtrace[3]['function'];
-		$function .= ' / '.$debug_backtrace[4]['function'];
+			//if(function_exists('wc_slw_logger')){ wc_slw_logger('debug', $function); }
+			
+			echo '<pre>';
+			//print_r($function);
+			print_r($data);
+			echo '</pre>';
 		
-		//if(function_exists('wc_slw_logger')){ wc_slw_logger('debug', $function); }
-		
-		echo '<pre>';
-		//print_r($function);
-		print_r($data);
-		echo '</pre>';
-	
-	}
-}
-add_filter('woocommerce_available_variation', function ($v, $product, $variation) {
-    global $woocommerce;
-    
-    $selected_location_id = isset($woocommerce->session) ? $woocommerce->session->get('stock_location_selected') : 0;
-    $variation_id = $variation->get_id();
-	$product_id = $product->get_id();
-
-    
-    if ($selected_location_id > 0) {
-        // Specific location selected
-        $stock_at_location = get_post_meta($variation_id, '_stock_at_' . $selected_location_id, true);
-        $has_stock = (float)$stock_at_location > 0;
-        $v['is_in_stock'] = $has_stock;
-        $v['is_purchasable'] = $has_stock;
-        if ($has_stock) $v['max_qty'] = (int)$stock_at_location;
-    } else {
-        // No location selected - check if ANY location has stock
-        //$all_locations = get_terms(['taxonomy' => 'location', 'hide_empty' => false]);
-		$all_locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]);
-
-        $has_any_stock = false;
-        
-        foreach ($all_locations as $location) {
-            $stock_at_location = get_post_meta($variation_id, '_stock_at_' . $location->term_id, true);
-            if ((float)$stock_at_location > 0) {
-                $has_any_stock = true;
-                break;
-            }
-        }
-        
-        $v['is_in_stock'] = $has_any_stock;
-        $v['is_purchasable'] = $has_any_stock;
-    }
-    
-    return $v;
-}, 10, 3);
-if(!function_exists('slw_notices')){
-	function slw_notices($data, $echo = false){
-		$ret = '<div class="slw-notice">';
-		$ret .= $data;
-		$ret .= '</div>';  
-		
-		if($echo){
-			echo $ret;
-		}else{
-			return $ret;
 		}
-	
 	}
-}
-if(!function_exists('get_slw_stock_location_selected')){
-	function get_slw_stock_location_selected(){
+	add_filter('woocommerce_available_variation', function ($v, $product, $variation) {
 		global $woocommerce;
-		return ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
-	}
-}
-
-if(!function_exists('sanitize_slw_data')){
-	function sanitize_slw_data( $input ) {
-		if(is_array($input)){		
-			$new_input = array();	
-			foreach ( $input as $key => $val ) {
-				$new_input[ $key ] = (is_array($val)?sanitize_slw_data($val):sanitize_text_field( $val ));
-			}			
-		}else{
-			$new_input = sanitize_text_field($input);			
-			if(stripos($new_input, '@') && is_email($new_input)){
-				$new_input = sanitize_email($new_input);
+		
+		$selected_location_id = isset($woocommerce->session) ? $woocommerce->session->get('stock_location_selected') : 0;
+		$variation_id = $variation->get_id();
+		$product_id = $product->get_id();
+	
+		
+		if ($selected_location_id > 0) {
+			// Specific location selected
+			$stock_at_location = get_post_meta($variation_id, '_stock_at_' . $selected_location_id, true);
+			$has_stock = (float)$stock_at_location > 0;
+			$v['is_in_stock'] = $has_stock;
+			$v['is_purchasable'] = $has_stock;
+			if ($has_stock) $v['max_qty'] = (int)$stock_at_location;
+		} else {
+			// No location selected - check if ANY location has stock
+			//$all_locations = get_terms(['taxonomy' => 'location', 'hide_empty' => false]);
+			$all_locations = wc_get_product_terms($product_id, 'location', ['fields' => 'all',]);
+	
+			$has_any_stock = false;
+			
+			foreach ($all_locations as $location) {
+				$stock_at_location = get_post_meta($variation_id, '_stock_at_' . $location->term_id, true);
+				if ((float)$stock_at_location > 0) {
+					$has_any_stock = true;
+					break;
+				}
 			}
-			if(stripos($new_input, 'http') || wp_http_validate_url($new_input)){
-				$new_input = sanitize_url($new_input);
-			}			
-		}	
-		return $new_input;
-	}	
-}
-		
-if(!function_exists('wc_slw_logger')){
-	function wc_slw_logger($type='debug', $data=array()){
-		
-		global $slw_logs_status;
-		
-		$types = array('debug');
-		
-		if(is_array($type) || is_object($type)){
-			$data = (array)$type;
-			$type = 'debug';
-		}else{
-			if(!array_key_exists($type, $types) && empty($data)){
-				$data = $type;
-				$type = 'debug';
-			}
+			
+			$v['is_in_stock'] = $has_any_stock;
+			$v['is_purchasable'] = $has_any_stock;
 		}
-
-		$slw_logger = get_option('slw_logger');
 		
-		$slw_logger = is_array($slw_logger)?$slw_logger:array();		
+		return $v;
+	}, 10, 3);
+	if(!function_exists('slw_notices')){
+		function slw_notices($data, $echo = false){
+			$ret = '<div class="slw-notice">';
+			$ret .= $data;
+			$ret .= '</div>';  
+			
+			if($echo){
+				echo $ret;
+			}else{
+				return $ret;
+			}
 		
-		if(empty($data) || $type==$data){ return $slw_logger; }
-		
-		
-		
-		$debug_backtrace = debug_backtrace();
-		$function = $debug_backtrace[1]['function'];
-		$function .= (array_key_exists(2, $debug_backtrace)?' / '.$debug_backtrace[2]['function']:'');
-		$function .= (array_key_exists(3, $debug_backtrace)?' / '.$debug_backtrace[3]['function']:'');
-		$function .= (array_key_exists(4, $debug_backtrace)?' / '.$debug_backtrace[4]['function']:'');
-		$function .= (array_key_exists(5, $debug_backtrace)?' / '.$debug_backtrace[5]['function']:'');
-		
-		
-		switch($type){
-			case 'debug':
-
-				
-				
-				if((is_array($data) || is_object($data)) && !empty($data)){
-					$slw_logger[] = $data;
-					$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+		}
+	}
+	if(!function_exists('get_slw_stock_location_selected')){
+		function get_slw_stock_location_selected(){
+			global $woocommerce;
+			return ((isset($woocommerce->session) && $woocommerce->session->has_session())?$woocommerce->session->get('stock_location_selected'):0);
+		}
+	}
+	
+	if(!function_exists('sanitize_slw_data')){
+		function sanitize_slw_data( $input ) {
+			if(is_array($input)){		
+				$new_input = array();	
+				foreach ( $input as $key => $val ) {
+					$new_input[ $key ] = (is_array($val)?sanitize_slw_data($val):sanitize_text_field( $val ));
+				}			
+			}else{
+				$new_input = sanitize_text_field($input);			
+				if(stripos($new_input, '@') && is_email($new_input)){
+					$new_input = sanitize_email($new_input);
+				}
+				if(stripos($new_input, 'http') || wp_http_validate_url($new_input)){
+					$new_input = sanitize_url($new_input);
+				}			
+			}	
+			return $new_input;
+		}	
+	}
+			
+	if(!function_exists('wc_slw_logger')){
+		function wc_slw_logger($type='debug', $data=array()){
+			
+			global $slw_logs_status;
+			
+			$types = array('debug');
+			
+			if(is_array($type) || is_object($type)){
+				$data = (array)$type;
+				$type = 'debug';
+			}else{
+				if(!array_key_exists($type, $types) && empty($data)){
+					$data = $type;
+					$type = 'debug';
+				}
+			}
+	
+			$slw_logger = get_option('slw_logger');
+			
+			$slw_logger = is_array($slw_logger)?$slw_logger:array();		
+			
+			if(empty($data) || $type==$data){ return $slw_logger; }
+			
+			
+			
+			$debug_backtrace = debug_backtrace();
+			$function = $debug_backtrace[1]['function'];
+			$function .= (array_key_exists(2, $debug_backtrace)?' / '.$debug_backtrace[2]['function']:'');
+			$function .= (array_key_exists(3, $debug_backtrace)?' / '.$debug_backtrace[3]['function']:'');
+			$function .= (array_key_exists(4, $debug_backtrace)?' / '.$debug_backtrace[4]['function']:'');
+			$function .= (array_key_exists(5, $debug_backtrace)?' / '.$debug_backtrace[5]['function']:'');
+			
+			
+			switch($type){
+				case 'debug':
+	
 					
-					if($slw_logs_status){
-						update_option('slw_logger', $slw_logger);
-					}
-				}else{				
-					$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
-					if(trim($data)){
+					
+					if((is_array($data) || is_object($data)) && !empty($data)){
+						$slw_logger[] = $data;
+						$slw_logger[] = '<small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+						
 						if($slw_logs_status){
 							update_option('slw_logger', $slw_logger);
 						}
+					}else{				
+						$slw_logger[] = $data.' <small>('.$function.')</small> - '.date('d M, Y h:i:s A');
+						if(trim($data)){
+							if($slw_logs_status){
+								update_option('slw_logger', $slw_logger);
+							}
+						}
 					}
-				}
-				
-				
-			break;
+					
+					
+				break;
+			}
+			
+			return $slw_logger;
 		}
-		
-		return $slw_logger;
 	}
-}
-
-add_action('wp_ajax_slw_location_assignment', 'slw_location_assignment');
-
-if (!function_exists('slw_location_assignment')) {
-    function slw_location_assignment() {
-        if (!empty($_POST) && isset($_POST['assignment'])) {
-            if (!isset($_POST['slw_nonce_field']) || !wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')) {
-               echo '0';	
-            } else {
-                $assignment = ($_POST['assignment'] == 'yes');
-                $location_id = sanitize_slw_data($_POST['location_id']);
-
-                update_term_meta($location_id, 'slw_location_assignment', $assignment);
-
+	
+	add_action('wp_ajax_slw_location_assignment', 'slw_location_assignment');
+	
+	if (!function_exists('slw_location_assignment')) {
+		function slw_location_assignment() {
+			slw_verify_admin_request();
+			
+			if (!empty($_POST) && isset($_POST['assignment'])) {
+				$assignment = ($_POST['assignment'] == 'yes');
+				$location_id = sanitize_slw_data($_POST['location_id']);
+				update_term_meta($location_id, 'slw_location_assignment', $assignment);
 				echo '1';
+			}
+	
+			wp_die();
+		}
+	}
 
-            }
-        }
-
-        wp_die();
-    }
-}
-
-
-add_action('wp_ajax_slw_location_status', 'slw_location_status');
-
-if(!function_exists('slw_location_status')){
-	function slw_location_status(){
-		if(!empty($_POST) && isset($_POST['status'])){
-			if (! isset( $_POST['slw_nonce_field'] ) || ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )	) {	
-				echo '0';		
-			} else {
+	
+	add_action('wp_ajax_slw_location_status', 'slw_location_status');
+	
+	if(!function_exists('slw_location_status')){
+		function slw_location_status(){
+			slw_verify_admin_request();
+			
+			if(!empty($_POST) && isset($_POST['status'])){
 				$status = ($_POST['status']=='yes');
 				$location_id = sanitize_slw_data($_POST['location_id']);
 				update_term_meta($location_id, 'slw_location_status', $status);				
 				echo '1';
 			}
+	
+			wp_die();
 		}
-
-		wp_die();
 	}
-}
-
-add_action('wp_ajax_slw_map_status', 'slw_map_status');
-
-if(!function_exists('slw_map_status')){
-	function slw_map_status(){
-		if(!empty($_POST) && isset($_POST['status'])){
-			if (! isset( $_POST['slw_nonce_field'] ) || ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )	) {	
-				echo '0';		
-			} else {
-				$status = ($_POST['status']=='yes');
-				$location_id = sanitize_slw_data($_POST['location_id']);
-				update_term_meta($location_id, 'slw_map_status', $status);				
-				echo '1';
-			}
-		}
-
-		wp_die();
-	}
-}
-
-add_action('wp_ajax_slw_logs_status', 'slw_logs_status');
-
-if (!function_exists('slw_logs_status')) {
-	function slw_logs_status() {
-
-		if (!current_user_can('manage_options')) {
-			wp_send_json_error(array(
-				'status'  => 'error',
-				'message' => __('Access denied', 'stock-locations-for-woocommerce')
-			), 403);
-		}
-
-		if (
-			!isset($_POST['slw_nonce_field']) ||
-			!wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')
-		) {
-			wp_send_json_error(array(
-				'status'  => 'error',
-				'message' => __('Invalid security token', 'stock-locations-for-woocommerce')
-			), 400);
-		}
-
-		if (isset($_POST['status'])) {
-			$status = ($_POST['status'] === 'yes');
-			update_option('slw_logs_status', $status);
-
-			wp_send_json_success(array(
-				'status'  => $status ? 'enabled' : 'disabled',
-				'message' => $status
-					? __('Log status enabled', 'stock-locations-for-woocommerce')
-					: __('Log status disabled', 'stock-locations-for-woocommerce')
-			));
-		}
-
-		wp_send_json_error(array(
-			'status'  => 'error',
-			'message' => __('Missing status parameter', 'stock-locations-for-woocommerce')
-		), 400);
-	}
-}
-
-add_action('wp_ajax_slw_update_product_locations_stock_values', 'slw_update_product_locations_stock_values');
-
-if (!function_exists('slw_update_product_locations_stock_values')) {
-    function slw_update_product_locations_stock_values() {
-        if (!empty($_POST) && isset($_POST['status'])) {
-            if (!isset($_POST['slw_nonce_field']) || !wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')) {
-                echo '0';
-            } else {
-                $status = ($_POST['status'] == 'yes');
-                update_option('slw_update_product_locations_stock_values', $status);
-                echo '1';
-            }
-        }
-        wp_die();
-    }
-}
-
-
-add_action('wp_ajax_slw_api_status', 'slw_api_status');
-
-if(!function_exists('slw_api_status')){
-	function slw_api_status(){
-
-		if(!empty($_POST) && isset($_POST['status'])){
-
-			if (
-				! isset( $_POST['slw_nonce_field'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
-			) {
-
-				echo '0';
-				
-
-			} else {
-				$status = ($_POST['status']=='yes');
-				update_option('slw_api_status', $status);
-				
-				echo '1';
-
-			}
-		}
-
-		wp_die();
-	}
-}
-
-add_action('wp_ajax_slw_crons_status', 'slw_crons_status');
-
-if (!function_exists('slw_crons_status')) {
-	function slw_crons_status() {
-
-		if (!current_user_can('manage_options')) {
-			wp_send_json_error(array(
-				'status' => 'error',
-				'message' => __('Unauthorized access', 'stock-locations-for-woocommerce')
-			), 403);
-		}
-
-		if (
-			!isset($_POST['slw_nonce_field']) ||
-			!wp_verify_nonce($_POST['slw_nonce_field'], 'slw_nonce')
-		) {
-			wp_send_json_error(array(
-				'status' => 'error',
-				'message' => __('Invalid nonce', 'stock-locations-for-woocommerce')
-			), 400);
-		}
-
-		if (isset($_POST['status'])) {
-			$status = ($_POST['status'] === 'yes');
-			update_option('slw_crons_status', $status);
-
-			wp_send_json_success(array(
-				'status' => $status ? 'enabled' : 'disabled',
-				'message' => $status
-					? __('Cron has been enabled.', 'stock-locations-for-woocommerce')
-					: __('Cron has been disabled.', 'stock-locations-for-woocommerce')
-			));
-		}
-
-		wp_send_json_error(array(
-			'status' => 'error',
-			'message' => __('Missing status parameter', 'stock-locations-for-woocommerce')
-		), 400);
-	}
-}
-
-
-
-add_action('wp_ajax_slw_widgets_settings', 'slw_widgets_settings');
-
-if(!function_exists('slw_widgets_settings')){
-	function slw_widgets_settings(){
+	add_action('wp_ajax_slw_map_status', 'slw_map_status');
+	
+	if(!function_exists('slw_map_status')){
+		function slw_map_status() {
 		
-		$wc_slw_widgets = wc_slw_widgets('fields');
-		if(!empty($_POST) && isset($_POST['slw_widget_key']) && in_array($_POST['slw_widget_key'], $wc_slw_widgets)){
-
-			if (
-				! isset( $_POST['slw_nonce_field'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_field'], 'slw_nonce' )
-			) {
-
-				echo '0';
-				
-
-			} else {
-				$posted = sanitize_slw_data($_POST);
-				$slw_widget_key = $posted['slw_widget_key'];
+			slw_verify_admin_request();
+		
+			if ( ! empty( $_POST ) && isset( $_POST['status'] ) ) {
+		
+				$status = ( $_POST['status'] === 'yes' );
+				$location_id = sanitize_slw_data( $_POST['location_id'] );
+		
+				update_term_meta( $location_id, 'slw_map_status', $status );
+		
+				echo '1';
+			}
+		
+			wp_die();
+		}
+	}
+	
+	add_action('wp_ajax_slw_logs_status', 'slw_logs_status');
+	
+	if (!function_exists('slw_logs_status')) {
+		function slw_logs_status() {
+		
+			slw_verify_admin_request();
+		
+			if ( isset( $_POST['status'] ) ) {
+		
+				$status = ( $_POST['status'] === 'yes' );
+		
+				update_option( 'slw_logs_status', $status );
+		
+				wp_send_json_success( array(
+					'status'  => $status ? 'enabled' : 'disabled',
+					'message' => $status
+						? __( 'Log status enabled', 'stock-locations-for-woocommerce' )
+						: __( 'Log status disabled', 'stock-locations-for-woocommerce' )
+				) );
+			}
+		
+			wp_send_json_error( array(
+				'status'  => 'error',
+				'message' => __( 'Missing status parameter', 'stock-locations-for-woocommerce' )
+			), 400 );
+		}
+	}
+	
+	add_action('wp_ajax_slw_update_product_locations_stock_values', 'slw_update_product_locations_stock_values');
+	
+	if (!function_exists('slw_update_product_locations_stock_values')) {
+		function slw_update_product_locations_stock_values() {
+		
+			slw_verify_admin_request();
+		
+			if ( ! empty( $_POST ) && isset( $_POST['status'] ) ) {
+		
+				$status = ( $_POST['status'] === 'yes' );
+		
+				update_option( 'slw_update_product_locations_stock_values', $status );
+		
+				echo '1';
+			}
+		
+			wp_die();
+		}
+	}
+	
+	
+	add_action('wp_ajax_slw_api_status', 'slw_api_status');
+	
+	if(!function_exists('slw_api_status')){
+		function slw_api_status() {
+		
+			slw_verify_admin_request();
+		
+			if ( ! empty( $_POST ) && isset( $_POST['status'] ) ) {
+		
+				$status = ( $_POST['status'] === 'yes' );
+		
+				update_option( 'slw_api_status', $status );
+		
+				echo '1';
+			}
+		
+			wp_die();
+		}
+	}
+	
+	add_action('wp_ajax_slw_crons_status', 'slw_crons_status');
+	
+	if (!function_exists('slw_crons_status')) {
+		function slw_crons_status() {
+		
+			slw_verify_admin_request();
+		
+			if ( isset( $_POST['status'] ) ) {
+		
+				$status = ( $_POST['status'] === 'yes' );
+		
+				update_option( 'slw_crons_status', $status );
+		
+				wp_send_json_success( array(
+					'status'  => $status ? 'enabled' : 'disabled',
+					'message' => $status
+						? __( 'Cron has been enabled.', 'stock-locations-for-woocommerce' )
+						: __( 'Cron has been disabled.', 'stock-locations-for-woocommerce' )
+				) );
+			}
+		
+			wp_send_json_error( array(
+				'status'  => 'error',
+				'message' => __( 'Missing status parameter', 'stock-locations-for-woocommerce' )
+			), 400 );
+		}
+	}
+	
+	
+	
+	add_action('wp_ajax_slw_widgets_settings', 'slw_widgets_settings');
+	
+	if(!function_exists('slw_widgets_settings')){
+		function slw_widgets_settings() {
+		
+			slw_verify_admin_request();
+		
+			$wc_slw_widgets = wc_slw_widgets( 'fields' );
+		
+			if ( ! empty( $_POST ) && isset( $_POST['slw_widget_key'] ) && in_array( $_POST['slw_widget_key'], $wc_slw_widgets, true ) ) {
+		
+				$posted = sanitize_slw_data( $_POST );
+		
+				$slw_widget_key   = $posted['slw_widget_key'];
 				$slw_widget_value = $posted['slw_widget_value'];
-				update_option($slw_widget_key, $slw_widget_value);
-				
+		
+				update_option( $slw_widget_key, $slw_widget_value );
+		
 				echo '1';
-
 			}
+		
+			wp_die();
 		}
-
-		wp_die();
 	}
-}
-
-
-add_action('wp_ajax_slw_validate_api_requests', 'slw_validate_api_requests_callback');
-
-if(!function_exists('slw_validate_api_requests_callback')){
-	function slw_validate_api_requests_callback(){
-
-		if(!empty($_POST) && isset($_POST['slw_validate_request'])){
-
-			if (
-				! isset( $_POST['slw_nonce_check'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_check'], 'slw_nonce' )
-			) {
-
-				_e('Sorry, your nonce did not verify.', 'stock-locations-for-woocommerce');
-				exit;
-
-			} else {
-				$slw_validate_request = sanitize_slw_data($_POST['slw_validate_request']);
-			
-				if(is_array($slw_validate_request)){
-					update_option('slw_api_request_validated', $slw_validate_request);
-				}else{
-					update_option('slw_api_request_validated', array());
+	
+	
+	add_action('wp_ajax_slw_validate_api_requests', 'slw_validate_api_requests_callback');
+	
+	if(!function_exists('slw_validate_api_requests_callback')){
+		function slw_validate_api_requests_callback() {
+		
+			slw_verify_admin_request( 'slw_nonce', 'slw_nonce_check' );
+		
+			if ( ! empty( $_POST ) && isset( $_POST['slw_validate_request'] ) ) {
+		
+				$slw_validate_request = sanitize_slw_data( $_POST['slw_validate_request'] );
+		
+				if ( is_array( $slw_validate_request ) ) {
+					update_option( 'slw_api_request_validated', $slw_validate_request );
+				} else {
+					update_option( 'slw_api_request_validated', array() );
 				}
-				
-
 			}
+		
+			wp_die();
 		}
-
-		wp_die();
 	}
-}
-
-
-add_action('wp_ajax_slw_validate_cron_requests', 'slw_validate_cron_requests_callback');
-
-if(!function_exists('slw_validate_cron_requests_callback')){
-	function slw_validate_cron_requests_callback(){
-
-		if(!empty($_POST) && isset($_POST['slw_validate_request'])){
-
-			if (
-				! isset( $_POST['slw_nonce_check'] )
-				|| ! wp_verify_nonce( $_POST['slw_nonce_check'], 'slw_nonce' )
-			) {
-
-				_e('Sorry, your nonce did not verify.', 'stock-locations-for-woocommerce');
-				exit;
-
-			} else {
-				$slw_validate_request = sanitize_slw_data($_POST['slw_validate_request']);
-			
-				if(is_array($slw_validate_request)){
-					update_option('slw_cron_request_validated', $slw_validate_request);
-				}else{
-					update_option('slw_cron_request_validated', array());
+	
+	
+	add_action('wp_ajax_slw_validate_cron_requests', 'slw_validate_cron_requests_callback');
+	
+	if(!function_exists('slw_validate_cron_requests_callback')){
+		function slw_validate_cron_requests_callback() {
+		
+			slw_verify_admin_request( 'slw_nonce', 'slw_nonce_check' );
+		
+			if ( ! empty( $_POST ) && isset( $_POST['slw_validate_request'] ) ) {
+		
+				$slw_validate_request = sanitize_slw_data( $_POST['slw_validate_request'] );
+		
+				if ( is_array( $slw_validate_request ) ) {
+					update_option( 'slw_cron_request_validated', $slw_validate_request );
+				} else {
+					update_option( 'slw_cron_request_validated', array() );
 				}
-				
-
 			}
+		
+			wp_die();
 		}
-
-		wp_die();
 	}
-}
-
-
-add_action('wp_ajax_slw_clear_debug_log', 'slw_clear_debug_log');
-
-if(!function_exists('slw_clear_debug_log')){
-	function slw_clear_debug_log(){
-
-		if(!empty($_POST) && isset($_POST['slw_clear_debug_log'])){
-
-			if (
-				! isset( $_POST['slw_clear_debug_log_field'] )
-				|| ! wp_verify_nonce( $_POST['slw_clear_debug_log_field'], 'slw_nonce' )
-			) {
-
-				_e('Sorry, your nonce did not verify.', 'stock-locations-for-woocommerce');
-				exit;
-
-			} else {
-				
-				update_option('slw_logger', array());
-
+	
+	
+	add_action('wp_ajax_slw_clear_debug_log', 'slw_clear_debug_log');
+	
+	if(!function_exists('slw_clear_debug_log')){
+		function slw_clear_debug_log() {
+		
+			slw_verify_admin_request( 'slw_nonce', 'slw_clear_debug_log_field' );
+		
+			if ( ! empty( $_POST ) && isset( $_POST['slw_clear_debug_log'] ) ) {
+				update_option( 'slw_logger', array() );
 			}
+		
+			wp_die();
 		}
-
-		wp_die();
 	}
-}
-
-
-
-if(!function_exists('slw_quantity_format')){
-	function slw_quantity_format($data){
-		$plugin_settings = get_option( 'slw_settings' );
-		$plugin_settings = (is_array($plugin_settings)?$plugin_settings:array());
-		$max_number = ((array_key_exists('show_with_postfix', $plugin_settings) && is_numeric($plugin_settings['show_with_postfix']) && $plugin_settings['show_with_postfix']>1)?$plugin_settings['show_with_postfix']:0);
-		
-		if($max_number){
-			$data = ($data>$max_number?$max_number.'+':$data);
-		}
-		return $data;
-	}
-}
-if(!function_exists('wc_slw_admin_init')){
-	function wc_slw_admin_init($data){
-		//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
-		
-		
-		if((get_option('slw_crons_status')!=true)){
-			$slw_update_products = get_option('slw_update_products', array());
-			//pree($slw_update_products);exit;
-			$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
+	
+	
+	
+	if(!function_exists('slw_quantity_format')){
+		function slw_quantity_format($data){
+			$plugin_settings = get_option( 'slw_settings' );
+			$plugin_settings = (is_array($plugin_settings)?$plugin_settings:array());
+			$max_number = ((array_key_exists('show_with_postfix', $plugin_settings) && is_numeric($plugin_settings['show_with_postfix']) && $plugin_settings['show_with_postfix']>1)?$plugin_settings['show_with_postfix']:0);
 			
-			if(is_array($slw_update_products) && !empty($slw_update_products)){
-				$item_count = 0;
-				foreach($slw_update_products as $product_id){ 
+			if($max_number){
+				$data = ($data>$max_number?$max_number.'+':$data);
+			}
+			return $data;
+		}
+	}
+	if(!function_exists('wc_slw_admin_init')){
+		function wc_slw_admin_init($data){
+			//http://demo.gpthemes.com/wp-admin/post.php?post=320372&action=edit&get_keys&debug
+			
+			
+			if((get_option('slw_crons_status')!=true)){
+				$slw_update_products = get_option('slw_update_products', array());
+				//pree($slw_update_products);exit;
+				$slw_update_products = (is_array($slw_update_products)?$slw_update_products:array());
 				
-					if($item_count>=25){ continue; }
-				
-					$item_count++;
-					slw_update_products($product_id, false, 'update-stock');
+				if(is_array($slw_update_products) && !empty($slw_update_products)){
+					$item_count = 0;
+					foreach($slw_update_products as $product_id){ 
 					
-					/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
-						unset($slw_update_products[$key]);
-					}*/
+						if($item_count>=25){ continue; }
+					
+						$item_count++;
+						slw_update_products($product_id, false, 'update-stock');
+						
+						/*if (($key = array_search($product_id, $slw_update_products)) !== false) {
+							unset($slw_update_products[$key]);
+						}*/
+					}
+					//pree($slw_update_products);
+					//update_option('slw_update_products', $slw_update_products);
 				}
-				//pree($slw_update_products);
-				//update_option('slw_update_products', $slw_update_products);
 			}
-		}
-		$post_id = (isset($_GET['post'])?$_GET['post']:(isset($_GET['id'])?$_GET['id']:0));
-		
-		if(is_numeric($post_id) && $post_id>0 && isset($_GET['debug'])){
+			$post_id = (isset($_GET['post'])?$_GET['post']:(isset($_GET['id'])?$_GET['id']:0));
 			
-			$order = get_post(sanitize_slw_data($post_id));
-			
-			if(is_object($order) && in_array($order->post_type, array('product'))){
-				if(isset($_GET['get_keys'])){
+			if(is_numeric($post_id) && $post_id>0 && isset($_GET['debug'])){
+				
+				$order = get_post(sanitize_slw_data($post_id));
+				
+				if(is_object($order) && in_array($order->post_type, array('product'))){
+					if(isset($_GET['get_keys'])){
+						
+	
+						
+						pre(get_post_meta($order->ID));
+						
+						$product = wc_get_product($order->ID);
+						
+						pre($product);
+						
+						exit;
+					}
+				}
+				if(is_object($order) && substr($order->post_type, 0, strlen('shop_order'))=='shop_order'){
 					
-
-					
-					pre(get_post_meta($order->ID));
-					
-					$product = wc_get_product($order->ID);
-					
-					pre($product);
-					
+					pree('get_keys: ');
+					if(isset($_GET['get_keys'])){
+						pree(get_post_meta($order->ID));
+						
+					}
+					pree('get_items: ');
+					if(isset($_GET['get_items'])){
+						$order_obj = wc_get_order($order->ID);
+						foreach($order_obj->get_items() as $item_key=>$item_data){
+							pree($item_key);
+							pree($item_data);
+						}
+					}
+					pree('get_items_meta: ');
+					if(isset($_GET['get_items_meta'])){
+						$order_obj = wc_get_order($order->ID);
+						foreach($order_obj->get_items() as $item_key=>$item_data){
+							pree($item_key);
+							pree(wc_get_order_item_meta($item_key, ''));
+						}
+						
+					}
 					exit;
-				}
-			}
-			if(is_object($order) && substr($order->post_type, 0, strlen('shop_order'))=='shop_order'){
-				
-				pree('get_keys: ');
-				if(isset($_GET['get_keys'])){
-					pree(get_post_meta($order->ID));
 					
 				}
-				pree('get_items: ');
-				if(isset($_GET['get_items'])){
-					$order_obj = wc_get_order($order->ID);
-					foreach($order_obj->get_items() as $item_key=>$item_data){
-						pree($item_key);
-						pree($item_data);
-					}
-				}
-				pree('get_items_meta: ');
-				if(isset($_GET['get_items_meta'])){
-					$order_obj = wc_get_order($order->ID);
-					foreach($order_obj->get_items() as $item_key=>$item_data){
-						pree($item_key);
-						pree(wc_get_order_item_meta($item_key, ''));
-					}
-					
-				}
-				exit;
-				
 			}
+			
 		}
-		
 	}
-}
-add_action('admin_init', 'wc_slw_admin_init');
+	add_action('admin_init', 'wc_slw_admin_init');
 	add_action('wp_enqueue_scripts', 'slw_enqueue_dynamic_styles', 20); // Run after WooCommerce/theme enqueues
 	
 	function slw_enqueue_dynamic_styles() {

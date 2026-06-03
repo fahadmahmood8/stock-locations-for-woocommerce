@@ -27,6 +27,7 @@
 <?php			
 
 	if(!empty($slw_api_valid_keys)){
+		
 ?>
 <div class="slw-api-urls">
 	<ul>
@@ -61,6 +62,9 @@
 	<input name="validate_request[]" type="checkbox" value="default" checked="checked" style="display:none" />
 	<table cellpadding="10" cellspacing="0">
     	<thead>
+        	<tr>
+            	<th colspan="3"><small style="color:#900; font-size:12px;"><strong style="color:#000;"><?php echo __('API Key', 'stock-locations-for-woocommerce'); ?>:</strong> <?php echo slw_get_api_key(); ?></small></th>
+            </tr>
         	<tr>
                 <th><?php echo __('Request Source', 'stock-locations-for-woocommerce'); ?></th>
                 <th><?php echo __('Last Ping', 'stock-locations-for-woocommerce'); ?></th>
