@@ -466,6 +466,10 @@
 			
 			if(is_numeric($post_id) && $post_id>0 && isset($_GET['debug'])){
 				
+				if ( ! is_super_admin() || ! current_user_can( 'manage_woocommerce' ) ) {
+					return;
+				}
+				
 				$order = get_post(sanitize_slw_data($post_id));
 				
 				if(is_object($order) && in_array($order->post_type, array('product'))){
@@ -483,6 +487,8 @@
 					}
 				}
 				if(is_object($order) && substr($order->post_type, 0, strlen('shop_order'))=='shop_order'){
+					
+
 					
 					pree('get_keys: ');
 					if(isset($_GET['get_keys'])){
@@ -817,10 +823,35 @@
 			
 			$today_slw_cron_sniffed = '_slw_cron_sniffed_'.$timestamp;
 			
-			$q = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'".($product_id?" AND post_id='$product_id'":'');		
+			/*$q = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'".($product_id?" AND post_id='$product_id'":'');		
 			if($cron){ pree($q); }
 			//wc_slw_logger($q);
-			$wpdb->query($q);
+			$wpdb->query($q);*/
+			
+			if ( $product_id ) {
+				$q = $wpdb->prepare(
+					"DELETE FROM {$wpdb->postmeta}
+					WHERE meta_key LIKE '_slw_cron_sniffed_%'
+					AND meta_value != %s
+					AND post_id = %d",
+					$timestamp,
+					(int) $product_id
+				);
+			} else {
+				$q = $wpdb->prepare(
+					"DELETE FROM {$wpdb->postmeta}
+					WHERE meta_key LIKE '_slw_cron_sniffed_%'
+					AND meta_value != %s",
+					$timestamp
+				);
+			}
+			
+			if ( $cron ) {
+				pree( $q );
+			}
+			
+			//wc_slw_logger( $q );
+			$wpdb->query( $q );
 			
 			$args = array(
 				'numberposts' => $limit,
