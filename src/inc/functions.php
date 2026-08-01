@@ -1302,7 +1302,8 @@
 				}*/
 			break;
 			default:
-            	$instock_status = false;
+            	//$instock_status = false;
+				
 			break;
 		}
 	
