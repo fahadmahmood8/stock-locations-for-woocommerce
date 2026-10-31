@@ -531,7 +531,7 @@ if( !class_exists('SlwOrderItem') ) {
 					if (is_admin() && $is_shop_order){
 						$postIdx   = SLW_PLUGIN_SLUG . '_oitem_' . $item_data->get_id() . '_' . $productId . '_' . $location->term_id;
 						if(!empty($_POST) && isset($_POST[$postIdx])) {
-							$simpleLocationAllocations[$location->term_id] = $_POST[$postIdx];
+							$simpleLocationAllocations[$location->term_id] = sanitize_text_field( $_POST[$postIdx] );
 						}
 					}else{
 						

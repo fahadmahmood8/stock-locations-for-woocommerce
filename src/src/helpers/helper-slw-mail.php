@@ -46,9 +46,11 @@ if ( !class_exists('SlwMailHelper') ) {
 				$body = apply_filters( 'slw_stock_allocation_notification_message', $message, $term, $quantity, $item );
 				
 				$headers = array('Content-Type: text/html; charset=UTF-8');
-				add_filter('wp_mail_content_type', function( $content_type ) { return 'text/html'; }); // forces wp_mail() to use 'text/html'
+				$slw_html_mail_type = function( $content_type ) { return 'text/html'; };
+				add_filter('wp_mail_content_type', $slw_html_mail_type); // forces wp_mail() to use 'text/html'
 
 				$mail_output = wp_mail( $to, $subject, $body, $headers ); // try to send email
+				remove_filter('wp_mail_content_type', $slw_html_mail_type); // do not leak HTML mail type to other plugins' emails
 				wc_update_order_item_meta( $item->get_id(), '_slw_notification_mail_output', $mail_output );
 			}
 		}

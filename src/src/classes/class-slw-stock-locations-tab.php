@@ -89,7 +89,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 			if( $product_id && $product->is_type('variable') ) {
 				// Get product variations
 				//$product_variations_ids = $product->get_children();
-				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN (".absint($product_id).") AND post_type='product_variation'");
 				$product_variations = array();
 				foreach( $product_variations_ids as $variation_obj ) {
 					$variation_id = $variation_obj->variation_id;
@@ -317,7 +317,7 @@ if(!class_exists('SlwStockLocationsTab')) {
 				if($product->is_type('variable')) {
 					// Get product variations
 					//$product_variations_ids = $product->get_children();
-					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN (".absint($product_id).") AND post_type='product_variation'");
 					
 					//pre($product_variations_ids);
 					

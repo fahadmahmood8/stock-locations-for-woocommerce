@@ -72,7 +72,7 @@
 		
 		
 	add_filter('posts_request', function ($query) {
-		if (isset($_GET['sql-query']) && ((function_exists('is_product_category') && is_product_category()) || (is_admin() && get_current_screen()->id === 'edit-product_cat'))) {
+		if (isset($_GET['sql-query']) && current_user_can('manage_options') && ((function_exists('is_product_category') && is_product_category()) || (is_admin() && get_current_screen()->id === 'edit-product_cat'))) {
 			pre("WooCommerce Category Page SQL Query: " . $query);
 		}
 		return $query;

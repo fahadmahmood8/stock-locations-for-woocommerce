@@ -117,7 +117,7 @@ if ( ! class_exists( 'SlwProductHelper' ) ) {
 			$variations_stock = 0;
 			if($product_id && $product->get_type() == 'variable' ) {
 				//$variation_ids = $product->get_children();
-				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+				$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN (".absint($product_id).") AND post_type='product_variation'");
 				
 				if( ! empty( $product_variations_ids ) ) {
 					foreach( $product_variations_ids as $variation_obj ) {

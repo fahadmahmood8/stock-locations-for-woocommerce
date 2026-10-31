@@ -76,7 +76,7 @@
     		<tr>
             	<td><?php echo $source; ?></td>
                 <td><?php echo $timestamp?date('d M, Y h:i:s A', $timestamp):'-'; ?></td>
-                <td><a class="<?php echo $valid?'valid':'invalid'; ?>"><input name="validate_request[]" value="<?php echo $source; ?>" type="checkbox" <?php echo checked($valid); ?> /></a></td>
+                <td><a class="<?php echo $valid?'valid':'invalid'; ?>"><input name="validate_request[]" value="<?php echo esc_attr($source); ?>" type="checkbox" <?php echo checked($valid); ?> /></a></td>
             </tr>
             <?php endforeach; endif; ?>
         </tbody>

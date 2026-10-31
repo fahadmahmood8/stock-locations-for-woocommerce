@@ -1,0 +1,55 @@
+#woocommerce-product-data ul.wc-tabs li.stock-locations-for-woocommerce_tab_stock_locations_options a::before {
+	font-family: Font Awesome\ 5 Free;
+	content: '\f468';
+	font-weight: 900;
+}
+#order_line_items .form-field {
+	margin-top: 0 !important;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_notice,
+#stock-locations-for-woocommerce_tab_stock_locations_notice_variations {
+	padding: 9px;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_total,
+#stock-locations-for-woocommerce_tab_stock_locations_title {
+	padding-left:11px;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_alert {
+	padding-left:11px;
+	padding-top:11px;
+	color:orange;
+}
+#stock-locations-for-woocommerce_tab_stock_locations_alert:before {
+	font-family: Font Awesome\ 5 Free;
+	content: '\f071';
+	font-weight: 900;
+	margin-right: 6px;
+}
+table thead tr #stock_at_locations {
+	width: 17ch;
+}
+.slw-client-choosed-location {
+	color: green;
+	margin-top: -8px !important;
+	margin-bottom: 13px;
+	display: block;
+}
+.slw-import-export-addon-logo {
+	width: 80px;
+	height: 80px;
+	float: left;
+	margin-right: 10px;
+}
+div.slw-settings-wrap a.nav-tab[data-id="help"] {
+	float: right;
+}
+a.current[href*="page=slw-settings"] {
+	background-color: #232431;
+	color: yellow !important;
+	font-size: 12px !important;
+	font-weight: bold !important;
+}
+.slw_logger ul {
+	height: 600px;
+	overflow-y: auto;
+}

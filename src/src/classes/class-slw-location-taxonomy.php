@@ -317,8 +317,8 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			slw_verify_admin_request( 'slw_nonce', 'nonce' );
 
 			if( isset( $_POST['product_id'] ) && isset( $_POST['term_id'] ) ) {
-				$product_id = sanitize_slw_data( $_POST['product_id'] );
-				$term_id    = sanitize_slw_data( $_POST['term_id'] );
+				$product_id = absint( $_POST['product_id'] );
+				$term_id    = absint( $_POST['term_id'] );
 
 				// save product default location
 				$response   = update_post_meta( $product_id, '_slw_default_location', $term_id );
@@ -335,7 +335,7 @@ if(!class_exists('SlwLocationTaxonomy')) {
 			slw_verify_admin_request( 'slw_nonce', 'nonce' );
 		
 			if( isset( $_POST['product_id'] ) ) {
-				$product_id = sanitize_slw_data( $_POST['product_id'] );
+				$product_id = absint( $_POST['product_id'] );
 				$response   = delete_post_meta( $product_id, '_slw_default_location' );
 		
 				if( $response ) {

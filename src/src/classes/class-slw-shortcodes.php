@@ -188,7 +188,7 @@ if(!class_exists('SlwShortcodes')) {
 
 				if($product_id && $product_obj->is_type( 'variable' )) {
 					//$product_variations_ids = $product_obj->get_children();
-					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					$product_variations_ids = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN (".absint($product_id).") AND post_type='product_variation'");
 					$product_variations = array();
 					foreach( $product_variations_ids as $variation_obj ) {
 						$variation_id = $variation_obj->variation_id;

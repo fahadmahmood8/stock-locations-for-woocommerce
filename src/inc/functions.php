@@ -16,7 +16,7 @@
 	
 	if(!function_exists('pre')){
 		function pre($data){
-			if(isset($_GET['debug'])){
+			if(isset($_GET['debug']) && function_exists('wp_get_current_user') && current_user_can('manage_options')){
 			  pree($data);
 			}
 		}
@@ -188,7 +188,7 @@
 			
 			if (!empty($_POST) && isset($_POST['assignment'])) {
 				$assignment = ($_POST['assignment'] == 'yes');
-				$location_id = sanitize_slw_data($_POST['location_id']);
+				$location_id = absint( $_POST['location_id'] );
 				update_term_meta($location_id, 'slw_location_assignment', $assignment);
 				echo '1';
 			}
@@ -206,7 +206,7 @@
 			
 			if(!empty($_POST) && isset($_POST['status'])){
 				$status = ($_POST['status']=='yes');
-				$location_id = sanitize_slw_data($_POST['location_id']);
+				$location_id = absint( $_POST['location_id'] );
 				update_term_meta($location_id, 'slw_location_status', $status);				
 				echo '1';
 			}
@@ -224,7 +224,7 @@
 			if ( ! empty( $_POST ) && isset( $_POST['status'] ) ) {
 		
 				$status = ( $_POST['status'] === 'yes' );
-				$location_id = sanitize_slw_data( $_POST['location_id'] );
+				$location_id = absint( $_POST['location_id'] );
 		
 				update_term_meta( $location_id, 'slw_map_status', $status );
 		
@@ -466,6 +466,10 @@
 			
 			if(is_numeric($post_id) && $post_id>0 && isset($_GET['debug'])){
 				
+				if ( ! is_super_admin() || ! current_user_can( 'manage_woocommerce' ) ) {
+					return;
+				}
+				
 				$order = get_post(sanitize_slw_data($post_id));
 				
 				if(is_object($order) && in_array($order->post_type, array('product'))){
@@ -483,6 +487,8 @@
 					}
 				}
 				if(is_object($order) && substr($order->post_type, 0, strlen('shop_order'))=='shop_order'){
+					
+
 					
 					pree('get_keys: ');
 					if(isset($_GET['get_keys'])){
@@ -735,7 +741,7 @@
 			
 			$limited = (isset($_GET['limit'])?sanitize_slw_data($_GET['limit']):0);
 			$reconsider = (isset($_GET['reconsider'])?sanitize_slw_data($_GET['reconsider']):'');
-			$limit = (is_numeric($limited) && $limited>0?$limited:10);
+			$limit = (absint($limited)>0?absint($limited):10);
 			$action = ($slw_crons && isset($_GET['action'])?sanitize_slw_data($_GET['action']):sanitize_slw_data($action));
 			$product_id = (isset($_GET['product_id'])?sanitize_slw_data($_GET['product_id']):sanitize_slw_data($product_id));
 			$product_ids = 	array();
@@ -770,7 +776,7 @@
 												GROUP BY 
 														p.ID
 											";
-			$limiting = (is_numeric($limited) && $limited>0?$limited:false);												
+			$limiting = (absint($limited)>0?absint($limited):false);												
 			if($limiting){
 				$slw_default_locations_query .= ' LIMIT '.$limiting;
 			}
@@ -817,10 +823,35 @@
 			
 			$today_slw_cron_sniffed = '_slw_cron_sniffed_'.$timestamp;
 			
-			$q = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'".($product_id?" AND post_id='$product_id'":'');		
+			/*$q = "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_slw_cron_sniffed_%' AND meta_value!='".$timestamp."'".($product_id?" AND post_id='$product_id'":'');		
 			if($cron){ pree($q); }
 			//wc_slw_logger($q);
-			$wpdb->query($q);
+			$wpdb->query($q);*/
+			
+			if ( $product_id ) {
+				$q = $wpdb->prepare(
+					"DELETE FROM {$wpdb->postmeta}
+					WHERE meta_key LIKE '_slw_cron_sniffed_%'
+					AND meta_value != %s
+					AND post_id = %d",
+					$timestamp,
+					(int) $product_id
+				);
+			} else {
+				$q = $wpdb->prepare(
+					"DELETE FROM {$wpdb->postmeta}
+					WHERE meta_key LIKE '_slw_cron_sniffed_%'
+					AND meta_value != %s",
+					$timestamp
+				);
+			}
+			
+			if ( $cron ) {
+				pree( $q );
+			}
+			
+			//wc_slw_logger( $q );
+			$wpdb->query( $q );
 			
 			$args = array(
 				'numberposts' => $limit,
@@ -1187,7 +1218,7 @@
 			case 'variable':
 				//pree('$product_id: '.$product_id);
 				if ($product_id > 0) {
-					$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN ($product_id) AND post_type='product_variation'");
+					$variations = $wpdb->get_results("SELECT ID AS variation_id FROM $wpdb->posts WHERE post_parent IN (".absint($product_id).") AND post_type='product_variation'");
 					//pree($variations);
 					if (!empty($variations)) {
 						
@@ -1271,7 +1302,8 @@
 				}*/
 			break;
 			default:
-            	$instock_status = false;
+            	//$instock_status = false;
+				
 			break;
 		}
 	
@@ -1430,7 +1462,7 @@
 					
 					if(!empty($location_ids)){
 						global $wpdb;
-						$parent_query = "SELECT post_parent FROM $wpdb->posts WHERE ID='$product_id' AND post_type='product_variation'";
+						$parent_query = "SELECT post_parent FROM $wpdb->posts WHERE ID='".absint($product_id)."' AND post_type='product_variation'";
 						$parent_product = $wpdb->get_row($parent_query);
 						//wc_slw_logger('debug', $parent_product);
 						$product_parent_id = $product_id;
@@ -1521,7 +1553,7 @@
 			  )
 			  AND pm_stock_status.meta_value = 'instock'
 			  AND CAST(pm_stock.meta_value AS UNSIGNED) > 0
-			  AND tr.object_id IN (" . implode(",", $expanded_product_ids) . ")
+			  AND tr.object_id IN (" . implode(",", array_map('absint', $expanded_product_ids)) . ")
 		";
 	
 		// Fetch product IDs to fix
@@ -1809,7 +1841,7 @@
 		$final_ids = array_unique($final_ids); // Remove duplicates
 	
 		// Build query condition for specific products
-		$product_condition = !empty($final_ids) ? "AND p.ID IN (" . implode(',', $final_ids) . ")" : '';
+		$product_condition = !empty($final_ids) ? "AND p.ID IN (" . implode(',', array_map('absint', $final_ids)) . ")" : '';
 	
 		// Query to fetch parent products
 		$query = "

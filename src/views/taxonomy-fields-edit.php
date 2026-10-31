@@ -3,8 +3,8 @@
   <span class="slider round"></span>
 </label>
 
-<input type="hidden" name="slw-lat" value="<?php echo $slw_lat; ?>" id="slw-lat" />
-<input type="hidden" name="slw-lng" value="<?php echo $slw_lng; ?>" id="slw-lng" />
+<input type="hidden" name="slw-lat" value="<?php echo esc_attr($slw_lat); ?>" id="slw-lat" />
+<input type="hidden" name="slw-lng" value="<?php echo esc_attr($slw_lng); ?>" id="slw-lng" />
 <table class="form-table location-edit" role="presentation">
 	<tbody>
 		<tr class="form-field form-required term-name-wrap">
@@ -48,7 +48,7 @@
 		<tr class="form-field form-required term-name-wrap auto_order_allocate">
 			<th scope="row"><label><?php echo __('Location priority', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-link"></i></th>
 			<td>
-				<input name="auto_order_allocate_priority" type="number" value="<?php echo $auto_order_allocate_priority; ?>" size="40"> <a title="<?php echo __('Click here to watch priority in action', 'stock-locations-for-woocommerce'); ?>" href="https://www.youtube.com/embed/9kGVJZNNxRk" target="_blank"><i class="fab fa-youtube"></i></a>
+				<input name="auto_order_allocate_priority" type="number" value="<?php echo esc_attr($auto_order_allocate_priority); ?>" size="40"> <a title="<?php echo __('Click here to watch priority in action', 'stock-locations-for-woocommerce'); ?>" href="https://www.youtube.com/embed/9kGVJZNNxRk" target="_blank"><i class="fab fa-youtube"></i></a>
 				<p class="description"><?php echo __('This is the order in which stock is auto allocated if enabled.', 'stock-locations-for-woocommerce'); ?><br />
                 <div class="alert alert-info" role="alert"><?php echo __('Higher the number will have higher the priority.', 'stock-locations-for-woocommerce'); ?></div>
                 </p>
@@ -58,7 +58,7 @@
 		<tr class="form-field term-name-wrap auto_order_allocate">
 			<th scope="row"><label><?php echo __('Location email', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-link"></i></th>
 			<td>
-				<input type="email" name="location_email" value="<?php echo $location_email; ?>">
+				<input type="email" name="location_email" value="<?php echo esc_attr($location_email); ?>">
 				<p class="description"><?php echo __('Email address for notifications when a customer buys from this location. Works only if auto order allocation is enabled for this location.', 'stock-locations-for-woocommerce'); ?></p>
 			</td>
 		</tr>
@@ -67,7 +67,7 @@
         <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Location Address', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-map-marker-alt"></i></th>
 			<td>
-				<input name="location_address" id="location_address" type="text" value="<?php echo $location_address; ?>" size="40" /> 
+				<input name="location_address" id="location_address" type="text" value="<?php echo esc_attr($location_address); ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
                 
@@ -108,7 +108,7 @@
         <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Phone Number', 'stock-locations-for-woocommerce'); ?></label> <i class="fas fa-phone"></i></th>
 			<td>
-				<input name="location_phone" type="text" value="<?php echo $location_phone; ?>" size="40" /> 
+				<input name="location_phone" type="text" value="<?php echo esc_attr($location_phone); ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
 			</td>
@@ -116,7 +116,7 @@
         <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Opening Timings', 'stock-locations-for-woocommerce'); ?></label> <i class="far fa-clock"></i></th>
 			<td>
-				<input name="location_timings" type="text" value="<?php echo $location_timings; ?>" size="40" /> 
+				<input name="location_timings" type="text" value="<?php echo esc_attr($location_timings); ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
 			</td>
@@ -125,7 +125,7 @@
         <tr class="form-field term-name-wrap">
 			<th scope="row"><label><?php echo __('Product Page Notice', 'stock-locations-for-woocommerce'); ?></label> <i class="far fa-clock"></i></th>
 			<td>
-				<input name="location_notice" type="text" value="<?php echo $location_notice; ?>" size="40" /> 
+				<input name="location_notice" type="text" value="<?php echo esc_attr($location_notice); ?>" size="40" /> 
 				<p class="description"><?php echo __('Optional', 'stock-locations-for-woocommerce'); ?><br />
                 </p>
 			</td>

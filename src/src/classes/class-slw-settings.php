@@ -91,10 +91,10 @@ if(!class_exists('SlwSettings')) {
 			<div class="wrap slw-settings-wrap">
 				<h1><i class="fas fa-sitemap"></i> <?php echo $wc_slw_data['Name'].' ('.SLW_PLUGIN_VERSION.') '.($wc_slw_pro?'Pro':''); ?><span style="float:right; color:#4200FF; font-size:12px; margin:0 <?php echo (!$wc_slw_pro?'14':''); ?>0px 0 0;"><?php echo $slw_theme_name; ?> (<?php echo count($slw_update_products); ?>)</span></h1>
 				<h2 class="nav-tab-wrapper">
-					<?php isset( $_REQUEST['tab'] ) ?: $_REQUEST['tab'] = 'default'; ?>
+					<?php $_REQUEST['tab'] = isset( $_REQUEST['tab'] ) ? sanitize_key( $_REQUEST['tab'] ) : 'default'; ?>
 					<?php foreach( $this->settings_tabs() as $key => $data ) : $class = 'nav-tab'; ?>
 					<?php if( isset($_REQUEST['tab']) && $_REQUEST['tab'] == $key ) { $class .= ' nav-tab-active'; } ?>
-					<a data-id="<?php echo $key; ?>" href="<?php echo admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?php echo $key; ?>" class="<?php echo $class; ?>"><?php echo $data['icon']; ?>&nbsp;<?php echo $data['label']; ?></a>
+					<a data-id="<?php echo esc_attr($key); ?>" href="<?php echo admin_url( 'admin.php?page=slw-settings' ); ?>&tab=<?php echo esc_attr($key); ?>" class="<?php echo $class; ?>"><?php echo $data['icon']; ?>&nbsp;<?php echo $data['label']; ?></a>
 					<?php endforeach; ?>
 					<?php if(!$wc_slw_pro){ ?><a class="gopro" target="_blank" href="<?php echo esc_url($wc_slw_premium_copy); ?>"><?php _e("Go Premium",'stock-locations-for-woocommerce'); ?></a><?php } ?>
 				</h2>

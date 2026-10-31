@@ -359,9 +359,9 @@ if( !class_exists('SlwFrontendProduct') ) {
 			if( isset( $_POST['variation_id'] ) && isset( $_POST['product_id'] ) && $_POST['action'] == 'get_variation_locations' ) {
 				
 				
-				$variation_id          = sanitize_slw_data( $_POST['variation_id'] );
+				$variation_id          = absint( $_POST['variation_id'] );
 				$variation_id          = SlwWpmlHelper::object_id( $variation_id );
-				$product_id            = sanitize_slw_data( $_POST['product_id'] );
+				$product_id            = absint( $_POST['product_id'] );
 				$product_id            = SlwWpmlHelper::object_id( $product_id );
 				$product_variation_id  = ($variation_id?$variation_id:$product_id);
 				

@@ -2,7 +2,7 @@
 Contributors: fahadmahmood,alexmigf,invoicepress
 Tags: woocommerce, stock, stock locations, simple product, variable products
 Requires at least: 4.9
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.2
 Stable tag: __STABLE_TAG__
 License: GPLv2 or later
@@ -169,6 +169,14 @@ On settings page you can define a number. If location stock value will be less t
 
 
 == Changelog ==
+= 3.2.2 =
+* Tested up to WordPress 7.1.
+* Security: hardened AJAX and order stock-edit handlers (prepared SQL queries, strict integer validation of IDs, safer cart updates).
+* Security: debug output (`?debug`, `?sql-query`) is now limited to administrators.
+* Security: escaped location fields and settings output in admin screens.
+* Fix: HTML mail content type no longer leaks into other plugins' emails after a stock allocation notification.
+* New (Premium): Low stock alerts per location. Set a threshold on each location and get a digest email when product stock at that location runs low.
+
 = 3.1.7 = 
 * Fix: Variable products showing out of stock even when inventory exists - resolved stock status handling for variations without manual location stock entry [Thanks to Ben Croft][28/05/2026]
 
@@ -211,5 +219,8 @@ On settings page you can define a number. If location stock value will be less t
 * Improved: Price hiding logic refactored for better compatibility across all product types (simple, variable, grouped). [20/10/2025]
 
 == Upgrade Notice ==
+= 3.2.2 =
+Security hardening release, tested with WordPress 7.1. Recommended for all users. No features were removed.
+
 = 3.1.7 =
 This release fixes a critical issue where variable products were displaying as out of stock despite having available inventory. After updating, variable products will correctly reflect stock status without requiring manual stock entry for each variation in the location tab. Simple products already working with the "Everything stock status to instock" setting will continue to function normally. We highly recommend updating to restore proper stock display for your variable products.

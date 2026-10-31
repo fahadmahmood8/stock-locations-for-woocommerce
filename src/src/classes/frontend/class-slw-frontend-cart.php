@@ -266,8 +266,12 @@ if( !class_exists('SlwFrontendCart') ) {
 			}
 			// Save the stock locations to the cart meta
 			$cart = WC()->cart->cart_contents;
-			$cart_id = $_POST['cart_id'];
-			$stock_location = sanitize_slw_data($_POST['stock_location']);
+			$cart_id = sanitize_text_field( wp_unslash( $_POST['cart_id'] ) );
+			$stock_location = (isset($_POST['stock_location'])?sanitize_slw_data($_POST['stock_location']):'');
+			if( ! isset( $cart[$cart_id] ) ) {
+				wp_send_json( array( 'error' => 1 ) );
+				exit;
+			}
 			$cart_item = $cart[$cart_id];
 			$cart_item['stock_location'] = $stock_location;
 		
